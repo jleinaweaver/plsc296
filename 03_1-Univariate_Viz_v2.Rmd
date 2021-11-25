@@ -1,0 +1,732 @@
+---
+output:
+  beamer_presentation:
+    theme: "CambridgeUS"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+    df_print: kable
+fontsize: 14pt
+classoption: "aspectratio=169"
+header-includes:
+- \usepackage{caption}
+- \captionsetup[figure]{labelformat=empty}
+- \captionsetup[table]{labelformat=empty}
+- \setbeamertemplate{page number in head/foot}[]{}
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+## Render the pdf
+##rmarkdown::render(input = "./03_1-Univariate_Viz_v2.Rmd", output_file = "./03_1-Univariate_Viz_v2.pdf")
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+
+## Today's Agenda
+
+\Large
+Connecting descriptive statistics to univariate visualizations
+
+\vspace{.5in}
+
+\begin{center}
+Justin Leinaweaver (Fall 2021)
+\end{center}
+
+```{r, echo=FALSE, eval=TRUE}
+options("width" = 120)
+d <- read_excel("./Data/All_data_FIW_2013-2021-tidy.xlsx", sheet = 2)
+```
+
+
+## {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.95\paperwidth]{Images/00-Pizza_Politics1.png}
+
+
+
+## Practice Questions
+\large
+
+Calculate the minimum, mean and maximum values of the `Total` score for:
+
+1. The years 2013 and 2021 (filter).
+
+2. Each year in the dataset (group_by).
+
+3. Each region in the dataset (group_by).
+
+4. Both year and region (group_by).
+
+
+## Practice Questions: Baseline Code
+```{r, echo=TRUE}
+d |>
+   summarize(
+     Minimum = min(Total),
+     Mean = mean(Total),
+     Maximum = max(Total)
+)
+```
+
+
+## Practice Questions: Baseline Code (v2)
+```{r, echo=TRUE}
+d |>
+   summarize(
+     Minimum = min(Total),
+     Mean = round(mean(Total), 1),
+     Maximum = max(Total)
+)
+```
+
+
+## Practice Questions: 2013 and 2021
+```{r, echo=TRUE}
+d |>
+   filter(Edition == 2013) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = round(mean(Total), 1),
+     Maximum = max(Total)
+)
+```
+
+
+## Practice Questions: By Year
+::: columns
+:::: column
+
+\small
+```{r, echo=TRUE, eval=FALSE}
+d |>
+   group_by(Edition) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = round(mean(Total), 1),
+     Maximum = max(Total)
+)
+```
+
+::::
+:::: column
+
+\small
+```{r, echo=FALSE, eval=TRUE}
+d |>
+   group_by(Edition) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = round(mean(Total), 1),
+     Maximum = max(Total)
+   )
+```
+::::
+:::
+
+
+
+## Practice Questions: By Region
+::: columns
+:::: column
+
+\small
+```{r, echo=TRUE, eval=FALSE}
+d |>
+   group_by(Region) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = round(mean(Total), 1),
+     Maximum = max(Total)
+)
+```
+
+::::
+:::: column
+
+\small
+```{r, echo=FALSE, eval=TRUE}
+d |>
+   group_by(Region) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = round(mean(Total), 1),
+     Maximum = max(Total)
+   )
+```
+::::
+:::
+
+
+
+## Practice Questions: By Region and Year
+::: columns
+:::: column
+
+\small
+```{r, echo=TRUE, eval=FALSE}
+d |>
+   group_by(Region, Edition) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = round(mean(Total), 1),
+     Maximum = max(Total)
+)
+```
+
+::::
+:::: column
+
+\scriptsize
+```{r, echo=FALSE, eval=TRUE}
+d |>
+   group_by(Region, Edition) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = round(mean(Total), 1),
+     Maximum = max(Total)
+   ) |>
+ungroup() |>
+slice(1:13)
+```
+::::
+:::
+
+
+
+## {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.6\paperwidth]{Images/03_1-data_viz.jpg}
+
+\vspace{.25in}
+
+**A method for summarizing data in more compelling, easier to understand and more informative methods than descriptive statistics.**
+
+
+
+## Principle 3. Variable Type Determines Tool {.plain}
+\large 
+**Univariate Visualizations**
+
++ If a **categorical** variable, make a **bar plot**
+
++ If a **numeric** variable, make a **box plot** or **histogram**
+
++ If a **numeric variable across time**, make a **line plot**
+
+
+
+## Why draw visualizations by hand?
+::: columns
+:::: column
+
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.45\paperwidth]{Images/03_1-By_hand.jpg}
+\end{center}
+
+::::
+:::: column
+\large
+
+\begin{enumerate}[<+->]
+\item Principle 3 in action,
+
+\vspace{.25in}
+
+\item Learn to think like a programmer
+\end{enumerate}
+
+::::
+:::
+
+
+
+## Why draw visualizations by hand?
+::: columns
+:::: column
+\footnotesize
+
+```{r, echo=FALSE}
+d <- read_excel("./Data/All_data_FIW_2013-2021-tidy.xlsx", sheet = 2)
+
+d |>
+pivot_longer(cols = c(`CL rating`, CL, `PR rating`, PR, Total), names_to = "Variable", values_to = "Values") |>
+group_by(Variable) |>
+summarize(
+    N = n(),
+    Mean = round(mean(Values), 1),
+    StdDev = round(sd(Values), 1),
+    Min = min(Values),
+    Max = max(Values)
+    )
+```
+
+::::
+:::: column
+
+\large
+
+1. Principle 3 in action,
+
+\vspace{.25in}
+
+2. Learn to think like a programmer
+
+\vspace{.25in}
+
+3. Learn to "see" descriptive stats tables
+
+::::
+:::
+
+
+
+
+## Categorical Variable: Make a Bar Plot {.plain}
+\begin{columns}
+\begin{column}{0.4\textwidth}
+
+\LARGE
+\textbf{Bar Plots}
+\vspace{.2in}
+\begin{enumerate}
+\item Counts, or
+\vspace{.2in}
+\item Proportions
+\end{enumerate}
+
+\end{column}
+\begin{column}{0.6\textwidth}
+
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.42\paperwidth]{Images/03_1-Johnson-Bar_plot.png}
+\end{center}
+
+\end{column}
+\end{columns}
+
+
+
+## Categorical Variable: Make a Bar Plot {.plain}
+\LARGE
+\center
+
+\vspace{.2in}
+
+**Draw a bar plot of `CL Rating` counts in 2021 by hand.**
+
+\vspace{.5in}
+
+```{r, echo=TRUE, eval=FALSE}
+table(d$"CL rating")
+```
+
+
+
+
+## {.plain}
+```{r, fig.align='center', fig.asp=0.618, fig.width=6, out.width='95%'}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = `CL rating`)) +
+    geom_bar() +
+    theme_bw() +
+    labs(x = "CL Rating", y = "") +
+    scale_x_continuous(breaks = 1:7)
+```
+
+
+## Categorical Variable: Make a Bar Plot {.plain}
+\LARGE
+\center
+
+\vspace{.2in}
+
+**Draw a bar plot of "PR Rating" counts in 2021 by hand.**
+
+\vspace{.5in}
+
+```{r, echo=TRUE, eval=FALSE}
+table(d$"PR rating")
+```
+
+
+
+## {.plain}
+```{r, fig.align='center', fig.asp=0.618, fig.width=6, out.width='95%'}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = `PR rating`)) +
+    geom_bar() +
+    theme_bw() +
+    labs(x = "PR Rating", y = "") +
+    scale_x_continuous(breaks = 1:7)
+```
+
+
+## Bar Plots vs Descriptive Stats Table
+::: columns
+:::: column
+
+```{r, fig.align='center', fig.asp=0.7, fig.width=4, out.width='95%'}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = `PR rating`)) +
+    geom_bar() +
+    theme_bw() +
+    labs(x = "PR Rating", y = "") +
+    scale_x_continuous(breaks = 1:7)
+```
+::::
+:::: column
+```{r, echo=TRUE}
+table(d$`PR rating`)
+```
+::::
+:::
+
+
+## Numerical Variable: Make a Box Plot {.plain}
+\begin{columns}
+\begin{column}{0.4\textwidth}
+
+\Large
+\textbf{Box Plots}
+\vspace{.1in}
+\begin{itemize}
+\item Minimum
+\item 25th percentile
+\item Median
+\item 75th percentile
+\item Maximum
+\item IQR x 1.5
+\end{itemize}
+
+\end{column}
+\begin{column}{0.6\textwidth}
+
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.5\paperwidth]{Images/03_1-Johnson-Box_plot.png}
+\end{center}
+
+\end{column}
+\end{columns}
+
+
+
+## Numerical Variable: Make a Box Plot
+\LARGE
+\center
+
+\vspace{.2in}
+
+**Draw a box plot of `CL` score in 2021 by hand.**
+
+\vspace{.4in}
+\large
+**Note:** Johnson (2012), p388-389 has the steps...
+
+
+
+## {.plain}
+```{r, fig.align='center', fig.asp=0.618, fig.width=6, out.width='95%'}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = CL, y = factor(1))) +
+    geom_boxplot() +
+    theme_bw() +
+    labs(x = "CL Score (0 - 60)", y = "") +
+        scale_y_discrete(label = "")
+```
+
+
+## Numerical Variable: Make a Box Plot
+\LARGE
+\center
+
+\vspace{.2in}
+
+**Draw a box plot of `PR` score in 2021 by hand.**
+
+\vspace{.4in}
+\large
+**Note:** Johnson (2012), p388-389 has the steps...
+
+
+
+## {.plain}
+```{r, fig.align='center', fig.asp=0.618, fig.width=6, out.width='95%'}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = PR, y = factor(1))) +
+    geom_boxplot() +
+    theme_bw() +
+    labs(x = "PR Score (-3 - 40)", y = "") +
+        scale_y_discrete(label = "")
+```
+
+
+## Box Plot vs Descriptive Stats Table {.plain}
+```{r, fig.align='center', fig.asp=0.618, fig.width=5, out.width='50%'}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = CL, y = factor(1))) +
+    geom_boxplot() +
+    theme_bw() +
+    labs(x = "CL Score (0 - 60)", y = "") +
+        scale_y_discrete(label = "")
+```
+
+\small
+```{r, echo=TRUE}
+summary(d$CL)
+```
+
+
+## Numerical Variable: Make a Histogram {.plain}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.7\paperwidth]{Images/03_1-Johnson-Histogram.png}
+\end{center}
+
+
+
+## Numerical Variable: Make a Histogram {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.45\paperwidth]{Images/03_1-Johnson-Histogram.png}
+
+\Large
+**Why can't we just draw a bar for every possible value? (e.g. make a bar plot)**
+
+
+## Histograms are bar plots using bins
+\Large
+
+1. Make a table of `CL` scores for 2021 only
+
+2. Convert this table into bins of 10 and re-sum the counts
+   + \large Bin 1 is all values from 1 - 10
+   + Bin 2 is all values from 11 - 20
+   + Bin 3...
+   
+3. Draw the bar plot of your bins
+
+
+
+## Numerical Variable: Make a Histogram {.plain}
+```{r, fig.asp=0.618, fig.align='center', out.width='80%', fig.width=5.5}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = CL)) +
+    geom_histogram(bins = 10, color = "white") +
+    theme_bw() +
+    labs(x = "Civil Liberties Score (2021)", y = "")
+```
+
+
+## Histograms are bar plots using bins
+\Large
+
+1. Make a table of `PR` scores for 2021 only
+
+2. Convert this table into bins of 10 and re-sum the counts
+   + \large Bin 1 is all values from -10 - 0
+   + Bin 2 is all values from 1 - 10
+   + Bin 3...
+   
+3. Draw the bar plot of your bins
+
+
+
+## Numerical Variable: Make a Histogram {.plain}
+```{r, fig.asp=0.618, fig.align='center', out.width='80%', fig.width=5.5}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = PR)) +
+    geom_histogram(bins = 10, color = "white") +
+    theme_bw() +
+    labs(x = "Political Rights Score (2021)", y = "")
+```
+
+
+## Numeric Variables: Box vs Histogram
+::: columns
+:::: column
+
+```{r, fig.width=4, fig.asp=0.75}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = CL, y = factor(1))) +
+    geom_boxplot() +
+    theme_bw() +
+    labs(x = "Civil Liberties Score (2021)", y = "") +
+    scale_y_discrete(label = "")
+```
+
+::::
+:::: column
+
+```{r, fig.width=4, fig.asp=0.75}
+d |>
+filter(Edition == 2021) |>
+    ggplot(aes(x = CL)) +
+    geom_histogram(bins = 10, color = "white") +
+    theme_bw() +
+    labs(x = "Civil Liberties Score (2021)", y = "")
+```
+::::
+:::
+
+
+## Box plots make comparing distributions easier {.plain}
+```{r, fig.align='center', fig.asp=0.618, fig.width=6, out.width='80%'}
+d |>
+filter(Edition == 2021) |>
+pivot_longer(cols = c(PR, CL), names_to = "Variable", values_to = "Values") |>
+    ggplot(aes(x = Values, y = Variable)) +
+    geom_boxplot() +
+    theme_bw() +
+    labs(x = "Freedom House Scores", y = "")
+```
+
+
+## Numeric Variables Across Time {.plain}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.7\paperwidth]{Images/03_1-Johnson-Line_plot.png}
+\end{center}
+
+
+## 
+\LARGE
+\center
+**Make a line plot of the average 'PR' and 'CL' scores per year.**
+
+(e.g. two separate lines)
+
+\vspace{.25in}
+\large
+### R Functions
++ group_by()
++ summarize()
++ mean()
+
+
+
+## {.plain}
+\LARGE
+\center
+**Make a line plot of the average 'PR' and 'CL' scores per year.**
+
+\vspace{.3in}
+\normalsize
+```{r, echo=TRUE, eval=FALSE}
+d |>
+   group_by(Edition) |>
+   summarize(
+       MeanPR = mean(PR),
+       MeanCL = mean(CL)
+   )
+```
+
+
+## Which is the better visualization? {.plain}
+::: columns
+:::: column
+
+\vspace{.6in}
+
+```{r, fig.align='center', fig.asp=.8, fig.width=4, out.width='95%'}
+d |>
+   group_by(Edition) |>
+   summarize(
+       MeanPR = mean(PR),
+       MeanCL = mean(CL)
+   ) |>
+pivot_longer(cols = MeanPR:MeanCL, names_to = "Variable", values_to = "Values") |>
+ggplot(aes(x = Edition, y = Values, color = Variable)) +
+    geom_line(size = 1.3) +
+    theme_bw() +
+    labs(x = "", y = "") +
+    scale_x_continuous(breaks = 2013:2021) +
+  guides(color = FALSE)
+```
+
+::::
+:::: column
+
+```{r, fig.align='center', fig.asp=1.4, fig.width=4, out.width='95%'}
+d |>
+   group_by(Edition) |>
+   summarize(
+       MeanPR = mean(PR),
+       MeanCL = mean(CL)
+   ) |>
+pivot_longer(cols = MeanPR:MeanCL, names_to = "Variable", values_to = "Values") |>
+ggplot(aes(x = Edition, y = Values, color = Variable)) +
+    geom_line(size = 1.3) +
+    theme_bw() +
+    labs(x = "", y = "") +
+    scale_x_continuous(breaks = 2013:2021) +
+    facet_wrap(~ Variable, ncol = 1, scales = "free_y") +
+  guides(color = FALSE)
+```
+
+::::
+:::
+
+
+## Wrapping Up: Drawing by hand is good!
+::: columns
+:::: column
+
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.45\paperwidth]{Images/03_1-By_hand.jpg}
+\end{center}
+
+::::
+:::: column
+\large
+
+1. Principle 3 in action,
+
+\vspace{.25in}
+
+2. Learn to think like a programmer
+
+\vspace{.25in}
+
+3. Learn to "see" descriptive stats tables
+
+::::
+:::
+
+
+## Principle 3. Variable Type Determines Tool
+\large 
+**Univariate Visualizations**
+
++ If a **categorical** variable, make a **bar plot**
+
++ If a **numeric** variable, make a **box plot** or **histogram**
+
++ If a **numeric variable across time**, make a **line plot**
+
+
+
+
+## For Thursday
+\LARGE
+Use Healy (3.1 - 3.4) and the Chang recipes to **try** to recreate all of our by-hand plots using R
+
+
+

@@ -1,0 +1,528 @@
+---
+output:
+  beamer_presentation:
+    theme: "CambridgeUS"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+    df_print: kable
+fontsize: 14pt
+classoption: "aspectratio=169"
+header-includes:
+- \usepackage{caption}
+- \captionsetup[figure]{labelformat=empty}
+- \captionsetup[table]{labelformat=empty}
+- \setbeamertemplate{page number in head/foot}[]{}
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+## Render the pdf
+##rmarkdown::render(input = "./03_2-Univariate_Viz2.Rmd", output_file = "./03_2-Univariate_Viz2.pdf")
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+
+## Today's Agenda
+
+\Large
+Building univariate visualizations in R
+
++ Save your notes in `Getting_Started.Rmd`
+
++ Section: # Visualizing Data in R
+
+\vspace{.5in}
+
+\begin{center}
+Justin Leinaweaver (Fall 2021)
+\end{center}
+
+
+## ggplot() for making visualizations
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.9\paperwidth]{Images/03_2-ggplot_logo.png}
+\end{center}
+
+\center
+\large
+
+**Note: You have to load the tidyverse to use ggplot**
+
+```{r, echo=TRUE}
+library(tidyverse)
+```
+
+
+## Healy (2021) Introduces ggplot() {.plain}
+```{r, echo = TRUE, eval = FALSE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = data source, aes(x = variable name))
+
+## 3. Variable type determines geom (choose one)
+p + geom_bar()
+p + geom_col()
+p + geom_histogram()
+p + geom_boxplot()
+p + geom_line()
+```
+
+\center
+**This code is on Discord now!**
+
+
+
+## The GGplot Function: Two Arguments {.plain}
+
+```{r, echo = TRUE, eval = FALSE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = data source, aes(x = variable name))
+```
+
+\vspace{.25in}
+\Large
+1. Identify the source of your tidy data, and
+\vspace{.25in}
+2. Select your variable(s) using the `aes()` function
+
+
+
+
+## {.plain}
+```{r, echo = TRUE, eval = FALSE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = data source, aes(x = x axis variable))
+```
+
+\vspace{.1in}
+
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.35\paperwidth]{Images/03_2-Axes.png}
+\end{center}
+
++ The `x` here refers to the x axis.
+
++ Rotate the plot by changing `x` to `y`
+
+
+
+
+
+## Healy (2021) Introduces ggplot() {.plain}
+
+```{r, echo = TRUE, eval = FALSE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = data source,
+            aes(x = x axis variable, y = y axis variable))
+
+## 3. Variable type determines geom (Chang recipes)
+p + geom_bar() ## 3.3
+p + geom_col() ## 3.1
+p + geom_histogram() ## 6.1
+p + geom_boxplot() ## 6.6
+p + geom_line() ## 4.1
+```
+
+
+## Built-in Dataset: chickwts
+::: columns
+:::: column
+\vspace{.4in}
+\begin{center}
+\large
+An experiment was conducted to measure and compare the effectiveness of various feed supplements on the growth rate of chickens.
+\end{center}
+::::
+:::: column
+\small
+```{r, echo = FALSE}
+chickwts |> slice(1:9)
+```
+::::
+:::
+
+
+## Built-in Dataset: chickwts
+::: columns
+:::: column
+\vspace{.25in}
+\begin{center}
+\large
+An experiment was conducted to measure and compare the effectiveness of various feed supplements on the growth rate of chickens.
+\end{center}
+::::
+:::: column
+\small
+```{r, echo = FALSE}
+chickwts |> slice(1:7)
+```
+::::
+:::
+\vspace{.25in}
+\center
+\Large
+**How do we visualize the `feed` variable?**
+
+
+
+## Built-in Dataset: chickwts {.plain}
+::: columns
+:::: column
+\begin{center}
+\vspace{.25in}
+\large
+An experiment was conducted to measure and compare the effectiveness of various feed supplements on the growth rate of chickens.
+\end{center}
+::::
+:::: column
+\small
+```{r, echo = FALSE}
+chickwts |> slice(1:7)
+```
+::::
+:::
+\vspace{.25in}
+\large
+```{r, echo = TRUE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = chickwts, aes(x = feed))
+```
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='60%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = chickwts, aes(x = feed))
+## View the visualization
+p
+```
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='60%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = chickwts, aes(x = feed))
+## View the visualization
+p + geom_bar()
+```
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='60%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = chickwts, aes(y = feed))
+## View the visualization
+p + geom_bar()
+```
+
+
+## Learn to Decipher the Error Text! {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='60%', eval=FALSE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = chickwts, aes(x = feed))
+## View the visualization
+p + geom_histogram()
+```
+\vspace{.25in}
+\large
+\textcolor{red}{Error: } StatBin requires a continuous x variable: the x variable is discrete. Perhaps you want stat="count"?
+
+
+
+## Know what you are making BEFORE you make it {.plain}
+
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='50%', eval=TRUE}
+## View the visualization
+p + geom_boxplot()
+```
+
+## Bar Plots: Counts (Chang 3.3) {.plain}
+So, if your variable looks like this (categorical):
+
+```{r, echo = FALSE}
+chickwts |> select(feed) |> slice(1:5)
+```
+
+```{r, echo = TRUE, eval = FALSE}
+## geom_bar counts the levels for you
+p + geom_bar()
+```
+
+
+## 
+\center
+\large
+**How do we make a bar plot if the levels have already been counted?**
+
+\vspace{.1in}
+
+::: columns
+:::: column
+```{r, echo = TRUE, eval = FALSE}
+## Function to count levels
+chickwts |>
+   count(feed)
+```
+::::
+:::: column
+\normalsize
+```{r, echo = FALSE}
+chickwts |>
+    count(feed)
+```
+::::
+:::
+
+
+
+## {.plain}
+\large
+::: columns
+:::: column
+```{r, echo = TRUE, eval = FALSE}
+## Save the new data
+new1 <- chickwts |>
+           count(feed)
+```
+::::
+:::: column
+\normalsize
+```{r, echo = FALSE}
+chickwts |>
+    count(feed)
+```
+::::
+:::
+\normalsize
+\vspace{.3in}
+```{r, echo = TRUE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = new1, aes(x = feed, y = n))
+```
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='60%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = new1, aes(x = feed, y = n))
+## View the visualization
+p
+```
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='60%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = new1, aes(x = feed, y = n))
+## View the visualization
+p + geom_col()
+```
+
+
+## geom_bar vs geom_col {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='50%', eval=FALSE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = new1, aes(x = feed, y = n))
+## View the visualization
+p + geom_bar()
+```
+\vspace{.25in}
+\large
+\textcolor{red}{Error: } stat_count() can only have an x or y aesthetic.
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='55%'}
+## All in one line (with pipes)
+chickwts |>
+   count(feed) |>
+   ggplot(aes(x = feed, y = n)) +
+      geom_col()
+```
+
+
+## Built-in Dataset: mtcars
+::: columns
+:::: column
+\center
+\large
+The data was extracted from the 1974 \textit{Motor Trend} US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models).
+::::
+:::: column
+\small
+```{r, echo = FALSE}
+mtcars |> slice(1:9) |> select(mpg, cyl)
+```
+::::
+:::
+
+
+## Built-in Dataset: mtcars
+\small
+```{r, echo = FALSE}
+mtcars |> slice(1:6) |> select(mpg, cyl)
+```
+\center
+\Large
+**How do we visualize the `mpg` variable?**
+
+
+
+## Built-in Dataset: mtcars
+\small
+```{r, echo = FALSE}
+mtcars |> slice(1:6) |> select(mpg, cyl)
+```
+\normalsize
+```{r, echo = TRUE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = mtcars, aes(x = mpg))
+```
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='55%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = mtcars, aes(x = mpg))
+## View the visualization
+p + geom_boxplot()
+```
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='55%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = mtcars, aes(x = mpg))
+## View the visualization
+p + geom_histogram()
+```
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='55%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = mtcars, aes(x = mpg))
+## Adjust bin numbers
+p + geom_histogram(bins = 8)
+```
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='55%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = mtcars, aes(x = mpg))
+## Adjust bin numbers
+p + geom_histogram(bins = 15)
+```
+
+
+## Comparing Histograms to Box Plots
+::: columns
+:::: column
+```{r, echo = FALSE, fig.asp = 0.9, fig.width = 4}
+p <- ggplot(data = mtcars,
+            aes(x = mpg))
+
+p + geom_boxplot()
+```
+::::
+:::: column
+```{r, echo = FALSE, fig.asp = 0.9, fig.width = 4}
+p <- ggplot(data = mtcars,
+            aes(x = mpg))
+
+p + geom_histogram(bins = 8)
+```
+::::
+:::
+
+
+
+## R Built-in Dataset: economics
+This dataset was produced from US economic time series data available from \url{https://fred.stlouisfed.org/}.
+
+\small
+```{r}
+economics |> slice(1:8)
+```
+
+
+## Line Plots (Chang 4.1)
+\small
+```{r}
+economics |> slice(1:5) |> select(date, pop)
+```
+\normalsize
+```{r, echo = TRUE}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = economics, aes(x = date, y = pop))
+```
+
+
+## {.plain}
+```{r, echo = TRUE, fig.asp = 0.618, fig.width = 4, fig.align='center', out.width='55%'}
+## 1. Tidy and 2. map your data
+p <- ggplot(data = economics, aes(x = date, y = pop))
+## Line plot (Chang 4.1)
+p + geom_line()
+```
+
+
+## Re-make the visualizations from Tuesday
+\Large
+1. Bar Plots: 1. `CL Rate` and 2. `PR Rate`
+
+\vspace{.15in}
+
+2. Box Plots: 1. `CL`, 2. `PR`, 3. `Total`
+
+\vspace{.15in}
+
+3. Histogram of the `Total` score
+
+\vspace{.15in}
+
+4. Line plot of the **average** `Total` score per year
+
+
+
+## Controlling Figures in Reports
+::: columns
+:::: column
+
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.47\paperwidth]{Images/03_2-Chunk_Options.png}
+\end{center}
+
+::::
+:::: column
+
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.47\paperwidth]{Images/03_2-Chunk_Sizes.png}
+\end{center}
+
+::::
+:::
+
+
+## Analyze a Data Project: Regime Type
+\Large
+
+\begin{center}
+Prepare a report \textbf{introducing and analyzing} our first data project. What are the \textbf{strengths and weaknesses} of this project for measuring regime type? 
+\end{center}
+
++ Support all claims with evidence.
+
+
+
+

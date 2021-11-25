@@ -1,0 +1,377 @@
+---
+output:
+  beamer_presentation:
+    theme: "CambridgeUS"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+    df_print: kable
+fontsize: 14pt
+classoption: "aspectratio=169"
+header-includes:
+- \usepackage{caption}
+- \captionsetup[figure]{labelformat=empty}
+- \captionsetup[table]{labelformat=empty}
+- \setbeamertemplate{page number in head/foot}[]{}
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+## Render the pdf
+##rmarkdown::render(input = "", output_file = "")
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+
+d <- read_csv("../Data_Projects/04-Research_Project/P296-FA21-Research_Project_Data.csv", na = c(-9, "NA"))
+
+d2 <- d |>
+  arrange(Country, year) |>
+  group_by(Country) |>
+  mutate(
+    milper_prop = (milper / tpop)*100,
+    milper_prop_lag1 = lag(milper_prop, n = 1),
+    milper_prop_lag3 = lag(milper_prop, n = 3)
+  ) |>
+  ungroup()
+```
+
+
+## Today's Agenda
+\Large
+
+Build simple OLS regressions for your research project report.
+
+\vspace{.5in}
+
+\center
+Justin Leinaweaver (Fall 2021)
+
+
+
+## Assignment 3: The Research Report {.plain}
+
+1. Introduction
+   + What is the question, why is it important and what is your argument?
+
+\vspace{.1in}
+
+2. **Bivariate Analyses**
+   + **What is the answer to the question using only bivariate visualizations and simple OLS regressions?**
+
+\vspace{.1in}
+
+3. Multivariate Analyses
+   + What is the answer to the question using multivariate visualizations and multiple OLS regressions?
+
+\vspace{.1in}
+
+4. Conclusion
+   + What did you find and how confident should we be in your results?
+   
+   
+
+## Research Project: Simple OLS Regressions
+\large
+
+Fit, evaluate and make predictions for the following regressions:
+
+1. Regress `fh_total` on `milper_prop`
+
+2. Regress `pr` on `milper_prop`
+
+3. Regress `cl` on `milper_prop`
+
+\vspace{.25in}
+
+Then, **rebuild each model** with a one period time lag on `milper_prop` (`milper_prop_lag1`)
+
+
+
+
+## Adding a Time Lag to a Variable
+\footnotesize
+```{r, echo=TRUE, eval=FALSE}
+## This code is already in the project Rmd file
+d2 |> 
+  mutate(
+    milper_prop_lag1 = lag(milper_prop, n = 1)
+  )
+```
+
+```{r, echo=FALSE}
+d2 |> 
+  slice(6:11) |>
+  select(Country, year, fh_total, milper_prop) |>
+  mutate(
+    milper_prop_lag1 = lag(milper_prop, n = 1)
+  )
+```
+
+
+
+## To Start
+\Large
+
+Everybody fit, evaluate and make a marginal effects plot for the first model.
+
+\vspace{.3in}
+
+1. Regress `fh_total` on `milper_prop`
+
+
+
+##
+::: columns
+:::: column
+
+\begin{center}
+```{r, results='asis'}
+res1a <- lm(data = d2, fh_total ~ milper_prop)
+
+stargazer(res1a, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser", "f"), font.size = "footnotesize", float = FALSE, covariate.labels = "Military Personnel (\\% Pop)", dep.var.labels = c("FH Total"))
+```
+\end{center}
+
+::::
+:::: column
+\large
+
+\vspace{.25in}
+
+\begin{enumerate}
+\item Logical?
+\vspace{.2in}
+\item Coefficients significant?
+\vspace{.2in}
+\item Adjusted R$^2$
+\vspace{.2in}
+\item Residuals?
+\end{enumerate}
+
+::::
+:::
+
+
+
+##
+```{r, fig.asp=.9, fig.width=6, out.width='55%', fig.align='center'}
+plot(res1a, which = 1)
+```
+
+
+
+
+
+##
+::: columns
+:::: column
+
+\begin{center}
+```{r, results='asis'}
+stargazer(res1a, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser", "f"), font.size = "footnotesize", float = FALSE, covariate.labels = "Military Personnel (\\% Pop)", dep.var.labels = c("FH Total"))
+```
+\end{center}
+
+::::
+:::: column
+
+```{r, fig.asp=0.8, fig.width=4, out.width='85%', fig.align='center'}
+preds1a <- ggeffects::ggpredict(res1a, terms = "milper_prop")
+
+preds1a |>
+  ggplot(aes(x = x, y = predicted)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Military Personnel (% Population)", y = "Predicted Freedom House Score") 
+```
+
+::::
+:::
+
+
+
+##
+::: columns
+:::: column
+
+\begin{center}
+```{r, results='asis'}
+stargazer(res1a, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser", "f"), font.size = "footnotesize", float = FALSE, covariate.labels = "Military Personnel (\\% Pop)", dep.var.labels = c("FH Total"))
+```
+\end{center}
+
+::::
+:::: column
+
+```{r, fig.asp=0.8, fig.width=4, out.width='85%', fig.align='center'}
+preds1a |>
+  ggplot(aes(x = x, y = predicted)) +
+  geom_hline(yintercept = 14, color = "red", size = 2) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Military Personnel (% Population)", y = "Predicted Freedom House Score") 
+
+## What proportion of cases above 5%?
+# d2 |>
+#   filter(milper_prop > 5)
+# 
+# nrow(d2)
+# 
+# table(d2$milper_prop > 5)
+```
+
+::::
+:::
+
+
+
+##
+::: columns
+:::: column
+
+\begin{center}
+```{r, results='asis'}
+stargazer(res1a, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser", "f"), font.size = "footnotesize", float = FALSE, covariate.labels = "Military Personnel (\\% Pop)", dep.var.labels = c("FH Total"))
+```
+\end{center}
+
+::::
+:::: column
+
+```{r, fig.asp=0.8, fig.width=4, out.width='85%', fig.align='center'}
+ggplot(data = d2, aes(x = milper_prop, y = fh_total)) +
+  geom_point() +
+  theme_bw() +
+  geom_ribbon(data = preds1a, aes(x = x, y = predicted, ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line(data = preds1a, aes(x = x, y = predicted)) +
+  theme_bw() +
+  labs(x = "Military Personnel (% Population)", y = "Predicted Freedom House Score") 
+```
+
+::::
+:::
+
+\vspace{.2in}
+\center
+Fortunately, only 23 / 9k cases have milper_prop values above 5%
+
+
+
+## Research Project: Simple OLS Regressions
+\large
+
+Fit, evaluate and make predictions for the following regressions:
+
+1. Regress `fh_total` on `milper_prop`
+
+2. Regress `pr` on `milper_prop`
+
+3. Regress `cl` on `milper_prop`
+
+\vspace{.25in}
+
+Then, **rebuild each model** with a one period time lag on `milper_prop` (`milper_prop_lag1`)
+
+
+
+##
+\begin{center}
+```{r, results='asis'}
+res1a <- lm(data = d2, fh_total ~ milper_prop)
+res1b <- lm(data = d2, pr ~ milper_prop)
+res1c <- lm(data = d2, cl ~ milper_prop)
+
+stargazer(res1a, res1b, res1c, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser"), font.size = "small", float = FALSE, covariate.labels = "Military Personnel (\\% Pop)", dep.var.labels = c("FH Total", "Political Rights", "Civil Liberties"))
+```
+\end{center}
+
+
+
+## 
+\begin{center}
+```{r, results='asis'}
+res2a <- lm(data = d2, fh_total ~ milper_prop_lag1)
+res2b <- lm(data = d2, pr ~ milper_prop_lag1)
+res2c <- lm(data = d2, cl ~ milper_prop_lag1)
+
+stargazer(res1a, res2a, res1b, res2b, res1c, res2c, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser", "f"), font.size = "footnotesize", float = FALSE, covariate.labels = c("Military Personnel (\\% Pop)", "Time lag = 1"), dep.var.labels = c("FH Total", "Political Rights", "Civil Liberties"))
+
+#stargazer(res1a, res1b, res1c, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser"), font.size = "small", float = FALSE, covariate.labels = "Military Personnel (\\% Pop)", dep.var.labels = c("FH Total", "Political Rights", "Civil Liberties"))
+```
+\end{center}
+
+
+## {.plain}
+```{r, fig.asp=0.618, fig.width=5, out.width='35%', fig.align='center'}
+preds1a <- ggeffects::ggpredict(res1a, terms = "milper_prop")
+
+preds1a |>
+  ggplot(aes(x = x, y = predicted)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Military Personnel (% Population)", y = "Predicted Freedom House Score") 
+```
+
+```{r, echo=FALSE, fig.show="hold", out.width="35%", fig.width=4, fig.height=3, fig.align='center'}
+preds1b <- ggeffects::ggpredict(res1b, terms = "milper_prop")
+
+preds1b |>
+  ggplot(aes(x = x, y = predicted)) +
+  #geom_hline(yintercept = 7, color = "red", size = 2) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Military Personnel (% Population)", y = "Predicted Political Rights") 
+
+
+preds1c <- ggeffects::ggpredict(res1c, terms = "milper_prop")
+
+preds1c |>
+  ggplot(aes(x = x, y = predicted)) +
+  #geom_hline(yintercept = 7, color = "red", size = 2) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Military Personnel (% Population)", y = "Predicted Civil Liberties") 
+```
+
+
+
+## {.plain}
+```{r, echo=FALSE, fig.show="hold", out.width="38%", fig.width=5, fig.height=4, fig.align='center'}
+plot(res1a, which = 1)
+
+plot(res1b, which = 1)
+```
+
+
+```{r, echo=FALSE, fig.align='center', out.width="34%", fig.height=3.5, fig.width=4.5}
+plot(res1c, which = 1)
+```
+
+
+
+## For Tuesday
+\Large
+
+1. Wheelan chapter 5 "Probability" 
+
+\vspace{.3in}
+
+2. Wheelan chapter 6 "Problems with Probability
+
+
+
+

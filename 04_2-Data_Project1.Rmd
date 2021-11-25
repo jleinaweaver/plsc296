@@ -1,0 +1,404 @@
+---
+output:
+  beamer_presentation:
+    theme: "CambridgeUS"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+    df_print: kable
+fontsize: 14pt
+classoption: "aspectratio=169"
+header-includes:
+- \usepackage{caption}
+- \captionsetup[figure]{labelformat=empty}
+- \captionsetup[table]{labelformat=empty}
+- \setbeamertemplate{page number in head/foot}[]{}
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+## Render the pdf
+##rmarkdown::render(input = "./04_2-Data_Project1.Rmd", output_file = "./04_2-Data_Project1.pdf")
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+
+## Today's Agenda
+\LARGE
+\begin{center}
+Data Project 1: Due Sunday (Sep 19)
+\end{center}
+
+\large
+\vspace{.25in}
+
+Get ready for class:
+
++ install.packages("rworldmap")
+
+\vspace{.25in}
+\center
+Justin Leinaweaver (Fall 2021)
+
+
+## Polishing Visualizations
+::: columns
+:::: column
+\Large
+\vspace{.1in}
+1. Informative titles
+\vspace{.15in}
+2. Figure labels
+\vspace{.15in}
+3. Clean axis labels
+\vspace{.15in}
+4. Source info
+\vspace{.15in}
+5. No chart junk
+
+::::
+:::: column
+
+\vspace{.2in}
+
+```{r, echo = FALSE, fig.asp = .8, fig.width = 4, out.width = '95%'}
+ggplot(data = chickwts, aes(x = feed)) +
+    geom_bar(fill = "gold3", width = .6) +
+    ggthemes::theme_tufte() +
+    labs(x = "", y = "Counts", caption = "Source: Anonymous (1948) Biometrika",
+         title = "Which feed builds chicken weights the fastest?") +
+    geom_hline(yintercept = c(5, 10), color = "white")
+```
+
+::::
+:::
+
+
+## {.plain}
+\footnotesize
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=4, out.width='60%'}
+# Map the tidy data
+p <- ggplot(data = chickwts, aes(x = feed))
+
+# Visualize the default plot
+p +
+    geom_bar()
+```
+
+
+## {.plain}
+\small
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=4, out.width='60%'}
+# Color in the bars and narrow the width
+p +
+    geom_bar(fill = "gold3", width = .6)
+```
+
+
+
+## {.plain}
+::: columns
+:::: column
+\scriptsize
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=4, out.width='65%'}
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    theme_gray()
+
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    theme_bw()
+```
+::::
+:::: column
+\scriptsize
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=4, out.width='65%'}
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    theme_classic()
+
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    theme_minimal()
+```
+::::
+:::
+
+
+## {.plain}
+\footnotesize
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=5, out.width='60%'}
+# Let's try theme bw
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    theme_bw()
+```
+
+
+## {.plain}
+\footnotesize
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=5, out.width='60%'}
+# Modify the axes, captions and titles
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    theme_bw() +
+    labs(x = "", y = "Counts", caption = "Source: Anonymous (1948) Biometrika",
+         title = "Which feed builds chicken weights the fastest?")
+```
+
+
+##
+
+\center
+\huge
+
+For the brave, we can get crazier...
+
+
+## {.plain}
+::: columns
+:::: column
+\scriptsize
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=5.5, out.width='65%'}
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    ggthemes::theme_economist()
+
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    ggthemes::theme_wsj()
+```
+::::
+:::: column
+\scriptsize
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=4.5, out.width='65%'}
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    ggthemes::theme_fivethirtyeight()
+
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    ggthemes::theme_tufte()
+```
+::::
+:::
+
+
+## {.plain}
+\footnotesize
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=5, out.width='60%'}
+## Fancier themes
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    ggthemes::theme_tufte() +
+    labs(x = "", y = "Counts", caption = "Source: Anonymous (1948) Biometrika",
+         title = "Which feed builds chicken weights the fastest?")
+```
+
+
+## {.plain}
+\footnotesize
+```{r, echo = TRUE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=5, out.width='60%'}
+p +
+    geom_bar(fill = "gold3", width = .6) +
+    ggthemes::theme_tufte() +
+    labs(x = "", y = "Counts", caption = "Source: Anonymous (1948) Biometrika",
+         title = "Which feed builds chicken weights the fastest?") +
+    geom_hline(yintercept = c(5, 10), color = "white")
+```
+
+
+## {.plain}
+\small
+```{r, echo = TRUE, eval = FALSE, fig.align='center', fig.asp=0.618, fig.width=4, out.width='40%'}
+## Customizing a line
+## Line types: 'solid', 'dashed', 'dotted', 'dotdash', 'longdash', 'twodash'
+ggplot(data = economics, aes(x = date, y = pop)) +
+    geom_line(size = 1.3, color = "blue", linetype = "dashed")
+```
+::: columns
+:::: column
+
+```{r, echo = FALSE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=4, out.width='60%'}
+## Customizing a line
+## Line types: 'solid', 'dashed', 'dotted', 'dotdash', 'longdash', 'twodash'
+ggplot(data = economics, aes(x = date, y = pop)) +
+    geom_line(size = 1.3, color = "blue", linetype = "dashed") +
+    theme_classic()
+
+ggplot(data = economics, aes(x = date, y = pop)) +
+    geom_line(size = 1.3, color = "red", linetype = "dotted") +
+    theme_classic()
+```
+
+::::
+:::: column
+
+```{r, echo = FALSE, eval = TRUE, fig.align='center', fig.asp=0.618, fig.width=4, out.width='60%'}
+## Customizing a line
+## Line types: 'solid', 'dashed', 'dotted', 'dotdash',
+##             'longdash', 'twodash'
+ggplot(data = economics, aes(x = date, y = pop)) +
+    geom_line(size = 1.3, color = "green3", linetype = "dotdash") +
+    theme_classic()
+
+ggplot(data = economics, aes(x = date, y = pop)) +
+    geom_line(size = 1.3, color = "purple", linetype = "twodash") +
+    theme_classic()
+```
+
+::::
+:::
+
+
+
+## End of Class: Let's make a map! {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.8\paperwidth]{Images/04_2-world_map.png}
+
+
+
+## Tuesday: Working on Paper 1 {.plain}
+\large
+Prepare a report \textbf{introducing and analyzing} our first data project. What are the \textbf{strengths and weaknesses} of this project for measuring regime type? Support all claims with evidence.
+
++ Section 1: Introducing the Freedom House Data Project
++ Section 2: Analyzing the Methodology
++ Section 3: Analyzing the World in 2021
+
+
+
+## Brainstorming Section 4: Ideas to Test?
+\Large
+\center
+Use the data to present and analyze the trends in the world across time
+
+::: columns
+:::: column
+### Categorical
++ `PR rating`
++ `CL rating`
++ `Status`
+::::
+:::: column
+### Numerical
++ `Total`
++ `PR`
++ `CL`
+::::
+:::
+
+
+## 5) Conclusions
+\LARGE
+**Key takeaways**
+
+Based on your analyses how can we best use this data project to understand the world?
+
+
+
+## Let's make a map! {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.8\paperwidth]{Images/04_2-world_map.png}
+
+
+
+## Let's make a map!
+\Large
+
+1. Load the `rworldmap` package
+
+2. Pick your per country data
+
+3. Link your per country data to the country names in the map
+
+4. Output the map
+
+
+
+## Let's make a map!
+\large
+
+```{r, echo=TRUE, eval=FALSE}
+## Install the package (one time)
+install.packages("rworldmap") # One time
+```
+
+\vspace{.25in}
+
+```{r, echo=TRUE, eval=FALSE}
+## 1. Load the package
+library(rworldmap)
+```
+
+
+## Let's make a map!
+
+```{r, echo=TRUE, eval=FALSE}
+## 2. Pick your per country data (FH in 2021)
+d_2021 <- d |>
+            filter(Edition == 2021) |>
+            select("Country/Territory", "CL rating")
+```
+
+\scriptsize
+```{r}
+d |> filter(Edition == 2021) |> select("Country/Territory", "CL rating") |> slice(1:8)
+```
+
+
+
+## {.plain}
+\small
+
+```{r, echo=TRUE, eval=FALSE}
+## 1. Load the package
+library(rworldmap)
+
+## 2. Pick your per country data (FH in 2021)
+d_2021 <- d |>
+             filter(Edition == 2021) |>
+             select("Country/Territory", "CL rating")
+
+## 3. Link your data to the map
+map1 <- joinCountryData2Map(dF = d_2021,
+                            joinCode = "NAME",
+                            nameJoinColumn = "Country/Territory")
+
+## 4. Ouput your map
+mapCountryData(map1, nameColumnToPlot = "CL rating")
+```
+
+
+## {.plain}
+```{r, echo=TRUE, eval=FALSE}
+## Output a categorical variable and customize colors
+mapCountryData(map1,
+               nameColumnToPlot = "CL rating",
+               mapTitle="Civil Liberties in 2021 (FH)",
+               catMethod = "categorical",
+               colourPalette = "heat")
+```
+
+\vspace{.2in}
+
+### Color Options
+
+\vspace{.1in}
+
+1. a vector of valid colours, e.g. =c(’red’,’white’,’blue’)
+
+\vspace{.1in}
+
+2. one of "heat", "diverging", "white2Black", "black2White", "topo", "rainbow", "terrain", "negpos8", "negpos9
+

@@ -1,0 +1,233 @@
+---
+output:
+  beamer_presentation:
+    theme: "CambridgeUS"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+fontsize: 14pt
+classoption: "aspectratio=169"
+header-includes:
+- \usepackage{caption, xcolor}
+- \captionsetup[figure]{labelformat=empty}
+- \captionsetup[table]{labelformat=empty}
+- \setbeamertemplate{page number in head/foot}[]{}
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+## Render the pdf
+##rmarkdown::render(input = "./09_1-Models.Rmd", output_file = "./09_1-Models.pdf")
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+
+## Today's Agenda
+
+\begin{Large}
+1. What is a model?
+
+\vspace{.25in}
+
+2. Brainstorming models for our research project
+\end{Large}
+
+\vspace{.5in}
+
+\begin{center}
+Justin Leinaweaver (Fall 2021)
+\end{center}
+
+
+## {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.95\paperwidth]{Images/08_2-wing_wind1.png}
+
+
+## {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.95\paperwidth]{Images/08_2-wing_wind2.png}
+
+
+
+## {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.95\paperwidth]{Images/08_2-wing_wind3.png}
+
+
+
+## {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.95\paperwidth]{Images/08_2-boston_t1.png}
+
+
+
+## {.plain}
+\center
+\includegraphics[keepaspectratio=true,width=.95\paperwidth]{Images/08_2-boston_t2.png}
+
+
+
+##
+\begin{columns}
+\begin{column}{0.4\textwidth}
+\center
+\includegraphics[keepaspectratio=true,width=.4\paperwidth]{Images/08_2-mbta_map1.png}
+
+```
+\end{column}
+\begin{column}{0.6\textwidth}
+\begin{large}
+\hspace{.1in} Maps are:
+\begin{itemize}
+\item Neither true nor false
+\item Limited in their accuracy
+\item Partial representations
+\item Useful for only some uses
+\item A reflection of the interests of the designer
+\end{itemize}
+\end{large}
+\end{column}
+\end{columns}
+
+
+##
+\begin{columns}
+\begin{column}{0.4\textwidth}
+\center
+\includegraphics[keepaspectratio=true,width=.4\paperwidth]{Images/08_2-mbta_map1.png}
+
+```
+\end{column}
+\begin{column}{0.6\textwidth}
+\begin{large}
+\hspace{.1in}\textbf{Scientific models} are:
+\begin{itemize}
+\item Neither true nor false
+\item Limited in their accuracy
+\item Partial representations
+\item Useful for only some uses
+\item A reflection of the interests of the designer
+\end{itemize}
+\end{large}
+\end{column}
+\end{columns}
+
+
+
+
+## Assignment 3
+\Large
+\begin{center}
+\textbf{Answer a research question with data}
+\end{center}
+
+\vspace{.2in}
+
+\large
+
+Dataset 1: Freedom House (civil liberties and political rights)
+
+\vspace{.1in}
+
+Dataset 2: CoW (National Material Capabilities)
+
+\vspace{.2in}
+
+\Large
+\begin{center}
+\textbf{Let's brainstorm research questions!}
+\end{center}
+
+
+
+
+## Assignment 3: Brainstorm a Model
+\Large
+
+What's the story that connects these predictors to these outcomes? 
+
++ Do we need a time lag?
+
+```{r, echo = FALSE, fig.asp = .4, fig.width = 5, fig.align = 'center', out.width = '90%'}
+tribble(
+    ~Name, ~x, ~y,
+    "Predictor", 1, 1,
+    "Outcome", 3, 1
+) %>%
+    ggplot(aes(x = x, y = y)) +
+    geom_point(size = .1) +
+    geom_label(aes(label = Name), size = 6) +
+    coord_cartesian(xlim = c(0.8, 3.3), ylim = c(.93, 1.04)) +
+    ggthemes::theme_tufte() +
+    annotate("segment", x = 1.4, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+    scale_x_continuous(breaks = NULL) +
+    scale_y_continuous(breaks = NULL) +
+    labs(x = "", y = "")
+
+```
+
+
+
+## Assignment 3: The Research Report {.plain}
+
+1. Introduction
+   + What is the question, why is it important and what is your argument?
+
+\vspace{.1in}
+
+2. Bivariate Analyses
+   + What is the answer to the question using only bivariate visualizations and simple OLS regressions?
+
+\vspace{.1in}
+
+3. Multivariate Analyses
+   + What is the answer to the question using multivariate visualizations and multiple OLS regressions?
+
+\vspace{.1in}
+
+4. Conclusion
+   + What did you find and how confident should we be in your results?
+   
+   
+  
+## Assignment 3: The Research Report {.plain}
+\LARGE
+
+1. Introduction
+
+	+ \Large What is the question?
+
+	+ \Large Why is it important?
+
+	+ \Large What is your argument?
+
+
+## For Tuesday
+\large
+
+Read Wheelan ch4 on correlation
+
+Check out the following recipes in Chang (2018)
+
++ Recipes 3.2, 3.3, 3.7, 3.8 on stacked bar plots
+
++ Recipes in ch 5 on scatter plots
+
++ Recipe 15.14 on recoding a Continuous Variable to a Categorical Variable
+
+
+
+
+
+

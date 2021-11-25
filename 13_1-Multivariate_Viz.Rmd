@@ -1,0 +1,1040 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+##chakra: libs/remark-latest.min.js
+
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+```{r setup, include=FALSE}
+## Include this to render DT tables correctly until fix is released
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+```
+
+class: slideblue
+
+.size60[**Today's Agenda**]
+
+<br>
+
+.size40[
+**Multivariate Analyses**
+
+1. Descriptive statistics by groups
+
+2. Using facets to extend any visualization
+
+3. Mapping 3rd variables with colors or shapes
+]
+
+.center[.size30[
+  Justin Leinaweaver (Fall 2021)
+]]
+
+???
+
+Last week: Research design, causal inference and identification strategies using DAGs
+
+ANY QUESTIONS ON THIS MATERIAL BEFORE WE EXPLORE ADAPTING OUR ANALYSES TO THESE METHODS?
+
+
+
+
+---
+
+class: middle
+
+.size50[**1. Descriptive statistics by groups**]
+
+<br>
+
+.code150[
+```{r, echo = TRUE, eval = FALSE}
+dataset |>
+  group_by(Cat_Predictor1, Cat_Predictor2, ...) |> #<<
+  summarize(
+    N = n(),
+    Mean = mean(Outcome),
+    StdDev = sd(Outcome)
+  )
+```
+]
+
+???
+
+You can always add more categorical variables to the group_by function
+
+
+
+---
+
+.size40[**1. Descriptive statistics by groups**]
+
+.pull-left[
+.code130[
+```{r, echo = TRUE, eval = FALSE}
+## Column order with group_by
+diamonds |>
+  group_by(color) |> #<<
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price)
+  )
+```
+]]
+
+.pull-right[
+
+<br>
+
+.size30[
+```{r, echo = FALSE, eval = TRUE}
+diamonds |>
+  group_by(color) |>
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price),
+  ) |>
+  ungroup() |>
+  slice(1:14) |>
+  knitr::kable(digits=0)
+```
+]]
+
+
+
+---
+
+.size40[**1. Descriptive statistics by groups**]
+
+.pull-left[
+.code125[
+```{r, echo = TRUE, eval = FALSE}
+## Column order with group_by
+diamonds |>
+  group_by(color, cut) |> #<<
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price)
+  )
+```
+]]
+
+.pull-right[
+```{r, echo = FALSE, eval = TRUE}
+diamonds |>
+  group_by(color, cut) |>
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price),
+  ) |>
+  ungroup() |>
+  slice(1:14) |>
+  knitr::kable(digits=0)
+```
+]
+
+
+
+---
+
+.size40[**1. Descriptive statistics by groups**]
+
+.pull-left[
+.code125[
+```{r, echo = TRUE, eval = FALSE}
+## Column order with group_by
+diamonds |>
+  group_by(cut, color) |> #<<
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price)
+  )
+```
+]]
+
+.pull-right[
+```{r, echo = FALSE, eval = TRUE}
+diamonds |>
+  group_by(cut, color) |>
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price),
+  ) |>
+  ungroup() |>
+  slice(1:14) |>
+  knitr::kable(digits=0)
+```
+]
+
+
+
+---
+
+.size40[**1. Descriptive statistics by groups**]
+
+.pull-left[
+.code125[
+```{r, echo = TRUE, eval = FALSE}
+## Column order with group_by
+diamonds |>
+  group_by(cut, color) |> #<<
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price)
+  )
+```
+]]
+
+.pull-right[
+```{r, echo = FALSE, eval = TRUE}
+diamonds |>
+  group_by(cut, color) |>
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price),
+  ) |>
+  ungroup() |>
+  slice(1:10) |>
+  knitr::kable(digits=0)
+```
+]
+
+<br>
+
+.center[.size40[**How do we include a table like this in a report? (35 rows)**]]
+
+
+
+---
+
+class: middle
+
+.size30[.center[**Option 1: Add a dynamic data table to your report**]]
+
+<br>
+
+.code125[
+```{r, echo=TRUE, eval=FALSE}
+## Load the DT package (install it first!)
+library(DT)
+
+## Use the datatable function
+diamonds |>
+  group_by(cut, color) |>
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price),
+  ) |>
+  datatable(filter = "top", rownames = FALSE) #<<
+```
+]
+
+
+
+---
+
+class: middle
+
+.size30[.center[**Option 1: Add a dynamic data table to your report**]]
+
+<br>
+
+.code125[
+```{r, echo=TRUE, eval=FALSE}
+## Load the DT package (install it first!)
+library(DT)
+
+## Use the datatable function
+diamonds |>
+  group_by(cut, color) |>
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price),
+  ) |>
+  datatable(filter = "top", rownames = FALSE) |> #<<
+  formatRound(columns = c("Mean", "StdDev"), digits = 0) #<<
+```
+]
+
+
+
+---
+
+class: middle
+
+```{r, echo=FALSE, eval=TRUE}
+## Load the DT package (install it first!)
+library(DT)
+
+## Use the datatable function
+diamonds |>
+  group_by(cut, color) |>
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price),
+  ) |>
+  datatable(rownames = FALSE) |> 
+  formatRound(columns = c("Mean", "StdDev"), digits = 0)
+```
+
+
+
+
+---
+
+class: middle
+
+.size30[.center[**Option 2: Standard Table (Cat x Cat x Numeric)**]]
+
+.code125[
+```{r, echo = TRUE, eval = TRUE}
+diamonds |>
+  group_by(cut, color) |>
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |>
+  pivot_wider(names_from = color, values_from = Mean) #<<
+```
+]
+
+???
+
+1) Choose 1 stat, 
+2) pivot_wider to change rows into columns
+
+
+
+---
+
+class: middle
+
+.size40[.center[**Why aren't colorless (D, E, F) diamonds of higher quality more expensive?**]]
+
+<br>
+
+.size30[
+```{r, echo = FALSE, eval = TRUE}
+diamonds |>
+  group_by(cut, color) |>
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |>
+  pivot_wider(names_from = color, values_from = Mean) |>
+  knitr::kable()
+```
+]
+
+--
+
+<br>
+
+.size40[.center[How do we ’control’ for diamond size in this table?]]
+
+
+
+---
+
+class: middle
+
+.code110[
+```{r, echo = TRUE, eval = FALSE}
+diamonds |>
+  filter(carat < 1) |> #<<
+  group_by(cut, color) |>
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |>
+  pivot_wider(names_from = color, values_from = Mean) |>
+  knitr::kable()
+```
+]
+
+.size30[
+```{r, echo = FALSE, eval = TRUE}
+diamonds |>
+  filter(carat < 1) |> #<<
+  group_by(cut, color) |>
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |>
+  pivot_wider(names_from = color, values_from = Mean) |>
+  knitr::kable()
+```
+]
+
+???
+
+Not clear why the colorless diamonds (D, E, F) are not more expensive.
+
+Diamond prices determined by four c's: carat, cut, clarity, color
+
+CLASS: Now redo the table for medium diamonds (between 1 and 2 carats in size).
+
+
+
+---
+
+class: middle
+
+.code110[
+```{r, echo = TRUE, eval = FALSE}
+diamonds |>
+  filter(carat > 1, carat < 2) |> #<<
+  group_by(cut, color) |>
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |>
+  pivot_wider(names_from = color, values_from = Mean) |>
+  knitr::kable()
+```
+]
+
+.size30[
+```{r, echo = FALSE, eval = TRUE}
+diamonds |>
+  filter(carat > 1, carat < 2) |> #<<
+  group_by(cut, color) |>
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |>
+  pivot_wider(names_from = color, values_from = Mean) |>
+  knitr::kable()
+```
+]
+
+???
+
+Result makes way more sense.
+
+CLASS: Now redo the table for large diamonds (above 2 carats in size).
+
+
+
+---
+
+class: middle
+
+.code110[
+```{r, echo = TRUE, eval = FALSE}
+diamonds |>
+  filter(carat > 2) |> #<<
+  group_by(cut, color) |>
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |>
+  pivot_wider(names_from = color, values_from = Mean) |>
+  knitr::kable()
+```
+]
+
+.size30[
+```{r, echo = FALSE, eval = TRUE}
+diamonds |>
+  filter(carat > 2) |> #<<
+  group_by(cut, color) |>
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |>
+  pivot_wider(names_from = color, values_from = Mean) |>
+  knitr::kable()
+```
+]
+
+
+
+---
+
+class: middle, slideblue
+
+.size50[.center[**Multivariate Analyses**]]
+
+<br>
+
+.size40[
+1. .greytext[Descriptive statistics by groups]
+  
+2. **Using facets to extend any visualization**
+    
+3. .greytext[Mapping 3rd variables with colors or shapes]
+]
+
+
+
+---
+
+.size40[1) Start with a univariate visualization]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='65%', fig.width=5}
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") 
+```
+]
+
+
+
+---
+
+.size40[2) facet_wrap to repeat plot for data subsets]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.5, out.width='85%', fig.width=5}
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") +
+  facet_wrap(~ drv) #<<
+```
+]
+
+
+
+---
+
+.size40[2) facet_wrap to repeat plot for data subsets]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.5, out.width='85%', fig.width=5}
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") +
+  facet_wrap(~ drv, scales = "free_y") #<<
+```
+]
+
+
+
+---
+
+.size40[You can specify the number of columns]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.5, out.width='85%', fig.width=5}
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") +
+  facet_wrap(~ class, ncol = 4) #<<
+```
+]
+
+???
+
+CLASS: Try different numbers of columns and see what happens
+
+
+
+
+---
+
+.size40[facet_grid to subset by two cat variables]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.5, out.width='85%', fig.width=5}
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") +
+  facet_grid(drv ~ class) #<<
+```
+]
+
+
+
+---
+
+.size40[We can use facets with ANY baseline visualization]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='65%', fig.width=5}
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+    geom_point()
+```
+]
+
+
+
+---
+
+.size40[We can use facets with ANY baseline visualization]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='80%', fig.width=5}
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+    geom_point() +
+    facet_wrap(~ drv) #<<
+```
+]
+
+
+
+
+---
+
+class: middle, slideblue
+
+.size50[.center[**Multivariate Analyses**]]
+
+<br>
+
+.size40[
+1. .greytext[Descriptive statistics by groups]
+  
+2. .greytext[Using facets to extend any visualization]
+    
+3. **Mapping 3rd variables with colors or shapes**
+]
+
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='65%', fig.width=5}
+## Baseline
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+    geom_point()
+```
+]
+
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.65, out.width='70%', fig.width=5}
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+    geom_point(color = "blue") #<<
+```
+]
+
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.65, out.width='70%', fig.width=5}
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+    geom_point(aes(color = drv)) #<<
+```
+]
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.65, out.width='70%', fig.width=5}
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+    geom_point(aes(shape = drv)) #<<
+```
+]
+
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.65, out.width='70%', fig.width=5}
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+    geom_point(aes(shape = drv), size = 2) #<<
+```
+]
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code120[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.65, out.width='70%', fig.width=5}
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+    geom_point(aes(color = drv, shape = drv), size = 2) #<<
+```
+]
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code120[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='90%', fig.width=6}
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+    geom_point(aes(color = drv, shape = drv), size = 2) +
+    facet_wrap(~ drv) #<<
+```
+]
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code120[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='85%', fig.width=6}
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+  geom_point(aes(color = drv, shape = drv), size = 2) +
+  facet_wrap(~ drv) +
+  scale_color_manual(values = c("orange", "red", "blue")) #<<
+```
+]
+
+
+
+---
+
+.code120[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='85%', fig.width=6}
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+  geom_point(aes(color = drv, shape = drv), size = 2) +
+  facet_wrap(~ drv) +
+  scale_color_manual(values = c("orange", "red", "blue")) +
+  theme(legend.position = "top") #<<
+```
+]
+
+
+
+---
+
+.code120[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='85%', fig.width=6}
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+  geom_point(aes(color = drv, shape = drv), size = 2) +
+  facet_wrap(~ drv) +
+  scale_color_manual(values = c("orange", "red", "blue")) +
+  theme(legend.position = "top")  +
+  geom_smooth(method = "lm", se = FALSE) #<<
+```
+]
+
+
+
+---
+
+class: middle, slidegreen
+
+.size50[.center[**Multivariate Analyses**]]
+
+<br>
+
+.size40[
+1. Descriptive statistics by groups
+  
+2. Using facets to extend any visualization
+    
+3. Mapping 3rd variables with colors or shapes
+
+4. **Bonus: Animate the 3rd/4th variable!**
+]
+
+
+
+---
+
+class: middle
+
+.size40[.center[**Install the needed packages and load gganimate**]]
+
+<br>
+
+.code150[
+```{r, echo=TRUE, eval=FALSE}
+install.packages("gifski")
+
+install.packages("png")
+
+install.packages("gganimate")
+
+library(gganimate)
+```
+]
+
+```{r}
+## Load it for you
+library(gganimate)
+```
+
+
+
+---
+
+.center[**Transitions between different subsets of the data**]
+
+.code120[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='60%', fig.width=5, cache=TRUE}
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+  geom_point() +
+  transition_states(cyl) + #<<
+  labs(title = "Number of Cylinders: {closest_state}") #<<
+```
+]
+
+???
+
+transition_states is for moving across levels of a categorical variable
+
+
+
+
+
+---
+
+.center[**Transitions across time use a different function**]
+
+.code120[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='60%', fig.width=5, cache=TRUE}
+ggplot(data = mpg, aes(x = class, y = cty)) +
+  geom_boxplot() +
+  transition_time(year) + #<<
+  labs(title = 'Year: {frame_time}') #<<
+```
+]
+
+
+---
+
+.center[**Transitions can also leave the prior data in place**]
+
+.code120[
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.618, out.width='60%', fig.width=5, cache=TRUE}
+ggplot(data = economics, aes(x = date, y = pop)) +
+  geom_line(color = "darkblue", size = 1.4) +
+  transition_reveal(date) + #<<
+  coord_cartesian(ylim = c(150000, 350000)) +
+  labs(title = "US Population (thousands)")
+```
+]
+
+
+
+---
+
+class: middle
+
+.size50[.center[**Last one, so let's make something awesome**]]
+
+.code135[
+```{r, echo=TRUE, eval=FALSE}
+## New package needed for the data (install before loading)
+install.packages("gapminder")
+
+library(gapminder)
+```
+]
+
+```{r}
+library(gapminder)
+
+gapminder |>
+  slice(1:6) |>
+  knitr::kable(format = "html")
+```
+
+
+
+---
+
+class: middle
+
+.code115[
+```{r, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='65%', fig.width=6, cache=TRUE, echo=TRUE, eval=TRUE}
+gapminder |>
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(alpha = 0.7, show.legend = FALSE)
+```
+]
+
+
+
+
+---
+
+class: middle
+
+.code115[
+```{r, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='65%', fig.width=6, cache=TRUE, echo=TRUE, eval=TRUE}
+gapminder |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) + #<<
+  geom_point(alpha = 0.7, show.legend = FALSE)
+```
+]
+
+
+
+
+---
+
+class: middle
+
+.code115[
+```{r, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='65%', fig.width=6, cache=TRUE, echo=TRUE, eval=TRUE}
+gapminder |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() #<<
+```
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+```{r, fig.retina=3, fig.align='center', fig.asp=0.45, out.width='85%', fig.width=8, cache=TRUE, echo=TRUE, eval=TRUE}
+gapminder |>
+  filter(continent != "Oceania") |> #<<
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) #<<
+```
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+```{r, fig.retina=3, fig.align='center', fig.asp=0.45, out.width='85%', fig.width=8, cache=TRUE, echo=TRUE, eval=TRUE}
+gapminder |>
+  filter(continent != "Oceania") |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+  scale_colour_manual(values = country_colors) #<<
+```
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+```{r, fig.retina=3, fig.align='center', fig.asp=0.45, out.width='80%', fig.width=8, cache=TRUE, echo=TRUE, eval=TRUE}
+gapminder |>
+  filter(continent != "Oceania") |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(3, 13)) #<<
+```
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+```{r, fig.retina=3, fig.align='center', fig.asp=0.45, out.width='80%', fig.width=8, cache=TRUE, echo=TRUE, eval=FALSE}
+gapminder |>
+  filter(continent != "Oceania") |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(3, 13)) +
+  transition_time(year) + #<<
+  labs(title = 'Year: {frame_time}') #<<
+```
+]
+
+
+
+---
+
+class: middle
+
+```{r, fig.retina=3, fig.align='center', fig.asp=0.4, out.width='100%', fig.width=8, cache=TRUE, echo=FALSE, eval=TRUE}
+gapminder |>
+  filter(continent != "Oceania") |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(3, 13)) +
+  transition_time(year) + #<<
+  labs(title = 'Year: {frame_time}', x = "GDP per capita (log 10)", y = "Life Expectancy") 
+```
+
+
+
+
+---
+
+class: center
+
+.size40[**Do countries with larger military enlistments have fewer political freedoms?**]
+    
+```{r, fig.retina=3, fig.align = 'center', fig.height = 3, fig.width=5, out.width='70%'}
+## Manual DAG
+tibble(
+  x = c(-3, 3, 0),
+  y = c(1, 1, 2),
+  labels = c("Military\n Enlistment", "Political\n Freedoms", "Confounders")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.8, 2.1)) +
+  geom_label(aes(label = labels), size = 7) +
+    annotate("segment", x = .4, xend = 2.5, y = 1.9, yend = 1.2, arrow = arrow()) +
+  annotate("segment", x = -.4, xend = -2.5, y = 1.9, yend = 1.2, arrow = arrow()) +
+  annotate("segment", x = -1.5, xend = 1.6, y = 1, yend = 1, arrow = arrow())
+```
+
+

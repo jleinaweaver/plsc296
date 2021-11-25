@@ -1,0 +1,930 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+class: slideblue
+
+.size80[**Today's Agenda**]
+
+<br>
+
+.size40[
+
+1. Review descriptive statistics concepts
+
+2. Explore new ways to manipulate data in R
+
+]
+
+<br>
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Fall 2021)
+]]
+
+
+
+## Wheelan ch2 and Johnson 2012 introduces:
+
+\large
+
+### Measures of Central Tendency 
+\begin{itemize}
+\item Mean, Median and Mode
+\end{itemize}
+
+### Measures of Variability
+\begin{itemize}
+\item Range and the Interquartile Range
+\end{itemize}
+
+### Deviations from Central Tendency
+\begin{itemize}
+\item Standard deviation
+\end{itemize}
+
+
+## Assignment for Thursday {.plain}
+\large
+1. Read Wheelan ch 3 and review the recipes in the syllabus
+
+2. Calculate and interpret the descriptive statistics for the variables in our dataset.
+
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.65\paperwidth]{Images/02_1-summary.png}
+\end{center}
+
+
+
+## Quick Review: RStudio Basics
+\center
+\includegraphics[keepaspectratio=true,width=.95\paperwidth]{Images/02_2-moodle_data1.png}
+
+
+## Quick Review: RStudio Basics
+\center
+\includegraphics[keepaspectratio=true,width=.95\paperwidth]{Images/02_2-moodle_data2.png}
+
+
+## Quick Review: RStudio Basics {.plain}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.6\paperwidth]{Images/02_1-RStudio_setup.png}
+\end{center}
+
+
+## Quick Review: Rmarkdown Basics {.plain}
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.6\paperwidth]{Images/02_2-chunk_refresher.png}
+\end{center}
+
+
+
+## Class Practice!
+\LARGE
+\center
+**Line up in order by height (again)**
+
+\vspace{.2in}
+
+### Identify the:
+
+\vspace{.15in}
+
++ Median person,
+
+\vspace{.15in}
+
++ Modal height (in),
+
+\vspace{.15in}
+
++ Range (in), and
+
+\vspace{.15in}
+
++ Interquartile Range (IQR) (in)
+
+
+
+## Let's check our work! {.plain}
+\LARGE
+```{r, echo=TRUE, eval=FALSE}
+## Save class heights as an object
+heights <- c(68, 62, 58, 53, ...)
+
+## Check the summary function
+summary(heights)
+
+## Standard Deviation
+sd(heights)
+```
+
+
+## {.plain}
+\LARGE
+\center
+**If you could only choose one or two of these measures to summarize our class heights, which would you select? Why?**
+
+\vspace{.2in}
+
+\Large
+### Measures of Central Tendency 
+\begin{itemize}
+\item Mean, Median and Mode
+\end{itemize}
+
+### Measures of Variability
+\begin{itemize}
+\item Range and the Interquartile Range
+\end{itemize}
+
+### Deviations from Central Tendency
+\begin{itemize}
+\item Standard deviation
+\end{itemize}
+
+
+
+## Standard Deviation: The context we need for the mean  {.plain}
+```{r, fig.align='center', fig.width=6, fig.asp=0.5, out.width='95%'}
+set.seed(25)
+
+x <- tibble(
+    Low = rnorm(10000, mean = 0, sd = 3),
+    High = rnorm(10000, mean = 0, sd = 10)
+    )
+
+
+x |>
+pivot_longer(cols = Low:High, names_to = "SD", values_to = "Values") |>
+mutate(
+    SD = if_else(SD == "High", "High Std Deviation", "Low Std Deviation")
+    ) |>
+ggplot(aes(x = Values)) +
+    geom_histogram(bins = 25, color = "white") +
+    facet_wrap(~ SD) +
+    theme_bw() +
+    geom_vline(xintercept = 0, color = "pink", size = .8) +
+    labs(x = "", y = "")
+```
+
+
+## Let's add to our `Getting_Started.Rmd` report
+\huge
+
+1. Individual Summary Statistics
+
+\vspace{.2in}
+
+2. Learning to build code using the pipe
+
+\vspace{.2in}
+
+3. Key functions for manipulating datasets
+
+
+
+## Packages make R even more powerful
+\Large
+```{r, echo=TRUE, eval=FALSE}
+## Tidying and manipulating data with the tidyverse
+
+## Installation only necessary one time
+install.packages("tidyverse")
+
+## Run the library command when you 
+## want to use the package
+library(tidyverse)
+```
+
+
+## R Built-in Dataset: mtcars
+\Large 
+```{r}
+## Load package
+library(tidyverse)
+
+## R has a series of built-in datasets
+mtcars[1:4, 1:8]
+```
+
+The data was extracted from the 1974 \textit{Motor Trend} US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models).
+
+
+## The Summary Function: Powerful but overwhelming {.plain}
+\footnotesize
+```{r, echo=FALSE}
+options("width" = 100)
+summary(mtcars)
+```
+
+
+## Zooming In: The summary function plus '$'
+\Large
+```{r, echo = TRUE}
+summary(mtcars$mpg)
+
+summary(mtcars$cyl)
+```
+
+
+## Zooming In: Individual Summary Statistics Using '$' {.plain}
+::: columns
+:::: column
+
+\Large
+```{r, echo = TRUE, eval=FALSE}
+## Mean
+mean(mtcars$mpg)
+## Median
+median(mtcars$mpg)
+## Mode
+table(mtcars$mpg)
+```
+
+::::
+:::: column
+
+\Large
+```{r, echo = TRUE, eval=FALSE}
+## Minimum
+min(mtcars$mpg)
+## Maximum
+max(mtcars$mpg)
+## Standard deviation
+sd(mtcars$mpg)
+```
+
+::::
+:::
+
+\vspace{.2in}
+\Large
+```{r, echo = TRUE, eval=FALSE}
+# 1st and 3rd quartiles
+quantile(mtcars$mpg, probs = .25)
+quantile(mtcars$mpg, probs = .75)
+```
+
+
+## Zooming In: Individual Summary Statistics Using the Pipe
+::: columns
+:::: column
+\Large
+\vspace{.3in}
+
+```{r, echo = TRUE, eval = FALSE}
+mtcars
+```
+
+\vspace{1in}
+
+**Note:** 
+
+Output doesn't fit on the slide.
+
+::::
+:::: column
+\tiny
+```{r, echo = FALSE}
+mtcars
+```
+::::
+:::
+
+
+## Zooming In: Individual Summary Statistics Using the Pipe
+::: columns
+:::: column
+\Large
+\vspace{.3in}
+
+```{r, echo = TRUE, eval = FALSE}
+mtcars |>
+   summary()
+```
+
+\vspace{.8in}
+
+\normalsize
+```{r, echo = TRUE, eval = FALSE}
+## Some old resources may
+## still use (%>%):
+mtcars %>%
+    summary()
+```
+::::
+:::: column
+\tiny
+```{r, echo = FALSE}
+options("width" = 60)
+mtcars |>
+   summary()
+```
+::::
+:::
+
+
+
+## Zooming In: Individual Summary Statistics Using the Pipe
+::: columns
+:::: column
+\Large
+\vspace{.3in}
+
+```{r, echo = TRUE, eval = FALSE}
+## select variables
+mtcars |>
+   select(mpg) |>
+   summary()
+```
+::::
+:::: column
+\LARGE
+```{r, echo = FALSE}
+options("width" = 60)
+mtcars |>
+   select(mpg) |>
+   summary()
+```
+::::
+:::
+
+
+## Why use the pipe? You can select multiple variables {.plain}
+\Large
+```{r, echo = TRUE}
+mtcars |>
+   select(mpg, cyl) |>
+   summary()
+```
+
+
+## Why use the pipe? You can answer more interesting questions
+\Large
+::: columns
+:::: column
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.3\paperwidth]{Images/02_2-4_cylinders.jpg}
+\end{center}
+::::
+:::: column
+\begin{center}
+\includegraphics[keepaspectratio=true,width=.3\paperwidth]{Images/02_2-6_cylinders.jpg}
+\end{center}
+::::
+:::
+\LARGE
+\begin{center}
+\textbf{How does average MPG vary across different engine sizes?}
+\end{center}
+
+
+## arrange: Arrange rows by column values
+::: columns
+:::: column
+
+\LARGE
+```{r, echo=TRUE, eval=FALSE}
+mtcars |>
+   select(mpg, cyl) |>
+   arrange(mpg)
+```
+
+::::
+:::: column
+
+\large
+```{r, echo=FALSE, eval=TRUE}
+mtcars |>
+   select(mpg, cyl) |>
+arrange(mpg) |>
+slice(1:10)
+```
+
+::::
+:::
+
+
+
+## arrange: Arrange rows by column values
+::: columns
+:::: column
+
+\LARGE
+```{r, echo=TRUE, eval=FALSE}
+mtcars |>
+   select(mpg, cyl) |>
+   arrange(desc(mpg))
+```
+
+::::
+:::: column
+
+\large
+```{r, echo=FALSE, eval=TRUE}
+mtcars |>
+   select(mpg, cyl) |>
+arrange(desc(mpg)) |>
+slice(1:10)
+```
+
+::::
+:::
+
+
+## arrange: Arrange rows by MULTIPLE column values
+::: columns
+:::: column
+
+\LARGE
+```{r, echo=TRUE, eval=FALSE}
+mtcars |>
+   select(mpg, cyl) |>
+   arrange(cyl, mpg)
+```
+
+::::
+:::: column
+
+\large
+```{r, echo=FALSE, eval=TRUE}
+mtcars |>
+   select(mpg, cyl) |>
+arrange(cyl, mpg) |>
+slice(1:10)
+```
+
+::::
+:::
+
+
+## filter: Pick observations by their values {.plain}
+::: columns
+:::: column
+\Large
+```{r, echo = TRUE, eval=FALSE}
+mtcars |>
+    filter(cyl == 4) |>
+    select(mpg) |>
+    summary()
+```
+::::
+:::: column
+\Large
+```{r, echo=FALSE}
+mtcars |>
+    filter(cyl == 4) |>
+    select(mpg) |>
+    summary()
+```
+::::
+:::
+
+
+
+## filter: Pick observations by their values {.plain}
+::: columns
+:::: column
+\Large
+```{r, echo = TRUE}
+mtcars |>
+    filter(cyl == 4) |>
+    select(mpg) |>
+    summary()
+```
+::::
+:::: column
+\Large
+```{r, echo = TRUE}
+mtcars |>
+    filter(cyl == 8) |>
+    select(mpg) |>
+    summary()
+```
+::::
+:::
+
+
+
+## summarize: Collapse many values down to a single value
+::: columns
+:::: column
+
+\Large 
+
+```{r, echo = TRUE}
+mean(mtcars$mpg)
+```
+
+::::
+:::: column
+
+\large 
+
+```{r, echo = TRUE}
+mtcars |>
+    summarize(Mean = mean(mpg))
+```
+::::
+:::
+
+
+## Summarize produces a nice table
+::: columns
+:::: column
+
+\Large 
+
+```{r, echo = TRUE}
+mean(mtcars$mpg)
+
+sd(mtcars$mpg)
+
+median(mtcars$mpg)
+```
+
+::::
+:::: column
+
+\large 
+
+```{r, echo = TRUE}
+mtcars |>
+   summarize(
+     Mean = mean(mpg),
+     StdDev = sd(mpg),
+     Median = median(mpg)
+     )
+```
+::::
+:::
+
+
+
+## Summarize can be combined with other functions
+::: columns
+:::: column
+
+\Large 
+
+```{r, echo = TRUE}
+mean(mtcars$mpg)
+
+sd(mtcars$mpg)
+
+median(mtcars$mpg)
+```
+
+::::
+:::: column
+
+\large 
+
+```{r, echo = TRUE}
+mtcars |>
+   filter(cyl == 4) |>
+   summarize(
+     Mean = mean(mpg),
+     StdDev = sd(mpg),
+     Median = median(mpg)
+     )
+```
+::::
+:::
+
+
+
+## Summarize and group_by is awesome
+::: columns
+:::: column
+
+\Large 
+
+```{r, echo = TRUE}
+mean(mtcars$mpg)
+
+sd(mtcars$mpg)
+
+median(mtcars$mpg)
+```
+
+::::
+:::: column
+
+\large 
+
+```{r, echo = TRUE}
+mtcars |>
+   group_by(cyl) |>
+   summarize(
+     Mean = mean(mpg),
+     StdDev = sd(mpg),
+     Median = median(mpg)
+     )
+```
+::::
+:::
+
+
+
+## Answering more interesting questions with descriptive statistics
+\LARGE
+
+1. select: Pick variables by their names
+
+\vspace{.1in}
+
+2. arrange: Arrange rows by column values
+
+\vspace{.1in}
+
+3. filter: Pick observations by their values
+
+\vspace{.1in}
+
+4. summarize: Collapse many values down to a single value
+
+\vspace{.1in}
+
+5. group_by: Summarize for each level of a variable
+
+
+## 
+\huge
+
+\begin{center}
+\textbf{What did you find when calculating descriptive statistics for the main indices of Data Project 1?}
+\end{center}
+
+\vspace{.2in}
+
++ Civil Liberties (`CL` and `CL rating`)
+
++ Political Rights (`PR` and `PR rating`)
+
++ Total FH Scores (`Total`)
+
+
+
+## {.plain}
+```{r, echo=FALSE, eval=TRUE}
+options("width" = 120)
+d <- read_excel("./Data/All_data_FIW_2013-2021-tidy.xlsx", sheet = 2)
+```
+\Large
+```{r, echo=TRUE, eval=FALSE}
+## Summarize key measures
+d |>
+   select(`CL rating`, CL, `PR rating`, PR, Total) |>
+   summary()
+```
+
+\small
+```{r, echo=FALSE, eval=TRUE}
+d |>
+   select(`CL rating`, CL, `PR rating`, PR, Total) |>
+   summary()
+```
+
+
+
+## {.plain}
+::: columns
+:::: column
+\footnotesize
+```{r, echo=FALSE}
+options("width" = 80)
+
+d <- read_excel("./Data/All_data_FIW_2013-2021-tidy.xlsx", sheet = 2)
+
+x1 <- d |>
+   select(Status:Total) |>
+   select(-Status, -starts_with("Add")) |>
+   pivot_longer(`PR rating`:Total, names_to = "Variables", values_to = "Values") |>
+   group_by(Variables) |>
+   summarize(
+       mean = round(mean(Values), 1),
+       StdDev = round(sd(Values), 1),
+       min = min(Values),
+       max = max(Values)
+    )
+
+x1[1:20,]
+```
+::::
+:::: column
+\footnotesize
+```{r, echo=FALSE}
+x1[21:37,]
+```
+::::
+:::
+
+
+## Analyzing the Freedom House Data
+\Huge
+\center
+Use the pipe and summarize to calculate the minimum, mean and maximum values of the `Total` score overall
+
+
+## 
+\Large
+
+```{r, echo=TRUE}
+d |>
+   summarize(
+     Minimum = min(Total),
+     Mean = mean(Total),
+     Maximum = max(Total)
+)
+```
+
+
+## Analyzing the Freedom House Data
+\Huge
+\center
+Use the pipe, filter and summarize to calculate the minimum, mean and maximum values of the `Total` score in 2021 only
+
+
+## 
+\Large
+
+```{r, echo=TRUE}
+d |>
+   filter(Edition == 2021) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = mean(Total),
+     Maximum = max(Total)
+)
+```
+
+
+## Analyzing the Freedom House Data
+\Huge
+\center
+Use the pipe, group_by and summarize to calculate the minimum, mean and maximum values of the `Total` score for each year in the dataset.
+
+
+## 
+::: columns
+:::: column
+
+\Large
+
+```{r, echo=TRUE, eval=FALSE}
+d |>
+   group_by(Edition) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = mean(Total),
+     Maximum = max(Total)
+)
+```
+
+::::
+:::: column
+
+```{r, echo=FALSE, eval=TRUE}
+d |>
+   group_by(Edition) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = mean(Total),
+     Maximum = max(Total)
+)
+```
+
+::::
+:::
+
+
+
+## Analyzing the Freedom House Data
+\Huge
+\center
+Calculate the minimum, mean and maximum values of the `Total` score for each region in the dataset (overall).
+
+
+## 
+::: columns
+:::: column
+
+\Large
+
+```{r, echo=TRUE, eval=FALSE}
+d |>
+   group_by(Region) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = mean(Total),
+     Maximum = max(Total)
+)
+```
+
+::::
+:::: column
+
+```{r, echo=FALSE, eval=TRUE}
+d |>
+   group_by(Region) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = mean(Total),
+     Maximum = max(Total)
+)
+```
+
+::::
+:::
+
+
+## Analyzing the Freedom House Data
+\Huge
+\center
+Calculate the minimum, mean and maximum values of the `Total` score for each region per year in the dataset.
+
+
+## 
+::: columns
+:::: column
+
+\large
+
+```{r, echo=TRUE, eval=FALSE}
+d |>
+   group_by(Region, Edition) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = mean(Total),
+     Maximum = max(Total)
+)
+```
+
+::::
+:::: column
+
+\footnotesize
+```{r, echo=FALSE, eval=TRUE}
+d |>
+   group_by(Region, Edition) |>
+   summarize(
+     Minimum = min(Total),
+     Mean = round(mean(Total), 1),
+     Maximum = max(Total)
+)
+```
+
+::::
+:::
+
+
+
+## Assignment 1
+\huge
+
+\begin{center}
+Prepare a report \textbf{introducing and analyzing} our first data project. What are the \textbf{strengths and weaknesses} of this project for measuring regime type? Support all claims with evidence.
+\end{center}
+
+
+## Getting Started on Assignment 1
+\LARGE
+
+If you were introducing someone to the strengths and weaknesses of this data project, what would you want to include in your discussion? 
+
+1. Strengths and weaknesses of the methodology?
+
+2. Strengths and weaknesses demonstrated using the descriptive statistics?
+
+

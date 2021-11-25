@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>12_1-Causal_Inference.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: slideblue
+
+.size80[**Today's Agenda**]
+
+&lt;br&gt;
+
+.size40[
+1. Answering questions in a probabilistic world
+
+2. Causal inference, Identification and DAGs
+]
+
+&lt;br&gt;
+&lt;br&gt;
+
+.center[.size40[
+  Justin Leinaweaver (Fall 2021)
+]]
+
+
+
+---
+
+class: center, middle
+
+&lt;img src="libs/Images/08_2-probability.jpg" width="90%" style="display: block; margin: auto;" /&gt;
+
+.size40["Probability is the study of events and outcomes involving an element of uncertainty" (p71).]
+
+
+
+
+---
+
+class: center, middle, slideorange
+
+.size50[**Probability (Wheelan ch 5 and 6)**]
+
+&lt;br&gt;
+
+.size50[
+In what specific ways does the concept of probability connect to the data work we've done so far this semester?
+]
+
+
+
+---
+
+class: center, middle
+  
+.size40[**Probability and Univariate Analyses**]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-3-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+
+.size30[
+**How much would you pay for the chance to receive one diamond at random from this collection?**
+]
+
+
+
+---
+
+class: center, middle
+  
+.size40[**Probability and Univariate Analyses**]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-4-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+
+.size30[
+**E(diamonds) = $3,933**
+]
+
+
+
+---
+
+class: center, middle
+  
+.size50[**Probability and Bivariate Analyses**]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-5-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+.size30[
+**Would forcing automakers to use smaller engines improve fuel economy in new cars?**
+]
+
+
+
+---
+
+class: center, middle
+  
+.size50[**Probability and Bivariate Analyses**]
+
+&lt;br&gt;
+
+&lt;img src="libs/Images/08_2-xkcd_correlation.png" width="100%" /&gt;
+
+
+
+---
+
+class: center
+  
+.size40[**Regression: Significance is a Probability**]
+
+.pull-left[
+
+&lt;br&gt;
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-7-1.png" width="97%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[.size20[
+
+
+&lt;table style="text-align:center"&gt;&lt;tr&gt;&lt;td colspan="2" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;Fuel Economy&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="2" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;Engine Displacement&lt;/td&gt;&lt;td&gt;-2.63&lt;sup&gt;*&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;(0.13)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Constant&lt;/td&gt;&lt;td&gt;25.99&lt;sup&gt;*&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;(0.48)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="2" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;Observations&lt;/td&gt;&lt;td&gt;234&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Adjusted R&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;0.64&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Residual Std. Error&lt;/td&gt;&lt;td&gt;2.57 (df = 232)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;F Statistic&lt;/td&gt;&lt;td&gt;408.25&lt;sup&gt;*&lt;/sup&gt; (df = 1; 232)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="2" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;em&gt;Note:&lt;/em&gt;&lt;/td&gt;&lt;td style="text-align:right"&gt;*p &lt; 0.05&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+]]
+
+
+
+
+---
+
+.center[.size40[**Regression: Predictions are Probabilities**]]
+
+.pull-left[.code105[
+
+&lt;br&gt;
+
+
+```r
+## Load packages
+library(tidyverse)
+library(ggeffects)
+
+## The Model
+model1 &lt;- lm(data = mpg, cty ~ displ)
+
+## The Predictions with CIs
+ggpredict(model1, terms = "displ")
+```
+
+]]
+
+.pull-right[.code120[
+
+&lt;br&gt;
+
+
+```
+# Predicted values of cty
+
+displ | Predicted |         95% CI
+----------------------------------
+ 1.50 |     22.05 | [21.44, 22.65]
+ 2.00 |     20.73 | [20.23, 21.23]
+ 3.00 |     18.10 | [17.75, 18.45]
+ 3.50 |     16.78 | [16.46, 17.11]
+ 4.00 |     15.47 | [15.11, 15.83]
+ 5.00 |     12.84 | [12.33, 13.35]
+ 5.50 |     11.52 | [10.91, 12.14]
+ 7.00 |      7.58 | [ 6.62,  8.54]
+```
+
+]]
+
+
+
+---
+
+class: middle, slideblue
+
+.size60[.center[
+**Any questions on probability from the Wheelan chapters?**
+]]
+
+&lt;br&gt;
+
+.size40[
++ Chapter 5 on the basics
+
++ Chapter 6 on the most common errors
+]
+
+
+---
+
+class: center
+
+.size50[
+**Science: The Search for Causality**
+]
+
+.size40[
+"Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e. intervention) was the 'cause' of the effect (or outcome) that was observed" (Frey 2018). 
+]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-11-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+.size40[.center[**Directed Acyclic Graphs (DAGs)**]]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-12-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+.size40[
++ 'Directed' = Paths indicate direction of effect
+
++ 'Acyclic' = No immediate feedback loops
+
++ 'Graphs' = Visualized
+]
+
+
+
+---
+
+.size40[.center[**Does ice cream create arsonists?**]]
+
+.pull-left[
+
+&lt;img src="libs/Images/12_1-ice_cream_truck.jpg" width="85%" /&gt;
+
+]
+
+.pull-right[
+
+&lt;img src="libs/Images/12_1-forest_fire.jpg" width="85%" /&gt;
+
+]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-15-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-16-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-17-1.png" width="63%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-18-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+.size40[
++ A causal argument depends on having an identification strategy
+]
+
+--
+
+.size40[
++ An identification strategy specifies all of the confounders involved in your model
+]
+
+--
+
+.size40[
++ Confounders are variables that impact both your predictor and outcome.
+]
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-19-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+.size40[**Confounder: Summertime!**]
+
+.pull-left[
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-20-1.png" width="98%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-21-1.png" width="98%" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+class: center
+
+.size40[**Our Identification Strategy in Data Viz**]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-23-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+.size40[**Does this solve our confounder problem?**]
+
+
+
+---
+
+class: center
+
+.size40[**Our Identification Strategy in Data Viz**]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-24-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+.size30[
+The Good: Evidence the confounder impacts our causal effect
+
+The Bad: Not a single estimate of the effect using all the data.
+]
+
+
+
+---
+
+class: center
+
+.size40[**How do we adjust the relationship for the confounder?**]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-25-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-26-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-27-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-28-1.gif" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Result: Ice cream sales adjusted for the time of year
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-29-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-30-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-31-1.gif" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-32-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-33-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-34-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+class: center
+
+.size40[**Our Identification Strategy in a Regression**]
+
+.size20[
+
+&lt;table style="text-align:center"&gt;&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td colspan="2"&gt;Forest Fires&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;(1)&lt;/td&gt;&lt;td&gt;(2)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;Ice Cream Sales&lt;/td&gt;&lt;td&gt;0.19&lt;sup&gt;*&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;0.07&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;(0.05)&lt;/td&gt;&lt;td&gt;(0.08)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Summer&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;8.57&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;(5.02)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Constant&lt;/td&gt;&lt;td&gt;-0.46&lt;/td&gt;&lt;td&gt;4.12&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;(3.12)&lt;/td&gt;&lt;td&gt;(3.92)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;Observations&lt;/td&gt;&lt;td&gt;12&lt;/td&gt;&lt;td&gt;12&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Adjusted R&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;0.55&lt;/td&gt;&lt;td&gt;0.62&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;F Statistic&lt;/td&gt;&lt;td&gt;14.34&lt;sup&gt;*&lt;/sup&gt; (df = 1; 10)&lt;/td&gt;&lt;td&gt;10.00&lt;sup&gt;*&lt;/sup&gt; (df = 2; 9)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;em&gt;Note:&lt;/em&gt;&lt;/td&gt;&lt;td colspan="2" style="text-align:right"&gt;*p &lt; 0.05&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+]
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-36-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+.center[.size40[**Rule 1: Control for all confounders**]]
+
+
+
+---
+
+.center[.size40[**Should we control for experience in this DAG?**]]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-37-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+.center[.size40[**Rule 2: Do NOT control for mediators**]]
+
+&lt;br&gt;
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-38-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-39-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+class: center
+
+.size40[**Assignment for Thursday**]
+
+.size40[**Do countries with larger military enlistments have fewer political freedoms?**]
+
+&lt;img src="12_1-Causal_Inference_files/figure-html/unnamed-chunk-40-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+.size40[**Explore the World Bank's WDI Database to identify possible confounders to our model.**]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

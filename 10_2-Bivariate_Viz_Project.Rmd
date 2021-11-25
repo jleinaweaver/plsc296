@@ -1,0 +1,202 @@
+---
+output:
+  beamer_presentation:
+    theme: "CambridgeUS"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+    df_print: kable
+fontsize: 14pt
+classoption: "aspectratio=169"
+header-includes:
+- \usepackage{caption}
+- \captionsetup[figure]{labelformat=empty}
+- \captionsetup[table]{labelformat=empty}
+- \setbeamertemplate{page number in head/foot}[]{}
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+## Render the pdf
+##rmarkdown::render(input = "", output_file = "")
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+
+d <- read_csv("../Data_Projects/04-Research_Project/P296-FA21-Research_Project_Data.csv", na = c(-9, "NA"))
+
+d2 <- d |>
+  arrange(Country, year) |>
+  group_by(Country) |>
+  mutate(
+    milper_prop = (milper / tpop)*100,
+    milper_prop_lag1 = lag(milper_prop, n = 1),
+    milper_prop_lag3 = lag(milper_prop, n = 3)
+  ) |>
+  ungroup()
+```
+
+
+## Today's Agenda
+\large
+
+Build univariate and bivariate visualizations for your research project report.
+
+\vspace{.5in}
+
+\center
+Justin Leinaweaver (Fall 2021)
+
+
+
+## Visualizations
+\large
+1. Histogram: The new predictor variable (milper_prop)
+2. Stacked bars: FH status by year
+3. Line: Mean FH total across time (+/- 1 Std Dev)  
+4. Boxes: milper_prop x FH status
+5. Scatter (with correlation): milper_prop x FH total
+6. Scatter (with correlation): milper_prop x pr
+7. Scatter (with correlation): milper_prop x cl
+
+
+## 
+```{r, fig.width=7, out.width='95%', fig.asp=0.5}
+## Histogram: The new predictor variable (milper_prop)
+d2 |>
+  pivot_longer(cols = c(milper, milper_prop), names_to = "Variables", values_to = "Values") |>
+  mutate(
+    Variables = if_else(Variables == "milper", "Military Personnel (k)", "Military Personnel (% Population)")
+  ) |>
+  ggplot(aes(x = Values)) +
+  geom_histogram(color = "white", fill = "skyblue2") +
+  facet_wrap(~ Variables, scales = "free") +
+  labs(x = "", y = "Counts", 
+       title = "Most countries enlist well below 1% of their populations in the military",
+       subtitle = "(Almost all below 2%)") +
+  theme_bw()
+```
+
+
+
+## {.plain}
+```{r, fig.width=7, out.width='92%', fig.asp=0.618}
+## Bar plot: status x year
+d2 |>
+  filter(!is.na(status)) |>
+  mutate(
+    status2 = case_when(
+      status == "NF" ~ "Not Free",
+      status == "PF" ~ "Partly Free",
+      status == "F" ~ "Free"
+    ),
+    status2 = factor(status2, levels = c("Not Free", "Partly Free", "Free"))
+  ) |>
+  ggplot(aes(x = year, fill = status2)) +
+  geom_bar() +
+  labs(x = "", y = "Counts", fill = "",
+       title = "Freedom was on the march around the world (until 9/11)!") +
+  theme_bw() +
+  guides(fill = FALSE) +
+  annotate("label", x = 2011, y = 175, label = "Not Free", size = 5.5) +
+  annotate("label", x = 2011, y = 120, label = "Partly Free", size = 5.5) +
+ annotate("label", x = 2011, y = 40, label = "Free", size = 5.5) +
+  scale_fill_brewer(palette = 1)
+
+```
+
+
+
+## {.plain}
+```{r, fig.width=7, out.width='95%', fig.asp=0.618}
+## Line: Mean FH total across time (+/- 1 Std Dev)  
+d2 |>
+  group_by(year) |>
+  summarize(
+    mean = mean(fh_total, na.rm = TRUE),
+    low = mean - sd(fh_total, na.rm = TRUE),
+    high = mean + sd(fh_total, na.rm = TRUE)
+  ) |>
+  ggplot(aes(x = year, y = mean)) +
+  geom_ribbon(aes(ymin = low, ymax = high), fill = "lightblue") +
+  geom_line(color = "black") +
+  theme_bw() +
+  labs(x = "", y = "FH Total Score",
+       title = "The average FH score has been falling since the 1970s", subtitle = "(Although things may have stabilized since 2005)",
+       caption = "Line and ribbon represents the mean +/- 1 Std Dev") +
+  scale_y_continuous(breaks = seq(2, 14, 2), limits = c(1,14))
+```
+
+
+## {.plain}
+```{r, fig.width=7, out.width='95%', fig.asp=0.618}
+## Boxes: milper_prop x FH status
+d2 |>
+  filter(!is.na(status)) |>
+  mutate(
+    status2 = case_when(
+      status == "NF" ~ "Not Free",
+      status == "PF" ~ "Partly Free",
+      status == "F" ~ "Free"
+    ),
+    status2 = factor(status2, levels = c("Not Free", "Partly Free", "Free"))
+  ) |>
+  filter(!is.na(status)) |>
+  ggplot(aes(x = status2, y = milper_prop)) +
+  geom_boxplot(fill = "lightblue") +
+  theme_bw() +
+  labs(x = "", y = "Military Personnel (% Population)",
+       title = "Freedom appears to correlate with smaller enlistments")
+```
+
+
+## {.plain}
+```{r, fig.width=7, out.width='95%', fig.asp=0.5}
+# 5. Scatter: milper_prop x FH total
+# 6. Scatter: milper_prop x pr
+# 7. Scatter: milper_prop x cl
+# cor(d2$milper_prop, d2$fh_total, use = "complete")
+# cor(d2$milper_prop, d2$pr, use = "complete")
+# cor(d2$milper_prop, d2$cl, use = "complete")
+
+d2 |>
+  pivot_longer(cols = pr:fh_total, names_to = "FH", values_to = "Values") |>
+  mutate(
+    FH = case_when(
+      FH == "cl" ~ "Civil Liberties (0.29)",
+      FH == "pr" ~ "Political Rights (0.26)",
+      FH == "fh_total" ~ "FH Total (0.28)"
+    )
+  ) |>
+  ggplot(aes(y = Values, x = milper_prop)) +
+  #geom_point(alpha = .1) +
+  geom_jitter(alpha = .05, width = .25) +
+  facet_wrap(~ FH,scales = "free") +
+  theme_bw() #+
+  labs(x = "", y = "Military Personnel (% Population)",
+       title = "Freedoms appear to decline as military enlistments increase in size")
+
+```
+
+
+## For Tuesday
+\Large
+
+1. Wheelan chapter 11 "Regression"
+
+\vspace{.3in}
+
+2. *Linear Regression in R* on Moodle, "Simple OLS" section only
+
+
+
+
+

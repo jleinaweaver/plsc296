@@ -1,0 +1,157 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+class: slidegreen
+
+.size80[**Today's Agenda**]
+
+<br>
+
+.size60[
+Add confounders to our research project dataset
+]
+
+<br>
+<br>
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Fall 2021)
+]]
+
+
+
+---
+
+class: slidepurple
+
+.size60[**Wheelan chapter 7: Data**]
+
+.pull-left[.size40[
++ Selection bias
+
++ Publication bias
+
++ Recall bias
+
++ Survivorship bias
+
++ Healthy user bias
+]]
+
+.pull-right[
+
+```{r, fig.retina=3, fig.align = 'center', out.width='65%'}
+knitr::include_graphics("libs/Images/10_2-Wheelan_Cover.jpg")
+```
+]
+
+???
+
+CLASS: What questions do you have about the data issues raised by the Wheelan chapter?
+
+Chapter 7 The Importance of Data (110-126)
+
+Garbage in, garbage out; 
+Three things we all of data, 
+1. A sample to represent the population, 
+2. provide comparisons between treatment and control groups, 
+3. Just because (data that can be mined); 
+
+Types of data (longitudinal aka across time cross sectional aka at one point in time); 
+
+examples of garbage data: 
+
+selection bias: How have we chosen the sample? Random or not?
+
+publication bias: Positive findings more likely to be published. The null results go in a drawer.
+
+recall bias: Memory is a deeply problematic thing. Especially as time passes.
+
+survivorship bias: Did the sample change over time in a way that messes up our conclusions? If we lose the failing cases the remaining will look even better!
+
+healthy user bias: Unidentified confounder problem. Do vitamins work? Maybe but you have to deal with the fact that healthy, wealthy people are more likely to take them!
+
+
+
+
+
+
+
+---
+
+.size40[.center[**Do countries with larger military enlistments have fewer political freedoms?**]]
+
+```{r, fig.retina=3, fig.align = 'center', fig.height = 3, fig.width=5, out.width='70%'}
+## Manual DAG
+tibble(
+  x = c(-3, 3, 0),
+  y = c(1, 1, 2),
+  labels = c("Military\n Enlistment", "Political\n Freedoms", "???")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.8, 2.1)) +
+  geom_label(aes(label = labels), size = 7) +
+    annotate("segment", x = .4, xend = 2.5, y = 1.9, yend = 1.2, arrow = arrow()) +
+  annotate("segment", x = -.4, xend = -2.5, y = 1.9, yend = 1.2, arrow = arrow()) +
+  annotate("segment", x = -1.5, xend = 1.6, y = 1, yend = 1, arrow = arrow())
+```
+
+???
+
+CLASS: Let's talk confounders we should consider from the WDI database.  
+
+- What did you find? 
+
+
+
+YOU: Make sure to pull multiple variable options in case of data coverage problems
+
+DEMONSTRATE: Pull and clean the data THEN distribute it to the class
+
+
+
+---
+
+class: slidegreen
+
+.size80[**For Tuesday**]
+
+<br>
+
+.size50[
+Build univariate analyses of the new confounder data on its own
+
++ Tables, histograms, maps and descriptive statistics
+]

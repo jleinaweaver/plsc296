@@ -1,0 +1,1124 @@
+---
+output:
+  beamer_presentation:
+    theme: "CambridgeUS"
+    colortheme: "dolphin"
+    fonttheme: "structurebold"
+    df_print: kable
+fontsize: 14pt
+classoption: "aspectratio=169"
+header-includes:
+- \usepackage{caption}
+- \captionsetup[figure]{labelformat=empty}
+- \captionsetup[table]{labelformat=empty}
+- \setbeamertemplate{page number in head/foot}[]{}
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+## Render the pdf
+##rmarkdown::render(input = "./09_1-Simple_OLS.Rmd", output_file = "./09_1-Simple_OLS.pdf")
+
+library(tidyverse)
+##library(readxl)
+library(stargazer)
+##library(kableExtra)
+library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+
+## Today's Agenda
+
+\Large
+Fitting, interpreting and analyzing simple OLS regressions
+
+\vspace{.5in}
+
+\begin{center}
+Justin Leinaweaver (Fall 2021)
+\end{center}
+
+
+
+##
+\center
+\huge
+**Part 1**
+
+\vspace{.25in}
+
+**Why do we need regressions?**
+
+
+
+## {.plain}
+```{r, fig.align = 'center', fig.asp=.75, out.width = '60%', fig.width = 4.5, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)",
+       title = str_c("The correlation of diamond weight to price is:\n", round(cor(diamonds$carat, diamonds$price), 2))) +
+  coord_cartesian(xlim = c(0,4))
+```
+
+\center
+**What conclusions can we draw based on the visualization and the correlation?**
+
+
+
+## {.plain}
+```{r, fig.align = 'center', fig.asp=.75, out.width = '60%', fig.width = 4.5, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  #geom_vline(xintercept = 1.5, color = "red2", linetype = "dashed", size = 1.3) +
+  #geom_vline(xintercept = 2.5, color = "red2", linetype = "dashed", size = 1.3) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)",
+       title = str_c("The correlation of diamond weight to price is:\n", round(cor(diamonds$carat, diamonds$price), 2))) +
+  coord_cartesian(xlim = c(0,4))
+```
+
+\center
+**What is your most precise estimate of the price difference between a 1.5 carat and a 2.5 carat diamond?**
+
+
+
+## 
+\large
+\begin{center}
+Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.
+
+\vspace{.2in}
+
+\Huge
+
+Y = $\alpha$ + $\beta$ X
+
+\vspace{.2in}
+
+\large
+
+\textbf{What clarifications do you need from the readings?}
+
+\end{center}
+
+
+
+## Why 'Regression'?
+```{r, fig.show="hold", out.width="48%", fig.width=5, fig.height=3, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = carat)) +
+  geom_histogram(bins = 25, color = "white") +
+  theme_bw() +
+  labs(x = "Carats", y = "")
+
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = price)) +
+  geom_histogram(bins = 25, color = "white") +
+  theme_bw() +
+  labs(x = "Price ($)", y = "")
+```
+
+\center
+**If you pull a single diamond from this collection at random, what is the most likely price and size it will be?**
+
+
+
+## Why 'Regression'?
+```{r, fig.show="hold", out.width="48%", fig.width=5, fig.height=3, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = carat)) +
+  geom_histogram(bins = 25, color = "white") +
+  theme_bw() +
+  labs(x = "Carats", y = "") +
+  geom_vline(xintercept = mean(diamonds$carat), color = "red", size=1.5)
+
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = price)) +
+  geom_histogram(bins = 25, color = "white") +
+  theme_bw() +
+  labs(x = "Price ($)", y = "") +
+  geom_vline(xintercept = mean(diamonds$price), color = "red", size=1.5)
+```
+
+\center
+**Pros and cons of guessing the average?**
+
+
+
+
+## Why 'Regression'?
+```{r, fig.show="hold", out.width="48%", fig.width=5, fig.height=3, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = carat)) +
+  geom_histogram(bins = 25, color = "white") +
+  theme_bw() +
+  labs(x = "Carats", y = "")
+
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = price)) +
+  geom_histogram(bins = 25, color = "white") +
+  theme_bw() +
+  labs(x = "Price ($)", y = "")
+```
+
+\center
+**If you first pull a massive diamond from the collection, what is the most likely price and size of the next one you draw?**
+
+
+
+
+## Regression aka 'regression to the mean'
+```{r, fig.show="hold", out.width="48%", fig.width=5, fig.height=3, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = carat)) +
+  geom_histogram(bins = 25, color = "white") +
+  theme_bw() +
+  labs(x = "Carats", y = "") +
+  geom_vline(xintercept = mean(diamonds$carat), color = "red", size=1.5)
+
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = price)) +
+  geom_histogram(bins = 25, color = "white") +
+  theme_bw() +
+  labs(x = "Price ($)", y = "") +
+  geom_vline(xintercept = mean(diamonds$price), color = "red", size=1.5)
+```
+
+\center
+**A random draw of an outlier is more likely to be followed by an average value than another outlier.**
+
+
+
+
+
+## 
+::: columns
+:::: column
+```{r, echo=FALSE, fig.align = 'center', fig.asp=.8, out.width = '95%', fig.width = 4, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 3) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price") +
+  coord_cartesian(xlim = c(0,4))
+
+```
+::::
+:::: column
+\vspace{.5in}
+```{r, echo=FALSE}
+diamonds |>
+  pivot_longer(cols = c(carat, price), names_to = "Variable", values_to = "Values") |>
+  group_by(Variable) |>
+  summarize(
+    Mean = round(mean(Values), 3)
+  )
+```
+::::
+:::
+
+\center
+**If data tends towards its 'central tendency' then let's start our model using the sample means.**
+
+
+
+
+## 
+::: columns
+:::: column
+```{r, echo=FALSE, fig.align = 'center', fig.asp=.8, out.width = '95%', fig.width = 4, cache=TRUE}
+## Add line guesses
+x1 <- .798
+y1 <- 3933
+x2 <- 0
+y2 <- 0
+x3 <- .25
+y3 <- 500
+x4 <- .5
+y4 <- 500
+
+b1 <- (y2-y1)/(x2-x1)
+a1 <- y1 - b1*x1
+
+b2 <- (y3-y1)/(x3-x1)
+a2 <- y1 - b2*x1
+
+b3 <- (y4-y1)/(x4-x1)
+a3 <- y1 - b3*x1
+
+diamonds |>
+  slice_sample(prop = .4) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  geom_abline(slope = b1, intercept = a1, color = "green", size = 1.1) +
+  geom_abline(slope = b2, intercept = a2, color = "orange", size = 1.1) +
+  geom_abline(slope = b3, intercept = a3, color = "purple", size = 1.1) +
+  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 3) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price") +
+  coord_cartesian(xlim = c(0,4))
+
+```
+::::
+:::: column
+\vspace{.5in}
+```{r, echo=FALSE}
+diamonds |>
+  pivot_longer(cols = c(carat, price), names_to = "Variable", values_to = "Values") |>
+  group_by(Variable) |>
+  summarize(
+    Mean = round(mean(Values), 3)
+  )
+```
+::::
+:::
+
+\center
+**How do we pick the second point we need to draw the "best" line?**
+
+
+
+##
+::: columns
+:::: column
+
+```{r, echo=FALSE, fig.align = 'center', fig.asp=.8, out.width = '95%', fig.width = 4, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 2) +
+  geom_vline(xintercept = mean(diamonds$carat), color = "red", linetype = "dashed") +
+  geom_hline(yintercept = mean(diamonds$price), color = "red", linetype = "dashed") +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  annotate("text", x = 0.1, y = 3000, label = "3", size = 5.5, color = "red") +
+    annotate("text", x = 3, y = 3000, label = "4", size = 5.5, color = "red") +
+  annotate("text", x = .1, y = 15000, label = "1", size = 5.5, color = "red") +
+  annotate("text", x = 3, y = 15000, label = "2", size = 5.5, color = "red") +
+  coord_cartesian(xlim = c(0,4))
+```
+
+::::
+:::: column
+
+\vspace{.2in}
+```{r, echo=FALSE}
+diamonds |>
+  mutate(
+    Quadrants = case_when(
+      carat < mean(diamonds$carat) & price > mean(diamonds$price) ~ "1",
+      carat < mean(diamonds$carat) & price < mean(diamonds$price) ~ "3",
+      carat > mean(diamonds$carat) & price > mean(diamonds$price) ~ "2",
+      carat > mean(diamonds$carat) & price < mean(diamonds$price) ~ "4"
+    )
+  ) |> 
+  count(Quadrants)
+```
+
+::::
+:::
+
+\center
+**The line should follow the data, so let's divide the plot into quadrants and focus on the one with the most observations.**
+
+
+
+## 
+::: columns
+:::: column
+
+```{r, echo=FALSE, fig.align = 'center', fig.asp=.8, out.width = '95%', fig.width = 4, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 2) +
+  geom_vline(xintercept = mean(diamonds$carat), color = "red", linetype = "dashed") +
+  geom_hline(yintercept = mean(diamonds$price), color = "red", linetype = "dashed") +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  annotate("text", x = 0.1, y = 3000, label = "3", size = 5.5, color = "red") +
+    annotate("text", x = 3, y = 3000, label = "4", size = 5.5, color = "red") +
+  annotate("text", x = .1, y = 15000, label = "1", size = 5.5, color = "red") +
+  annotate("text", x = 3, y = 15000, label = "2", size = 5.5, color = "red") +
+  annotate("point", x = .4631, y = 1358, color = "red", size = 2) +
+  coord_cartesian(xlim = c(0,4))
+```
+
+::::
+:::: column
+
+\vspace{.5in}
+```{r, echo=FALSE}
+diamonds |>
+  filter(carat < mean(diamonds$carat), price < mean(diamonds$price)) |>
+  pivot_longer(cols = c(carat, price), names_to = "Variable", values_to = "Values") |>
+  group_by(Variable) |>
+  summarize(
+    Mean = round(mean(Values), 3)
+  ) |>
+  mutate(
+    Group = "Quadrant 3"
+  ) |>
+  select(Group, everything())
+```
+
+::::
+:::
+
+\vspace{.25in}
+\center
+**The mean values in quadrant three give us a second point!**
+
+
+
+## {.plain}
+\center
+**Estimated Line: Price = -2,203 + 7,689 (Carats)**
+
+```{r, fig.align = 'center', fig.asp=.7, out.width = '55%', fig.width = 4.5, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 2) +
+  annotate("point", x = .4631, y = 1358, color = "red", size = 2) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  geom_abline(slope = 7689.65, intercept = -2203.0767779328, color = "red") +
+  coord_cartesian(xlim = c(0,4))
+```
+
+\center
+**How do we interpret this estimated formula for a line?**
+
+
+
+## {.plain}
+\center
+**Estimated Line: Price = -2,203 + 7,689 (Carats)**
+
+```{r, fig.align = 'center', fig.asp=.7, out.width = '55%', fig.width = 4.5, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 2) +
+  annotate("point", x = .4631, y = 1358, color = "red", size = 2) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  geom_abline(slope = 7689.65, intercept = -2203.0767779328, color = "red") +
+  coord_cartesian(xlim = c(0,4))
+```
+
+\center
+**What are the strengths and weaknesses of this two-point estimator of the 'general tendency' line?**
+
+
+
+
+## {.plain}
+\center
+\footnotesize
+Two-Point Line: Price = -2,203 + 7,689 (Carats)
+
+\normalsize
+**OLS Line: Price = -2,256 + 7,756 (Carats)**
+
+```{r, fig.align = 'center', fig.asp=.7, out.width = '55%', fig.width = 4.5, cache=TRUE}
+model1 <- lm(data = diamonds, price ~ carat)
+preds1 <- ggeffects::ggpredict(model1, "carat")
+
+diamonds |>
+  ggplot(aes(x = carat)) +
+  geom_point(alpha = .05, aes(y = price)) +
+  #geom_abline(slope = 7689.65, intercept = -2203.0767779328, color = "red", size = .8) +
+  geom_ribbon(data = preds1, aes(x = x, ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line(data = preds1, aes(x = x, y = predicted), color = "royalblue1", size = 1.2) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 19000), xlim = c(0,4))
+```
+
+\center
+**Per the readings, how does OLS fit a line to the data?**
+
+
+
+
+
+## {.plain}
+\center
+**Price = -2,256 + 7,756 (Carats)**
+
+```{r, fig.align = 'center', fig.asp=.7, out.width = '55%', fig.width = 4.5, cache=TRUE}
+
+set.seed(277)
+d2 <- diamonds |>
+  slice_sample(prop = .002)
+
+d2 |>
+  modelr::add_predictions(model1) |> 
+  ggplot(aes(x = carat)) +
+  geom_point(aes(y = price)) +
+  geom_ribbon(data = preds1, aes(x = x, ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line(data = preds1, aes(x = x, y = predicted), color = "royalblue1", size = 1.2) +
+  geom_segment(aes(xend = carat, y = price, yend = pred), color = "red") +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 19000), xlim = c(0,4))
+```
+
+\center
+**OLS finds the line of best fit that minimizes the squared residuals of ALL THE POINTS.**
+
+
+
+## {.plain}
+\center
+What is the predicted price of a diamond that weighs 1.5 carats?
+
+```{r, fig.align = 'center', fig.asp=.618, out.width = '60%', fig.width = 4, cache=TRUE}
+diamonds |>
+  ggplot(aes(x = carat)) +
+  geom_point(alpha = .05, aes(y = price)) +
+  geom_ribbon(data = preds1, aes(x = x, ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line(data = preds1, aes(x = x, y = predicted), color = "royalblue1", size = 1.2) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 19000), xlim = c(0,4))
+```
+
+\large
+\center
+Price = -2,256.36 + 7,756.43 x Carats
+
+
+
+## {.plain}
+\center
+What is the predicted price of a diamond that weighs 1.5 carats?
+
+```{r, fig.align = 'center', fig.asp=.618, out.width = '60%', fig.width = 4, cache=TRUE}
+diamonds |>
+  ggplot(aes(x = carat)) +
+  geom_point(alpha = .05, aes(y = price)) +
+  geom_ribbon(data = preds1, aes(x = x, ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line(data = preds1, aes(x = x, y = predicted), color = "royalblue1", size = 1.2) +
+  annotate("point", x = 1.5, y = 9378.285, color = "red", size = 3) +
+  annotate("segment", x = 1.5, xend = 1.5, y = 0, yend = 9378, color = "red", linetype = "dashed", size = 1) +
+  annotate("segment", x = 0, xend = 1.5, y = 9378, yend = 9378, color = "red", linetype = "dashed", size = 1) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 19000), xlim = c(0,4))
+
+##predict.lm(model1, newdata = data.frame("carat" = 1.5), interval = "confidence")
+```
+
+\center
+Price = -2,256.36 + 7,756.43 x 1.5 = \$9,378.29
+
+(95\% confidence interval: \$9,354 - \$9,401)
+
+
+
+## {.plain}
+\center
+What is the predicted price of a diamond that weighs 2.5 carats?
+
+```{r, fig.align = 'center', fig.asp=.618, out.width = '60%', fig.width = 4, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 18000), xlim = c(0,4))
+```
+
+\large
+\center
+Price = -2,256.36 + 7,756.43 x Carats
+
+
+
+## {.plain}
+\center
+What is the predicted price of a diamond that weighs 2.5 carats?
+
+```{r, fig.align = 'center', fig.asp=.618, out.width = '60%', fig.width = 4, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  geom_smooth(method = "lm") +
+  annotate("point", x = 2.5, y = 17134.72, color = "red", size = 3) +
+  annotate("segment", x = 2.5, xend = 2.5, y = 0, yend = 17134.72, color = "red", linetype = "dashed", size = 1) +
+  annotate("segment", x = 0, xend = 2.5, y = 17134.72, yend = 17134.72, color = "red", linetype = "dashed", size = 1) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 18000), xlim = c(0,4))
+
+##predict.lm(model1, newdata = data.frame("carat" = 2.5), interval = "confidence")
+```
+
+\center
+Price = -2,256.36 + 7,756.43 x 2.5 = \$17,134.72
+
+(95\% confidence interval: \$17,085 - \$17,183)
+
+
+
+## {.plain}
+\center
+Regression lets us answer the question: What is the average price difference between 1.5 and 2.5 carat diamonds?
+
+```{r, fig.align = 'center', fig.asp=.618, out.width = '60%', fig.width = 4, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  geom_smooth(method = "lm") +
+  annotate("point", x = 2.5, y = 17134.72, color = "red", size = 3) +
+  annotate("point", x = 1.5, y = 9378.29, color = "red", size = 3) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 18000), xlim = c(0,4))
+```
+
+\center
+\large
+
+\$17,134.72 - \$9,378.29 = \$7,756.43 (on average)
+
+
+
+## An OLS Estimate of Diamond Prices {.plain}
+::: columns
+:::: column
+\vspace{.25in}
+
+```{r, fig.align = 'center', fig.asp=.75, out.width = '92%', fig.width = 4, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 18000), xlim = c(0,4))
+```
+
+::::
+:::: column
+
+```{r, results='asis'}
+model1 <- lm(data = diamonds, price ~ carat)
+
+stargazer(model1, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", dep.var.labels = "Price", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser"), font.size = "footnotesize", float = FALSE, covariate.labels = "Carats")
+```
+
+::::
+:::
+\begin{center}
+Y = $\alpha$ + $\beta$ X
+
+Price = -2,256.36 + 7,756.43 x Carats
+\end{center}
+
+
+
+## Why use OLS regressions?
+\large
+
+### Basics
+\vspace{.15in}
++ Quantifies the relationship between variables
+\vspace{.15in}
++ Can be used to make predictions
+\vspace{.15in}
++ Provides estimates of uncertainty
+
+
+
+## Why use OLS regressions?
+\large
+
+### Basics
++ Quantifies the relationship between variables
+
++ Can be used to make predictions
+
++ Provides estimates of uncertainty
+
+### Future Weeks
++ Can be adjusted for confounders (e.g. control variables), nonlinear relationships and different data structures
+
+
+
+##
+\center
+\huge
+**Part 2**
+
+\vspace{.25in}
+
+**How do we fit a regression and make predictions in R?**
+
+
+
+## Fitting OLS Regressions in R
+```{r, echo = TRUE, eval = FALSE}
+## Fitting an OLS model
+## lm(data = dataset, outcome ~ predictor)
+
+## Regress `price` on `carat` in the `diamonds` dataset
+model1 <- lm(data = diamonds, price ~ carat)
+
+## Check the Results
+summary(model1)
+
+## Fancy Table (use type = "html" in our reports)
+stargazer::stargazer(model1, type = "text")
+```
+
+
+## Making Predictions (Approach 1)
+```{r, echo=TRUE}
+## Create dataset with values of the predictors
+new1 <- tibble(carat = 1.5)
+
+## Prediction Function
+predict(model1, newdata = new1, interval = "confidence")
+```
+
+
+## Making Predictions (Approach 1)
+```{r, echo=TRUE, eval=FALSE}
+## Create dataset with values of the predictors
+new1 <- tibble(carat = 1.5)
+
+## Prediction Function
+predict(model1, newdata = new1, interval = "confidence")
+```
+\vspace{.25in}
+
+\begin{center}
+\large
+\textbf{Redo the above but calculate the predictions for carat values of 1, 2, 3 and 4 simultaneously.}
+\end{center}
+
+
+
+
+## Making Predictions (Approach 1)
+\small
+```{r, echo=TRUE}
+## Create dataset with values of the predictors
+new2 <- tibble(carat = c(1, 2, 3, 4))
+
+## Prediction Function
+predict(model1, newdata = new2, interval = "confidence")
+```
+
+
+## 
+```{r, echo=TRUE}
+## Making Predictions (Approach 2) 
+ggeffects::ggpredict(model1, terms = "carat")
+```
+
+
+## {.plain}
+::: columns
+:::: column
+\footnotesize
+
+```{r, echo=TRUE, eval=FALSE}
+## Visualize the Predictions (Approach 2) 
+ggpredict(model1, terms = "carat") |>
+  ggplot(aes(x = x, y = predicted)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Carats", y = "Predicted Price")
+```
+
+::::
+:::: column
+
+\vspace{1.25in}
+
+```{r, echo=FALSE, fig.align = 'center', fig.asp=.75, out.width = '100%', fig.width = 4, cache=TRUE}
+## Visualize the Predictions (Approach 2) 
+ggpredict(model1, terms = "carat") |>
+  ggplot(aes(x = x, y = predicted)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Carats", y = "Predicted Price")
+```
+
+::::
+:::
+
+
+##
+\center
+\huge
+**Part 3**
+
+\vspace{.25in}
+
+**How do we evaluate the fit of a regression model?**
+
+
+## 1. Is it logical?
+::: columns
+:::: column
+\vspace{.1in}
+
+\begin{center}
+```{r, echo = FALSE, results = "asis", eval=TRUE}
+stargazer(model1, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", dep.var.labels = "Price", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser"), font.size = "footnotesize", float = FALSE, covariate.labels = "Carats")
+```
+\end{center}
+
+::::
+:::: column
+
+\center
+\includegraphics[keepaspectratio=true,width=.31\paperwidth]{Images/11_1-Diamonds_carats.jpg}
+
+::::
+:::
+
+
+
+## 2. Are the coefficients significant?
+
+\begin{center}
+```{r, echo = FALSE, results = "asis", eval=TRUE}
+stargazer(model1, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", dep.var.labels = "Price", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser"), font.size = "small", float = FALSE, covariate.labels = "Carats")
+```
+\end{center}
+
+
+
+## What is Statistical Significance?
+\large
+
+$H_{A}$ = Larger diamonds are more expensive than smaller ones
+
+\center
+\includegraphics[keepaspectratio=true,width=.75\paperwidth]{Images/11_1-Diamonds_2.jpg}
+
+$H_{0}$ = Diamond size has no impact on price
+
+
+## What is Statistical Significance? {.plain}
+```{r, fig.show="hold", out.width="48%", fig.width=4.5, fig.height=4.5, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)",
+       title = "Alternative Hypothesis",
+       subtitle = str_c("Sum of Squared Errors: ", round(sum((model1$residuals)^2)/1e9, 1), " billion")) +
+  coord_cartesian(ylim = c(0, 18000), xlim = c(0,4))
+
+model0 <- lm(data = diamonds, price ~ 1)
+
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  geom_hline(yintercept = mean(diamonds$price), color = "red") +
+  theme_bw() +
+  labs(x = "Carats", y = "Price ($)",
+       title = "Null Hypothesis",
+       subtitle = str_c("Sum of Squared Errors: ", round(sum((model0$residuals)^2)/1e9, 1), " billion")) +
+  coord_cartesian(ylim = c(0, 18000), xlim = c(0,4))
+```
+
+
+## Are deeper diamonds more expensive? {.plain}
+```{r, fig.show="hold", out.width="48%", fig.width=4.5, fig.height=4.5, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = depth, y = price)) +
+  geom_point(alpha = .05) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Depth", y = "Price ($)",
+       title = "Alternative Hypothesis")
+
+#model0 <- lm(data = diamonds, price ~ 1)
+
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = depth, y = price)) +
+  geom_point(alpha = .05) +
+  geom_hline(yintercept = mean(diamonds$price), color = "red") +
+  theme_bw() +
+  labs(x = "Depth", y = "Price ($)",
+       title = "Null Hypothesis")
+```
+
+
+
+## 3. How high is an adjusted R$^2$ of 0.85?
+```{r, fig.align = 'center', fig.asp = 0.618, fig.width = 7, out.height = '85%', eval=TRUE, cache=TRUE}
+set.seed(50)
+d1 <- tibble(
+    x = rnorm(50, 12, 3),
+    y1 = x + rnorm(50, 15, 8),
+    y2 = x + rnorm(50, 15, 5),
+    y3 = x + rnorm(50, 15, 1.5),
+    y4 = x + rnorm(50, 15, .5)    
+)
+
+d2 <- d1 |>
+pivot_longer(cols = y1:y4, names_to = "Version", values_to = "Values") |>
+mutate(
+    Version = case_when(
+        Version == "y1" ~ "R2 = 0",
+        Version == "y2" ~ "R2 = 0.24",
+        Version == "y3" ~ "R2 = 0.81",
+        Version == "y4" ~ "R2 = 0.97")
+    )
+
+ggplot(data = d2, aes(x = x, y = Values)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    theme_bw() +
+    facet_wrap(~ Version)
+
+```
+
+
+## {.plain}
+\vspace{.2in}
+
+```{r, fig.align = 'center', echo=TRUE, out.width='66%', fig.width=6, fig.asp=0.7}
+## 4. Any problems in the residuals plot?
+plot(model1, which = 1)
+```
+
+
+## Heteroskedastic Errors are Bad
+\center
+\includegraphics[keepaspectratio=true,width=.85\paperwidth]{Images/09_1-heteroskedastic_errors.png}
+
+
+
+## Non-Linear Errors are Bad
+\center
+\includegraphics[keepaspectratio=true,width=.7\paperwidth]{Images/09_1-nonlinear_errors.png}
+
+
+
+## {.plain}
+\vspace{.2in}
+
+```{r, fig.align = 'center', echo=TRUE, out.width='66%', fig.width=6, fig.asp=0.7}
+## 4. Any problems in the residuals plot?
+plot(model1, which = 1)
+```
+
+
+## Evaluating the Fit of an OLS Regression
+\Large
+\begin{enumerate}
+\item Is it logical?
+\vspace{.1in}
+\item Are the coefficients significant?
+\vspace{.1in}
+\item How high is the adjusted R$^2$
+\vspace{.1in}
+\item Any problems in the residuals plot?
+\end{enumerate}
+
+
+
+
+## Let's practice using the `mpg` dataset
+\large
+
+**Does engine size (`displ`) explain fuel economy (`cty`)?**
+
+1. Scatter plot: `cty` x `displ`
+
+2. Regress `cty` on `displ`
+
+3. Use ggpredict() to draw the marginal effect of engine size on fuel economy
+
+4. Evaluate the fit of the model
+
+
+
+## Explaining Fuel Economy
+::: columns
+:::: column
+
+```{r, fig.align = 'center', fig.asp=.75, out.width = '90%', fig.width = 4, cache=TRUE}
+mpg |>
+  ggplot(aes(x = displ, y = cty)) +
+  geom_point() +
+  #geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Engine Displacement", y = "Fuel Economy (city mpg)")
+```
+
+::::
+:::: column
+
+```{r, results='asis'}
+model2 <- lm(data = mpg, cty ~ displ)
+
+stargazer(model2, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", dep.var.labels = "Fuel Economy", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser"), font.size = "footnotesize", float = FALSE, covariate.labels = "Engine Displacement")
+```
+::::
+:::
+
+
+
+## {.plain}
+\scriptsize
+```{r, fig.align = 'center', fig.asp=.618, out.width = '60%', fig.width = 5, cache=FALSE, echo=TRUE}
+ggeffects::ggpredict(model2, terms = "displ") |>
+  ggplot(aes(x = x, y = predicted)) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Engine Size (litres)", y = "Predicted Fuel Economy")
+```
+
+
+## 1. Is it logical?
+::: columns
+:::: column
+\vspace{.1in}
+
+\begin{center}
+```{r, echo = FALSE, results = "asis", eval=TRUE}
+stargazer(model2, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", dep.var.labels = "Fuel Economy", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser"), font.size = "footnotesize", float = FALSE, covariate.labels = "Engine Displacement") 
+```
+\end{center}
+
+::::
+:::: column
+
+\center
+\includegraphics[keepaspectratio=true,width=.3\paperwidth]{Images/11_1-diesel-engines.jpg}
+
+::::
+:::
+
+
+
+## 2. Are the coefficients significant?
+
+\begin{center}
+```{r, echo = FALSE, results = "asis", eval=TRUE}
+stargazer(model2, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", dep.var.labels = "Fuel Economy", star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser"), font.size = "small", float = FALSE, covariate.labels = "Engine Displacement") 
+```
+\end{center}
+
+
+## 3. How high is an adjusted R$^2$ of 0.64?
+```{r, fig.align = 'center', fig.asp = 0.618, fig.width = 7, out.height = '85%', eval=TRUE, cache=TRUE}
+set.seed(50)
+d1 <- tibble(
+    x = rnorm(50, 12, 3),
+    y1 = x + rnorm(50, 15, 8),
+    y2 = x + rnorm(50, 15, 5),
+    y3 = x + rnorm(50, 15, 1.5),
+    y4 = x + rnorm(50, 15, .5)    
+)
+
+d2 <- d1 |>
+pivot_longer(cols = y1:y4, names_to = "Version", values_to = "Values") |>
+mutate(
+    Version = case_when(
+        Version == "y1" ~ "R2 = 0",
+        Version == "y2" ~ "R2 = 0.24",
+        Version == "y3" ~ "R2 = 0.81",
+        Version == "y4" ~ "R2 = 0.97")
+    )
+
+ggplot(data = d2, aes(x = x, y = Values)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    theme_bw() +
+    facet_wrap(~ Version)
+
+```
+
+
+## {.plain}
+\vspace{.2in}
+
+```{r, fig.align = 'center', echo=TRUE, out.width='66%', fig.width=6, fig.asp=0.7}
+## 4. Any problems in the residuals plot?
+plot(model2, which = 1)
+```
+
+
+## 
+\huge
+
+\begin{center}
+Redo the regression but using the highway fuel economy variable (`hwy`) as the outcome.
+\end{center}
+
+
+##
+\begin{center}
+```{r, echo = FALSE, results = "asis", eval=TRUE}
+model3 <- lm(data = mpg, hwy ~ displ)
+
+stargazer(model2, model3, type = "latex", digits = 2, header = FALSE, dep.var.caption = "", dep.var.labels = c("Fuel Economy (City)", "Fuel Economy (Highway)"), star.cutoffs = .05, notes = "*p < 0.05", notes.append = FALSE, omit.stat = c("rsq", "ser"), font.size = "footnotesize", float = FALSE, covariate.labels = "Engine Displacement") 
+```
+\end{center}
+
+
+## OLS Regression Tools in R
+\large
+
++ lm(): Fit the regression
+
++ tibble(): Make a new dataset
+
++ predict(): Make predictions using the regression model
+
++ ggeffects::ggpredict(): Same as above
+
++ stargazer::stargazer(): Make a fancy table
+
++ plot(model1, which = 1): Check the residuals

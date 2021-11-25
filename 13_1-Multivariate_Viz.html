@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>13_1-Multivariate_Viz.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <link href="libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="libs/datatables-binding/datatables.js"></script>
+    <script src="libs/jquery/jquery-3.6.0.min.js"></script>
+    <link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+    <link href="libs/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
+    <script src="libs/crosstalk/js/crosstalk.min.js"></script>
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+
+class: slideblue
+
+.size60[**Today's Agenda**]
+
+&lt;br&gt;
+
+.size40[
+**Multivariate Analyses**
+
+1. Descriptive statistics by groups
+
+2. Using facets to extend any visualization
+
+3. Mapping 3rd variables with colors or shapes
+]
+
+.center[.size30[
+  Justin Leinaweaver (Fall 2021)
+]]
+
+???
+
+Last week: Research design, causal inference and identification strategies using DAGs
+
+ANY QUESTIONS ON THIS MATERIAL BEFORE WE EXPLORE ADAPTING OUR ANALYSES TO THESE METHODS?
+
+
+
+
+---
+
+class: middle
+
+.size50[**1. Descriptive statistics by groups**]
+
+&lt;br&gt;
+
+.code150[
+
+```r
+dataset |&gt;
+* group_by(Cat_Predictor1, Cat_Predictor2, ...) |&gt;
+  summarize(
+    N = n(),
+    Mean = mean(Outcome),
+    StdDev = sd(Outcome)
+  )
+```
+]
+
+???
+
+You can always add more categorical variables to the group_by function
+
+
+
+---
+
+.size40[**1. Descriptive statistics by groups**]
+
+.pull-left[
+.code130[
+
+```r
+## Column order with group_by
+diamonds |&gt;
+* group_by(color) |&gt;
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price)
+  )
+```
+]]
+
+.pull-right[
+
+&lt;br&gt;
+
+.size30[
+
+|color |     N| Mean| StdDev|
+|:-----|-----:|----:|------:|
+|D     |  6775| 3170|   3357|
+|E     |  9797| 3077|   3344|
+|F     |  9542| 3725|   3785|
+|G     | 11292| 3999|   4051|
+|H     |  8304| 4487|   4216|
+|I     |  5422| 5092|   4722|
+|J     |  2808| 5324|   4438|
+]]
+
+
+
+---
+
+.size40[**1. Descriptive statistics by groups**]
+
+.pull-left[
+.code125[
+
+```r
+## Column order with group_by
+diamonds |&gt;
+* group_by(color, cut) |&gt;
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price)
+  )
+```
+]]
+
+.pull-right[
+
+|color |cut       |    N| Mean| StdDev|
+|:-----|:---------|----:|----:|------:|
+|D     |Fair      |  163| 4291|   3286|
+|D     |Good      |  662| 3405|   3175|
+|D     |Very Good | 1513| 3470|   3524|
+|D     |Premium   | 1603| 3631|   3712|
+|D     |Ideal     | 2834| 2629|   3001|
+|E     |Fair      |  224| 3682|   2977|
+|E     |Good      |  933| 3424|   3331|
+|E     |Very Good | 2400| 3215|   3408|
+|E     |Premium   | 2337| 3539|   3795|
+|E     |Ideal     | 3903| 2598|   2956|
+|F     |Fair      |  312| 3827|   3223|
+|F     |Good      |  909| 3496|   3202|
+|F     |Very Good | 2164| 3779|   3786|
+|F     |Premium   | 2331| 4325|   4012|
+]
+
+
+
+---
+
+.size40[**1. Descriptive statistics by groups**]
+
+.pull-left[
+.code125[
+
+```r
+## Column order with group_by
+diamonds |&gt;
+* group_by(cut, color) |&gt;
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price)
+  )
+```
+]]
+
+.pull-right[
+
+|cut  |color |   N| Mean| StdDev|
+|:----|:-----|---:|----:|------:|
+|Fair |D     | 163| 4291|   3286|
+|Fair |E     | 224| 3682|   2977|
+|Fair |F     | 312| 3827|   3223|
+|Fair |G     | 314| 4239|   3610|
+|Fair |H     | 303| 5136|   3886|
+|Fair |I     | 175| 4685|   3730|
+|Fair |J     | 119| 4976|   4050|
+|Good |D     | 662| 3405|   3175|
+|Good |E     | 933| 3424|   3331|
+|Good |F     | 909| 3496|   3202|
+|Good |G     | 871| 4123|   3703|
+|Good |H     | 702| 4276|   4021|
+|Good |I     | 522| 5079|   4632|
+|Good |J     | 307| 4574|   3708|
+]
+
+
+
+---
+
+.size40[**1. Descriptive statistics by groups**]
+
+.pull-left[
+.code125[
+
+```r
+## Column order with group_by
+diamonds |&gt;
+* group_by(cut, color) |&gt;
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price)
+  )
+```
+]]
+
+.pull-right[
+
+|cut  |color |   N| Mean| StdDev|
+|:----|:-----|---:|----:|------:|
+|Fair |D     | 163| 4291|   3286|
+|Fair |E     | 224| 3682|   2977|
+|Fair |F     | 312| 3827|   3223|
+|Fair |G     | 314| 4239|   3610|
+|Fair |H     | 303| 5136|   3886|
+|Fair |I     | 175| 4685|   3730|
+|Fair |J     | 119| 4976|   4050|
+|Good |D     | 662| 3405|   3175|
+|Good |E     | 933| 3424|   3331|
+|Good |F     | 909| 3496|   3202|
+]
+
+&lt;br&gt;
+
+.center[.size40[**How do we include a table like this in a report? (35 rows)**]]
+
+
+
+---
+
+class: middle
+
+.size30[.center[**Option 1: Add a dynamic data table to your report**]]
+
+&lt;br&gt;
+
+.code125[
+
+```r
+## Load the DT package (install it first!)
+library(DT)
+
+## Use the datatable function
+diamonds |&gt;
+  group_by(cut, color) |&gt;
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price),
+  ) |&gt;
+* datatable(filter = "top", rownames = FALSE)
+```
+]
+
+
+
+---
+
+class: middle
+
+.size30[.center[**Option 1: Add a dynamic data table to your report**]]
+
+&lt;br&gt;
+
+.code125[
+
+```r
+## Load the DT package (install it first!)
+library(DT)
+
+## Use the datatable function
+diamonds |&gt;
+  group_by(cut, color) |&gt;
+  summarize(
+    N = n(),
+    Mean = mean(price),
+    StdDev = sd(price),
+  ) |&gt;
+* datatable(filter = "top", rownames = FALSE) |&gt;
+* formatRound(columns = c("Mean", "StdDev"), digits = 0)
+```
+]
+
+
+
+---
+
+class: middle
+
+<div id="htmlwidget-b750d4339e61313d0e77" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b750d4339e61313d0e77">{"x":{"filter":"none","vertical":false,"data":[["Fair","Fair","Fair","Fair","Fair","Fair","Fair","Good","Good","Good","Good","Good","Good","Good","Very Good","Very Good","Very Good","Very Good","Very Good","Very Good","Very Good","Premium","Premium","Premium","Premium","Premium","Premium","Premium","Ideal","Ideal","Ideal","Ideal","Ideal","Ideal","Ideal"],["D","E","F","G","H","I","J","D","E","F","G","H","I","J","D","E","F","G","H","I","J","D","E","F","G","H","I","J","D","E","F","G","H","I","J"],[163,224,312,314,303,175,119,662,933,909,871,702,522,307,1513,2400,2164,2299,1824,1204,678,1603,2337,2331,2924,2360,1428,808,2834,3903,3826,4884,3115,2093,896],[4291.06134969325,3682.3125,3827.00320512821,4239.25477707006,5135.68316831683,4685.44571428571,4975.65546218487,3405.38217522659,3423.64415862808,3495.7502750275,4123.4822043628,4276.25498575499,5078.53256704981,4574.17263843648,3470.46728354263,3214.65208333333,3778.82024029575,3872.75380600261,4535.39035087719,5255.87956810631,5103.51327433628,3631.29257641921,3538.91442019683,4324.89017589018,4500.74213406293,5216.70677966102,5946.18067226891,6294.59158415842,2629.09456598447,2597.55008967461,3374.93936225823,3720.70638820639,3889.33483146067,4451.97037744864,4918.18638392857],[3286.114238175,2976.65164471986,3223.3026845351,3609.64437887031,3886.48184664722,3730.27113220169,4050.45893285297,3175.14871018424,3330.70206061555,3202.41118690835,3702.50471814707,4020.6604881353,4631.70214126782,3707.79084458964,3523.75326789627,3408.02363447783,3786.12403275894,3861.37546351796,4185.79820176343,4687.10477498479,4135.65274174061,3711.63400958219,3794.98718429645,4012.02275623122,4356.57103435832,4466.18971716333,5053.74614648332,4788.93669054525,3001.0699193813,2956.00714892046,3766.63532757853,4006.26246782228,4013.37522845753,4505.15040484224,4476.20683640928]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>cut<\/th>\n      <th>color<\/th>\n      <th>N<\/th>\n      <th>Mean<\/th>\n      <th>StdDev<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":3,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 0, 3, \",\", \".\");\n  }"},{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatRound(data, 0, 3, \",\", \".\");\n  }"},{"className":"dt-right","targets":[2,3,4]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render"],"jsHooks":[]}</script>
+
+
+
+
+---
+
+class: middle
+
+.size30[.center[**Option 2: Standard Table (Cat x Cat x Numeric)**]]
+
+.code125[
+
+```r
+diamonds |&gt;
+  group_by(cut, color) |&gt;
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |&gt;
+* pivot_wider(names_from = color, values_from = Mean)
+```
+
+```
+# A tibble: 5 × 8
+# Groups:   cut [5]
+  cut           D     E     F     G     H     I     J
+  &lt;ord&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Fair       4291  3682  3827  4239  5136  4685  4976
+2 Good       3405  3424  3496  4123  4276  5079  4574
+3 Very Good  3470  3215  3779  3873  4535  5256  5104
+4 Premium    3631  3539  4325  4501  5217  5946  6295
+5 Ideal      2629  2598  3375  3721  3889  4452  4918
+```
+]
+
+???
+
+1) Choose 1 stat, 
+2) pivot_wider to change rows into columns
+
+
+
+---
+
+class: middle
+
+.size40[.center[**Why aren't colorless (D, E, F) diamonds of higher quality more expensive?**]]
+
+&lt;br&gt;
+
+.size30[
+
+|cut       |    D|    E|    F|    G|    H|    I|    J|
+|:---------|----:|----:|----:|----:|----:|----:|----:|
+|Fair      | 4291| 3682| 3827| 4239| 5136| 4685| 4976|
+|Good      | 3405| 3424| 3496| 4123| 4276| 5079| 4574|
+|Very Good | 3470| 3215| 3779| 3873| 4535| 5256| 5104|
+|Premium   | 3631| 3539| 4325| 4501| 5217| 5946| 6295|
+|Ideal     | 2629| 2598| 3375| 3721| 3889| 4452| 4918|
+]
+
+--
+
+&lt;br&gt;
+
+.size40[.center[How do we ’control’ for diamond size in this table?]]
+
+
+
+---
+
+class: middle
+
+.code110[
+
+```r
+diamonds |&gt;
+* filter(carat &lt; 1) |&gt;
+  group_by(cut, color) |&gt;
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |&gt;
+  pivot_wider(names_from = color, values_from = Mean) |&gt;
+  knitr::kable()
+```
+]
+
+.size30[
+
+|cut       |    D|    E|    F|    G|    H|    I|    J|
+|:---------|----:|----:|----:|----:|----:|----:|----:|
+|Fair      | 2458| 2034| 1994| 1950| 2216| 2188| 1924|
+|Good      | 1834| 1729| 1897| 1923| 1711| 1653| 1468|
+|Very Good | 1904| 1693| 1790| 1645| 1709| 1706| 1594|
+|Premium   | 1717| 1673| 1757| 1461| 1517| 1374| 1364|
+|Ideal     | 1651| 1589| 1635| 1493| 1433| 1405| 1324|
+]
+
+???
+
+Not clear why the colorless diamonds (D, E, F) are not more expensive.
+
+Diamond prices determined by four c's: carat, cut, clarity, color
+
+CLASS: Now redo the table for medium diamonds (between 1 and 2 carats in size).
+
+
+
+---
+
+class: middle
+
+.code110[
+
+```r
+diamonds |&gt;
+* filter(carat &gt; 1, carat &lt; 2) |&gt;
+  group_by(cut, color) |&gt;
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |&gt;
+  pivot_wider(names_from = color, values_from = Mean) |&gt;
+  knitr::kable()
+```
+]
+
+.size30[
+
+|cut       |    D|    E|    F|    G|    H|    I|    J|
+|:---------|----:|----:|----:|----:|----:|----:|----:|
+|Fair      | 6186| 5875| 6158| 5708| 5736| 5006| 4808|
+|Good      | 6641| 7079| 6578| 7098| 6550| 6611| 5722|
+|Very Good | 8149| 7792| 8115| 7922| 6964| 6821| 5977|
+|Premium   | 8011| 8164| 7980| 7999| 6760| 6684| 6033|
+|Ideal     | 8930| 8486| 8936| 8659| 7137| 7000| 6197|
+]
+
+???
+
+Result makes way more sense.
+
+CLASS: Now redo the table for large diamonds (above 2 carats in size).
+
+
+
+---
+
+class: middle
+
+.code110[
+
+```r
+diamonds |&gt;
+* filter(carat &gt; 2) |&gt;
+  group_by(cut, color) |&gt;
+  summarize(
+    Mean = round(mean(price), 0)
+  ) |&gt;
+  pivot_wider(names_from = color, values_from = Mean) |&gt;
+  knitr::kable()
+```
+]
+
+.size30[
+
+|cut       |     D|     E|     F|     G|     H|     I|     J|
+|:---------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|
+|Fair      | 15416| 12839| 12680| 10893| 12250| 12705| 11351|
+|Good      | 16074| 16074| 15412| 15315| 14873| 14408| 13040|
+|Very Good | 16264| 16698| 16346| 15217| 15307| 15524| 13314|
+|Premium   | 16152| 16020| 15521| 15349| 15073| 15149| 14013|
+|Ideal     | 16366| 15592| 16283| 16553| 15883| 15311| 14850|
+]
+
+
+
+---
+
+class: middle, slideblue
+
+.size50[.center[**Multivariate Analyses**]]
+
+&lt;br&gt;
+
+.size40[
+1. .greytext[Descriptive statistics by groups]
+  
+2. **Using facets to extend any visualization**
+    
+3. .greytext[Mapping 3rd variables with colors or shapes]
+]
+
+
+
+---
+
+.size40[1) Start with a univariate visualization]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") 
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-22-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.size40[2) facet_wrap to repeat plot for data subsets]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") +
+* facet_wrap(~ drv)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-23-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.size40[2) facet_wrap to repeat plot for data subsets]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") +
+* facet_wrap(~ drv, scales = "free_y")
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-24-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.size40[You can specify the number of columns]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") +
+* facet_wrap(~ class, ncol = 4)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-25-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+CLASS: Try different numbers of columns and see what happens
+
+
+
+
+---
+
+.size40[facet_grid to subset by two cat variables]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") +
+* facet_grid(drv ~ class)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-26-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.size40[We can use facets with ANY baseline visualization]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+    geom_point()
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-27-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.size40[We can use facets with ANY baseline visualization]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+    geom_point() +
+*   facet_wrap(~ drv)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-28-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+
+---
+
+class: middle, slideblue
+
+.size50[.center[**Multivariate Analyses**]]
+
+&lt;br&gt;
+
+.size40[
+1. .greytext[Descriptive statistics by groups]
+  
+2. .greytext[Using facets to extend any visualization]
+    
+3. **Mapping 3rd variables with colors or shapes**
+]
+
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+
+```r
+## Baseline
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+    geom_point()
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-29-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+*   geom_point(color = "blue")
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-30-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+*   geom_point(aes(color = drv))
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-31-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+*   geom_point(aes(shape = drv))
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-32-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code125[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+*   geom_point(aes(shape = drv), size = 2)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-33-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code120[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) + 
+*   geom_point(aes(color = drv, shape = drv), size = 2)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-34-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code120[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+    geom_point(aes(color = drv, shape = drv), size = 2) +
+*   facet_wrap(~ drv)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-35-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+.size40[Mapping 3rd variables with colors or shapes]
+
+.code120[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+  geom_point(aes(color = drv, shape = drv), size = 2) +
+  facet_wrap(~ drv) +
+* scale_color_manual(values = c("orange", "red", "blue"))
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-36-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.code120[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+  geom_point(aes(color = drv, shape = drv), size = 2) +
+  facet_wrap(~ drv) +
+  scale_color_manual(values = c("orange", "red", "blue")) +
+* theme(legend.position = "top")
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-37-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+.code120[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+  geom_point(aes(color = drv, shape = drv), size = 2) +
+  facet_wrap(~ drv) +
+  scale_color_manual(values = c("orange", "red", "blue")) +
+  theme(legend.position = "top")  +
+* geom_smooth(method = "lm", se = FALSE)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-38-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+class: middle, slidegreen
+
+.size50[.center[**Multivariate Analyses**]]
+
+&lt;br&gt;
+
+.size40[
+1. Descriptive statistics by groups
+  
+2. Using facets to extend any visualization
+    
+3. Mapping 3rd variables with colors or shapes
+
+4. **Bonus: Animate the 3rd/4th variable!**
+]
+
+
+
+---
+
+class: middle
+
+.size40[.center[**Install the needed packages and load gganimate**]]
+
+&lt;br&gt;
+
+.code150[
+
+```r
+install.packages("gifski")
+
+install.packages("png")
+
+install.packages("gganimate")
+
+library(gganimate)
+```
+]
+
+
+
+
+
+---
+
+.center[**Transitions between different subsets of the data**]
+
+.code120[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+  geom_point() +
+* transition_states(cyl) +
+* labs(title = "Number of Cylinders: {closest_state}")
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-41-1.gif" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+transition_states is for moving across levels of a categorical variable
+
+
+
+
+
+---
+
+.center[**Transitions across time use a different function**]
+
+.code120[
+
+```r
+ggplot(data = mpg, aes(x = class, y = cty)) +
+  geom_boxplot() +
+* transition_time(year) +
+* labs(title = 'Year: {frame_time}')
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-42-1.gif" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+.center[**Transitions can also leave the prior data in place**]
+
+.code120[
+
+```r
+ggplot(data = economics, aes(x = date, y = pop)) +
+  geom_line(color = "darkblue", size = 1.4) +
+* transition_reveal(date) +
+  coord_cartesian(ylim = c(150000, 350000)) +
+  labs(title = "US Population (thousands)")
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-43-1.gif" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+class: middle
+
+.size50[.center[**Last one, so let's make something awesome**]]
+
+.code135[
+
+```r
+## New package needed for the data (install before loading)
+install.packages("gapminder")
+
+library(gapminder)
+```
+]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; continent &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; lifeExp &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; pop &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; gdpPercap &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1952 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.801 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8425333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 779.4453 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1957 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30.332 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9240934 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 820.8530 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1962 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.997 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10267083 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 853.1007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1967 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34.020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11537966 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 836.1971 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1972 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.088 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13079460 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 739.9811 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1977 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38.438 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14880372 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 786.1134 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(alpha = 0.7, show.legend = FALSE)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-46-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+* ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-47-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+* scale_x_log10()
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-48-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+* filter(continent != "Oceania") |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+* facet_wrap(~ continent, ncol = 4)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-49-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  filter(continent != "Oceania") |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+* scale_colour_manual(values = country_colors)
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-50-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  filter(continent != "Oceania") |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+  scale_colour_manual(values = country_colors) +
+* scale_size(range = c(3, 13))
+```
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-51-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  filter(continent != "Oceania") |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(3, 13)) +
+* transition_time(year) +
+* labs(title = 'Year: {frame_time}')
+```
+]
+
+
+
+---
+
+class: middle
+
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-53-1.gif" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+
+
+---
+
+class: center
+
+.size40[**Do countries with larger military enlistments have fewer political freedoms?**]
+    
+&lt;img src="13_1-Multivariate_Viz_files/figure-html/unnamed-chunk-54-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
