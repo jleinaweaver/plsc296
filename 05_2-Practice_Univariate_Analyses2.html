@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>05_2-Practice_Univariate_Analyses2.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+background-image: url('libs/Images/background-blue_cubes_lighter2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size80[**Today's Agenda**]
+
+.size45[
+Practice building, polishing and interpreting univariate analyses
+
+- Script: 2023-02-17-Univariate_Practice-WDI.R
+
+- Data: 2023-02-17-WDI_Data_Extract.xlsx
+]
+
+&lt;br&gt;
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. 
+
+
+
+---
+
+background-image: url('libs/Images/06_1-WDI_Front.png')
+background-size: 75%
+background-position: center
+class: middle
+
+???
+
+On Friday we began exploring data from the World Bank's WDI database.
+
+- I'd like us to keep digging into this data today.
+
+&lt;br&gt;
+
+Two aims:
+
+1. Practice building univariate analyses in R, and
+
+2. Practice analyzing and interpreting the visualizations and statistics you are producing.
+
+&lt;br&gt;
+
+Before we get to work, let's talk about presenting visualization to professional audiences.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+
+&lt;img src="libs/Images/06_1-bad_plot.png" width="78%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Ok, evaluate the quality of this visualization for me.
+
+### What does it do well? What does it do badly?
+
+&lt;br&gt;
+
+Trick question! It does NOTHING good. NOTHING!
+
+- Don't use 3-d if the 3-d provides ZERO new information
+
+- Make the axis scales logical!
+
+- I don't think these are continents...
+
+- Where does this data come from?
+
+- What do these bars actually show?
+
+- Why are there drop shadows?!?!?
+
+&lt;br&gt;
+
+### Is everybody clear on this is an abomination?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.center[.size50[.content-box-blue[**Polishing your Visualizations**]]]
+
+.size40[
+1. Include an informative title
+
+2. Add a figure label and caption
+
+3. Identify the source(s)
+
+4. Ensure the axis labels are clear and readable
+
+5. Maximize the data-to-ink ratio
+
+6. No chart junk!
+]
+
+???
+
+Let's talk general rules of thumb when producing visualizations for a professional audience.
+
+- This means producing high quality visualizations that would look good in any presentation, report, book, web post, poster, etc.
+
+&lt;br&gt;
+
+1. Include an informative title
+    - EVERY visualization should have a title that tells the viewer the main point of the analysis
+    - Don't force them to guess or to struggle to decipher the point, just tell them.
+
+2. Add a label to the figure (with a figure number)
+    - e.g. Figure 1, Figure 2, Figure 3
+    - Otherwise it's impossible to refer to it in the text
+    - Plus a caption to explain what is being shown in the visualization
+
+3. Identify the source(s)
+    - Somewhere on the Figure or in the label you MUST make clear where the data came from
+
+4. Ensure the axis labels are clear and readable
+
+5. Maximize the data-to-ink ratio
+    - As much as possible, the "ink" should be tied directly to data
+    - e.g. No extra 3-d nonsense!
+    - e.g. No big empty spaces
+
+6. No chart junk!
+    - It's super easy to add nonsense to your plot and much of it simply distracts from the central point of the visualization.
+    - Focus on the central argument of the viz!
+
+&lt;br&gt;
+
+### Questions on these?
+
+- **SLIDE**: Example...
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-class: center
+class: middle
+
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-3-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+**Figure 1**: Global life expectancy for 2019 is taken from the World Bank's World Development Indicators (WDI) database and organized by UN region.
+
+???
+
+Let's call this level 1 of polished.
+
+- The title is a clear, simple description
+- The Figure label is good and includes the source info,
+- The axis labels are clear
+- There's no extraneous chart junk and no wasted space
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-class: center
+class: middle
+
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-4-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+**Figure 1**: Global life expectancy for 2019 is taken from the World Bank's World Development Indicators (WDI) database and organized by UN region.
+
+???
+
+Let's call this level 2 of polished!
+
+- Added descriptive statistics (the mean) for context
+
+- Added a title that conveys an important conclusion
+
+### Make sense?
+
+&lt;br&gt;
+
+### Questions on polishing a visualization?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Assignment for Wednesday**]
+]]
+
+.size45[
+**1) Create a high quality, polished visualization for these six variables:**
+- WB Income
+- gdp_per_capita
+- measles_herd_immunity
+- measles_immunizations_pct
+- birth_rate
+- death_rate
+]
+
+???
+
+Today you have two jobs.
+
+Job 1: Produce six HIGHLY polished visualizations
+
+- The good news is, we've already worked on the first four in class!
+
+&lt;br&gt;
+
+### Questions on Job 1?
+
+- If you think of cool things you'd like to add to a visualization, ask me!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Assignment for Wednesday**]
+]]
+
+.size45[
+**2) Submit to Canvas an argument that answers this question:**
+
+.center[**What is the state of global development in 2019?**]
+
+- Paragraph form
+- Critical analysis, not simple description
+- At least three pieces of evidence (polished figures)
+]
+
+???
+
+Before class you must submit an argument answering this question that:
+
+- Is in paragraph form (e.g. not just bullet points, complete sentences and each paragraph makes a complete point)
+
+- Is built on critical analysis, not just simple descriptions of what you made,
+
+- Includes at least THREE pieces of evidence inserted in the text to support your claims (figures MUST be highly polished)
+
+&lt;br&gt;
+
+Note, the RStudio export image tool will let you copy images and then you can paste them into the Canvas discussion board.
+
+&lt;br&gt;
+
+### Questions on the assignment?
+
+Let's get to work!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

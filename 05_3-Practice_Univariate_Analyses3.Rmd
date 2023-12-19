@@ -1,0 +1,622 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+#library(stargazer)
+#library(kableExtra)
+#library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+background-image: url('libs/Images/background-blue_cubes_lighter2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size80[**Today's Agenda**]
+
+.size45[
+Practice building, polishing and interpreting univariate analyses
+
+- Script: 2023-02-17-Univariate_Practice-WDI.R
+
+- Data 1: 2023-02-17-WDI_Data_Extract.xlsx
+- Data 2: WDI-Measles_Across_Time.xlsx
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Review submissions on Canvas
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Assignment for Today**]
+]]
+
+.size45[
+**Submit to Canvas an argument that answers this question:**
+
+.center[**What is the state of global development in 2019?**]
+
+- Paragraph form
+- Critical analysis, not simple description
+- At least three pieces of evidence (polished figures)
+]
+
+```{r, echo=FALSE}
+# Load readxl package
+library(readxl)
+
+# Input data as new object
+data1 <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/WDI-2023-02/2023-02-17-WDI_Data_Extract.xlsx")
+```
+
+???
+
+1. WB Income
+2. gdp_per_capita
+3. measles_herd_immunity
+4. measles_immunizations_pct
+5. birth_rate
+6. death_rate
+
+### How did this go for you?
+
+### - Any trouble copying images into Canvas?
+
+### - Any trouble polishing the graphics? e.g. things you wanted to tweak but couldn't?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size55[**What does your variable alone teach us about the world in 2019?**]]]
+
+.size45[
+1. WB Income
+2. gdp_per_capita
+3. measles_herd_immunity
+4. measles_immunizations_pct
+5. birth_rate
+6. death_rate
+]
+
+???
+
+*Save plenty of time for new stuff!*
+
+<br>
+
+*Split class into 6 groups, 1 per variable*
+
+Groups, in a few minutes you will present your critical analysis of this variable.
+
+- Use this as a chance to show us a highly polished viz, AND
+    
+- To make sure everyone understands the difference between simple description and analysis
+
+<br>
+
+### Questions on the task?
+
+Get to it!
+
+<br>
+
+*PRESENT each and DISCUSS*
+
+<br>
+
+World Bank Income Levels
+- Low: < 1,045
+- Low-middle: < 4,095
+- Upper-middle: < 12,695
+- Upper: 12,695
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.6, out.width='100%'}
+data1 |>
+  ggplot(aes(x = gdp_per_capita)) +
+  geom_histogram(bins = 15, fill = "green3", color = "white") +
+  labs(x = "GDP per Capita", y = "Countries", title = "Global Wealth (2019)")
+
+data1 |>
+  ggplot(aes(x = birth_rate)) +
+  geom_histogram(bins = 15, fill = "red3", color = "white") +
+  labs(x = "Birth Rate (per 1,000)", y = "Countries", title = "Global Opportunity (2019)")
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.6, out.width='100%'}
+data1 |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white") +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2019)")
+
+data1 |>
+  ggplot(aes(x = death_rate)) +
+  geom_histogram(bins = 15, fill = "red3", color = "white") +
+  labs(x = "Death Rate (per 1,000)", y = "Countries", title = "Global Opportunity (2019)")
+```
+]
+
+???
+
+Taking all of this on board, where do we end up?
+
+### Based on this data and these analyses, what would you argue is the current state of global development?
+
+### - High confidence conclusions?
+
+### - Low confidence conclusions?
+
+<br>
+
+Personal reflection time!
+
+This exercise represents the kind of exercise I want you all to get really good at doing this semester.
+
+- Be presented with a question, collect and clean data, apply statistical tools to the data and then use your findings to make a convincing argument.
+
+### What do you need to do to get better at this exercise?
+
+<br>
+
+**SLIDE**: As I think you've seen from this exercise that univariate tools can be hard to interpret without context.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Option 1: Benchmark the Data**]]]
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.9, out.width='100%', fig.width=5}
+data1 |>
+  ggplot(aes(x = measles_herd_immunity)) +
+  geom_bar(width = .5, fill = "blue") +
+  scale_x_discrete(limits = c("Herd Immunity", "At Risk")) +
+  labs(x = "", y = "Count of Countries", title = "Global Health (2019)")
+```
+
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.9, out.width='100%', fig.width=5}
+data1 |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white") +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2019)")
+```
+]
+
+???
+
+The first way we can add context to our analyses is with a "benchmark"
+
+- e.g. Can we define "good" vs "bad" values?
+
+<br>
+
+### Why does having both of these visualizations make our analyses so much more useful?
+
+- (**SLIDE**: Better titles!)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Option 1: Benchmark the Data**]]]
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.9, out.width='100%', fig.width=5}
+data1 |>
+  ggplot(aes(x = measles_herd_immunity)) +
+  geom_bar(width = .5, fill = "blue") +
+  scale_x_discrete(limits = c("Herd Immunity", "At Risk")) +
+  labs(x = "", y = "Count of Countries", title = "Too many countries remain vulnerable \n to measles outbreaks (< 95% vaccinated)")
+```
+
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.9, out.width='100%', fig.width=5}
+data1 |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white") +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "The level of vulnerability in some countries is\n staggeringly high")
+```
+]
+
+???
+
+### Does everybody see from these the power of a title that makes the "point" of the analysis clear?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Option 2: Make a Map**]]]
+
+```{r, echo=FALSE, comment=NULL, message=FALSE, warning=FALSE, results='hide'}
+# Measles data context: Make a map
+
+# Load the package
+library(rworldmap)
+
+# Merge your data onto the world map
+data2 <- joinCountryData2Map(dF = data1, joinCode = "NAME", nameJoinColumn = "country")
+```
+
+```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.asp=.5, out.width='95%', fig.width=12}
+# Output the map
+mapCountryData(data2, nameColumnToPlot = "measles_herd_immunity", colourPalette = c("red3", "blue3"), mapTitle = "Countries Most At Risk of Measles (2019)")
+```
+
+???
+
+The second way we can add context to our analyses is with a map.
+
+- Geographic information can show patterns in the spatial layout
+
+<br>
+
+### What does this map add to our analysis of measles risk?
+
+- (**SLIDE**: Better title!)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Option 2: Make a Map**]]]
+
+```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.asp=.5, out.width='95%', fig.width=12}
+# Output the map
+mapCountryData(data2, nameColumnToPlot = "measles_herd_immunity", colourPalette = c("red3", "blue3"), mapTitle = "Measles risk does not clearly overlap with standard rich-poor or north-south divides")
+```
+
+???
+
+### What's another title that draws out other important analyses from this map?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Option 3: Across Time Data**]]]
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.85, out.width='100%'}
+# Input across time data
+data1b <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/WDI-2023-02/WDI-Measles_Across_Time.xlsx")
+
+data1b |>
+  filter(year == 1985) |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white") +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (1985)") +
+  scale_x_continuous(limits = c(0, 100))
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.85, out.width='100%'}
+data1b |>
+  filter(year == 2019) |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white") +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2019)") +
+  scale_x_continuous(limits = c(0, 100))
+```
+]
+
+???
+
+The third way we can add context to our analyses is with across time data
+
+- Can we compare observations to themselves at different points in time?
+
+<br>
+
+### Why does having both of these visualizations make our analyses so much more useful?
+
+<br>
+
+### What's a better title for these plots?
+
+- (The world has made incredible progress in fighting measles but there is much left to do!)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Option 3: Across Time Data**]]]
+
+```{r, fig.retina=3, fig.align='center', fig.asp=0.618, fig.width=8, out.width='80%', cache=TRUE}
+# Measles data context: Animate the data
+
+# Load the package
+library(gganimate)
+
+# Histogram across time
+data1b |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 30) +
+  transition_time(year) +
+  labs(title = "Measles Immunizations ({as.integer(frame_time)})")
+```
+
+???
+
+R will also let us add a lot more time context with an animation!
+
+### What does this help us see in the data?
+
+<br>
+
+Ok, let's learn to build all these things!
+
+- You've already made the benchmark plots so let's move to the map!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size60[**Option 2: Let's Make a Map!**]]
+
+<br>
+
+.code100[
+```{r, echo=TRUE, eval=FALSE}
+# Install the rworldmap package (only once per computer)
+install.packages("rworldmap")
+
+# Load the package
+library(rworldmap)
+
+# Merge your data onto the world map
+data2 <- joinCountryData2Map(dF = data1, joinCode = "NAME", nameJoinColumn = "country")
+
+# Output the basic map
+mapCountryData(data2, nameColumnToPlot = "measles_herd_immunity")
+
+# Tweak the map
+mapCountryData(data2, 
+               nameColumnToPlot = "measles_herd_immunity",
+               colourPalette = c("blue", "red"),
+               mapTitle = "Title Here")
+```
+]
+
+???
+
+This isn't the only way to make a map in R, but it is the easiest way I've found.
+
+- R has much more powerful mapping packages but this is a handy way to do quick analyses that still look pretty darn good.
+
+<br>
+
+*Walk them through the arguments in each function*
+
+- Basically, each mapping package tells R the lines for the map and you just need to merge your data onto those map lines
+
+- rworldmap is handy because it tries to automate this process for you
+
+- The trade-off is that it has fewer tweakable options and if it doesn't understand your data it just omits it (e.g. country name mispelled)
+
+<br>
+
+*Encourage the class to try other variables in the nameColumnToPlot argument*
+
+- Numeric variables are presented in 6 quantiles (e.g. 16% per color)
+
+<br>
+
+### Any questions on using rworldmap to make a world map?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size60[**Option 3: Let's Filter a Histogram!**]]
+
+.code110[
+```{r, echo=TRUE, eval=FALSE}
+# Input the data
+data_all <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/WDI-2023-02/WDI-Measles_Across_Time.xlsx")
+
+# Create two new data sets by year
+data_1985 <- filter(data_all, year == 1985)
+data_2019 <- filter(data_all, year == 2019)
+
+# Histogram 1985
+ggplot(data_1985, aes(x = measles_immunizations_pct)) +
+  geom_histogram()
+
+# Histogram 2019
+ggplot(data_2019, aes(x = measles_immunizations_pct)) +
+  geom_histogram()
+```
+]
+
+???
+
+*Encourage them to try other years in the data set*
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size60[**Option 3: Let's Animate a Bar Plot!**]]
+
+.code120[
+```{r, echo=TRUE, eval=FALSE}
+# Install animation package (one time)
+install.packages("gifski")
+install.packages("gganimate")
+
+# Load the package
+library(gifski)
+library(gganimate)
+
+# Histogram across time
+ggplot(data_all, aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 30) +
+  transition_time(year) +
+  labs(title = "Measles Immunizations ({as.integer(frame_time)})")
+```
+]
+
+???
+
+The key here is the "transition_time" function
+
+- THAT's the piece that creates the animation as a gif
+
+<br>
+
+The wacky code in the title is just to mae the years appear cleanly to track the progress of the animation.
+
+<br>
+
+### Questions on these new techniques?
+
+- Benchmarks, mapping, filtering across time data and basic animation?
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size70[**For Friday**]
+
+.size50[
+1. Healy (2019) Chapter 8 “Refine your plots”
+
+2. Freedom House. (2022). *Freedom in the World: Methodology*.
+]
+
+???
+
+Friday we'll practice all your new tools by exploring the Freedom House Freedom in the World data set.
+
+
+
+
+
+
+
+
+
+
+
+

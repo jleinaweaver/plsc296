@@ -1,0 +1,1171 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+
+.size80[**Today's Agenda**]
+
+<br>
+
+.size50[
+Huntington-Klein (2022) Chapters 6 & 7
+
+- Causal Diagrams
+
+- Directed Acyclic Graphs (DAGs)
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Review DGP submissions on Canvas
+
+<br>
+
+Readings:
+1. Huntington-Klein 2022 chapter 6 "Causal Diagrams" [LINK](https://theeffectbook.net/ch-CausalDiagrams.html)
+2. Huntington-Klein 2022 chapter 7 "Drawing Causal Diagrams"[LINK](https://theeffectbook.net/ch-DrawingCausalDiagrams.html)
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[.content-box-blue[**Building a Causal Argument**]]
+
+.size40[
+"Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e. intervention) was the 'cause' of the effect (or outcome) that was observed" (Frey 2018). 
+]]
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 6, fig.height=1.25, out.width='95%'}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Treatment", "Effect")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+???
+
+This week we are exploring the concepts and tools you will need to build an argument about causation using observational data.
+
+- e.g. making an argument with data about why the world works like it does.
+
+- In other words, we want to demonstrate that changes in our chosen predictors CAUSE a change in the outcome variable
+
+<br>
+
+### Any questions on the material from Monday before we push forward?
+
+- **SLIDE**: Let's do a quick refresher 
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+<br>
+
+.pull-left[
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("libs/Images/13_1-classroom.jpg")
+```
+]
+
+.pull-right[
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("libs/Images/13_1-student_success2.png")
+```
+]
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 7, fig.height=1, out.width='80%'}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Class\n Size", "Student\n Success")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -2.15, xend = 2, y = 1, yend = 1, arrow = arrow())
+```
+
+???
+
+Last class we proposed a hypothetical research project.
+
+### What theory about student success did we set out to test?
+
+- (Students in smaller classes receive more individualized attention and, therefore, experience more growth.)
+
+<br>
+
+### And what is the "gold standard" approach to running this test?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Randomized Controlled Trials (RCTs)**]]]
+
+<br>
+
+```{r, fig.retina=3, fig.align='center', out.width='77%', fig.asp=.6, fig.width=10}
+## Manual DAG
+d2 <- tibble(
+  x = c(2.5, 2, 3, 2, 3),
+  y = c(3, 2, 2, 1, 1),
+  labels = c("Participants", "Treatment\n Group", "Control\n Group", "Outcome", "Outcome")
+)
+
+ggplot(data = d2, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  annotate("segment", x = 2.5, xend = 2.5, y = 2.9, yend = 2.7, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.2, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2, xend = 2, y = 1.75, yend = 1.15, arrow = arrow()) +
+ annotate("segment", x = 3, xend = 3, y = 1.75, yend = 1.15, arrow = arrow()) +
+  annotate("text", x = 2.5, y = 2.6, label = "Random Allocation", color = "red", size = 10)
+
+# OLD
+# ggplot(data = d2, aes(x = x, y = y)) +
+#   geom_point(size = 8) +
+#   theme_void() +
+#   coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
+#   geom_label(aes(label = labels), size = 10) +
+#   annotate("segment", x = 2.5, xend = 2.1, y = 2.9, yend = 2.25, arrow = arrow()) +
+#   annotate("segment", x = 2.5, xend = 2.9, y = 2.9, yend = 2.25, arrow = arrow()) +
+#   annotate("segment", x = 2, xend = 2, y = 1.75, yend = 1.15, arrow = arrow()) +
+#  annotate("segment", x = 3, xend = 3, y = 1.75, yend = 1.15, arrow = arrow()) +
+#   annotate("text", x = 2.5, y = 2.6, label = "Random Allocation", color = "red", size = 12)
+```
+
+???
+
+A randomized controlled trial (RCT)!
+
+<br>
+
+### What is the primary benefit of testing this theory using a RCT?
+
+- When treatment is randomized, the only thing that distinguishes the treatment group from the control group BESIDES THE TREATMENT is chance. 
+
+- In other words, even though both groups are composed of different individuals, the two groups are comparable to each other on average in all respects.
+
+- Since the groups were identical, on average, going into the experiment we can use the factual outcome of each group as the counter-factual for the other group. 
+
+- In short, average scores in the treatment group can be compared to the average scores of the control group and the difference is the average treatment effect!
+
+### Everybody clear on why we refer to this as as a "gold standard"?
+
+<br>
+
+### What changes in this diagram when we shift from an experiment to observational data?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Randomized Controlled Trials (RCTs)**]]]
+
+<br>
+
+```{r, fig.retina=3, fig.align='center', out.width='77%', fig.asp=.6, fig.width=10}
+## Manual DAG
+d3 <- tibble(
+  x = c(2.5, 2, 3, 2, 3),
+  y = c(3, 2, 2, 1, 1),
+  labels = c("Nature", "Treatment\n Group", "Control\n Group", "Outcome", "Outcome")
+)
+
+ggplot(data = d3, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  annotate("segment", x = 2.5, xend = 2.2, y = 2.85, yend = 2.25, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.85, yend = 2.25, arrow = arrow()) +
+  annotate("segment", x = 2, xend = 2, y = 1.75, yend = 1.15, arrow = arrow()) +
+ annotate("segment", x = 3, xend = 3, y = 1.75, yend = 1.15, arrow = arrow())
+```
+
+???
+
+### What is the effect on our research design of moving from random allocation to allocation by nature (e.g. natural law / models)?
+- (Groups are no longer identical, on average!)
+
+- Therefore, we CANNOT simply compare the different outcomes!
+    - The outcome of the treatment group is unlikely to be a good estimate of the counterfactual for the control group
+    - And vice-versa
+
+<br>
+
+### How did we work to address this problem on Monday?
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. **Using theory, paint the most accurate picture possible of what the data generating process looks like**
+
+2. Use that data generating process to figure out the reasons our data might look the way it does that don’t answer our research question
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+The process proposed by HK (2022)
+
+<br>
+
+**SLIDE**: Our work on Monday focused on brainstorming the Data Generating Process for the variables in our proposed causal mechanism.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**The Data Generating Process (DGP)**]]]
+
+.pull-left[
+```{r, fig.retina=3, fig.align='center', out.width='100%', fig.asp=.9, fig.width=8}
+## Manual DAG
+d2 <- tibble(
+  x = c(2.5, 2, 3),
+  y = c(3, 2, 2),
+  labels = c("Nature", "Small\nClasses", "Large\nClasses")
+)
+
+ggplot(data = d2, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  #annotate("text", x = 2.5, y = 2.6, label = "????????????", color = "red", size = 10) +
+  #annotate("segment", x = 2.5, xend = 2.5, y = 2.9, yend = 2.7, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.15, y = 2.9, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.9, yend = 2.2, arrow = arrow())
+```
+]
+
+.pull-right[
+```{r, fig.retina=3, fig.align='center', out.width='100%', fig.asp=.9, fig.width=8}
+## Manual DAG
+d3 <- tibble(
+  x = c(2.5, 2, 3),
+  y = c(3, 2, 2),
+  labels = c("Nature", "Low\nScores", "High\nScores")
+)
+
+ggplot(data = d3, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  # annotate("text", x = 2.5, y = 2.6, label = "????????????", color = "red", size = 10) +
+  # annotate("segment", x = 2.5, xend = 2.5, y = 2.9, yend = 2.7, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.15, y = 2.9, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.9, yend = 2.2, arrow = arrow())
+```
+]
+
+???
+
+Let's recreate our lists from Monday!
+
+- e.g. two lists of mechanisms that could be used to explain why students might:
+    - Be in large vs small class sizes, and
+    - Get higher or lower scores on standardized tests.
+    
+<br>
+
+*ON BOARD: Two Columns*
+
+1. Class Size
+- ?
+
+2. Success
+- ?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. **Use that data generating process to figure out the reasons our data might look the way it does that don’t answer our research question**
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+With our DGP brainstorming done we can move to step 2 in HK's (2022) process.
+
+<br>
+
+I'll be honest here, this is NOT the clearest sentence I've ever read...
+
+- **SLIDE**: Let's try to clean this up.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. **Refine the DGP to only keep variables that confound the key mechanism**
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+I propose that we revise Step 2 to focus on finding confounders.
+
+### Has anybody ever heard of a confounder before?
+
+<br>
+
+### How about any statistical procedure that "controls" for something?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size65[.center[**Directed Acyclic Graphs (DAGs)**]]
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 6, fig.height=.85, out.width='85%'}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Treatment", "Outcome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 1.9, y = 1, yend = 1, arrow = arrow())
+```
+
+.size50[
++ 'Directed' = Paths indicate direction of effect
+
++ 'Acyclic' = No immediate feedback loops
+
++ 'Graphs' = Visualized
+]
+
+???
+
+Before we talk confounders, let's refine our understanding of these wacky arrow graphs I keep using
+
+- e.g. Directed Acyclic Graphs (DAGs)
+
+<br>
+
+DAGs are incredibly useful tools for calrifying a causal argument.
+
+<br>
+
+Understanding confounding is much easier with this style of graphical representation for a causal argument.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Treatment", "Confounder", "Outcome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.5, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+
+???
+
+I want to give you a nontechnical definition and some examples of confounders before I show you the technical definition.
+
+<br>
+
+In short, a confounder is a variable that explains some of the variation in both the treatment and the outcome variables.
+
+- In other words, the confounder causes at least some of the variation in the predictor, AND
+
+- The confounder causes at least some of the variation in the outcome.
+
+<br>
+
+This is how we show a confounder in a DAG.
+
+- Causal arrows run from the confounder variable to the predictor AND the outcome.
+
+<br>
+
+Two arguments required to establish a confounder:
+
+1. The confounder MUST cause BOTH variables in the mechanism
+
+2. The direction of effect is FROM the confounder TO the mechanism
+
+<br>
+
+### Questions on this?
+
+<br>
+
+**SLIDE**: Example 1
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[.center[**Do ice cream sales create arsonists?**]]
+
+.pull-left[
+```{r, fig.retina=3, out.width='80%'}
+knitr::include_graphics("libs/Images/12_1-ice_cream_truck.jpg")
+```
+]
+
+.pull-right[
+```{r, fig.retina=3, out.width='80%'}
+knitr::include_graphics("libs/Images/12_1-forest_fire.png")
+```
+]
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 6, fig.height=1, out.width='95%'}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Ice Cream\n Sales", "Forest\n Fires")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+???
+
+So, it turns out that there is a rather high correlation between ice cream sales and the number of forest fires in a given area.
+
+- I assume everybody senses that this is a case of correlation, not causation, right?
+
+- We don't actually think that buying ice cream leads someone to want to start a fire.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Ice Cream\n Sales", "Confounder", "Forest\n Fires")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.5, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+
+???
+
+### So, what's likely going on here?
+
+### - What may be confounding this relationship?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Ice Cream\n Sales", "Summer!", "Forest\n Fires")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.5, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+
+???
+
+Ice cream sales and forest fires are correlated because they both spike in the summertime!
+
+- Summer is confounding this mechanism.
+
+- If you adjust your analyses to this confounder, e.g. cities in summer vs other cities in summer, the correlation is greatly reduced.
+
+<br>
+
+This is what we call a spurious correlation, e.g. a fake relationship
+
+- This is also what people mean when they warn that correlation does not imply causation. 
+
+- Confounding effects can make two unrelated variables look related!
+
+<br>
+
+### Does this make sense?
+
+<br>
+
+**SLIDE**: Let me now introduce the technical definition of confounding.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size65[.content-box-blue[**Building a Causal Argument**]]
+
+<br>
+
+.size50[**Confronting Confounding Problems**
+
+"...any context in which the association between an outcome Y and a predictor of interest X is not the same as it would be, if we had experimentally determined the values of X" (Pearl 2000).
+]
+
+???
+
+This is Judea Pearl's technical definition of confounding.
+
+- Basically, with observational data we suspect our comparison groups are not identical on average, and so, we need to identify the important differences between them.
+
+- Thinking about confounding means thinking about what our data would look like if we had run this as an experiment.
+
+<br>
+
+**SLIDE**: I know this is a little dense, but let's think about what this means in the context of our ice cream and arson example.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Ice Cream\n Sales", "Summer!", "Forest\n Fires")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.5, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  #annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+
+???
+
+Here's the DAG with summer included, BUT in a world where we are able to RANDOMLY assign ice cream sales to different cities.
+
+- In other words, what if we could run an RCT to test this hypothesis?
+
+- Flip a coin with head's meaning a city gets a bunch of ice cream and tails meaning almost none.
+
+<br>
+
+The confounding definition asks, if you could remove the effect of this proposed variable, summer, do we think the forest fire results would change?
+
+- If we believe that removing this causal path changes the results then it is a confounder in the relationship.
+
+- In other words, without summertime, we expect no effect of ice cream sales variation on forest fires.
+
+<br>
+
+### Does this make sense?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. **Refine the DGP to only keep variables that confound the key mechanism**
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+In short, the second step of our causal argument process is to refine the DGP to include only the confounders to the key mechanism
+
+<br>
+
+THIS represents your identification strategy.
+
+- Your list of confounders represents your argument that you have identified the causal mechanism
+
+<br>
+
+**SLIDE**: Let's practice this second step on our hypothetical class size project.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Class\n Size", "Confounders", "Student\n Success")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.35, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.2, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.2, arrow = arrow())
+```
+
+???
+
+### What on our brainstormed lists might function as a confounder in this relationship?
+
+*EXPLORE and DISCUSS*
+
+- ?
+
+<br>
+
+**SLIDE**: Let's talk for a second about things that may LOOK like confounders but are not.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size45[**Is 'experience' a confounder in this mechanism?**]]]
+
+<br>
+
+```{r, fig.retina=3, fig.align='center', fig.height=4, out.width='80%'}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Salary", "Education", "Experience")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  #annotate("segment", x = .4, xend = 2.5, y = 1.9, yend = 1.2, arrow = arrow()) +
+  #annotate("segment", x = -.4, xend = -2.5, y = 1.9, yend = 1.2, arrow = arrow()) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+???
+
+Imagine we are developing a research project whose aim is to estimate the causal effect of 'education' on 'salary.'
+
+### Do we believe that 'experience' is a confounder of this mechanism? Why or why not?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size45[**Rule 2: Do not include mediators**]]]
+
+<br>
+
+```{r, fig.retina=3, fig.align='center', fig.height=4, out.width='80%'}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Salary", "Education", "Experience")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow()) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow(), linewidth = .1)
+```
+
+???
+
+Experience is a mediator in this mechanism.
+
+- It should NOT be included in our identification strategy.
+
+<br>
+
+Remember, your interest in "testing" this relationship is to identify the size of the main arrow
+
+- e.g. How big is the effect of education on future salary?
+
+<br>
+
+Including a mediator takes some of that effect you are interested in and redirects it to another mechanism
+
+- In other words, the estimated size of the effect of the main arrow will shrink which means it no longer represents a clean test of the mechanism.
+
+<br>
+
+### Does this make sense?
+
+<br>
+
+So, don't include mediators!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. **Refine the DGP to only keep variables that confound the key mechanism**
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+There are lots of other ways to add a variable to a DAG, but I think this is enough for us to move forward on our project.
+
+<br>
+
+### Any questions on our work with DAGs and confounders today?
+
+<br>
+
+We'll get into this third step more next week, but let me illustrate the effect of "controlling" for a confounder with toy data.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, fig.retina=3, fig.align='center', fig.asp=0.618, out.width='95%'}
+# Simulate fires and ice cream that are confounded by summer
+set.seed(2)
+
+d10 <- tibble(
+  obs = rep(1:12, 5),
+  month = rep(month.abb, 5),
+  summer = if_else(month %in% c("Jun", "Jul", "Aug"), 1, 0),
+  summer_c = if_else(summer == 1, "Summer", "Other Seasons"),
+  summer_x = case_when(
+    obs %in% 6:8 ~ 1.4,
+    obs == 5 ~ 1,
+    obs == 9 ~ 1,
+    TRUE ~ 1
+  ),
+  ice_cream = rnorm(n = 12*5, mean = 85, sd = 8) * summer_x,
+  fires = round(rnorm(n = 12*5, mean = 18, sd = 3) * summer_x, 0)
+)
+
+#d10
+#cor.test(d10$ice_cream, d10$fires)
+
+model10 <- lm(data = d10, fires ~ ice_cream)
+#summary(model10)
+
+d10 |>
+  ggplot(aes(x = ice_cream, y = fires)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Ice Cream Sales (Thousands USD)", y = "Forest Fires")
+```
+
+???
+
+Here we see simulated data.
+
+### What is the relationship evident from this scatterplot and OLS line?
+
+<br>
+
+These correlations and OLS slope are an estimate of the association between these two variables.
+
+- This is NOT a test of the causal argument until we diagram the DGP and adjust the analysis for our confounders
+
+<br>
+
+- Correlation: `r cor(d10$ice_cream, d10$fires)`
+
+.code80[
+```{r}
+summary(model10)
+```
+]
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, fig.retina=3, fig.align='center', fig.asp=0.5, fig.width=9, out.width='100%'}
+# Control for summer
+model10a <- lm(data = d10, fires ~ ice_cream + summer_x)
+#summary(model10a)
+
+d10 |>
+  ggplot(aes(x = ice_cream, y = fires)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Ice Cream Sales (Thousands USD)", y = "Forest Fires") +
+  facet_wrap(~ summer_c)
+```
+
+???
+
+Here we see one approach to "controlling" for a confounder
+
+- I am splitting the sample using facets by season
+    - On the right is summer only
+    - On the left is the rest
+
+<br>
+
+### What is the relationship evident from this split sample scatterplots and OLS lines?
+
+.code80[
+```{r, echo=TRUE}
+# Summer
+cor(d10$ice_cream[d10$summer == 1], d10$fires[d10$summer == 1])
+
+# Other
+cor(d10$ice_cream[d10$summer == 0], d10$fires[d10$summer == 0])
+```
+]
+
+<br>
+
+The OLS lines and estimated correlations are now, I argue, estimates of the effect of ice cream sales ON forest fires.
+
+- By adjusting for the confounder I can argue I have designed a test of the causal relationship here
+
+<br>
+
+### Does the intuition here make sense?
+
+<br>
+
+We'll dig into HOW to do this next week.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. Refine the DGP to only keep variables that confound the key mechanism
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+In short, making a causal argument using observational data requires:
+
+1. Describing the DGP, and then
+
+2. Refining the DGP to include only the confounders to the key mechanism
+
+3. Finally we adjust our analysis to "control" for the confounders
+
+<br>
+
+### Questions on the material today?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[**For Today:**]
+
+.size45[
+1. Read HK (2022) ch 6 and 7
+
+2. Brainstorm the DGP for our project (e.g. **SUBMIT** four separate lists of reasons why states would vary in):
+    - GII
+    - Education Spending
+    - Military Spending
+    - Healthcare Spending
+]
+
+???
+
+For class today you each submitted to Canvas DGPs for the main variables in our project.
+
+*IF TIME ENOUGH*: Get the lists on the board and discuss, NOT AS CONFOUNDERS, just as credible predictors for each variable
+
+*IF TIME IS SHORT*: Go to the next slide!
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[**For Next Class:**]
+
+.size45[
+Propose an identification strategy for each causal mechanism in our project:
+
+- Education Spending ---> GII
+
+- Military Spending ---> GII
+
+- Healthcare Spending ---> GII
+]
+
+???
+
+### Questions on the assignment?
+
+- Make three DAGs, one per mechanism and submit your proposals to Canvas before class.

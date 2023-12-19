@@ -1,0 +1,281 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+#library(stargazer)
+library(kableExtra)
+library(rworldmap)
+#library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+
+# # Input data
+# data_2021 <- read_excel("../Project-SP23/Mirror_Class_Folder_Structure/Data/GII-2021-Tidy.xlsx", na = "NA")
+# 
+# # Test code for map
+# data21_map <- joinCountryData2Map(dF = data_2021, nameJoinColumn = "iso3", joinCode = "ISO3")
+# 
+# mapCountryData(mapToPlot = data21_map, )
+
+```
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+
+.size80[**Today's Agenda**]
+
+<br>
+
+.size60[
+Build the First Report
+
+- Section 3: Univariate Analyses (Current)
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Make sure all data available on Canvas
+
+2. Post Section 3 assignment details on Canvas
+
+<br>
+
+*Canvas*
+1. Analyze the main index (`gii`) with a histogram (Fig 1) and a map (Fig 2)
+2. Analyze at least two of the component measures with visualizations (Figs 3 and 4)
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size65[**Report 1: Submission Requirements**]
+
+.size55[
+- Submit a **pdf** to **Canvas** (due **Mar 5th**)
+
+- Include an **APA** formatted bibliography
+
+- Polish **all** included visualizations
+]
+
+???
+
+Ok, this week we work on your first report.
+
+- Here are the basic requirements.
+
+- Late penalty (-10) points per day
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size50[**Report 1: Analyzing our Outcome Variable(s)**]
+
+.size50[
+1. What is it and why is this project important?
+
+2. How confident should we be in the methodology?
+
+3. What do the measures currently show us?
+
+4. How are these measures changing across time?
+]
+
+???
+
+1. In Section 1 your job is to give the reader a crash course in the chosen data project: What is it, who is behind it and why is it important?
+
+2. Section 2 should step through the strengths and weaknesses of the measurements in the project.
+
+3. Section 3 should focus on the most recent year available in the dataset and present a univariate analysis of it.
+
+4. Section 4 should present univariate analyses at different snapshots in time so we can analyze the trends in the data
+
+### Questions on the sections?
+
+<br>
+
+Plan of Attack:
+
+- Today we'll make our visualizations for Section 3
+
+- Wednesday we'll make our visualizations for Section 4.
+
+- Friday we'll polish it all up
+
+
+
+
+---
+
+background-image: url('libs/Images/07_1-Import_GII_2.png')
+background-size: 90%
+background-position: center
+class: middle, slideblue
+
+???
+
+First thing's first, let's import the data.
+- Seems like everyone prefers the RStudio menu approach
+
+<br>
+
+Make sure you:
+
+1. Give the new object a clear name, and
+
+2. If needed, identify how the data set records missing data.
+    - Here you see the GII uses "NA" as a word to show missing data
+    - With no argument in the NA field R assumes these variables are categorical and not numeric.
+    - e.g. character vectors
+
+### Make sense?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size70[**For Today**]
+
+.size50[
+1. Make separate histograms for the index (`gii`) and the five component measures (`mmr`, `abr`, `pr_f`, `se_f` and `lfpr_f`)
+
+2. Make a map of `gii`<sup>*</sup>
+]
+
+.right[.size30[<sup>*</sup> Let me help with the map code...]]
+
+???
+
+**Don't polish, just get these seven visualizations built!**
+
+<br>
+
+**SLIDE**: Let me know when you get to the map step because we have to do this slightly differently.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size35[
+```{r, echo=FALSE}
+data_2021 |>
+  select(iso3:gii) |>
+  slice_head(n = 6) |>
+  kbl(digits = 3) |>
+  kableExtra::column_spec(column = 1, background = "orange")
+```
+]
+
+.code130[
+```{r, echo=TRUE, eval=FALSE}
+# Join GII data to the map data
+data_2021_map <- joinCountryData2Map(dF = data_2021, 
+                                     joinCode = "ISO3", #<<
+                                     nameJoinColumn = "iso3") #<<
+```
+]
+
+???
+
+The key step in making a map with rworldmap is when you have to merge your data onto the map data.
+
+- The GII includes a special variable for this called "iso3"
+
+<br>
+
+Technically this is ISO 3166-1 which is a standard three letter country code published by the International Organization for Standardization (ISO), to represent countries, dependent territories, and special areas of geographical interest.
+
+- Much more precise than asking rworldmap to guess based on country name.
+
+<br>
+
+If you're curious:
+
+- rworldmap only understands 183 country names in our dataset, but
+
+- it understands 195 of the ISO3 codes.
+
+<br>
+
+**SLIDE**: Ok, what should end up in your report?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size45[**Report 1: Analyzing our Outcome Variable(s)**]
+
+<br>
+
+.size40[**Section 3: What do the measures currently show us?**
+
+1. Analyze the main index (`gii`) with a **histogram** (Fig 1) and a **map** (Fig 2)
+    
+2. Analyze **at least two** of the component measures with visualizations (Figs 3 and 4)
+]
+
+???
+
+Here's how I think you should take today's work and use it in your report.
+
+### Questions on this?
+
+<br>
+
+For Wednesday you should select and polish the four figures you will use in your report.

@@ -1,0 +1,520 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+background-image: url('libs/Images/background-data_blue_v3.png')
+background-size: 100%
+background-position: center
+class: middle, inverse
+
+.size80[**Today's Agenda**]
+
+<br>
+
+.size50[
+
+1. Syllabus review
+
+2. Let's answer some questions with data!
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Review Canvas submissions
+
+
+
+---
+
+background-image: url('libs/Images/background-teal3.png')
+background-size: 100%
+background-position: center
+
+.size60[**Questions on the Syllabus?**]
+
+<br>
+
+.size30[
+||Proportion|
+|:-----|:----:|
+|Attendance and Participation|50%|
+|||
+|Assignments|50%|
+|- Report: Analyze the Outcome Variable(s)||
+|- Report: Analyze the Predictor Variable(s)||
+|- Report: Bivariate Test of your Hypotheses||
+|- Report: Multivariate Test of your Hypotheses||
+|||
+
+]
+
+???
+
+### Is everybody clear on the components in your final grade?
+- Our job this semester is to design and execute a research project
+- Your grade is heavy on being in class and collaborating to get this done
+
+### Is the attendance policy clear?
+1. Attendance cliff: > 4 unexcused absences = 'C'
+2. YOUR JOB to request make-up assignments from excused absences
+
+### Does everybody understand how to earn the participation points?
+- Come to class on-time,
+- Be engaged while in class (e.g., bring all needed materials, don’t distract others, etc.), and
+- Submit all required daily assignments BEFORE class begins.
+
+### Does everybody see where the readings for each class are assigned and know how to access them?
+
+### Any questions on using Canvas?
+
+### Any other syllabus questions?
+
+
+
+
+---
+
+background-image: url('libs/Images/01_2-Backup-Your-Computer.jpg')
+background-size: 100%
+background-position: bottom
+
+???
+
+Important Note: I expect each of you to save and backup your work in this class to the cloud on a daily basis. 
+
+I will not accept lost or broken computers as excuses for incomplete assignments and missed deadlines.
+
+<br>
+
+### Is everybody already backing up to the cloud (e.g. iCloud, OneDrive, Dropbox, etc.)?
+
+OneDrive backup is FREE for Drury students!
+
+- Let me know if you need help with this.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-teal3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size60[**Assignment for Today**]]
+
+.size50[
+1. Population of the USA in 2020?
+2. Number of countries in the world today?
+4. Is the US currently at war with Russia?
+]
+
+.center[.size50[**Complete answers include specificity, sourcing and an argument that this measurement is useful.**]]
+
+???
+
+Our first participation assignment was due today.
+
+Before we get to the answers, let's talk in broad strokes about the assignment.
+
+### How did it go?
+
+### - Easiest parts? 
+
+### - Hardest parts?
+
+<br>
+
+SLIDE: Let's dig in!
+
+
+
+---
+
+background-image: url('libs/Images/01_2-Satellite-Map-USA.jpg')
+background-size: 70%
+background-position: top
+class: slideblue, center, bottom
+
+.size60[.content-box-blue[**Population of the USA in 2020?**]]
+
+???
+
+*Split class into groups (3-4?)*
+
+Groups, discuss all the submitted answers to our first question and get ready to report back two things
+
+- SLIDE
+
+
+
+---
+
+background-image: url('libs/Images/01_2-Satellite-Map-USA.jpg')
+background-size: 60%
+background-position: top
+class: slideblue, bottom
+
+.size30[.center[.content-box-blue[**Population of the USA in 2020?**]]]
+
+.size40[
+1. "Best" answer (with confidence interval)?
+
+2. Questions we can and cannot answer with this data?
+]
+
+???
+
+1. What is our "best" answer to the question (e.g. with confidence interval)?
+    - You are NOT picking a single submission, but identifying a useful range that you are confident includes the "real" answer.
+    
+2. Given the uncertainty in our answer, what kinds of questions could we use this data to answer? 
+    - What kinds is it not precise enough to answer?
+
+### Everybody understand what I want?
+
+<br>
+
+5 mins, get to it!
+
+Report back and discuss Q1: "Best" answer ranges on the board, explain each
+
+<br>
+
+SLIDE: List of challenges
+
+
+
+---
+
+background-image: url('libs/Images/01_2-census_mailer.jpg')
+background-size: 100%
+background-position: center
+class: slideblue
+
+???
+
+Counting the population of the US is INCREDIBLY hard.
+
+**Definitions Matter**
+- What does the population in a year even mean? 
+- An average after all births, deaths, immigrations, etc? Or a snapshot on Jan 1st? Or July 1st? or Dec 31st?
+- MUCH debate about who should be counted
+
+**Tools Matter**
+- Trump admin tried hard to add a citizenship question to the form wither to develop a better count of the undocumented OR to lay the groundwork for excluding those populations from congressional representation.
+
+**Process Matters**
+- NO single list of people held by the government, not even a list of just citizens
+- Large homeless population very hard to count with mailers!
+- Many undocumented afraid to answer the door when census takers knock
+- Minority groups frequently undercounted because of how hard it is to locate individuals in an urban setting
+
+**Validation Matters**
+- Congress has put in place roadblocks to using statistical sampling procedures to verify these wildly innaccurate headcounts.
+
+<br>
+
+Given all this, report back, what kinds of questions can we answer vs not?
+
+### Questions we can answer?
+
+### Questions we cannot answer?
+
+
+
+---
+
+background-image: url('libs/Images/01_2-census_apportionment-2020-map01.png')
+background-size: 70%
+background-position: center
+class: slideblue
+
+???
+
+### Is our census count likely to have been precise enough for this VERY important task (reapportioning reps in Congress)? Why or why not?
+
+<br>
+
+### Can you see here how urban areas appear to be losing out in the current process?
+
+Politics in everything!
+
+
+
+
+---
+
+background-image: url('libs/Images/01_2-World-map-countries.jpg')
+background-size: 100%
+background-position: top
+class: slideblue, center, bottom
+
+.size45[.content-box-blue[**Number of countries in the world today?**]]
+
+???
+
+*Force groups to change membership!*
+
+Still looking for two things:
+
+1. Your "best" answer, and
+2. A sense of how precise the answer is.
+
+5 mins, get to it!
+
+<br>
+
+Report back and discuss Q1: "Best" answer ranges on the board, explain each
+
+<br>
+
+SLIDE: List of challenges
+
+
+
+---
+
+background-image: url('libs/Images/01_2-UN_Map_Wikipedia.png')
+background-size: 100%
+background-position: center
+
+???
+
+**Definitions Matter**
+- What is a state? How much sovereign control is necessary?
+- What about places of ongoing civil conflict (Libya, Ethiopia, South Sudan)?
+- What about territories like Puerto Rico with many obligations to the US (pay taxes, serve in war) but not all the benefits (no social security)?
+
+**Tools Matter**
+- How do you translate complex conceptual definitions of statehood into clear and measurable criteria?
+
+**Process Matters**
+- China's pressure campaign against Taiwan including both threats and bribery
+- Russian support for breakaway "republics" across the old USSR (Transnistria, Abkhazia, Crimea, Donetsk, etc.)
+- Israel's threats against the UN and smaller countries for allowing Palestine observer status at the UN 
+
+**Validation Matters**
+- UN membership is a political exercise not a rigorous definition per international law but carries great weight in many aspects of the world.
+
+<br>
+
+Given all this, report back on Q2
+
+### Questions we can answer?
+
+### Questions we cannot answer?
+
+
+
+
+---
+
+background-image: url('libs/Images/01_2-Russian_Protest_US.jpg')
+background-size: 100%
+background-position: top
+class: slideblue, center, bottom
+
+.size45[.content-box-blue[**Is the US currently at war with Russia?**]]
+
+???
+
+*Force groups to change membership!*
+
+Last one, still looking for two things:
+
+1. Your "best" answer, and
+2. A sense of how precise the answer is.
+
+5 mins, get to it!
+
+<br>
+
+Report back and discuss Q1: "Best" answer ranges on the board, explain each
+
+<br>
+
+SLIDE: List of challenges
+
+
+
+---
+
+background-image: url('libs/Images/01_2-CoW_MIDS2014.png')
+background-size: 90%
+background-position: center
+
+???
+
+**Definitions Matter**
+- What is "war" in 2023?
+- All of the following can be tied to increased costs in terms of blood and treasure for Russia: Economic sanctions, direct monetary support to Ukraine, direct provision of arms to Ukraine, training of Ukrainian soldiers BUT DO THEY ADD UP TO WAR?
+- Correlates of War project: "sustained combat, involving organized armed forces, resulting in a minimum of 1,000 battle-related fatalities within a twelve month period"
+    - MIDs: Militarized interstate disputes
+
+**Tools Matter**
+- How do you translate complex conceptual definitions of "war" into clear and measurable criteria?
+
+**Process Matters**
+- How do you get reliable information on what is happening on the ground in Russia (no free press) or Ukraine (active war ongoing)?
+
+**Validation Matters**
+- Lots of groups offering "reports" on destruction, alleged war crimes, fatalities, but almost all VERY conflicting.
+
+<br>
+
+Given all this, report back on Q2
+
+### Questions we can answer?
+
+### Questions we cannot answer?
+
+<br>
+
+SLIDE: Ok, big takeaway...
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles.jpg')
+background-size: 100%
+background-class: center
+class: center, middle
+
+.size60[ **ALL measures are uncertain.** ]
+
+<br>
+
+.size60[The key is to understand the uncertainty well enough that you know what kinds of questions a measure can be used to answer.]
+
+???
+
+The key lesson for us today is to remember that ALL measures are uncertain.
+
+<br>
+
+One of the KEY skills I want you to strengthen in this class is the ability to extract useful information from data.
+
+- Dig into the data in order to find and analyze the uncertainty
+
+<br>
+
+THAT will allow you to be a MUCH more effective data driven decision-maker.
+
+### Make sense?
+
+- SLIDE: With that in mind...
+
+
+
+---
+
+background-image: url('libs/Images/01_2-quote-von-neumann.jpg')
+background-size: 100%
+background-position: center
+class: slideblue
+
+???
+
+I have never come across a quote that spoke more to my experience of being a data scientist.
+
+- This isn't just an excellent quote about math, but an excellent quote about the scientific process and the challenges of causal inference.
+
+- Using data to answer questions is hard, but it just sort of gets easier with time and practice.
+
+<br>
+
+So, hang in there this semester and embrace the journey.
+
+- By the end of the semester you too will have learned enough research design, math and programming skills to make some cool things and answer some challenging questions.
+
+- My promise is that you'll even understand enough of what you're doing to be dangerous!
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles.jpg')
+background-size: 100%
+background-class: center
+class: middle
+
+.size40[
+**This semester you will develop skills in:**
+
+- **Evaluating** data for validity/reliability,
+
+- **Cleaning** the data,
+
+- **Describing** the variation in the data,
+
+- **Analyzing** the variation, and
+
+- **Reporting** your findings in clear compelling ways.
+]
+
+???
+
+We have three learning outcomes for this class and they are listed on the syllabus.
+
+- You should definitely read them.
+
+<br>
+
+HOWEVER, I think this summarizes the hands-on goals for our semester nicely.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size60[**For Monday**]
+
+.size50[
+1. Huntington-Klein, Nick. (2022). Chapter 1 - Designing Research
+
+2. Wheelan chapter 7 "The Importance of Data"
+]
+
+???
+

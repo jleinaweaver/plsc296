@@ -1,0 +1,765 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+background-image: url('libs/Images/background-blue_cubes_lighter2.png')
+background-size: 100%
+background-position: center
+
+.size70[**Today's Agenda**]
+
+.size50[
+1. Four Principles of Data Analysis
+
+2. Report on your early findings
+
+3. Audit the data
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Review assignment submissions
+
+2. Publish next discussion
+
+3. ADD spreadsheet snapshot of chosen data to slides
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle, size35
+
+### Report 1: Analyzing our Outcome Variable(s)
+
+1. .textblue[**What is it and why is this project important?**]
+
+2. .textblue[**How confident should we be in the methodology?**]
+
+3. What do the observations currently show us?
+
+4. How are these measures changing across time?
+
+5. Overall, how confident can we be when using this data to explore the world?
+
+???
+
+Our work this week continues to focus on these two elements of the report.
+- With a little bit of data analysis mixed-in.
+
+Today's work is the logical extension of our codebook analyses.
+- How does the actual data look?
+
+Be sure to TAKE NOTES as we work and save them!
+- You should ABSOLUTELY be writing this report as we go!
+
+### Make sense?
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[**For Today**]
+
+.size45[
+1. Wheelan chapter 1 "What's the point?"
+
+2. **Submit to Canvas before class**: 
+
+Start exploring the dataset in Excel and find us something interesting/puzzling/surprising or simply something you learned
+]
+
+???
+
+Today we finally get to dig into the data and get our hands dirty!
+
+<br>
+
+### In broad strokes, how was your first dive into our data using Excel?
+#### - Not yet about what you found but HOW you found the tool and the unguided exploration?
+
+<br>
+
+Now, before we discuss what you found I want to set you up with four important lessons to keep in mind when working with data.
+
+- Commit these to memory!
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size50[**Four Key Principles of Data Analysis**]
+
+.size45[
+1. Data analysis is .textred[**not**] a linear process
+
+2. Always .textblue[**tidy**] your data before exploring it
+
+3. Variable .textblue[**type**] determines the .textblue[**tool**]
+
+4. .textblue[**Validity**] and .textblue[**reliability**] come first!
+]
+
+???
+
+Think of these like guiding rules to get us off on the right foot.
+
+- Let's step through each one.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size50[**1. Data analysis is .textred[not] a linear process**]
+
+<br>
+
+```{r, fig.align='center', out.width='100%'}
+knitr::include_graphics("libs/Images/01_2-Analysis_Process.png")
+```
+
+???
+
+The first principle of data analysis is to recognize that it is NOT a linear process.
+- The day-to-day work of a data scientist almost never looks like a straightforward path through a puzzle.
+
+
+Hadley Wickham, a big name in R programming, proposes this as one way to think about being a data scientist.
+- Each step represents a series of tasks you will need to do in order to answer questions using data.
+
+<br>
+
+Important sub-ideas here:
+
+1. Finding, cleaning and organizing data happens before anything you might think of as "doing statistics."
+    - I spend the bulk of my time as a quants researcher in these stages.
+
+2. Developing your understanding is a process of playing with data, **NOT knowing the right thing to do from the get-go.**
+    - Your job is to learn about the world and that comes from exploration.
+    
+    - Don't freeze-up or get discouraged when looking at new data
+    
+    - Just start doing stuff with it and see what happens! THEN reflect on what you made and go from there.
+    
+<br>
+
+### Make sense?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size50[**2. .textblue[Tidy] your data before exploring it**]
+
+<br>
+
+```{r, fig.align='center', out.width='100%'}
+knitr::include_graphics("libs/Images/01_2-tidy.png")
+```
+
+???
+
+The second principle of data analysis is that you MUST tidy your data BEFORE you can do anything useful with it.
+
+- Essentially, all stats packages and even Excel assume your data is tidy before the built-in tools can be used.
+
+<br>
+
+This means:
+
+1. Columns are variables
+    - e.g. separate concepts to be measured
+    
+2. Rows as observations
+    - Each row refers to one observations
+    - e.g. person, group, state, etc.
+
+3. Each cell as a separate data point.
+
+<br>
+
+This is our goal. Take messy data and get it into this format.
+
+### Everybody have this written down?
+
+- **SLIDE**: Let's look at some examples.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle, center
+
+## Freedom House: "Freedom in the World"
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("libs/Images/03_2-FH_Untidy1.png")
+```
+
+???
+
+Freedom House publishes data on "freedom" around the world.
+
+- The status column includes the frequently referenced three level cataegorical variable: Free, Partly Free and Not Free
+
+- This is how they distribute the data for the current or recent years.
+
+<br>
+
+### How does this do on the three rules of tidy data?
+
+1. (Columns are NOT yet variables: 2 levels of header)
+
+2. (Rows ARE observations)
+    - Observations here are state-year so each row needs to be one state at one year
+
+3. (Each cell is a separate data point.)
+
+<br>
+
+**SLIDE**: This is a SUPER easy clean-up job.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle, center
+
+### Freedom House: "Freedom in the World"
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '78%'}
+knitr::include_graphics("libs/Images/01_2-tidy_fh1.png")
+```
+
+.center[.size55[&#x2193;]]
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '78%'}
+knitr::include_graphics("libs/Images/01_2-tidy_fh2.png")
+```
+
+???
+
+### Make sense?
+
+1. Each column is now a separate variable
+
+2. Each row is a separate observation
+
+3. Each cell is a distinct data point
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle, center
+
+## Freedom House: "Freedom in the World"
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '90%'}
+knitr::include_graphics("libs/Images/03_2-FH_Untidy.png")
+```
+
+???
+
+Now, if what you want is historical Freedom House data you get this.
+
+- All of the information is useful but this is definitely not tidy.
+
+<br>
+
+### How does this do on the three rules of tidy data?
+
+1. (Columns are NOT variables)
+2. (Rows are MULTIPLE observations
+    - Observations here are state-year so each row needs to be one state at one year
+3. (Each cell is a data point)
+    - Ignoring the messy three column header it gets close on this one
+
+<br>
+
+### What would we need to do to fix it?
+### - What should/could a tidy result look like?
+- *ON BOARD*
+    - Country, Region, C/T, Edition, Year, Status, ...
+
+- (**SLIDE**: Let's fix it!)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle, center
+
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '78%'}
+knitr::include_graphics("libs/Images/03_2-FH_Untidy_Small.png")
+```
+
+.center[.size55[&#x2193;]]
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '78%'}
+knitr::include_graphics("libs/Images/03_2-FH_Tidy2.png")
+```
+
+???
+
+### Make sense?
+
+1. (Columns are variables)
+
+2. (Rows are country-year observations
+
+3. (Each cell is a data point)
+
+<br>
+
+### Questions on what tidy data looks like?
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size50[**2. .textblue[Tidy] your data before exploring it**]
+
+<br>
+
+```{r, fig.align='center', out.width='100%'}
+knitr::include_graphics("libs/Images/03_2-GII_Untidy.png")
+```
+
+???
+
+One of your jobs for Friday will be to take our current dataset and tidy it!
+
+### Questions on that task?
+
+<br>
+
+*optional: Let the class brainstorm how to do this*
+1. ALWAYS keep your working copy AND the original data!
+    - This way you keep your record of "science" clean and repeatable.
+2. Collapse all column headers so that each column is one variable
+3. Remove empty rows, e.g. "VERY HIGH HUMAN DEVELOPMENT", because they aren't observations
+4. Remove notes from the bottom of the sheet
+5. Remove aggregated data, e.g. world and region averages
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size50[**3. Variable .textblue[type] determines the .textblue[tool]**]
+
+```{r, fig.align='center', out.width='100%'}
+knitr::include_graphics("libs/Images/01_2-levels_measurement.png")
+```
+
+???
+
+The third principle of data analysis is that variable type determines the tool to use on it.
+
+- All "data" can be classified by its type.
+
+- The most important distinction is this middle row.
+    - Is the variable measured using numbers or words?
+
+- Each type can then be broken down further, but the big key is numbers vs words.
+
+### Looking at our data for today, which variables are numbers and which are words?
+
+- Be careful! Very often numbers represent categories of words!
+    - This is why you have to review the codebook.
+
+<br>
+
+**SLIDE**: The handy thing is that once you can identify variables by type, you know exactly what kinds of analyses to perform!
+
+
+
+
+
+---
+
+background-image: url('libs/Images/01_2-chart_types.jpg')
+background-size: 80%
+background-class: center
+
+???
+
+Don't let this picture overwhelm you!
+- I don't think the four words here in the middle are the clearest way to do this.
+
+The logic here is what matters, not these specific recommendations.
+- The lesson here is that tool selection depends on variable type.
+
+<br>
+
+Example: Are you trying to visualize the distribution of a numeric variable? 
+- Make a histogram!
+
+Example: Are trying to visualize a relationship between two numeric variables?
+- Make a scatterplot!
+
+<br>
+
+A big part of your job early this semester will be organizing your notes around each type.
+- e.g. "When I have a continuous variable I can..."
+
+Once you learn to think this way, data analysis starts to look like cooking with recipes.
+- You learn to describe what you want to make and our texts and notes will tell you how to do it!
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size50[**4. Evaluate Validity & Reliability**]
+
+<br>
+
+```{r, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("libs/Images/01_2-valid_and_reliable.png")
+```
+
+???
+
+The fourth principle of data analysis is that you must begin every analysis by thinking critically about the quality of your data in terms of validity and reliability.
+
+- It's so important we spent the first week of our class talking about measurement and uncertainty! 
+
+- AND we used this kind of figure to evaluate the codebook too!
+
+<br>
+
+Validity: "Answers correspond to what they are intended to measure"
+- Ruler includes actual inches on it that correspond to accepted standards.
+
+Reliability: "Providing consistent measures in comparable situations"
+- Instructions clear enough so each person uses the ruler in the same way.
+
+<br>
+
+This is absolutely the MOST important piece of analyzing data and it simply isn't done enough in stats type classes.
+
+- We get so excited about methods and fancy pictures we forget that our knowledge is constrained by the data we are using.
+
+Remember, all data includes uncertainty.
+
+- If the data project does a bad job or is not transparent about how it handles all of this, then I don't care what they think about the development of some complex societal dynamic.
+
+### Questions on this?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size50[**Four Key Principles of Data Analysis**]
+
+.size45[
+1. Data analysis is .textred[**not**] a linear process
+
+2. Always .textblue[**tidy**] your data before exploring it
+
+3. Variable .textblue[**type**] determines the .textblue[**tool**]
+
+4. .textblue[**Validity**] and .textblue[**reliability**] come first!
+]
+
+???
+
+### Any questions on the four principles underpinning our work as data scientists?
+
+<br>
+
+Let's start our data work today by using some simple Excel tools to examine the data.
+
+- I think there's a lot of value in getting a sense for the shape of the data by looking at it in a spreadsheet before starting the more serious work.
+
+
+
+---
+
+background-image: url('libs/Images/01_1-excel_dangerous.png')
+background-size: 100%
+background-position: center
+
+???
+
+Important word of caution!
+
+- Excel is a VERY dangerous tool because it wants to help you do "analysis"
+
+- That's very kind of it to offer, but 
+
+- Unfortunately, it is VERY, VERY stupid.
+
+<br>
+
+**SLIDE**: For example...
+
+
+
+---
+
+background-image: url('libs/Images/01_1-excel_danger2.png')
+background-size: 100%
+background-position: center
+
+???
+
+Beware Excel's auto-formatting features!
+
+- As I said, like a drunk puppy Excel is desperate to help but has no idea what you're trying to do or how to actually help.
+
+
+
+---
+
+background-image: url('libs/Images/03_2-Excel_Finger_Slip.png')
+background-size: 95%
+background-position: center
+class: slideblue
+
+???
+
+There are so many examples
+
+1. Each cell of the data can be edited (intentionally or by accident) and those changes don't get recorded or flagged anywhere.
+    - A finger slip can completely transform your records and you would never know it!
+    
+2. The sort features are confusing and sometimes lead to sorting only one column rather than the whole sheet which breaks the data at the observation level.
+
+3. The autofilter is handy for extracting subsets of the data but it's very easy to forget it is "on" and suddenly your analyses exhibit serious selection bias.
+
+<br>
+
+Bottom line, doing "science" requires being transparent in your choices and creating a record of them for others to review.
+
+- Excel is a total failure at this and that is why it is completely inappropriate for doing science.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+```{r, fig.align='center', out.width='100%'}
+knitr::include_graphics("libs/Images/03_2-GII_Untidy.png")
+```
+
+???
+
+Let's explore the data (CAREFULLY) in Excel.
+
+### 1. How are the observations organized?
+
+<br>
+
+### 2. Do we understand all of the measures here and can we connect them back to the codebook?
+
+<br>
+
+### 3. What did you find from your pre-class explorations?
+- *Share interesting/puzzling/surprising findings*
+- *ON BOARD*
+
+<br>
+
+*Use these observations as a direct segue into the audit!*
+
+Let's now audit these surprising findings!
+
+- How do these actual observations help us think critically about the codebook?
+
+- Are the measures all plausible?
+
+- Are there serious missing data issues?
+
+
+
+
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/03_2-Audit2.png')
+background-size: 50%
+background-position: right
+class: middle, slideblue
+
+.pull-left[
+.center[
+.size45[**Audit the Data**]
+
+.size40[
+Can you find source(s) that confirm this observation?
+]]]
+
+???
+
+Can you find some other source that allows us to confirm or question the observation you selected?
+
+- An external dataset also aiming to measure the same thing?
+
+- A news story describing the observation in line with this measurement?
+
+### Does that make sense?
+
+- This might not work but I'd like us to try it!
+
+<br>
+
+*Divy out the observations*
+
+So, everybody pick one and spend the next X minutes trying to audit the observation.
+
+<br>
+
+### What did you try and what did you find?
+
+#### - Approaches tried?
+#### - Sources found? Independence?
+
+<br>
+
+### Bottom line, how does your audit impact your level of confidence in the validity and reliability of this data set?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[**For Wednesday**]
+
+.size40[
+Installing and configuring R / RStudio
+
+1. Tidy our new dataset
+
+2. Long and Teetor (2019) Sections 1.1 and 1.2
+
+3. Healy (2019) Sections 2.1 - 2.4
+
+4. Bring your computer (optional)
+]
+
+???
+
+If you would like to be able to work on your personal computer this semester, bring it to class on Wednesday and we'll spend some time getting everybody set-up!
+
+<br>
+
+Even if you'll be working on the lab computers we will spend class time Wednesday configuring RStudio and getting comfortable using it.
+
+
+### Questions on the assignment?

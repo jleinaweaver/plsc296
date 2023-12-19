@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>05_4-Practice_Univariate_Analyses4.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+background-image: url('libs/Images/background-blue_cubes_lighter2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size80[**Today's Agenda**]
+
+.size45[
+Practice building, polishing and interpreting univariate analyses
+
+- Script: Univariate_Analyses_FreedomHouse.R
+
+- Data 1: FreedomHouse-2021-tidy.xlsx
+
+- Data 2: FreedomHouse-2013-2021-tidy.xlsx
+]
+
+&lt;br&gt;
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. 
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+Today we practice our univariate analysis tools by examining the Freedom House data.
+
+### In very broad strokes, what is the purpose of the measures produced by Freedom House? What are they trying to measure?
+
+- (**SLIDE**)
+
+
+
+
+---
+
+background-image: url('libs/Images/05_2-Freedom_House1.png')
+background-size: 100%
+background-class: center
+class: middle
+
+???
+
+Freedom House's "Freedom in the World" project is an attempt to quantify "freedom" in countries across the world in terms of "political rights" and "civil liberties"
+
+&lt;br&gt;
+
+### According to Freedom House, what is the difference between "political rights" and "civil liberties"?
+
+- Political Rights in three subcategories:
+    1. Electoral Process (3 questions), 
+    2. Political Pluralism and Participation (4), and
+    3. Functioning of Government (3).
+    
+- Civil liberties in four subcategories:
+    1. Freedom of Expression and Belief (4 questions),
+    2. Associational and Organizational Rights (3), 
+    3. Rule of Law (4), and 
+    4. Personal Autonomy and Individual Rights (4).)
+
+&lt;br&gt;
+
+If we had chosen Freedom House as our data set we would need to spend quite a bit of time digging into these conceptual labels.
+
+- How distinct are they? 
+
+- Are these valid definitions? Are they reliable?
+
+### Did any of the individual questions stand out to you as being a problem in terms of their validity or reliability?
+
+
+
+---
+
+background-image: url('libs/Images/05_2-Freedom_House2.png')
+background-size: 90%
+background-class: center
+class: middle
+
+???
+
+The process in oversimplified terms: 
+
+- Each country is evaluated by experts across the 25 questions (PR = 10, CL = 15)
+
+- Each question scored between 0 (the smallest degree of freedom) and 4 (the greatest degree of freedom)
+
+- The results are summed together to give separate scores for PR (0 to 40) and CL (0 to 60)
+
+- These two numbers are then combined using this table to produce a categorization of the country as being "free", "partly free" or "not free"
+
+### Make sense?
+
+&lt;br&gt;
+
+An incredibly ambitious undertaking with LOTS of sources for uncertainty!
+
+- Our focus today is on analyzing the measured data, but I never want you to forget that "meaning" is more a function of research design as it is statistics.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size70[.content-box-blue[**Our Job for Today**]]]
+
+&lt;br&gt;
+
+.size65[
+1. What is the current state of "freedom" in the world?
+
+2. How is "freedom" trending across time in the world?
+]
+
+
+
+???
+
+On Wednesday we discussed and tested out different ways to add context to our univariate tools that would deepen our analyses.
+
+### What three "contexts" did we add?
+- (The use of benchmarks, maps and across time data.)
+
+&lt;br&gt;
+
+**SLIDE**: Let's follow that as an outline for our work today.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.content-box-blue[.size60[**What is the current state of "freedom" in the world?**]]
+
+.size55[
+**Option 1: Check the Benchmarks**
+
+Compare the distribution of `status` to the distribution of the `total` score in 2021
+]
+
+???
+
+### What type of variable is `status`?
+
+### - And what tools do we use when we have a categorical variable?
+
+&lt;br&gt;
+
+### What type of variable is `total`?
+
+### - And what tools do we use when we have a numerical variable?
+
+&lt;br&gt;
+
+Ok, get to it!
+
+- **SLIDE**: My Version
+- **SLIDE**: The code
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+&lt;img src="05_4-Practice_Univariate_Analyses4_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_4-Practice_Univariate_Analyses4_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+### What is our takeaway from these two plots? What is the state of "freedom" in 2021?
+
+### - How helpful is `status` as a benchmark for "good" and "bad" values?
+- (Debatabale, no?)
+
+&lt;br&gt;
+
+### What is a good title for each of these plots? Something that directs the viewer to an important conclusion?
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+
+```r
+# Load packages
+library(tidyverse)
+library(readxl)
+
+# Load the data
+data_2021 &lt;- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2021-tidy.xlsx")
+
+# Bar plot
+ggplot(data_2021, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+* geom_hline(yintercept = c(20, 40, 60, 80), color = "white") +
+* theme_bw() +
+  labs(x = "", y = "Country Count") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free"))
+
+# Histogram
+ggplot(data_2021, aes(x = total)) +
+  geom_histogram(bins = 20, color = "white", fill = "seagreen") +
+* theme_bw() +
+  labs(x = "Total Freedom House Score (2021)", y = "Country Count")
+```
+]
+
+???
+
+New code bits
+
+- ggplot has built in themes for changing the general look of your plot
+    - theme_bw is good for printing to black and white
+    
+- geom_hline adds horizontal lines to your plot
+    - I like a bar plot with the bars divided into sections, it helps me compare sizes more easily
+    
+&lt;br&gt;
+
+### What's another piece of context we could add to go deeper in our analyses of FH scores?
+
+- (**SLIDE**: Maps and time!)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.content-box-blue[.size70[**What is the current state of "freedom" in the world?**]]
+
+.size55[
+**Context Option 2: Check the Map**
+
+Build a world map for `total` in 2021
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+
+&lt;img src="05_4-Practice_Univariate_Analyses4_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### What is our takeaway from this map?
+
+&lt;br&gt;
+
+### What is a good title for this plot? Something that directs the viewer to an important conclusion?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
+
+```r
+# Install the rworldmap package (only once per computer)
+install.packages("rworldmap")
+
+# Load the package
+library(rworldmap)
+
+# Merge your data onto the world map
+data_2021a &lt;- joinCountryData2Map(dF = data_2021, 
+                                  joinCode = "NAME", 
+                                  nameJoinColumn = "country")
+
+# Output the map
+mapCountryData(data_2021a, 
+               nameColumnToPlot = "total", 
+               colourPalette = "topo", 
+               mapTitle = "Freedom House: Total Scores (2021)")
+```
+]
+
+???
+
+To help keep the code readable I'm showing you multiple lines within each function.
+
+- This code will work, but I suggest you keep your code on a single line until you're more comfortable diagnosing errors.
+
+&lt;br&gt;
+
+**SLIDE**: Let's look at one more way to answer the "current state of the world question."
+
+    
+    
+    
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size40[**What is the current state of "freedom" in the world?**]]]
+
+.pull-left[
+&lt;img src="05_4-Practice_Univariate_Analyses4_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_4-Practice_Univariate_Analyses4_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+As you know, the Freedom House total score is made up of two component pieces.
+- Political rights and civil liberties
+
+### What do we learn from visualizing these two distributions as histograms?
+- *force this discussion!*
+
+&lt;br&gt;
+
+**SLIDE**: Ok, let's jump to our second question
+    
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
+
+.size45[.center[**Context Option 3: Use the filter**]
+1. Load the dataset: FreedomHouse-2013-2021-tidy.xlsx
+
+2. Create a subset of the data for 2013 (filter)
+
+3. Make a bar plot of `status` for 2013 and 2021
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+&lt;img src="05_4-Practice_Univariate_Analyses4_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_4-Practice_Univariate_Analyses4_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+### What do we learn from visualizing these two distributions as bar plots?
+- *force this discussion!*
+
+- Slight decrease in "free" states, but this really isn't the ideal way to make this comparison...
+
+&lt;br&gt;
+
+**SLIDE**: Code on the next slide, but I also want to show you a better way to make this comparison.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+
+```r
+# Input data as new object
+data_all &lt;- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2013-2021-tidy.xlsx")
+
+# Create a subset of the data
+data_2013 &lt;- filter(data_all, edition == 2013)
+
+# Bar plot 2013
+ggplot(data_2013, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(25, 50, 75), color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", title = "2013 Edition") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 100)
+
+# Bar plot 2021
+ggplot(data_2021, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(25, 50, 75), color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", title = "2021 Edition") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 100)
+```
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="05_4-Practice_Univariate_Analyses4_files/figure-html/unnamed-chunk-14-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+We'll get to this code in a few weeks, but this is an example of a bivariate analysis using a stacked bar plot converted into proportions of the total.
+
+### Questions on how to read this plot?
+
+&lt;br&gt;
+
+### What do we learn from this about the trend of freedom across time?
+
+&lt;br&gt;
+
+**SLIDE**: Last approach from Wednesday, animation!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
+
+.size45[.center[**Context Option 3: Animate!**]
+1. Use the dataset: FreedomHouse-2013-2021-tidy.xlsx
+
+2. Copy our animation code from Wednesday and track FH `status` across time
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+```
+NULL
+```
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
+
+```r
+# Load the package
+library(gganimate)
+
+# Histogram across time
+data_all |&gt;
+  ggplot(aes(x = status)) +
+  geom_bar(width = .5, fill = "cadetblue2") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", 
+       title = "{as.integer(frame_time)}") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), 
+                   labels = c("Not Free", "Partly Free", "Free")) +
+  transition_time(edition)
+```
+]
+
+???
+
+### What is our takeaway from this animation? How is "freedom" trending over time?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size70[.content-box-blue[**Our Job for Today**]]]
+
+&lt;br&gt;
+
+.size65[
+1. What is the current state of "freedom" in the world?
+
+2. How is "freedom" trending across time in the world?
+]
+
+???
+
+### Ok, how did we do today?
+
+&lt;br&gt;
+
+### Ready to go on the first report next week?
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

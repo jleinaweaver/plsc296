@@ -1,0 +1,625 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+background-image: url('libs/Images/background-data_blue_v3.png')
+background-size: 100%
+background-position: center
+class: middle, inverse
+
+.size80[**Today's Agenda**]
+
+<br>
+
+.size50[
+1. Introduce the first report
+
+2. Analyze the codebook
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Review assignment submissions
+
+2. Publish next board
+
+
+
+REVISE these notes with shorter 4 section version of report actually implemented
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+## Report 1: Analyzing our Outcome Variable(s)
+
+.size45[
+1. Due Feb 24th (Canvas "Assignments")
+
+2. PDFs only
+
+3. Support ALL claims with evidence
+    - APA in-text citations
+    - APA bibliography
+]
+
+???
+
+Per the syllabus, your first report is due to be submitted to Canvas on Feb 24th.
+
+- Late submissions lose 10 points per day
+
+- You must submit the report as a pdf file to preserve formatting of figures and tables (Word allows you to export as pdf)
+
+- You must support all claims with evidence which means in-text citations, a bibliography and APA formatting
+
+<br>
+
+### Questions on those basic elements?
+
+<br>
+
+**SLIDE**: And what goes in the report?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle, center
+
+.size80[**Report 1**]
+
+<br>
+
+.size80[**Analyzing our Outcome Variable(s)**]
+
+???
+
+This first report focuses entirely on analyzing our first data project.
+
+- Measurement is the end-all, be-all for any quantitative analysis and so we need to spend time analyzing it BEFORE we use it!
+
+<br>
+
+The report has 5 prompts and in each one it is your job to make and support an argument.
+
+- Note that these requirements are on the Canvas assignment's page
+
+<br>
+
+We will spend time in class on each of these elements, but you will have to do work outside class too.
+
+- In addition, I'll give you a full week of classes before the due date to work on the report.
+
+<br>
+
+**SLIDE**: Let's step through the arguments you'll be making
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+### Report 1: Analyzing our Outcome Variable(s)
+
+.size35[
+1) What is it and why is this project important?
+]
+
+???
+
+<br>
+
+1) In Section 1 your job is to give the reader a crash course in the chosen data project
+- What is it, who is behind it and why is it important?
+
+--
+
+.size35[
+2) How confident should we be in the methodology?
+]
+
+???
+
+<br>
+
+2) Section 2 should step through the strengths and weaknesses of the measurements in the project.
+
+--
+
+.size35[
+3) What do the observations currently show us?
+]
+
+???
+
+<br>
+
+3) Section 3 should focus on the most recent year available in the dataset and present an analysis of it.
+
+--
+
+.size35[
+4) How are these measures changing across time?
+]
+
+???
+
+<br>
+
+4) Assuming the project gives us data across time, Section 4 should present an analysis of how the data has changed across time.
+
+--
+
+.size35[
+5) Overall, how confident can we be when using this data to explore the world?
+]
+
+???
+
+<br>
+
+5) Section 5 should use the most important findings from the other four sections to make an argument about how best we can use this data to understand the world
+
+<br>
+
+### Any questions on the structure of the report?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size45[**Report 1: Analyzing our Outcome Variable(s)**]
+
+.size40[
+1. .textblue[**What is it and why is this project important?**]
+
+2. .textblue[**How confident should we be in the methodology?**]
+
+3. What do the observations currently show us?
+
+4. How are these measures changing across time?
+]
+
+???
+
+*Save for future: 4. How are these measures changing across time?*
+
+Our work during the next THREE classes will focus on these two elements of the report.
+- With a little bit of data analysis mixed-in.
+
+Be sure to TAKE NOTES as we work and save them!
+- You should ABSOLUTELY be writing this report as we go!
+
+### Make sense?
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[**For Today**]
+
+.size40[
+1. Was there something in the measurement process that you didn't understand?
+2. Which variables in the data project could we use to measure our outcome?
+3. What is one measurement choice that boosts your confidence in the data?
+4. What is one measurement choice that reduces your confidence in the data?
+]
+
+???
+
+For today I asked each of you to read the codebook(s) and to reflect on how the researchers converted their ideas into measurements.
+
+- My aim is that by the end of today you each have a list of strengths and weaknesses you can use to write section 2 of the report.
+
+<br>
+
+And remember our key lesson from the first weeks of class: Don't stress about the math!
+
+- Research design is WAY more important than the formulas!
+
+- Our focus today is on how they define their ideas and convert them into numbers
+
+- Those choices have a MUCH bigger impact than their choice to use harmonic means in constructing the indicies!
+
+<br>
+
+**SLIDE**: Now, before you report back on your findings let's talk big picture.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[**For Today**]
+
+.size40[
+1. Was there something in the measurement process that you didn't understand?
+2. Which variables in the data project could we use to measure our outcome?
+3. What is one measurement choice that boosts your confidence in the data?
+4. What is one measurement choice that reduces your confidence in the data?
+]
+
+???
+
+### What is the over-arching aim of the project? Concise description?
+- *ON BOARD*
+    - Measures "gender-based disadvantage in three dimensions: reproductive health, empowerment and the labour market"
+    - "It shows the loss in potential human development due to inequality..."
+    - "It ranges from 0, where women and men fare equally, to 1, where one gender fares as poorly as possible in all measured dimensions."
+    - [LINK](https://hdr.undp.org/data-center/thematic-composite-indices/gender-inequality-index#/indicies/GII)
+
+### Now help me make a list, for what specific reasons is this an important project?
+- *ON BOARD*
+
+### Next list, which variables in the data project could we use to measure our outcome?
+- *ON BOARD*:
+    1. GII Index
+    2. Maternal mortality ratio (MMR)
+    3. Adolescent birth rate (ABR)
+    4. Share of seats in parliament (PR)
+    5. Population with at least some secondary education (SE)
+    6. Labour force participation rate (LFPR)
+
+### Final over-arching list, was there anything specific in the measurement process that you didn't understand?
+- *ON BOARD*
+    - The construction of the index!!
+
+
+
+---
+
+background-image: url('libs/Images/03_1-Source_of_Data.jpg')
+background-size: 100%
+background-class: center
+class: middle
+
+???
+
+Talk to me about the source(s) of the data.
+
+### Where do they get the data for each measure? 
+
+### - Evaluate each source: Given the "quality" how precise can we be when interpreting these numbers?
+
+<br>
+
+### Notes
+1. Maternal mortality ratio [LINK](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/26)
+2. Adolescent birth rate[LINK](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/4669)
+3. Share of seats in parliament (link 1: see notes at bottom of current data; Link 2 is the general methodology) [Link 1](https://data.ipu.org/women-ranking?month=12&year=2022), [LINK 2](https://data.ipu.org/content/about-open-data-platform)
+4. Population with at least some secondary education; [LINK](https://www.nber.org/system/files/working_papers/w15902/w15902.pdf)
+5. Labour force participation rate [LINK](https://ilostat.ilo.org/resources/concepts-and-definitions/description-labour-force-statistics/)
+6. The index itself, Technical Note 4 [LINK](https://hdr.undp.org/sites/default/files/2021-22_HDR/hdr2021-22_technical_notes.pdf)
+
+
+
+---
+
+background-image: url('libs/Images/03_1-Voltaire_Define_Terms.jpg')
+background-size: 100%
+background-class: center
+class: middle, slideblue
+
+???
+
+Before the measurements come the conceptual definitions.
+
+### How do these researchers define each concept that will become a measure in their dataset?
+
+### - Evaluate each definition: Is this a "valid" representation of the idea? Why or why not?
+
+<br>
+
+### Notes
+1. Maternal mortality ratio [LINK](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/26)
+2. Adolescent birth rate[LINK](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/4669)
+3. Share of seats in parliament (link 1: see notes at bottom of current data; Link 2 is the general methodology) [Link 1](https://data.ipu.org/women-ranking?month=12&year=2022), [LINK 2](https://data.ipu.org/content/about-open-data-platform)
+4. Population with at least some secondary education; [LINK](https://www.nber.org/system/files/working_papers/w15902/w15902.pdf)
+5. Labour force participation rate [LINK](https://ilostat.ilo.org/resources/concepts-and-definitions/description-labour-force-statistics/)
+6. The index itself, Technical Note 4 [LINK](https://hdr.undp.org/sites/default/files/2021-22_HDR/hdr2021-22_technical_notes.pdf)
+
+
+
+---
+
+background-image: url('libs/Images/03_1-tools.jpg')
+background-size: 100%
+background-class: center
+class: top, center, inverse
+
+.textwhite[.size70[**Operationalize the Concepts**]]
+
+???
+
+Next we talk operationalization.
+
+- This is how a conceptual definition is turned into a measurement tool.
+
+- Be careful, focus this on the tool at first, and not the process of using it.
+
+### What is the tool created for each measure we are evaluating?
+
+### - Evaluate each tool: How "completely" does this tool represent the underlying concept?
+
+<br>
+
+### Notes
+1. Maternal mortality ratio [LINK](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/26)
+2. Adolescent birth rate[LINK](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/4669)
+3. Share of seats in parliament (link 1: see notes at bottom of current data; Link 2 is the general methodology) [Link 1](https://data.ipu.org/women-ranking?month=12&year=2022), [LINK 2](https://data.ipu.org/content/about-open-data-platform)
+4. Population with at least some secondary education; [LINK](https://www.nber.org/system/files/working_papers/w15902/w15902.pdf)
+5. Labour force participation rate [LINK](https://ilostat.ilo.org/resources/concepts-and-definitions/description-labour-force-statistics/)
+6. The index itself, Technical Note 4 [LINK](https://hdr.undp.org/sites/default/files/2021-22_HDR/hdr2021-22_technical_notes.pdf)
+
+
+
+---
+
+background-image: url('libs/Images/03_1-how_to_hammer.jpg')
+background-size: 100%
+background-class: center
+class: bottom, center, slideblue, inverse
+
+.textwhite[.size60[**Tool + Process = Measurement**]]
+
+???
+
+Next we talk process.
+
+- This is how the researchers use the tool to generate the actual measurements
+
+- In other words, we give you a hammer (the tool) and then we give you instructions on how to use it (process) 
+
+<br>
+
+**SLIDE**: Before we talk "process" let's talk criteria for evaluation.
+
+
+
+---
+
+background-image: url('libs/Images/03_1-Reliability-and-Validity.png')
+background-size: 90%
+background-class: top
+class: bottom, center, slideblue, inverse
+
+.textwhite[.size60[**Tool + Process = Measurement**]]
+
+???
+
+### Has anybody ever seen a representation like this?
+
+### - What does this illustrate?
+
+<br>
+
+All data can be evaluated in terms of its validity and reliability.
+
+- Validity: How well does the data produced reflect the concept you are trying to measure?
+    - If the tool is badly designed, then the measures are meaningless or incomplete.
+
+- Reliability: Does the tool + process produce consistent results across uses (time or different analysts)?
+    - If the instructions are confusing (bad process) then each person who uses the tool will produce data that cannot be collected together
+    - Often with cross-national data collection each member of the research team focuses on different countries and the process is what keeps everyone measuring the same things in the same way.
+
+<br>
+
+### What is the process used for each measure?
+
+### - Evaluate each tool + Process: How "valid" and "reliable" are these measures likely to be?
+
+<br>
+
+### Notes
+1. Maternal mortality ratio [LINK](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/26)
+2. Adolescent birth rate[LINK](https://www.who.int/data/gho/indicator-metadata-registry/imr-details/4669)
+3. Share of seats in parliament (link 1: see notes at bottom of current data; Link 2 is the general methodology) [Link 1](https://data.ipu.org/women-ranking?month=12&year=2022), [LINK 2](https://data.ipu.org/content/about-open-data-platform)
+4. Population with at least some secondary education; [LINK](https://www.nber.org/system/files/working_papers/w15902/w15902.pdf)
+5. Labour force participation rate [LINK](https://ilostat.ilo.org/resources/concepts-and-definitions/description-labour-force-statistics/)
+6. The index itself, Technical Note 4 [LINK](https://hdr.undp.org/sites/default/files/2021-22_HDR/hdr2021-22_technical_notes.pdf)
+
+
+
+---
+
+background-image: url('libs/Images/03_2-GII_diagram2.png')
+background-size: 100%
+background-class: center
+
+???
+
+Let's now briefly discuss the construction of the index itself, while holding off on the math underpinning "how" they do it.
+
+- The idea of it is enough for our exercise at this point.
+
+<br>
+
+### In broad strokes, how do they build the Gender Inequality Index (GII)?
+
+### - How "valid" and "reliable" is the GII likely to be?
+
+<br>
+
+Index building, no matter how fancy, is dangerous:
+
+1. The uncertainty in the final measure is, at minimum, a sum of all the uncertainty in each individual measure
+    - In reality, all the choices made in how to combine them ALSO generates uncertainty in terms of validity and reliability
+    
+2. If you build your index using great complexity you are sacrificing interpretability and external validity for measuring a concept you believe is important
+    - This process produces a measure, the GII, that measures a VERY complicated idea (e.g. a numeric amount that inequality harms women) which is intriguing, BUT
+    - In a way where we can't easily tell the leader of a country, if you lower maternal mortality rates by 5% you will improve gender equality by... ???
+    - Without a clear interpretation it becomes very hard to justify new policies with specific $ costs if you can't clearly explain how the outcome will be impacted.
+
+<br>
+
+### Notes
+- Step 1. Treating zeros and extreme values: replaces zeroes with .1 to use geometric means (multiply values) as opposed to arithmetic means (adding values)
+- Step 2. Aggregating across dimensions within each gender group (geometric means):  shows us the weighting of each measure for each gender separately
+    - The two health measures are converted to fractions and combined
+    - The two empowerment measures are combined
+- Step 3. Aggregating across gender groups (harmonic mean): Calculates the harmonic mean across the genders
+    - The harmonic mean "is calculated by dividing the number of observations, or entries in the series, by the reciprocal of each number in the series. Thus, the harmonic mean is the reciprocal of the arithmetic mean of the reciprocals."
+    - The arithmetic mean puts extra weight on big values, the harmonic mean puts extra weight on small ones
+- Step 4. Calculating the geometric mean of the arithmetic means for each indicator: ...
+- Step 5. Comparing indices: ...
+- "GII values are computed using the association-sensitive inequality measure suggested by Seth (2009), which implies that the index is based on the general mean of general means of different orders—the first aggregation is by a geometric mean across dimensions; these means, calculated separately for women and men, are then aggregated using a harmonic mean across genders." [LINK](https://hdr.undp.org/data-center/thematic-composite-indices/gender-inequality-index#/indicies/GII)
+- Technical Report [LINK](https://hdr.undp.org/sites/default/files/2021-22_HDR/hdr2021-22_technical_notes.pdf)
+
+
+
+---
+
+background-image: url('libs/Images/03_1-Data_Validation.png')
+background-size: 100%
+background-class: center
+class: slideblue
+
+???
+
+Last key piece for us to evaluate is validation.
+
+As we have noted, measurement is REALLY difficult even when you try to do everything "right."
+
+- This means we find it valuable when a research project tries to validate its findings with other high quality work. 
+
+<br>
+
+### So, how do the researchers in our project validate their work?
+
+#### - Any evidence of testing their measurements for robustness against other data sets or standards?
+
+<br>
+
+Pros and cons on the validation?
+
+- *ON BOARD*: Strengths vs Weaknesses
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle, size35
+
+### Report 1: Analyzing our Outcome Variable(s)
+
+1. .textblue[**What is it and why is this project important?**]
+
+2. .textblue[**How confident should we be in the methodology?**]
+
+3. What do the observations currently show us?
+
+4. How are these measures changing across time?
+
+5. Overall, how confident can we be when using this data to explore the world?
+
+???
+
+### Ok, how are we doing with this?
+
+### - Questions remaining about the codebook? 
+
+<br>
+
+### Given our analyses so far, how uncertain are the individual measures in the dataset likely to be?
+
+### - In other words, is this data likely precise enough to answer our research question or not?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[**For Friday (Snow Day Wednesday)**]
+
+.size45[
+1. Wheelan chapter 1 "What's the point?"
+
+2. **Submit to Canvas before class**: 
+
+Start exploring the dataset in Excel and find us something interesting/puzzling/surprising or simply something you learned
+]
+
+???
+
+You have a reading and an assignment.
+
+- The reading is meant to help you complete the assignment.
+
+- THEN dig into the data using Excel and find us something interesting/puzzling/surprising or something you didn't know about these observations.
+
+- Explain what you found and be specific.
+
+### Questions on the assignment?

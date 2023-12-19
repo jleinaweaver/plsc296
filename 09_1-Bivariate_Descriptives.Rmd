@@ -1,0 +1,1144 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+#library(stargazer)
+library(kableExtra)
+#library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size70[**Today's Agenda**]
+
+.size50[
+Bivariate Analyses
+
+- Descriptive Statistics and Correlations
+
+- "Bivariate_Analyses_Notes.R"
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. 
+
+Readings:
+- Wheelan chapter 4 "Correlation"
+- Wheelan chapter 5 "Basic Probability"
+- Chang, W. (2018) [recipe 15.14](https://r-graphics.org/recipe-dataprep-recode-continuous) (Recoding a Continuous Variable to a Categorical Variable))
+
+<br>
+
+Today we shift to bivariate analyses, e.g. analyzing the relationship between two variables
+
+- Everybody set up a new script for your work today and put "bivariate analyses" in the file name.
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size60[.content-box-blue[**Tidyverse Dataset: mpg**]]]
+
+<br>
+
+.size25[
+```{r, echo=FALSE}
+set.seed(134)
+
+mpg |>
+  slice_sample(n = 9) |>
+  kbl(digits = 1, align = c('l', 'l', rep('c', 9)))
+```
+]
+
+???
+
+We'll work with the built-in `mpg` dataset today.
+
+- Make sure to load the tidyverse package so you have access to this dataset.
+
+<br>
+
+To refresh our memories, this data set was produced by the EPA and tracks fuel economy data for 38 popular models of cars between 1999 and 2008.
+- Displacement is a proxy for engine size
+- Number of cylinders
+- Type of transmission
+- Type of drive train
+- city and highway fuel economy
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[.content-box-blue[**Variables: Categorical x Categorical**]]]
+
+<br>
+
+.size25[
+```{r, echo=FALSE}
+set.seed(134)
+
+mpg |>
+  slice_sample(n = 9) |>
+  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
+  column_spec(6:7, background = "lightblue")
+```
+]
+
+???
+
+Remember our fundamental data principle: Variable type dictates tool!
+
+<br>
+
+Let's start with the case where you want to analyze the relationship between two categorical variables.
+
+### What function did we use to calculate descriptive statistics for a single categorical variable? e.g. count the levels
+- (**SLIDE**: table())
+
+
+
+
+
+---
+
+class: middle, slideblue
+
+.center[.content-box-blue[.size50[**Variables: Categorical x Categorical**]]]
+
+.pull-left[
+```{r, echo=TRUE}
+table(mpg$trans, mpg$drv)
+```
+]
+
+.pull-right[
+```{r}
+options(width = 40)
+```
+
+```{r, echo=TRUE}
+table(mpg$drv, mpg$trans)
+```
+]
+
+???
+
+Adding a second variable to the table function is quite simple.
+
+- I also want you to see that the order of the variables you input determines the rows and columns of the table
+
+<br>
+
+### Any questions on this code or how to interpret the output?
+
+<br>
+
+### Which combinations of transmission and drive train are the most common in this data set?
+
+<br>
+
+### And what function did we use to convert table counts into proportions?
+
+- (**SLIDE**: prop.table())
+
+
+
+
+---
+
+class: middle, slideblue
+
+.center[.content-box-blue[.size45[**Variables: Categorical x Categorical**]]]
+
+.pull-left[
+```{r}
+options(width = 50, digits = 3)
+```
+
+```{r, echo=TRUE}
+prop.table(table(mpg$trans, mpg$drv))
+```
+]
+
+.pull-right[
+```{r}
+options(width = 40, digits = 3)
+```
+
+```{r, echo=TRUE}
+prop.table(table(mpg$drv, mpg$trans))
+```
+]
+
+???
+
+prop.table converted the counts to proportions of the entire data set.
+
+- So, 15.8% of the cars in this data set are front wheel drive, automatic transmission cars.
+
+<br>
+
+### Any questions on this code or how to interpret the output?
+
+--
+
+.center[.content-box-blue[.size35[**What proportion of SUVs ('class') are four wheel drive ('drv')?]**]]
+
+???
+
+Alright, use these tools to answer this question!
+
+
+
+
+---
+
+class: middle, center, slideblue
+
+```{r, echo=TRUE}
+table(mpg$class, mpg$drv)
+
+prop.table(table(mpg$class, mpg$drv))
+```
+
+???
+
+### So, what's wrong with this answer?
+
+- These are OVERALL proportions (e.g. 22% of SUVs are 4 wd as compared to ALL cars)
+
+<br>
+
+**SLIDE**: What we want is for R to calculate proportions separately for each class of cars.
+
+
+
+
+---
+
+class: middle, center, slideblue
+
+.left-column[
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+.textblack[
+```{r, echo=FALSE}
+table(mpg$class, mpg$drv)
+```
+]]
+
+.right-column[
+```{r, echo=TRUE}
+# Proportions by Row
+prop.table(table(mpg$class, mpg$drv), margin = 1)
+
+# Proportions by Column
+prop.table(table(mpg$class, mpg$drv), margin = 2)
+```
+]
+
+???
+
+The 'margin' argument let's you recalculate proportions by either the rows or the columns
+
+### So, what proportion of SUVs are four wheel drive?
+- (82%)
+
+### And what proportion of ALL 4 wheel drive cars are SUVs?
+- (50%)
+
+<br>
+
+### Any questions on using table and prop.table to perform bivariate analyses on two categorical variables?
+
+<br>
+
+Let's tie this to the Wheelan chapter on probability you read for class today.
+
+### How does Wheelan define "probability"?
+
+- (**SLIDE**)
+
+
+
+
+---
+
+class: center, middle
+
+```{r, fig.align='center', out.width='90%', fig.retina=3}
+knitr::include_graphics("libs/Images/08_2-probability.jpg")
+```
+
+.size40["Probability is the study of events and outcomes involving an element of uncertainty" (p71).]
+
+???
+
+### Questions on "probability" as introduced by the chapter?
+
+- **SLIDE**: Let's tie it back into our work!
+
+
+
+---
+
+class: center, middle, slideblue
+
+.size40["Probability is the study of events and outcomes involving an element of uncertainty" (p71).]
+
+<br>
+
+.code120[
+```{r, echo=TRUE}
+# Proportions by Row
+prop.table(table(mpg$class, mpg$drv), margin = 1)
+```
+]
+
+???
+
+### How does this concept apply to the work we just did examining cars in the 'mpg' dataset?
+
+### - In what ways is probability helpful for analyzing these tables?
+
+<br>
+
+While these are proportions, not probabilities, I suspect we mean to interpret them as probabilities!
+- Proportion summarizes how frequently some event actually happened.
+
+- Probability represents the chances of some event happening.
+
+<br>
+
+We often hope that doing these kinds of analyses will let us say something much broader about the world
+
+- e.g. the super-majority of SUVs I see on the road are four-wheel drive cars.
+
+<br>
+
+### What limits us from treating these proportions as probabilities?
+
+- (1. Need to evaluate how representative this sample is of the population)
+    - Only 1999 to 2008 for 38 "popular" models of cars
+
+- (2. Need to adapt our methods to consider the sources of uncertainty when providing the "answer")
+    - e.g. What do we mean by 82%? Is it plus or minus 5%?
+    
+### Make sense?
+
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.center[.size40[.content-box-blue[**Variables: Categorical x Numeric**]]]
+
+<br>
+
+.size25[
+```{r, echo=FALSE}
+set.seed(134)
+
+mpg |>
+  slice_sample(n = 7) |>
+  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
+  column_spec(8, background = "pink")
+
+options(width = 80)
+```
+]
+
+???
+
+Now let's shift to bivariate analysis of the relationship between a single categorical and a single numeric variable.
+
+<br>
+
+Let's build up to it!
+
+### How do we produce descriptive statistics for a single numeric variable like city fuel economy?
+
+- (**SLIDE**: The summary function!)
+
+--
+
+.code110[
+```{r, echo=TRUE}
+summary(mpg$cty)
+```
+]
+
+???
+
+<br>
+
+### Refresh my memory, what do we learn from these descriptive statistics?
+
+<br>
+
+**SLIDE**: Now let's move to the bivariate case.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.center[.size40[.content-box-blue[**Variables: Categorical x Numeric**]]]
+
+<br>
+
+.size25[
+```{r, echo=FALSE}
+set.seed(134)
+
+mpg |>
+  slice_sample(n = 10) |>
+  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
+  column_spec(7:8, background = "pink")
+```
+]
+
+???
+
+Let's say we want the average city fuel economy for each possible drive train in the data set.
+
+### How did we do this last week? e.g. summary stats by group
+
+- (**SLIDE**: The aggregate function!)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.center[.size40[.content-box-blue[**Variables: Categorical x Numeric**]]]
+
+<br>
+
+.size25[
+```{r, echo=FALSE}
+set.seed(134)
+
+mpg |>
+  slice_sample(n = 8) |>
+  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
+  column_spec(7:8, background = "pink")
+```
+]
+
+.code130[
+```{r, echo=TRUE, eval=FALSE}
+aggregate(data, y ~ x, FUN)
+```
+]
+
+???
+
+As a reminder, here are the key arguments you have to specify in the aggregate function.
+
+<br>
+
+Everybody calculate the mean of city fuel economy for each level of the drive train.
+
+- (**SLIDE**)
+
+
+
+---
+
+class: middle
+
+.center[.size35[.content-box-blue[**Variables: Categorical x Numeric**]]]
+
+.pull-left[
+.code110[
+```{r, echo=TRUE}
+# Mean
+aggregate(data = mpg, cty ~ drv, 
+          FUN = mean)
+
+# Median
+aggregate(data = mpg, cty ~ drv, 
+          FUN = median)
+```
+]]
+
+.pull-right[
+.code110[
+```{r, echo=TRUE}
+# Range
+aggregate(data = mpg, cty ~ drv, 
+          FUN = range)
+```
+]
+
+```{r, echo=TRUE}
+# Percentiles
+aggregate(data = mpg, cty ~ drv, 
+          FUN = quantile)
+```
+]
+
+???
+
+### Any questions on using aggregate and descriptive stats functions to perform bivariate analyses on the relationship between a categorical variable and a numeric variable?
+
+<br>
+
+### Do these statistics come closer to representing probabilities than our cross-tabs? Why or why not?
+
+- (Same limitations on sample representative-ness)
+
+- (BUT, the ranges offer valuable context for what values we thnk are realistic and what are not!)
+
+<br>
+
+One key lesson, more variation (e.g. numbers rather than categories) gives us more to work with!
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[.content-box-blue[**Variables: Numeric x Numeric**]]]
+
+<br>
+
+.size25[
+```{r, echo=FALSE}
+set.seed(134)
+
+mpg |>
+  slice_sample(n = 9) |>
+  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
+  column_spec(c(3, 8), background = "pink")
+```
+]
+
+???
+
+Now let's shift to bivariate analysis of the relationship between two numeric variables.
+
+- We'll consider two options.
+
+<br>
+
+Let's say I want to compare city fuel economy of different cars with different engine displacements.
+
+First, everyone use the aggregate function to calculate the means at each level of engine size.
+
+
+
+---
+
+class: middle
+
+.code110[
+```{r, echo=TRUE}
+aggregate(data = mpg, cty ~ displ, FUN = mean)
+```
+]
+
+???
+
+Can't see all the results here on the screen
+
+- 35 rows to this table
+
+<br>
+
+You can imagine this list getting longer and longer assuming a larger data set or a variable with less overlapping values.
+
+- We need a better strategy!
+
+<br>
+
+### How did we handle this problem previously? e.g. when moving from bar plots to histograms
+
+- We created bins of numbers (groups) in order to make a histogram.
+
+- So, let's do that here: Group engine displacement into categories
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size60[.content-box-blue[**Cut: Convert Numeric to Factor**]]]
+
+<br>
+
+.size50[
+cut(x, breaks, labels)
+
+- 'x' is the variable to transform
+
+- 'breaks' lists the cut-off points for the groups
+
+- 'labels' lists the names of the new groups
+]
+
+???
+
+Everybody write down the elements of the cut function
+
+- *step through it*
+
+- This will make more sense when you start applying it
+
+
+
+
+
+---
+
+class: middle, slideblue
+
+.code140[
+```{r, echo=TRUE, eval=FALSE}
+# Use the cut function and save the new variable in mpg
+mpg$displ2 <- cut(mpg$displ, 
+                  breaks = c(0, 4, 8), 
+                  labels = c("Small", "Large"))
+
+# Check that the new variable was saved
+mpg
+```
+]
+
+.size25[
+```{r}
+mpg$displ2 <- cut(mpg$displ, 
+                  breaks = c(0, 4, 8), 
+                  labels = c("Small", "Large"))
+
+mpg |>
+  slice_sample(n = 5) |>
+  kbl(digits = 1, align = c('l', 'l', rep('c', 10))) |>
+  column_spec(c(3, 8, 12), background = "pink")
+```
+]
+
+???
+
+Here's my example of adding a new displacement variable in the mpg data set.
+
+<br>
+
+Things to Note:
+
+1. To the left of the arrow I have created a new variable ('displ2') and this will save it in the 'mpg' data set
+    - Note that this change only lasts while your current instance of R is open. This new variable will disappear the next time you restart RStudio
+
+2. The breaks argument is three numbers which creates two bins
+    - The first bin is all displ values between 0-4
+    - The second bin is all displ values between 4-8
+
+3. The labels argument lets us name the new groups.
+
+<br>
+
+### Is everybody clear on why there are three numbers in 'breaks' but only two words in 'labels'?
+
+<br>
+
+### Any questions on how to convert a numeric variable into a categorical variable?
+
+- Chang recipe 15.14 is a good reminder if you forget how!
+
+<br>
+
+Ok, everybody now use aggregate on our new displacement variable!
+
+
+
+
+---
+
+class: middle
+
+.center[.size35[.content-box-blue[**Variables: Numeric x Numeric**]]]
+
+.pull-left[
+.code110[
+```{r, echo=TRUE}
+# Mean
+aggregate(data = mpg, cty ~ displ2, 
+          FUN = mean)
+
+# Median
+aggregate(data = mpg, cty ~ displ2, 
+          FUN = median)
+```
+]]
+
+.pull-right[
+.code110[
+```{r, echo=TRUE}
+# Range
+aggregate(data = mpg, cty ~ displ2, 
+          FUN = range)
+```
+]
+
+```{r, echo=TRUE}
+# Percentiles
+aggregate(data = mpg, cty ~ displ2, 
+          FUN = quantile)
+```
+]
+
+???
+
+### What do we learn about the relationship between these two variables?
+
+- (Small engines get WAY better fuel economy!)
+
+- 5-6 mpg improvement on average
+
+- Max increase from 16 to 35!
+
+<br>
+
+So, our first option for calculating descriptive statistics on a numeric variable by a second numeric variable is to convert one of them to a categorical variable.
+
+### Make sense?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size65[.content-box-blue[**Variables: Numeric x Numeric**]]
+
+<br>
+
+.size65[
+Any questions on correlations from the Wheelan chapter?
+]
+
+???
+
+Our second approach for calculating or estimating the possible relationship between two numeric variables is to use the correlation coefficient.
+
+### So, questions on this?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size65[.content-box-blue[**Variables: Numeric x Numeric**]]
+
+<br>
+
+.size65[
+What are the "fabulous" advantages of correlation?
+]
+
+???
+
+### According to Wheelan, what are the "fabulous" advantages of correlation?
+
+1. Measure of linear association
+
+2. Always between -1 and 1
+
+3. No units attached
+
+<br>
+
+**SLIDE**: Let's briefly illustrate each of these
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+# Correlation: 
+
+## A Measure of Linear Association
+
+```{r, fig.retina=3, fig.align = 'center', out.width = '100%', fig.asp = .32, fig.width = 9}
+## Show correlations
+cor_examples <- function(sd) {
+    tibble(
+    x = rnorm(50, mean = 8, sd = 2),
+    y = x + rnorm(50, 0, sd),
+    Group = str_c("Correlation: ", round(cor(x, y), 2))
+    )
+}
+
+# Generate sims
+set.seed(54)
+rbind(cor_examples(1),
+      cor_examples(3),
+      cor_examples(18)) |>
+ggplot(aes(x = x, y = y)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    theme_bw() +
+  labs(x = "", y = "") +
+    facet_wrap(~Group, scales = "free")
+```
+
+???
+
+This means correlation is not a good measure when relationships are non-linear!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+# Correlation: 
+
+## Always between -1 and 1
+
+```{r, fig.retina=3, fig.align = 'center', out.width = '100%', fig.asp = .32, fig.width = 9}
+# Show inverse correlations
+inv_cor_examples <- function(sd) {
+    tibble(
+    x = rnorm(50, mean = 8, sd = 2),
+    y = -2 * x + rnorm(50, 0, sd),
+    Group = str_c("Correlation: ", round(cor(x, y), 2))
+    )
+}
+
+set.seed(54)
+rbind(inv_cor_examples(2),
+      inv_cor_examples(6),
+      inv_cor_examples(11)) |>
+ggplot(aes(x = x, y = y)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    theme_bw() +
+  labs(x = "", y = "") +
+    facet_wrap(~Group, scales = "free")
+```
+
+???
+
+Can be either positive or negative
+
+- Positive: Increases in X are associated with increases in Y
+
+- Negative: Increases in X are associated with decreases in Y
+
+<br>
+
+### Make sense?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+# Correlation: 
+
+## No Units Attached
+
+.pull-left[
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("libs/Images/10_1-Engines-Types.gif")
+```
+]
+
+.pull-right[
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("libs/Images/10_1-mpg1.png")
+```
+]
+
+???
+
+Correlation provides a numeric representation of a linear relationship REGARDLESS of the underlying units.
+
+<br>
+
+Normally you have to put two things into the same scale to combine or compare them, right?
+
+- e.g. the "apples-and-oranges" problem!
+
+<br>
+
+Correlation focuses on the variation not attached to the units.
+
+<br>
+
+### Make sense?
+
+<br>
+
+**SLIDE**: Let's test ourselves!
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+
+.left-column[
+.textblack[
+## Which has the largest correlation?
+]]
+
+.right-column[
+```{r, fig.retina=3, fig.align = 'center', out.width = '97%', fig.asp = .78, fig.width = 7}
+pair1 <- tibble(anscombe[, c("x1", "y1")]) |> rename(x = x1, y = y1) |> mutate(Group = "Example 1")
+pair2 <- tibble(anscombe[, c("x2", "y2")]) |> rename(x = x2, y = y2) |> mutate(Group = "Example 2")
+pair3 <- tibble(anscombe[, c("x3", "y3")]) |> rename(x = x3, y = y3) |> mutate(Group = "Example 3")
+pair4 <- tibble(anscombe[, c("x4", "y4")]) |> rename(x = x4, y = y4) |> mutate(Group = "Example 4")
+
+d <- rbind(pair1, pair2, pair3, pair4)
+
+d |>
+    ggplot(aes(x = x, y = y)) +
+    geom_point() +
+    #geom_smooth(method = "lm", se = FALSE) +
+    theme_bw() +
+    facet_wrap(~ Group, ncol = 2) +
+  labs(x = "", y = "")
+```
+]
+
+
+
+---
+
+class: middle, slideblue
+
+# Anscombe’s Quartet (1973)
+
+.pull-left[
+```{r, fig.align = 'center', out.width = '100%', fig.asp = .85, fig.width = 6, fig.retina=3}
+pair1 <- tibble(anscombe[, c("x1", "y1")]) |> rename(x = x1, y = y1) |> mutate(Group = "Example 1")
+pair2 <- tibble(anscombe[, c("x2", "y2")]) |> rename(x = x2, y = y2) |> mutate(Group = "Example 2")
+pair3 <- tibble(anscombe[, c("x3", "y3")]) |> rename(x = x3, y = y3) |> mutate(Group = "Example 3")
+pair4 <- tibble(anscombe[, c("x4", "y4")]) |> rename(x = x4, y = y4) |> mutate(Group = "Example 4")
+
+d <- rbind(pair1, pair2, pair3, pair4)
+
+d |>
+    ggplot(aes(x = x, y = y)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    theme_bw() +
+    facet_wrap(~ Group, ncol = 2) +
+  labs(x = "", y = "")
+```
+]
+
+.pull-right[
+
+<br>
+
+.size25[
+```{r, echo = FALSE}
+d |>
+    group_by(Group) |>
+    summarize(
+        MeanX = round(mean(x), 1),
+        MeanY = round(mean(y), 1),
+        Correlation = round(cor(x,y), 2)
+        ) |>
+  kbl()
+```
+]]
+
+???
+
+Lesson: **ALWAYS** visualize your data before interpreting ANY statistic!
+
+- Examples 2 and 3 are REALLY strong indicators of association
+
+- Example 1 is weaker
+
+- Example 4 is non-existent
+
+<br>
+
+### Make sense?
+
+- **SLIDE**: Alright, let's calculate some correlations in R
+
+
+
+---
+
+class: middle, slideblue
+
+.code110[
+```{r, echo=TRUE}
+# Calculate the correlation
+cor(mpg$cty, mpg$hwy)
+
+# Test of Correlation (Pearsons)
+cor.test(mpg$cty, mpg$hwy)
+```
+]
+
+???
+
+Two functions to calculate correlations.
+
+- cor() is a simple tool for calculating the correlation coefficient
+
+- cor.test() does the same but includes confidence intervals and a significance test of the correlation.
+
+<br>
+
+### What do we learn about the relationship between these two numeric variables from these correlations?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[**For next class analyze the relationship between:**]
+
+.size50[
+1. 'cut' and 'clarity'
+
+2. 'cut' and 'price'
+
+3. 'carat' and 'price' (convert 'carat' using cut)
+
+4. 'carat' and 'price' (correlation)
+
+.right[**Source:** 'diamonds' dataset in tidyverse]
+]
+
+???
+
+Let's practice!
+
+- A dataset containing the prices and other attributes of almost 54,000 diamonds
+
+<br>
+
+1. Cat x Cat: 'cut' and 'clarity'
+    - 'cut' is the quality of the cut (Fair, Good, Very Good, Premium, Ideal)
+    - 'clarity' is a measurement of how clear the diamond is (I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best))
+
+2. Cat x Num: 'cut' and 'price'
+    - price in US dollars ($326–$18,823)
+
+
+
+
+
+

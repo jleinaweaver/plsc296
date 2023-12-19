@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>10_1-Bivariate_Descriptives.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size70[**Today's Agenda**]
+
+.size50[
+Bivariate Analyses
+
+- Descriptive Statistics and Correlations
+
+- "Bivariate_Analyses_Notes.R"
+]
+
+&lt;br&gt;
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. 
+
+Readings:
+- Wheelan chapter 4 "Correlation"
+- Wheelan chapter 5 "Basic Probability"
+- Chang, W. (2018) [recipe 15.14](https://r-graphics.org/recipe-dataprep-recode-continuous) (Recoding a Continuous Variable to a Categorical Variable))
+
+&lt;br&gt;
+
+Today we shift to bivariate analyses, e.g. analyzing the relationship between two variables
+
+- Everybody set up a new script for your work today and put "bivariate analyses" in the file name.
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size60[.content-box-blue[**Tidyverse Dataset: mpg**]]]
+
+&lt;br&gt;
+
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; expedition 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; subaru &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; impreza awd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; volkswagen &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; passat &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; explorer 4wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; caravan 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; minivan &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; hyundai &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tiburon &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; subcompact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; a4 quattro &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s6) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; toyota &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; corolla &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pontiac &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; grand prix &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+We'll work with the built-in `mpg` dataset today.
+
+- Make sure to load the tidyverse package so you have access to this dataset.
+
+&lt;br&gt;
+
+To refresh our memories, this data set was produced by the EPA and tracks fuel economy data for 38 popular models of cars between 1999 and 2008.
+- Displacement is a proxy for engine size
+- Number of cylinders
+- Type of transmission
+- Type of drive train
+- city and highway fuel economy
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[.content-box-blue[**Variables: Categorical x Categorical**]]]
+
+&lt;br&gt;
+
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; expedition 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; subaru &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; impreza awd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; volkswagen &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; passat &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; explorer 4wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; caravan 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; minivan &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; hyundai &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tiburon &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; subcompact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; a4 quattro &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; auto(s6) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; toyota &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; corolla &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pontiac &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; grand prix &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: lightblue !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+Remember our fundamental data principle: Variable type dictates tool!
+
+&lt;br&gt;
+
+Let's start with the case where you want to analyze the relationship between two categorical variables.
+
+### What function did we use to calculate descriptive statistics for a single categorical variable? e.g. count the levels
+- (**SLIDE**: table())
+
+
+
+
+
+---
+
+class: middle, slideblue
+
+.center[.content-box-blue[.size50[**Variables: Categorical x Categorical**]]]
+
+.pull-left[
+
+```r
+table(mpg$trans, mpg$drv)
+```
+
+```
+            
+              4  f  r
+  auto(av)    0  5  0
+  auto(l3)    0  2  0
+  auto(l4)   34 37 12
+  auto(l5)   29  8  2
+  auto(l6)    2  2  2
+  auto(s4)    2  1  0
+  auto(s5)    1  2  0
+  auto(s6)    7  8  1
+  manual(m5) 21 33  4
+  manual(m6)  7  8  4
+```
+]
+
+.pull-right[
+
+
+
+```r
+table(mpg$drv, mpg$trans)
+```
+
+```
+   
+    auto(av) auto(l3) auto(l4) auto(l5)
+  4        0        0       34       29
+  f        5        2       37        8
+  r        0        0       12        2
+   
+    auto(l6) auto(s4) auto(s5) auto(s6)
+  4        2        2        1        7
+  f        2        1        2        8
+  r        2        0        0        1
+   
+    manual(m5) manual(m6)
+  4         21          7
+  f         33          8
+  r          4          4
+```
+]
+
+???
+
+Adding a second variable to the table function is quite simple.
+
+- I also want you to see that the order of the variables you input determines the rows and columns of the table
+
+&lt;br&gt;
+
+### Any questions on this code or how to interpret the output?
+
+&lt;br&gt;
+
+### Which combinations of transmission and drive train are the most common in this data set?
+
+&lt;br&gt;
+
+### And what function did we use to convert table counts into proportions?
+
+- (**SLIDE**: prop.table())
+
+
+
+
+---
+
+class: middle, slideblue
+
+.center[.content-box-blue[.size45[**Variables: Categorical x Categorical**]]]
+
+.pull-left[
+
+
+
+```r
+prop.table(table(mpg$trans, mpg$drv))
+```
+
+```
+            
+                   4       f       r
+  auto(av)   0.00000 0.02137 0.00000
+  auto(l3)   0.00000 0.00855 0.00000
+  auto(l4)   0.14530 0.15812 0.05128
+  auto(l5)   0.12393 0.03419 0.00855
+  auto(l6)   0.00855 0.00855 0.00855
+  auto(s4)   0.00855 0.00427 0.00000
+  auto(s5)   0.00427 0.00855 0.00000
+  auto(s6)   0.02991 0.03419 0.00427
+  manual(m5) 0.08974 0.14103 0.01709
+  manual(m6) 0.02991 0.03419 0.01709
+```
+]
+
+.pull-right[
+
+
+
+```r
+prop.table(table(mpg$drv, mpg$trans))
+```
+
+```
+   
+    auto(av) auto(l3) auto(l4) auto(l5)
+  4  0.00000  0.00000  0.14530  0.12393
+  f  0.02137  0.00855  0.15812  0.03419
+  r  0.00000  0.00000  0.05128  0.00855
+   
+    auto(l6) auto(s4) auto(s5) auto(s6)
+  4  0.00855  0.00855  0.00427  0.02991
+  f  0.00855  0.00427  0.00855  0.03419
+  r  0.00855  0.00000  0.00000  0.00427
+   
+    manual(m5) manual(m6)
+  4    0.08974    0.02991
+  f    0.14103    0.03419
+  r    0.01709    0.01709
+```
+]
+
+???
+
+prop.table converted the counts to proportions of the entire data set.
+
+- So, 15.8% of the cars in this data set are front wheel drive, automatic transmission cars.
+
+&lt;br&gt;
+
+### Any questions on this code or how to interpret the output?
+
+--
+
+.center[.content-box-blue[.size35[**What proportion of SUVs ('class') are four wheel drive ('drv')?]**]]
+
+???
+
+Alright, use these tools to answer this question!
+
+
+
+
+---
+
+class: middle, center, slideblue
+
+
+```r
+table(mpg$class, mpg$drv)
+```
+
+```
+            
+              4  f  r
+  2seater     0  0  5
+  compact    12 35  0
+  midsize     3 38  0
+  minivan     0 11  0
+  pickup     33  0  0
+  subcompact  4 22  9
+  suv        51  0 11
+```
+
+```r
+prop.table(table(mpg$class, mpg$drv))
+```
+
+```
+            
+                  4      f      r
+  2seater    0.0000 0.0000 0.0214
+  compact    0.0513 0.1496 0.0000
+  midsize    0.0128 0.1624 0.0000
+  minivan    0.0000 0.0470 0.0000
+  pickup     0.1410 0.0000 0.0000
+  subcompact 0.0171 0.0940 0.0385
+  suv        0.2179 0.0000 0.0470
+```
+
+???
+
+### So, what's wrong with this answer?
+
+- These are OVERALL proportions (e.g. 22% of SUVs are 4 wd as compared to ALL cars)
+
+&lt;br&gt;
+
+**SLIDE**: What we want is for R to calculate proportions separately for each class of cars.
+
+
+
+
+---
+
+class: middle, center, slideblue
+
+.left-column[
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+.textblack[
+
+```
+            
+              4  f  r
+  2seater     0  0  5
+  compact    12 35  0
+  midsize     3 38  0
+  minivan     0 11  0
+  pickup     33  0  0
+  subcompact  4 22  9
+  suv        51  0 11
+```
+]]
+
+.right-column[
+
+```r
+# Proportions by Row
+prop.table(table(mpg$class, mpg$drv), margin = 1)
+```
+
+```
+            
+                  4      f      r
+  2seater    0.0000 0.0000 1.0000
+  compact    0.2553 0.7447 0.0000
+  midsize    0.0732 0.9268 0.0000
+  minivan    0.0000 1.0000 0.0000
+  pickup     1.0000 0.0000 0.0000
+  subcompact 0.1143 0.6286 0.2571
+  suv        0.8226 0.0000 0.1774
+```
+
+```r
+# Proportions by Column
+prop.table(table(mpg$class, mpg$drv), margin = 2)
+```
+
+```
+            
+                  4      f      r
+  2seater    0.0000 0.0000 0.2000
+  compact    0.1165 0.3302 0.0000
+  midsize    0.0291 0.3585 0.0000
+  minivan    0.0000 0.1038 0.0000
+  pickup     0.3204 0.0000 0.0000
+  subcompact 0.0388 0.2075 0.3600
+  suv        0.4951 0.0000 0.4400
+```
+]
+
+???
+
+The 'margin' argument let's you recalculate proportions by either the rows or the columns
+
+### So, what proportion of SUVs are four wheel drive?
+- (82%)
+
+### And what proportion of ALL 4 wheel drive cars are SUVs?
+- (50%)
+
+&lt;br&gt;
+
+### Any questions on using table and prop.table to perform bivariate analyses on two categorical variables?
+
+&lt;br&gt;
+
+Let's tie this to the Wheelan chapter on probability you read for class today.
+
+### How does Wheelan define "probability"?
+
+- (**SLIDE**)
+
+
+
+
+---
+
+class: center, middle
+
+&lt;img src="libs/Images/08_2-probability.jpg" width="90%" style="display: block; margin: auto;" /&gt;
+
+.size40["Probability is the study of events and outcomes involving an element of uncertainty" (p71).]
+
+???
+
+### Questions on "probability" as introduced by the chapter?
+
+- **SLIDE**: Let's tie it back into our work!
+
+
+
+---
+
+class: center, middle, slideblue
+
+.size40["Probability is the study of events and outcomes involving an element of uncertainty" (p71).]
+
+&lt;br&gt;
+
+.code120[
+
+```r
+# Proportions by Row
+prop.table(table(mpg$class, mpg$drv), margin = 1)
+```
+
+```
+            
+                  4      f      r
+  2seater    0.0000 0.0000 1.0000
+  compact    0.2553 0.7447 0.0000
+  midsize    0.0732 0.9268 0.0000
+  minivan    0.0000 1.0000 0.0000
+  pickup     1.0000 0.0000 0.0000
+  subcompact 0.1143 0.6286 0.2571
+  suv        0.8226 0.0000 0.1774
+```
+]
+
+???
+
+### How does this concept apply to the work we just did examining cars in the 'mpg' dataset?
+
+### - In what ways is probability helpful for analyzing these tables?
+
+&lt;br&gt;
+
+While these are proportions, not probabilities, I suspect we mean to interpret them as probabilities!
+- Proportion summarizes how frequently some event actually happened.
+
+- Probability represents the chances of some event happening.
+
+&lt;br&gt;
+
+We often hope that doing these kinds of analyses will let us say something much broader about the world
+
+- e.g. the super-majority of SUVs I see on the road are four-wheel drive cars.
+
+&lt;br&gt;
+
+### What limits us from treating these proportions as probabilities?
+
+- (1. Need to evaluate how representative this sample is of the population)
+    - Only 1999 to 2008 for 38 "popular" models of cars
+
+- (2. Need to adapt our methods to consider the sources of uncertainty when providing the "answer")
+    - e.g. What do we mean by 82%? Is it plus or minus 5%?
+    
+### Make sense?
+
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.center[.size40[.content-box-blue[**Variables: Categorical x Numeric**]]]
+
+&lt;br&gt;
+
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; expedition 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; subaru &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; impreza awd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; volkswagen &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; passat &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; explorer 4wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; caravan 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; minivan &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; hyundai &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tiburon &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; subcompact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; a4 quattro &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s6) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+Now let's shift to bivariate analysis of the relationship between a single categorical and a single numeric variable.
+
+&lt;br&gt;
+
+Let's build up to it!
+
+### How do we produce descriptive statistics for a single numeric variable like city fuel economy?
+
+- (**SLIDE**: The summary function!)
+
+--
+
+.code110[
+
+```r
+summary(mpg$cty)
+```
+
+```
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    9.0    14.0    17.0    16.9    19.0    35.0 
+```
+]
+
+???
+
+&lt;br&gt;
+
+### Refresh my memory, what do we learn from these descriptive statistics?
+
+&lt;br&gt;
+
+**SLIDE**: Now let's move to the bivariate case.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.center[.size40[.content-box-blue[**Variables: Categorical x Numeric**]]]
+
+&lt;br&gt;
+
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; expedition 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; subaru &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; impreza awd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; volkswagen &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; passat &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; explorer 4wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; caravan 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; minivan &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; hyundai &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tiburon &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; subcompact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; a4 quattro &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s6) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; toyota &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; corolla &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pontiac &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; grand prix &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; caravan 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l6) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 23 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; minivan &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+Let's say we want the average city fuel economy for each possible drive train in the data set.
+
+### How did we do this last week? e.g. summary stats by group
+
+- (**SLIDE**: The aggregate function!)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.center[.size40[.content-box-blue[**Variables: Categorical x Numeric**]]]
+
+&lt;br&gt;
+
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; expedition 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; subaru &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; impreza awd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; volkswagen &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; passat &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; explorer 4wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; caravan 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; minivan &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; hyundai &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tiburon &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; subcompact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; a4 quattro &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s6) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; toyota &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; corolla &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+.code130[
+
+```r
+aggregate(data, y ~ x, FUN)
+```
+]
+
+???
+
+As a reminder, here are the key arguments you have to specify in the aggregate function.
+
+&lt;br&gt;
+
+Everybody calculate the mean of city fuel economy for each level of the drive train.
+
+- (**SLIDE**)
+
+
+
+---
+
+class: middle
+
+.center[.size35[.content-box-blue[**Variables: Categorical x Numeric**]]]
+
+.pull-left[
+.code110[
+
+```r
+# Mean
+aggregate(data = mpg, cty ~ drv, 
+          FUN = mean)
+```
+
+```
+  drv  cty
+1   4 14.3
+2   f 20.0
+3   r 14.1
+```
+
+```r
+# Median
+aggregate(data = mpg, cty ~ drv, 
+          FUN = median)
+```
+
+```
+  drv cty
+1   4  14
+2   f  19
+3   r  15
+```
+]]
+
+.pull-right[
+.code110[
+
+```r
+# Range
+aggregate(data = mpg, cty ~ drv, 
+          FUN = range)
+```
+
+```
+  drv cty.1 cty.2
+1   4     9    21
+2   f    11    35
+3   r    11    18
+```
+]
+
+
+```r
+# Percentiles
+aggregate(data = mpg, cty ~ drv, 
+          FUN = quantile)
+```
+
+```
+  drv cty.0% cty.25% cty.50% cty.75% cty.100%
+1   4      9      13      14      16       21
+2   f     11      18      19      21       35
+3   r     11      12      15      15       18
+```
+]
+
+???
+
+### Any questions on using aggregate and descriptive stats functions to perform bivariate analyses on the relationship between a categorical variable and a numeric variable?
+
+&lt;br&gt;
+
+### Do these statistics come closer to representing probabilities than our cross-tabs? Why or why not?
+
+- (Same limitations on sample representative-ness)
+
+- (BUT, the ranges offer valuable context for what values we thnk are realistic and what are not!)
+
+&lt;br&gt;
+
+One key lesson, more variation (e.g. numbers rather than categories) gives us more to work with!
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[.content-box-blue[**Variables: Numeric x Numeric**]]]
+
+&lt;br&gt;
+
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; expedition 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 5.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; subaru &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; impreza awd &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 2.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; volkswagen &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; passat &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; explorer 4wd &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; suv &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; caravan 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 2.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; minivan &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; hyundai &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tiburon &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; subcompact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; a4 quattro &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s6) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; toyota &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; corolla &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l3) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pontiac &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; grand prix &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 5.3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+Now let's shift to bivariate analysis of the relationship between two numeric variables.
+
+- We'll consider two options.
+
+&lt;br&gt;
+
+Let's say I want to compare city fuel economy of different cars with different engine displacements.
+
+First, everyone use the aggregate function to calculate the means at each level of engine size.
+
+
+
+---
+
+class: middle
+
+.code110[
+
+```r
+aggregate(data = mpg, cty ~ displ, FUN = mean)
+```
+
+```
+   displ  cty
+1    1.6 24.8
+2    1.8 22.5
+3    1.9 32.3
+4    2.0 20.2
+5    2.2 20.7
+6    2.4 20.2
+7    2.5 19.7
+8    2.7 16.1
+9    2.8 16.5
+10   3.0 17.9
+11   3.1 17.2
+12   3.3 15.9
+13   3.4 15.0
+14   3.5 18.8
+15   3.6 17.0
+16   3.7 14.7
+17   3.8 16.6
+18   3.9 13.3
+19   4.0 14.6
+20   4.2 14.0
+21   4.4 12.0
+22   4.6 13.4
+23   4.7 11.9
+24   5.0 13.0
+25   5.2 11.0
+26   5.3 13.3
+27   5.4 11.9
+28   5.6 12.0
+29   5.7 13.4
+30   5.9 11.0
+31   6.0 12.0
+32   6.1 11.0
+33   6.2 15.5
+34   6.5 14.0
+35   7.0 15.0
+```
+]
+
+???
+
+Can't see all the results here on the screen
+
+- 35 rows to this table
+
+&lt;br&gt;
+
+You can imagine this list getting longer and longer assuming a larger data set or a variable with less overlapping values.
+
+- We need a better strategy!
+
+&lt;br&gt;
+
+### How did we handle this problem previously? e.g. when moving from bar plots to histograms
+
+- We created bins of numbers (groups) in order to make a histogram.
+
+- So, let's do that here: Group engine displacement into categories
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size60[.content-box-blue[**Cut: Convert Numeric to Factor**]]]
+
+&lt;br&gt;
+
+.size50[
+cut(x, breaks, labels)
+
+- 'x' is the variable to transform
+
+- 'breaks' lists the cut-off points for the groups
+
+- 'labels' lists the names of the new groups
+]
+
+???
+
+Everybody write down the elements of the cut function
+
+- *step through it*
+
+- This will make more sense when you start applying it
+
+
+
+
+
+---
+
+class: middle, slideblue
+
+.code140[
+
+```r
+# Use the cut function and save the new variable in mpg
+mpg$displ2 &lt;- cut(mpg$displ, 
+                  breaks = c(0, 4, 8), 
+                  labels = c("Small", "Large"))
+
+# Check that the new variable was saved
+mpg
+```
+]
+
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; caravan 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 4.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l6) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 23 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; minivan &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; Small &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; toyota &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; camry &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 2.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; Small &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; caravan 2wd &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 3.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; minivan &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; Small &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; toyota &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; camry solara &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 2.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; Small &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pontiac &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; grand prix &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 5.3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(s4) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; midsize &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: pink !important;"&gt; Large &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+Here's my example of adding a new displacement variable in the mpg data set.
+
+&lt;br&gt;
+
+Things to Note:
+
+1. To the left of the arrow I have created a new variable ('displ2') and this will save it in the 'mpg' data set
+    - Note that this change only lasts while your current instance of R is open. This new variable will disappear the next time you restart RStudio
+
+2. The breaks argument is three numbers which creates two bins
+    - The first bin is all displ values between 0-4
+    - The second bin is all displ values between 4-8
+
+3. The labels argument lets us name the new groups.
+
+&lt;br&gt;
+
+### Is everybody clear on why there are three numbers in 'breaks' but only two words in 'labels'?
+
+&lt;br&gt;
+
+### Any questions on how to convert a numeric variable into a categorical variable?
+
+- Chang recipe 15.14 is a good reminder if you forget how!
+
+&lt;br&gt;
+
+Ok, everybody now use aggregate on our new displacement variable!
+
+
+
+
+---
+
+class: middle
+
+.center[.size35[.content-box-blue[**Variables: Numeric x Numeric**]]]
+
+.pull-left[
+.code110[
+
+```r
+# Mean
+aggregate(data = mpg, cty ~ displ2, 
+          FUN = mean)
+```
+
+```
+  displ2  cty
+1  Small 18.7
+2  Large 12.6
+```
+
+```r
+# Median
+aggregate(data = mpg, cty ~ displ2, 
+          FUN = median)
+```
+
+```
+  displ2 cty
+1  Small  18
+2  Large  13
+```
+]]
+
+.pull-right[
+.code110[
+
+```r
+# Range
+aggregate(data = mpg, cty ~ displ2, 
+          FUN = range)
+```
+
+```
+  displ2 cty.1 cty.2
+1  Small    11    35
+2  Large     9    16
+```
+]
+
+
+```r
+# Percentiles
+aggregate(data = mpg, cty ~ displ2, 
+          FUN = quantile)
+```
+
+```
+  displ2 cty.0% cty.25% cty.50% cty.75% cty.100%
+1  Small     11      16      18      21       35
+2  Large      9      11      13      14       16
+```
+]
+
+???
+
+### What do we learn about the relationship between these two variables?
+
+- (Small engines get WAY better fuel economy!)
+
+- 5-6 mpg improvement on average
+
+- Max increase from 16 to 35!
+
+&lt;br&gt;
+
+So, our first option for calculating descriptive statistics on a numeric variable by a second numeric variable is to convert one of them to a categorical variable.
+
+### Make sense?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size65[.content-box-blue[**Variables: Numeric x Numeric**]]
+
+&lt;br&gt;
+
+.size65[
+Any questions on correlations from the Wheelan chapter?
+]
+
+???
+
+Our second approach for calculating or estimating the possible relationship between two numeric variables is to use the correlation coefficient.
+
+### So, questions on this?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size65[.content-box-blue[**Variables: Numeric x Numeric**]]
+
+&lt;br&gt;
+
+.size65[
+What are the "fabulous" advantages of correlation?
+]
+
+???
+
+### According to Wheelan, what are the "fabulous" advantages of correlation?
+
+1. Measure of linear association
+
+2. Always between -1 and 1
+
+3. No units attached
+
+&lt;br&gt;
+
+**SLIDE**: Let's briefly illustrate each of these
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+# Correlation: 
+
+## A Measure of Linear Association
+
+&lt;img src="10_1-Bivariate_Descriptives_files/figure-html/unnamed-chunk-31-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+This means correlation is not a good measure when relationships are non-linear!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+# Correlation: 
+
+## Always between -1 and 1
+
+&lt;img src="10_1-Bivariate_Descriptives_files/figure-html/unnamed-chunk-32-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Can be either positive or negative
+
+- Positive: Increases in X are associated with increases in Y
+
+- Negative: Increases in X are associated with decreases in Y
+
+&lt;br&gt;
+
+### Make sense?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+# Correlation: 
+
+## No Units Attached
+
+.pull-left[
+&lt;img src="libs/Images/10_1-Engines-Types.gif" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="libs/Images/10_1-mpg1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Correlation provides a numeric representation of a linear relationship REGARDLESS of the underlying units.
+
+&lt;br&gt;
+
+Normally you have to put two things into the same scale to combine or compare them, right?
+
+- e.g. the "apples-and-oranges" problem!
+
+&lt;br&gt;
+
+Correlation focuses on the variation not attached to the units.
+
+&lt;br&gt;
+
+### Make sense?
+
+&lt;br&gt;
+
+**SLIDE**: Let's test ourselves!
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+
+.left-column[
+.textblack[
+## Which has the largest correlation?
+]]
+
+.right-column[
+&lt;img src="10_1-Bivariate_Descriptives_files/figure-html/unnamed-chunk-35-1.png" width="97%" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+class: middle, slideblue
+
+# Anscombe’s Quartet (1973)
+
+.pull-left[
+&lt;img src="10_1-Bivariate_Descriptives_files/figure-html/unnamed-chunk-36-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; MeanX &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; MeanY &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Correlation &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Example 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.82 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Example 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.82 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Example 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.82 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Example 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.82 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]]
+
+???
+
+Lesson: **ALWAYS** visualize your data before interpreting ANY statistic!
+
+- Examples 2 and 3 are REALLY strong indicators of association
+
+- Example 1 is weaker
+
+- Example 4 is non-existent
+
+&lt;br&gt;
+
+### Make sense?
+
+- **SLIDE**: Alright, let's calculate some correlations in R
+
+
+
+---
+
+class: middle, slideblue
+
+.code110[
+
+```r
+# Calculate the correlation
+cor(mpg$cty, mpg$hwy)
+```
+
+```
+[1] 0.956
+```
+
+```r
+# Test of Correlation (Pearsons)
+cor.test(mpg$cty, mpg$hwy)
+```
+
+```
+
+	Pearson's product-moment correlation
+
+data:  mpg$cty and mpg$hwy
+t = 50, df = 232, p-value &lt;2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.943 0.966
+sample estimates:
+  cor 
+0.956 
+```
+]
+
+???
+
+Two functions to calculate correlations.
+
+- cor() is a simple tool for calculating the correlation coefficient
+
+- cor.test() does the same but includes confidence intervals and a significance test of the correlation.
+
+&lt;br&gt;
+
+### What do we learn about the relationship between these two numeric variables from these correlations?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[**For next class analyze the relationship between:**]
+
+.size50[
+1. 'cut' and 'clarity'
+
+2. 'cut' and 'price'
+
+3. 'carat' and 'price' (convert 'carat' using cut)
+
+4. 'carat' and 'price' (correlation)
+
+.right[**Source:** 'diamonds' dataset in tidyverse]
+]
+
+???
+
+Let's practice!
+
+- A dataset containing the prices and other attributes of almost 54,000 diamonds
+
+&lt;br&gt;
+
+1. Cat x Cat: 'cut' and 'clarity'
+    - 'cut' is the quality of the cut (Fair, Good, Very Good, Premium, Ideal)
+    - 'clarity' is a measurement of how clear the diamond is (I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best))
+
+2. Cat x Num: 'cut' and 'price'
+    - price in US dollars ($326–$18,823)
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

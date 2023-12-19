@@ -1,0 +1,901 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+##library(kableExtra)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+background-image: url('libs/Images/background-blue_cubes_lighter2.png')
+background-size: 100%
+background-position: center
+
+.size80[**Today's Agenda**]
+
+<br>
+
+.size60[
+Build univariate visualizations in R
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. 
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size40[.center[**New Script: 2023-02-15-Univariate_Viz.R**]]
+
+.pull-left[
+.center[.size30[
+**Option 1**
+
+"File" 
+
+&#8595;
+
+"New File" 
+
+&#8595;
+
+"R Script"
+]]]
+
+.pull-right[
+.center[.size30[**Option 2**]]
+
+```{r, fig.align='center', out.width='38%'}
+knitr::include_graphics("libs/Images/03_3-New_Script.png")
+```
+
+]
+
+???
+
+Let's get set-up!
+
+- Everybody create a new R script for notes and code on building univariate visualizations.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size60[**ggplot() for making visualizations**]]
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '20%'}
+knitr::include_graphics("libs/Images/03_2-ggplot_logo.png")
+```
+
+.center[.size50[**Note: You have to load the tidyverse to use ggplot**]]
+
+```{r, echo=TRUE}
+library(tidyverse)
+```
+
+???
+
+### Questions on the basics of ggplot as introduced in the Healy reading?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[**The GGplot Function: Two Basic Steps**]]
+
+.pull-left[
+.center[.size50[
+**Step 1**
+
+Map your tidy data
+]]
+]
+
+.pull-right[
+```{r, echo = FALSE, fig.align = 'center', out.width = '70%'}
+knitr::include_graphics("libs/Images/03_2-Axes.png")
+```
+]
+
+.code130[
+```{r, echo=TRUE, eval=FALSE}
+## GGplot Step 1: Map the Tidy Data
+newobject <- ggplot(data = ?, aes(x = ?, y = ?))
+```
+]
+
+???
+
+Step 1: Tell ggplot the name of the data set and what variable to plot on each axis
+
+- Save this as a new object (example here is 'p' but can be almost anything)
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[**The GGplot Function: Two Basic Steps**]]
+
+<br>
+
+.pull-left[
+.center[.size50[
+**Step 2**
+
+Add a geom
+]]
+]
+
+.pull-right[
+.code140[
+```{r, echo=TRUE, eval=FALSE}
+# GGplot Step 2
+# Add a geom
+newobject + geom_bar()
+newobject + geom_histogram()
+newobject + geom_boxplot()
+newobject + geom_line()
+```
+]
+]
+
+???
+
+Step 2, tell ggplot what kind of picture to draw using this data.
+- Everybody write these down!
+
+<br>
+
+REMEMBER, data analysis principle 3 is "Variable type determines tool"
+- ggplot calls each tool a 'geom'
+
+<br>
+
+Let's practice doing these two steps to remake all the plots you drew by hand last class.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]]
+
+.pull-left[
+.size55[
+**Bar Plots**
+
+1. Counts
+
+2. Proportions
+]]
+
+.pull-right[
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("libs/Images/03_1-Johnson-Bar_plot.png")
+```
+]
+
+???
+
+Data Visualization 1: A Bar Plot
+
+- When you have a categorical variable and you'd like to count the levels (or calculate the proportions)
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]
+
+<br>
+
+.size45[**In R** make a bar plot of drive train levels (`drv`) for the 234 cars in the `mpg` dataset.]]
+
+<br>
+
+.code150[
+```{r, echo=TRUE, eval=FALSE}
+## GGplot Step 1: Map the Tidy Data
+plot1 <- ggplot(data = mpg, aes(x = drv))
+```
+]
+
+???
+
+We'll start where we did last time by building a bar plot that counts the levels of the drive trains in the cars of the mpg data set.
+
+Here I'm naming the object to save this plot as "plot1".
+- Object names cannot have spaces in them and cannot start with a number.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code130[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.asp=.618, fig.retina=3, out.width='70%', fig.width=5}
+## GGplot Step 1: Map the Tidy Data
+plot1 <- ggplot(data = mpg, aes(x = drv))
+
+plot1
+```
+]
+
+???
+
+By running the name of the new object `plot1` we can see how ggplot has set up the new visualization.
+
+- Here we see a blank plot with room reserved across the x-axis for the three levels of the `drv` variable.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
+## GGplot Step 1: Map the Tidy Data
+plot1 <- ggplot(data = mpg, aes(x = drv))
+
+## GGplot Step 2: Add a geom
+plot1 + geom_bar()
+```
+]
+
+???
+
+Step 2 we add a tool (geom) to the plot.
+
+- ggplot works using `+` like you are adding functions together.
+
+<br>
+
+### Everybody have this plot made?
+
+### Understand the logic of the code?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]
+
+<br>
+
+<br>
+
+.size45[**In R** make a bar plot of parties (`party`) that have controlled the presidency since 1953 in the `presidential` data set.]]
+
+???
+
+Let's practice!
+
+- Aim for a count here NOT the proportions like we did last class.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
+## GGplot Step 1: Map the Tidy Data
+plot2 <- ggplot(data = presidential, aes(x = party))
+
+## GGplot Step 2: Add a geom
+plot2 + geom_bar()
+```
+]
+
+???
+
+### Any questions on making simple bar plots?
+
+<br>
+
+### What kinds of visualizations can we make with a numeric variable?
+- (Histograms and box plots!)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]]
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '70%'}
+knitr::include_graphics("libs/Images/03_1-Johnson-Histogram.png")
+```
+
+???
+
+### Remind me, what is a histogram? How is it like a bar plot?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Numerical Variable: Make a Histogram**]]
+
+<br>
+
+.size45[**In R** make a histogram of city fuel economy (`cty`) in the `mpg` data set.
+
+Note: Use geom_histogram()
+]]
+
+???
+
+### Everybody use the basic logic but the new geom to make a histogram of city fuel economy in the mpg data set.
+
+- (SLIDE)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
+## GGplot Step 1: Map the Tidy Data
+plot3 <- ggplot(data = mpg, aes(x = cty))
+
+## GGplot Step 2: Add a geom
+plot3 + geom_histogram()
+```
+]
+
+???
+
+Defaults to 30 bins, which is a lot!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='95%', fig.asp=1, fig.width=4}
+# Adjust the bins
+plot3 + geom_histogram(bins = 5)
+```
+]
+
+.pull-right[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='95%', fig.asp=1, fig.width=4}
+# Adjust the bins
+plot3 + geom_histogram(bins = 10)
+```
+]
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Numerical Variable: Make a Box Plot**]]]
+
+<br>
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '50%'}
+knitr::include_graphics("libs/Images/03_1-Johnson-Box_plot.png")
+```
+
+???
+
+### Remind me, what is a box plot? How is it like a histogram?
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Numerical Variable: Make a Box Plot**]]
+
+<br>
+
+.size45[**In R** make a box plot of city fuel economy (`cty`) in the `mpg` data set.
+
+Note: Use geom_boxplot()
+]]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
+## GGplot Step 1: Map the Tidy Data
+plot4 <- ggplot(data = mpg, aes(x = cty))
+
+## GGplot Step 2: Add a geom
+plot4 + geom_boxplot()
+```
+]
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[.content-box-blue[**Numerical Variables: Histograms and Box Plots**]]] 
+
+.pull-left[
+```{r, echo=FALSE, eval=TRUE, fig.align='center', fig.retina=3, out.width='100%', fig.asp=1, fig.width=4}
+# Adjust the bins
+plot3 + geom_histogram(bins = 10)
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, eval=TRUE, fig.align='center', fig.retina=3, out.width='100%', fig.asp=1, fig.width=4}
+## GGplot Step 1: Map the Tidy Data
+plot4 <- ggplot(data = mpg, aes(x = cty))
+
+## GGplot Step 2: Add a geom
+plot4 + geom_boxplot()
+```
+
+]
+
+???
+
+### Compare and contrast
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size35[.content-box-blue[**Numerical Variable: Make a Histogram and Box Plot**]]
+
+<br>
+
+<br>
+
+.size45[**In R** make a histogram AND box plot of the proportion of people that are college educated (`percollege`) in midwest cities (`midwest` data set).]]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+.code80[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='100%', fig.asp=.8, fig.width=4}
+## GGplot Step 1: Map the Tidy Data
+p5 <- ggplot(data = midwest, aes(x = percollege))
+
+## GGplot Step 2: Add a geom
+p5 + geom_histogram(bins = 25)
+```
+]
+]
+
+.pull-right[
+.code80[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='100%', fig.asp=.8, fig.width=4}
+## GGplot Step 1: Map the Tidy Data
+p5 <- ggplot(data = midwest, aes(x = percollege))
+
+## GGplot Step 2: Add a geom
+p5 + geom_boxplot()
+```
+]
+]
+
+???
+
+### What do we learn from this data about the cities in the midwest?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[.content-box-blue[**Numeric Variables Across Time: Line Plots**]]]
+
+<br>
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '70%'}
+knitr::include_graphics("libs/Images/03_1-Johnson-Line_plot.png")
+```
+
+???
+
+### Refresh my memory, what does a line plot show us?
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Numeric Variables Across Time: Line Plots**]]
+
+<br>
+
+.size45[**In R** make a line plot of the US population (`pop`) across time (`date`) using the `economics` data set.]]
+
+.size45[
+- Use geom_line()
+
+- You must specify an X and a Y variable!
+]
+
+???
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code130[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='47%', fig.asp=.8, fig.width=4}
+## GGplot Step 1: Map the Tidy Data
+plot6 <- ggplot(data = economics, aes(x = date, y = pop))
+
+## GGplot Step 2: Add a geom
+plot6 + geom_line()
+```
+]
+
+???
+
+### Lessons from this about US population growth?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Principle 3: Variable Type Determines Tool**]]]
+
+.size40[
+**Univariate Visualizations**
+
++ If a **categorical** variable, make a **bar plot**
+
++ If a **numeric** variable, make a **box plot** or **histogram**
+
++ If a **numeric variable across time**, make a **line plot**
+]
+
+???
+
+### Questions on making these plots in R?
+
+<br>
+
+**SLIDE**: Let's talk outputting the viz you make in R for copying into a Word Doc.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '80%'}
+knitr::include_graphics("libs/Images/04_3-export_image1.png")
+```
+
+???
+
+Three useful options through the export menu.
+
+- Comes down to your preference.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '80%'}
+knitr::include_graphics("libs/Images/04_3-export_image2.png")
+```
+
+???
+
+If saving as an image it defaults to png.
+
+- You can then click and drag the size of this window to adjust the dimensions of the image.
+
+<br>
+
+Everybody open a word document and try using all three options to move an image into it from RStudio.
+
+- Let's see if we can help each other figure this out!
+
+<br>
+
+**SLIDE**: So, you're working from home and you get stuck, what should you do?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+
+<br>
+
+.size40[
++ Recipes 3.3 for bar plots
+
++ Recipe 6.1 for histograms
+
++ Recipe 6.6 for box plots
+
++ Recipe 4.1 for line Plots
+
++ Recipe 10.26 for outputting visualizations
+]]
+
+.pull-right[
+```{r, echo = FALSE, fig.align = 'center', out.width = '90%'}
+knitr::include_graphics("libs/Images/04_3-R_Graphics_Cookbook.jpg")
+```
+]
+
+???
+
+SUPER useful reference book.
+
+- Freely available online
+
+- Laid out like a cookbook.
+    - Each section is a recipe designed to help you solve a specific problem.
+
+- I've linked to some very helpful ones throughout our syllabus.
+
+<br>
+
+Something not working? Notes incomplete?
+
+- Try the cookbook!
+
+<br>
+
+Or Google it!
+
+- Tons of great answers on using R out there.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+.code80[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='100%', fig.asp=.8, fig.width=4}
+# Split the Two Steps
+p2 <- ggplot(data = presidential, aes(x = party))
+
+p2 + geom_bar()
+```
+]
+]
+
+.pull-right[
+.code80[
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='100%', fig.asp=.8, fig.width=4}
+# Combine the two steps
+
+ggplot(data = presidential, aes(x = party)) + 
+  geom_bar()
+```
+]
+]
+
+???
+
+One note so you don't get confused when using the cookbook.
+
+- Winston Chang makes visualizations in one step, not two like we've been doing today.
+
+<br>
+
+My advice is to stick with the two separate steps until you are super comfortable in R.
+
+- If you accidentally end a line of code with '+' and don't add a geom it can break all the code below it!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size65[**For Next Class**]
+
+.size45[
+1. Huntington-Klein 2022 chapter 3 "Describing Variables"
+
+2. Review the Chang (2018) recipes on polishing a visualization
+    - Recipe 3.4 (bar plot colors)
+    - Recipes in Section 9 (and so much more!)
+]
+
+???
+
+Keep practicing with RStudio!
+
+- Make sure you're comfortable with all of today's code
+
+
+
+
+### Questions on the assignment?

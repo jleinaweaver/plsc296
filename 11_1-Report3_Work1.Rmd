@@ -1,0 +1,346 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+library(stargazer)
+library(kableExtra)
+library(modelsummary)
+library(ggeffects)
+##library(modelr)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+```
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+
+.size80[**Today's Agenda**]
+
+<br>
+
+.size60[
+Build the Third Report
+
+- Bivariate Analyses: Simple OLS
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Make sure merged data available on Canvas
+
+2. Post assignment details on Canvas
+
+<br>
+
+**SLIDE**: Before we start on the third report, let's review your work for today evaluating the fit of our practice OLS regressions.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size60[**Evaluate the fit of both regressions:**]
+
+.size50[
+1. Regress city fuel economy ('cty') on engine displacement ('displ') in the 'mpg' datatset
+
+2. Regress percent college educated ('percollege') on the percent of people below the  poverty line ('percbelowpoverty') in the 'midwest' datatset
+]
+
+???
+
+### How did this go?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**City Fuel Economy and Engine Size**]]
+
+.pull-left[
+
+<br>
+
+.size30[
+```{r}
+model1 <- lm(data = mpg, cty ~ displ)
+
+modelsummary(list("Fuel Economy (City)" = model1), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("displ"= "Engine Size", "(Intercept)" = "Constant")) |>
+  column_spec(1, width = "9em") |>
+  column_spec(2, background = c("orange", rep("white", 3), "orange", "orange", "white", "white")) |>
+  kable_styling(font_size = 24)
+```
+]]
+
+.pull-right[
+```{r, echo=TRUE}
+nrow(mpg)
+```
+
+```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '90%', fig.width=7, cache=TRUE}
+# Check residuals
+plot(model1, which = 1)
+```
+]
+
+???
+
+1. Missing data problems?
+
+2. Are the coefficients significant?
+
+3. What does the R<sup>2</sup> indicate? 
+
+4. Any problems in the residuals plot?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**College Education and Poverty**]]
+
+.pull-left[
+
+<br>
+
+.size30[
+```{r}
+model2 <- lm(data = midwest, percollege ~ percbelowpoverty)
+
+modelsummary(list("College (%)" = model2), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("percbelowpoverty"= "Below Poverty (%)", "(Intercept)" = "Constant")) |>
+  column_spec(1, width = "10em") |>
+  column_spec(2, background = c("orange", rep("white", 3), "orange", "orange", "white", "white")) |>
+  kable_styling(font_size = 24)
+```
+]]
+
+.pull-right[
+```{r, echo=TRUE}
+nrow(midwest)
+```
+
+```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '90%', fig.width=7, cache=TRUE}
+# Check residuals
+plot(model2, which = 1)
+```
+]
+
+???
+
+1. Missing data problems?
+
+2. Are the coefficients significant?
+
+3. What does the R<sup>2</sup> indicate? 
+
+4. Any problems in the residuals plot?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size65[**Report 3: Submission Requirements**]
+
+.size55[
+- Submit a **pdf** to **Canvas** (due **Mar 26th**)
+
+- Include an **APA** formatted bibliography
+
+- Polish **all** included visualizations and tables
+]
+
+???
+
+Ok, this week we work on your second report.
+
+- The basic requirements same as last time
+
+- Late penalty (-10) points per day
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size55[**Report 3: Bivariate Test of your Hypotheses**]
+
+.size55[
+1. Introduction
+
+2. Test hypotheses with bivariate visualizations and statistics
+
+3. Test hypotheses with simple OLS regressions
+]
+
+???
+
+Next report has three required sections.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size45[**Report 3: Bivariate Test of your Hypotheses**]
+
+.size40[
+1. Introduction
+    - Research Question?
+    - Why is it important?
+    - What are your three hypotheses?
+
+2. Test hypotheses with bivariate visualizations and statistics
+
+3. Test hypotheses with simple OLS regressions
+]
+
+???
+
+Section 1: Introduction
+- What is the research question?
+- Make an argument: Why should we care?
+- What are your hypotheses? List all three
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size40[**Report 3: Bivariate Test of your Hypotheses**]
+
+.size40[
+1. Introduction
+
+2. Test hypotheses with bivariate visualizations and statistics
+    - 2019 only
+    - Scatterplots and correlations
+        - GII x military
+        - GII x education
+        - GII x health
+
+3. Test hypotheses with simple OLS regressions
+]
+
+???
+
+This is what we worked on in class last Friday.
+
+<br>
+
+Section 2: Test your hypothesis using bivariate visualizations and statistics
+
+- Make a scatterplot AND calculate the correlation for each (2019 only):
+    - GII x military
+    - GII x education
+    - GII x health
+    
+    
+    
+    
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size40[**Report 3: Bivariate Test of your Hypotheses**]
+
+.size40[
+1. Introduction
+
+2. Test hypotheses with bivariate visualizations and statistics
+
+3. Test hypotheses with simple OLS regressions
+    - 2019 only
+    - Fit, interpret and evaluate each regression
+        - GII ~ military
+        - GII ~ education
+        - GII ~ health
+]
+
+???
+
+Today's work!
+
+Section 3: Test your hypothesis using simple OLS regressions
+
+- Fit, interpret and evaluate three simple OLS regressions (2019 only)
+    
+
+
+
+
+
+
+
+
+
+
+
