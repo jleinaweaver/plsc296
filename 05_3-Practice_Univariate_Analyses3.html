@@ -13,20 +13,23 @@
 
 
 
-background-image: url('libs/Images/background-blue_cubes_lighter2.png')
+background-image: url('libs/Images/background-data_blue_v3.png')
 background-size: 100%
 background-position: center
-class: middle
+class: middle, inverse
 
-.size80[**Today's Agenda**]
+.size70[**Today's Agenda**]
 
-.size45[
+&lt;br&gt;
+
+.size40[
 Practice building, polishing and interpreting univariate analyses
 
-- Script: 2023-02-17-Univariate_Practice-WDI.R
+- Script: Univariate_Analyses_FreedomHouse.R
 
-- Data 1: 2023-02-17-WDI_Data_Extract.xlsx
-- Data 2: WDI-Measles_Across_Time.xlsx
+- Data 1: FreedomHouse-2021-tidy.xlsx
+
+- Data 2: FreedomHouse-2013-2021-tidy.xlsx
 ]
 
 &lt;br&gt;
@@ -40,97 +43,153 @@ Practice building, polishing and interpreting univariate analyses
 ## Prep for Class
 1. Review submissions on Canvas
 
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Assignment for Today**]
-]]
-
-.size45[
-**Submit to Canvas an argument that answers this question:**
-
-.center[**What is the state of global development in 2019?**]
-
-- Paragraph form
-- Critical analysis, not simple description
-- At least three pieces of evidence (polished figures)
-]
-
-
-
-???
-
-1. WB Income
-2. gdp_per_capita
-3. measles_herd_immunity
-4. measles_immunizations_pct
-5. birth_rate
-6. death_rate
-
-### How did this go for you?
-
-### - Any trouble copying images into Canvas?
-
-### - Any trouble polishing the graphics? e.g. things you wanted to tweak but couldn't?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size55[**What does your variable alone teach us about the world in 2019?**]]]
-
-.size45[
-1. WB Income
-2. gdp_per_capita
-3. measles_herd_immunity
-4. measles_immunizations_pct
-5. birth_rate
-6. death_rate
-]
-
-???
-
-*Save plenty of time for new stuff!*
+&lt;br&gt;
 
 &lt;br&gt;
 
-*Split class into 6 groups, 1 per variable*
+Today we practice our univariate analysis tools by examining the Freedom House data.
 
-Groups, in a few minutes you will present your critical analysis of this variable.
+### In very broad strokes, what is the purpose of the measures produced by Freedom House? What are they trying to measure?
 
-- Use this as a chance to show us a highly polished viz, AND
+- (**SLIDE**)
+
+
+
+
+---
+
+background-image: url('libs/Images/05_2-Freedom_House1.png')
+background-size: 100%
+background-class: center
+class: middle
+
+???
+
+Freedom House's "Freedom in the World" project is an attempt to quantify "freedom" in countries across the world in terms of "political rights" and "civil liberties"
+
+&lt;br&gt;
+
+### According to Freedom House, what is the difference between "political rights" and "civil liberties"?
+
+- Political Rights in three subcategories:
+    1. Electoral Process (3 questions), 
+    2. Political Pluralism and Participation (4), and
+    3. Functioning of Government (3).
     
-- To make sure everyone understands the difference between simple description and analysis
+- Civil liberties in four subcategories:
+    1. Freedom of Expression and Belief (4 questions),
+    2. Associational and Organizational Rights (3), 
+    3. Rule of Law (4), and 
+    4. Personal Autonomy and Individual Rights (4).)
 
 &lt;br&gt;
 
-### Questions on the task?
+If we had chosen Freedom House as our data set we would need to spend quite a bit of time digging into these conceptual labels.
 
-Get to it!
+- How distinct are they? 
+
+- Are these valid definitions? Are they reliable?
+
+### Did any of the individual questions stand out to you as being a problem in terms of their validity or reliability?
+
+
+
+---
+
+background-image: url('libs/Images/05_2-Freedom_House2.png')
+background-size: 90%
+background-class: center
+class: middle
+
+???
+
+The process in oversimplified terms: 
+
+- Each country is evaluated by experts across the 25 questions (PR = 10, CL = 15)
+
+- Each question scored between 0 (the smallest degree of freedom) and 4 (the greatest degree of freedom)
+
+- The results are summed together to give separate scores for PR (0 to 40) and CL (0 to 60)
+
+- These two numbers are then combined using this table to produce a categorization of the country as being "free", "partly free" or "not free"
+
+### Make sense?
 
 &lt;br&gt;
 
-*PRESENT each and DISCUSS*
+An incredibly ambitious undertaking with LOTS of sources for uncertainty!
+
+- Our focus today is on analyzing the measured data, but I never want you to forget that "meaning" is more a function of research design as it is statistics.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size70[.content-box-blue[**Our Job for Today**]]]
 
 &lt;br&gt;
 
-World Bank Income Levels
-- Low: &lt; 1,045
-- Low-middle: &lt; 4,095
-- Upper-middle: &lt; 12,695
-- Upper: 12,695
+.size65[
+1. What is the current state of "freedom" in the world?
+
+2. How is "freedom" trending across time in the world?
+]
+
+
+
+???
+
+On Wednesday we discussed and tested out different ways to add context to our univariate tools that would deepen our analyses.
+
+### What three "contexts" did we add?
+- (The use of benchmarks, maps and across time data.)
+
+&lt;br&gt;
+
+**SLIDE**: Let's follow that as an outline for our work today.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.content-box-blue[.size60[**What is the current state of "freedom" in the world?**]]
+
+.size55[
+**Option 1: Check the Benchmarks**
+
+Compare the distribution of `status` to the distribution of the `total` score in 2021
+]
+
+???
+
+### What type of variable is `status`?
+
+### - And what tools do we use when we have a categorical variable?
+
+&lt;br&gt;
+
+### What type of variable is `total`?
+
+### - And what tools do we use when we have a numerical variable?
+
+&lt;br&gt;
+
+Ok, get to it!
+
+- **SLIDE**: My Version
+- **SLIDE**: The code
 
 
 
@@ -143,36 +202,25 @@ background-position: center
 class: middle
 
 .pull-left[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /&gt;&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-3-2.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /&gt;&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-4-2.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
 
-Taking all of this on board, where do we end up?
+### What is our takeaway from these two plots? What is the state of "freedom" in 2021?
 
-### Based on this data and these analyses, what would you argue is the current state of global development?
-
-### - High confidence conclusions?
-
-### - Low confidence conclusions?
+### - How helpful is `status` as a benchmark for "good" and "bad" values?
+- (Debatabale, no?)
 
 &lt;br&gt;
 
-Personal reflection time!
+### What is a good title for each of these plots? Something that directs the viewer to an important conclusion?
 
-This exercise represents the kind of exercise I want you all to get really good at doing this semester.
 
-- Be presented with a question, collect and clean data, apply statistical tools to the data and then use your findings to make a convincing argument.
-
-### What do you need to do to get better at this exercise?
-
-&lt;br&gt;
-
-**SLIDE**: As I think you've seen from this exercise that univariate tools can be hard to interpret without context.
 
 
 
@@ -183,176 +231,99 @@ background-image: url('libs/Images/background-blue_cubes_lighter3.png')
 background-size: 100%
 background-position: center
 class: middle
-
-.center[.content-box-blue[.size50[**Option 1: Benchmark the Data**]]]
-
-.pull-left[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-
-]
-
-.pull-right[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-The first way we can add context to our analyses is with a "benchmark"
-
-- e.g. Can we define "good" vs "bad" values?
-
-&lt;br&gt;
-
-### Why does having both of these visualizations make our analyses so much more useful?
-
-- (**SLIDE**: Better titles!)
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 1: Benchmark the Data**]]]
-
-.pull-left[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-
-]
-
-.pull-right[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-### Does everybody see from these the power of a title that makes the "point" of the analysis clear?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 2: Make a Map**]]]
-
-
-
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-10-1.png" width="95%" style="display: block; margin: auto;" /&gt;
-
-???
-
-The second way we can add context to our analyses is with a map.
-
-- Geographic information can show patterns in the spatial layout
-
-&lt;br&gt;
-
-### What does this map add to our analysis of measles risk?
-
-- (**SLIDE**: Better title!)
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 2: Make a Map**]]]
-
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-11-1.png" width="95%" style="display: block; margin: auto;" /&gt;
-
-???
-
-### What's another title that draws out other important analyses from this map?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 3: Across Time Data**]]]
-
-.pull-left[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-.pull-right[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-The third way we can add context to our analyses is with across time data
-
-- Can we compare observations to themselves at different points in time?
-
-&lt;br&gt;
-
-### Why does having both of these visualizations make our analyses so much more useful?
-
-&lt;br&gt;
-
-### What's a better title for these plots?
-
-- (The world has made incredible progress in fighting measles but there is much left to do!)
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 3: Across Time Data**]]]
-
-
-```
-NULL
-```
-
-???
-
-R will also let us add a lot more time context with an animation!
-
-### What does this help us see in the data?
-
-&lt;br&gt;
-
-Ok, let's learn to build all these things!
-
-- You've already made the benchmark plots so let's move to the map!
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Option 2: Let's Make a Map!**]]
-
-&lt;br&gt;
 
 .code100[
+
+```r
+# Load packages
+library(tidyverse)
+library(readxl)
+
+# Load the data
+data_2021 &lt;- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2021-tidy.xlsx")
+
+# Bar plot
+ggplot(data_2021, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+* geom_hline(yintercept = c(20, 40, 60, 80), color = "white") +
+* theme_bw() +
+  labs(x = "", y = "Country Count") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free"))
+
+# Histogram
+ggplot(data_2021, aes(x = total)) +
+  geom_histogram(bins = 20, color = "white", fill = "seagreen") +
+* theme_bw() +
+  labs(x = "Total Freedom House Score (2021)", y = "Country Count")
+```
+]
+
+???
+
+New code bits
+
+- ggplot has built in themes for changing the general look of your plot
+    - theme_bw is good for printing to black and white
+    
+- geom_hline adds horizontal lines to your plot
+    - I like a bar plot with the bars divided into sections, it helps me compare sizes more easily
+    
+&lt;br&gt;
+
+### What's another piece of context we could add to go deeper in our analyses of FH scores?
+
+- (**SLIDE**: Maps and time!)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.content-box-blue[.size70[**What is the current state of "freedom" in the world?**]]
+
+.size55[
+**Context Option 2: Check the Map**
+
+Build a world map for `total` in 2021
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### What is our takeaway from this map?
+
+&lt;br&gt;
+
+### What is a good title for this plot? Something that directs the viewer to an important conclusion?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
 
 ```r
 # Install the rworldmap package (only once per computer)
@@ -362,44 +333,108 @@ install.packages("rworldmap")
 library(rworldmap)
 
 # Merge your data onto the world map
-data2 &lt;- joinCountryData2Map(dF = data1, joinCode = "NAME", nameJoinColumn = "country")
+data_2021a &lt;- joinCountryData2Map(dF = data_2021, 
+                                  joinCode = "NAME", 
+                                  nameJoinColumn = "country")
 
-# Output the basic map
-mapCountryData(data2, nameColumnToPlot = "measles_herd_immunity")
-
-# Tweak the map
-mapCountryData(data2, 
-               nameColumnToPlot = "measles_herd_immunity",
-               colourPalette = c("blue", "red"),
-               mapTitle = "Title Here")
+# Output the map
+mapCountryData(data_2021a, 
+               nameColumnToPlot = "total", 
+               colourPalette = "topo", 
+               mapTitle = "Freedom House: Total Scores (2021)")
 ```
 ]
 
 ???
 
-This isn't the only way to make a map in R, but it is the easiest way I've found.
+To help keep the code readable I'm showing you multiple lines within each function.
 
-- R has much more powerful mapping packages but this is a handy way to do quick analyses that still look pretty darn good.
-
-&lt;br&gt;
-
-*Walk them through the arguments in each function*
-
-- Basically, each mapping package tells R the lines for the map and you just need to merge your data onto those map lines
-
-- rworldmap is handy because it tries to automate this process for you
-
-- The trade-off is that it has fewer tweakable options and if it doesn't understand your data it just omits it (e.g. country name mispelled)
+- This code will work, but I suggest you keep your code on a single line until you're more comfortable diagnosing errors.
 
 &lt;br&gt;
 
-*Encourage the class to try other variables in the nameColumnToPlot argument*
+**SLIDE**: Let's look at one more way to answer the "current state of the world question."
 
-- Numeric variables are presented in 6 quantiles (e.g. 16% per color)
+    
+    
+    
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size40[**What is the current state of "freedom" in the world?**]]]
+
+.pull-left[
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+As you know, the Freedom House total score is made up of two component pieces.
+- Political rights and civil liberties
+
+### What do we learn from visualizing these two distributions as histograms?
+- *force this discussion!*
 
 &lt;br&gt;
 
-### Any questions on using rworldmap to make a world map?
+**SLIDE**: Ok, let's jump to our second question
+    
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
+
+.size45[.center[**Context Option 3: Use the filter**]
+1. Load the dataset: FreedomHouse-2013-2021-tidy.xlsx
+
+2. Create a subset of the data for 2013 (filter)
+
+3. Make a bar plot of `status` for 2013 and 2021
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+### What do we learn from visualizing these two distributions as bar plots?
+- *force this discussion!*
+
+- Slight decrease in "free" states, but this really isn't the ideal way to make this comparison...
+
+&lt;br&gt;
+
+**SLIDE**: Code on the next slide, but I also want to show you a better way to make this comparison.
 
 
 
@@ -411,31 +446,36 @@ background-size: 100%
 background-position: center
 class: middle
 
-.center[.size60[**Option 3: Let's Filter a Histogram!**]]
-
-.code110[
+.code100[
 
 ```r
-# Input the data
-data_all &lt;- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/WDI-2023-02/WDI-Measles_Across_Time.xlsx")
+# Input data as new object
+data_all &lt;- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2013-2021-tidy.xlsx")
 
-# Create two new data sets by year
-data_1985 &lt;- filter(data_all, year == 1985)
-data_2019 &lt;- filter(data_all, year == 2019)
+# Create a subset of the data
+data_2013 &lt;- filter(data_all, edition == 2013)
 
-# Histogram 1985
-ggplot(data_1985, aes(x = measles_immunizations_pct)) +
-  geom_histogram()
+# Bar plot 2013
+ggplot(data_2013, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(25, 50, 75), color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", title = "2013 Edition") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 100)
 
-# Histogram 2019
-ggplot(data_2019, aes(x = measles_immunizations_pct)) +
-  geom_histogram()
+# Bar plot 2021
+ggplot(data_2021, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(25, 50, 75), color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", title = "2021 Edition") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 100)
 ```
 ]
 
 ???
-
-*Encourage them to try other years in the data set*
 
 
 
@@ -446,45 +486,89 @@ background-size: 100%
 background-position: center
 class: middle
 
-.center[.size60[**Option 3: Let's Animate a Bar Plot!**]]
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-14-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+We'll get to this code in a few weeks, but this is an example of a bivariate analysis using a stacked bar plot converted into proportions of the total.
+
+### Questions on how to read this plot?
+
+&lt;br&gt;
+
+### What do we learn from this about the trend of freedom across time?
+
+&lt;br&gt;
+
+**SLIDE**: Last approach from Wednesday, animation!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
+
+.size45[.center[**Context Option 3: Animate!**]
+1. Use the dataset: FreedomHouse-2013-2021-tidy.xlsx
+
+2. Copy our animation code from Wednesday and track FH `status` across time
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+```
+NULL
+```
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
 
 .code120[
 
 ```r
-# Install animation package (one time)
-install.packages("gifski")
-install.packages("gganimate")
-
 # Load the package
-library(gifski)
 library(gganimate)
 
 # Histogram across time
-ggplot(data_all, aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 30) +
-  transition_time(year) +
-  labs(title = "Measles Immunizations ({as.integer(frame_time)})")
+data_all |&gt;
+  ggplot(aes(x = status)) +
+  geom_bar(width = .5, fill = "cadetblue2") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", 
+       title = "{as.integer(frame_time)}") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), 
+                   labels = c("Not Free", "Partly Free", "Free")) +
+  transition_time(edition)
 ```
 ]
 
 ???
 
-The key here is the "transition_time" function
-
-- THAT's the piece that creates the animation as a gif
-
-&lt;br&gt;
-
-The wacky code in the title is just to mae the years appear cleanly to track the progress of the animation.
-
-&lt;br&gt;
-
-### Questions on these new techniques?
-
-- Benchmarks, mapping, filtering across time data and basic animation?
-
-
-
+### What is our takeaway from this animation? How is "freedom" trending over time?
 
 
 
@@ -495,17 +579,27 @@ background-size: 100%
 background-position: center
 class: middle
 
-.size70[**For Friday**]
+.center[.size70[.content-box-blue[**Our Job for Today**]]]
 
-.size50[
-1. Healy (2019) Chapter 8 “Refine your plots”
+&lt;br&gt;
 
-2. Freedom House. (2022). *Freedom in the World: Methodology*.
+.size65[
+1. What is the current state of "freedom" in the world?
+
+2. How is "freedom" trending across time in the world?
 ]
 
 ???
 
-Friday we'll practice all your new tools by exploring the Freedom House Freedom in the World data set.
+### Ok, how did we do today?
+
+&lt;br&gt;
+
+### Ready to go on the first report next week?
+
+
+
+
 
 
 

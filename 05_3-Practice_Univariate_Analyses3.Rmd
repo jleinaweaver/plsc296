@@ -30,20 +30,23 @@ knitr::opts_chunk$set(echo = FALSE,
                       comment = NA)
 ```
 
-background-image: url('libs/Images/background-blue_cubes_lighter2.png')
+background-image: url('libs/Images/background-data_blue_v3.png')
 background-size: 100%
 background-position: center
-class: middle
+class: middle, inverse
 
-.size80[**Today's Agenda**]
+.size70[**Today's Agenda**]
 
-.size45[
+<br>
+
+.size40[
 Practice building, polishing and interpreting univariate analyses
 
-- Script: 2023-02-17-Univariate_Practice-WDI.R
+- Script: Univariate_Analyses_FreedomHouse.R
 
-- Data 1: 2023-02-17-WDI_Data_Extract.xlsx
-- Data 2: WDI-Measles_Across_Time.xlsx
+- Data 1: FreedomHouse-2021-tidy.xlsx
+
+- Data 2: FreedomHouse-2013-2021-tidy.xlsx
 ]
 
 <br>
@@ -57,6 +60,85 @@ Practice building, polishing and interpreting univariate analyses
 ## Prep for Class
 1. Review submissions on Canvas
 
+<br>
+
+<br>
+
+Today we practice our univariate analysis tools by examining the Freedom House data.
+
+### In very broad strokes, what is the purpose of the measures produced by Freedom House? What are they trying to measure?
+
+- (**SLIDE**)
+
+
+
+
+---
+
+background-image: url('libs/Images/05_2-Freedom_House1.png')
+background-size: 100%
+background-class: center
+class: middle
+
+???
+
+Freedom House's "Freedom in the World" project is an attempt to quantify "freedom" in countries across the world in terms of "political rights" and "civil liberties"
+
+<br>
+
+### According to Freedom House, what is the difference between "political rights" and "civil liberties"?
+
+- Political Rights in three subcategories:
+    1. Electoral Process (3 questions), 
+    2. Political Pluralism and Participation (4), and
+    3. Functioning of Government (3).
+    
+- Civil liberties in four subcategories:
+    1. Freedom of Expression and Belief (4 questions),
+    2. Associational and Organizational Rights (3), 
+    3. Rule of Law (4), and 
+    4. Personal Autonomy and Individual Rights (4).)
+
+<br>
+
+If we had chosen Freedom House as our data set we would need to spend quite a bit of time digging into these conceptual labels.
+
+- How distinct are they? 
+
+- Are these valid definitions? Are they reliable?
+
+### Did any of the individual questions stand out to you as being a problem in terms of their validity or reliability?
+
+
+
+---
+
+background-image: url('libs/Images/05_2-Freedom_House2.png')
+background-size: 90%
+background-class: center
+class: middle
+
+???
+
+The process in oversimplified terms: 
+
+- Each country is evaluated by experts across the 25 questions (PR = 10, CL = 15)
+
+- Each question scored between 0 (the smallest degree of freedom) and 4 (the greatest degree of freedom)
+
+- The results are summed together to give separate scores for PR (0 to 40) and CL (0 to 60)
+
+- These two numbers are then combined using this table to produce a categorization of the country as being "free", "partly free" or "not free"
+
+### Make sense?
+
+<br>
+
+An incredibly ambitious undertaking with LOTS of sources for uncertainty!
+
+- Our focus today is on analyzing the measured data, but I never want you to forget that "meaning" is more a function of research design as it is statistics.
+
+
 
 
 ---
@@ -66,17 +148,14 @@ background-size: 100%
 background-position: center
 class: middle
 
-.center[.size50[.content-box-blue[**Assignment for Today**]
-]]
+.center[.size70[.content-box-blue[**Our Job for Today**]]]
 
-.size45[
-**Submit to Canvas an argument that answers this question:**
+<br>
 
-.center[**What is the state of global development in 2019?**]
+.size65[
+1. What is the current state of "freedom" in the world?
 
-- Paragraph form
-- Critical analysis, not simple description
-- At least three pieces of evidence (polished figures)
+2. How is "freedom" trending across time in the world?
 ]
 
 ```{r, echo=FALSE}
@@ -84,23 +163,56 @@ class: middle
 library(readxl)
 
 # Input data as new object
-data1 <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/WDI-2023-02/2023-02-17-WDI_Data_Extract.xlsx")
+data_2021 <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2021-tidy.xlsx")
 ```
 
 ???
 
-1. WB Income
-2. gdp_per_capita
-3. measles_herd_immunity
-4. measles_immunizations_pct
-5. birth_rate
-6. death_rate
+On Wednesday we discussed and tested out different ways to add context to our univariate tools that would deepen our analyses.
 
-### How did this go for you?
+### What three "contexts" did we add?
+- (The use of benchmarks, maps and across time data.)
 
-### - Any trouble copying images into Canvas?
+<br>
 
-### - Any trouble polishing the graphics? e.g. things you wanted to tweak but couldn't?
+**SLIDE**: Let's follow that as an outline for our work today.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.content-box-blue[.size60[**What is the current state of "freedom" in the world?**]]
+
+.size55[
+**Option 1: Check the Benchmarks**
+
+Compare the distribution of `status` to the distribution of the `total` score in 2021
+]
+
+???
+
+### What type of variable is `status`?
+
+### - And what tools do we use when we have a categorical variable?
+
+<br>
+
+### What type of variable is `total`?
+
+### - And what tools do we use when we have a numerical variable?
+
+<br>
+
+Ok, get to it!
+
+- **SLIDE**: My Version
+- **SLIDE**: The code
 
 
 
@@ -112,49 +224,91 @@ background-size: 100%
 background-position: center
 class: middle
 
-.center[.content-box-blue[.size55[**What does your variable alone teach us about the world in 2019?**]]]
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
+# Bar plot
+ggplot(data_2021, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(20, 40, 60, 80), color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Country Count") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free"))
+```
+]
 
-.size45[
-1. WB Income
-2. gdp_per_capita
-3. measles_herd_immunity
-4. measles_immunizations_pct
-5. birth_rate
-6. death_rate
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
+# Histogram
+ggplot(data_2021, aes(x = total)) +
+  geom_histogram(bins = 20, color = "white", fill = "seagreen") +
+  theme_bw() +
+  labs(x = "Total Freedom House Score (2021)", y = "Country Count")
+```
 ]
 
 ???
 
-*Save plenty of time for new stuff!*
+### What is our takeaway from these two plots? What is the state of "freedom" in 2021?
+
+### - How helpful is `status` as a benchmark for "good" and "bad" values?
+- (Debatabale, no?)
 
 <br>
 
-*Split class into 6 groups, 1 per variable*
+### What is a good title for each of these plots? Something that directs the viewer to an important conclusion?
 
-Groups, in a few minutes you will present your critical analysis of this variable.
 
-- Use this as a chance to show us a highly polished viz, AND
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+```{r, echo=TRUE, eval=FALSE}
+# Load packages
+library(tidyverse)
+library(readxl)
+
+# Load the data
+data_2021 <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2021-tidy.xlsx")
+
+# Bar plot
+ggplot(data_2021, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(20, 40, 60, 80), color = "white") + #<<
+  theme_bw() + #<<
+  labs(x = "", y = "Country Count") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free"))
+
+# Histogram
+ggplot(data_2021, aes(x = total)) +
+  geom_histogram(bins = 20, color = "white", fill = "seagreen") +
+  theme_bw() + #<<
+  labs(x = "Total Freedom House Score (2021)", y = "Country Count")
+```
+]
+
+???
+
+New code bits
+
+- ggplot has built in themes for changing the general look of your plot
+    - theme_bw is good for printing to black and white
     
-- To make sure everyone understands the difference between simple description and analysis
-
+- geom_hline adds horizontal lines to your plot
+    - I like a bar plot with the bars divided into sections, it helps me compare sizes more easily
+    
 <br>
 
-### Questions on the task?
+### What's another piece of context we could add to go deeper in our analyses of FH scores?
 
-Get to it!
-
-<br>
-
-*PRESENT each and DISCUSS*
-
-<br>
-
-World Bank Income Levels
-- Low: < 1,045
-- Low-middle: < 4,095
-- Upper-middle: < 12,695
-- Upper: 12,695
-
+- (**SLIDE**: Maps and time!)
 
 
 
@@ -163,61 +317,18 @@ World Bank Income Levels
 background-image: url('libs/Images/background-blue_cubes_lighter3.png')
 background-size: 100%
 background-position: center
-class: middle
+class: middle, center
 
-.pull-left[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.6, out.width='100%'}
-data1 |>
-  ggplot(aes(x = gdp_per_capita)) +
-  geom_histogram(bins = 15, fill = "green3", color = "white") +
-  labs(x = "GDP per Capita", y = "Countries", title = "Global Wealth (2019)")
+.content-box-blue[.size70[**What is the current state of "freedom" in the world?**]]
 
-data1 |>
-  ggplot(aes(x = birth_rate)) +
-  geom_histogram(bins = 15, fill = "red3", color = "white") +
-  labs(x = "Birth Rate (per 1,000)", y = "Countries", title = "Global Opportunity (2019)")
-```
-]
+.size55[
+**Context Option 2: Check the Map**
 
-.pull-right[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.6, out.width='100%'}
-data1 |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2019)")
-
-data1 |>
-  ggplot(aes(x = death_rate)) +
-  geom_histogram(bins = 15, fill = "red3", color = "white") +
-  labs(x = "Death Rate (per 1,000)", y = "Countries", title = "Global Opportunity (2019)")
-```
+Build a world map for `total` in 2021
 ]
 
 ???
 
-Taking all of this on board, where do we end up?
-
-### Based on this data and these analyses, what would you argue is the current state of global development?
-
-### - High confidence conclusions?
-
-### - Low confidence conclusions?
-
-<br>
-
-Personal reflection time!
-
-This exercise represents the kind of exercise I want you all to get really good at doing this semester.
-
-- Be presented with a question, collect and clean data, apply statistical tools to the data and then use your findings to make a convincing argument.
-
-### What do you need to do to get better at this exercise?
-
-<br>
-
-**SLIDE**: As I think you've seen from this exercise that univariate tools can be hard to interpret without context.
-
-
 
 
 ---
@@ -227,112 +338,26 @@ background-size: 100%
 background-position: center
 class: middle
 
-.center[.content-box-blue[.size50[**Option 1: Benchmark the Data**]]]
-
-.pull-left[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.9, out.width='100%', fig.width=5}
-data1 |>
-  ggplot(aes(x = measles_herd_immunity)) +
-  geom_bar(width = .5, fill = "blue") +
-  scale_x_discrete(limits = c("Herd Immunity", "At Risk")) +
-  labs(x = "", y = "Count of Countries", title = "Global Health (2019)")
-```
-
-]
-
-.pull-right[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.9, out.width='100%', fig.width=5}
-data1 |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2019)")
-```
-]
-
-???
-
-The first way we can add context to our analyses is with a "benchmark"
-
-- e.g. Can we define "good" vs "bad" values?
-
-<br>
-
-### Why does having both of these visualizations make our analyses so much more useful?
-
-- (**SLIDE**: Better titles!)
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 1: Benchmark the Data**]]]
-
-.pull-left[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.9, out.width='100%', fig.width=5}
-data1 |>
-  ggplot(aes(x = measles_herd_immunity)) +
-  geom_bar(width = .5, fill = "blue") +
-  scale_x_discrete(limits = c("Herd Immunity", "At Risk")) +
-  labs(x = "", y = "Count of Countries", title = "Too many countries remain vulnerable \n to measles outbreaks (< 95% vaccinated)")
-```
-
-]
-
-.pull-right[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.9, out.width='100%', fig.width=5}
-data1 |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "The level of vulnerability in some countries is\n staggeringly high")
-```
-]
-
-???
-
-### Does everybody see from these the power of a title that makes the "point" of the analysis clear?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 2: Make a Map**]]]
-
-```{r, echo=FALSE, comment=NULL, message=FALSE, warning=FALSE, results='hide'}
-# Measles data context: Make a map
-
+```{r, message=FALSE, warning=FALSE, results='hide'}
 # Load the package
 library(rworldmap)
 
-# Merge your data onto the world map
-data2 <- joinCountryData2Map(dF = data1, joinCode = "NAME", nameJoinColumn = "country")
+# Merge the data
+data_2021a <- joinCountryData2Map(dF = data_2021, joinCode = "NAME", nameJoinColumn = "country")
 ```
 
-```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.asp=.5, out.width='95%', fig.width=12}
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.6, out.width='100%', fig.width=12}
 # Output the map
-mapCountryData(data2, nameColumnToPlot = "measles_herd_immunity", colourPalette = c("red3", "blue3"), mapTitle = "Countries Most At Risk of Measles (2019)")
+mapCountryData(data_2021a, nameColumnToPlot = "total", colourPalette = "topo", mapTitle = "Freedom House: Total Scores (2021)")
 ```
 
 ???
 
-The second way we can add context to our analyses is with a map.
-
-- Geographic information can show patterns in the spatial layout
+### What is our takeaway from this map?
 
 <br>
 
-### What does this map add to our analysis of measles risk?
-
-- (**SLIDE**: Better title!)
+### What is a good title for this plot? Something that directs the viewer to an important conclusion?
 
 
 
@@ -343,121 +368,7 @@ background-size: 100%
 background-position: center
 class: middle
 
-.center[.content-box-blue[.size50[**Option 2: Make a Map**]]]
-
-```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.asp=.5, out.width='95%', fig.width=12}
-# Output the map
-mapCountryData(data2, nameColumnToPlot = "measles_herd_immunity", colourPalette = c("red3", "blue3"), mapTitle = "Measles risk does not clearly overlap with standard rich-poor or north-south divides")
-```
-
-???
-
-### What's another title that draws out other important analyses from this map?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 3: Across Time Data**]]]
-
-.pull-left[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.85, out.width='100%'}
-# Input across time data
-data1b <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/WDI-2023-02/WDI-Measles_Across_Time.xlsx")
-
-data1b |>
-  filter(year == 1985) |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (1985)") +
-  scale_x_continuous(limits = c(0, 100))
-```
-]
-
-.pull-right[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.85, out.width='100%'}
-data1b |>
-  filter(year == 2019) |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2019)") +
-  scale_x_continuous(limits = c(0, 100))
-```
-]
-
-???
-
-The third way we can add context to our analyses is with across time data
-
-- Can we compare observations to themselves at different points in time?
-
-<br>
-
-### Why does having both of these visualizations make our analyses so much more useful?
-
-<br>
-
-### What's a better title for these plots?
-
-- (The world has made incredible progress in fighting measles but there is much left to do!)
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 3: Across Time Data**]]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=0.618, fig.width=8, out.width='80%', cache=TRUE}
-# Measles data context: Animate the data
-
-# Load the package
-library(gganimate)
-
-# Histogram across time
-data1b |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 30) +
-  transition_time(year) +
-  labs(title = "Measles Immunizations ({as.integer(frame_time)})")
-```
-
-???
-
-R will also let us add a lot more time context with an animation!
-
-### What does this help us see in the data?
-
-<br>
-
-Ok, let's learn to build all these things!
-
-- You've already made the benchmark plots so let's move to the map!
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Option 2: Let's Make a Map!**]]
-
-<br>
-
-.code100[
+.code120[
 ```{r, echo=TRUE, eval=FALSE}
 # Install the rworldmap package (only once per computer)
 install.packages("rworldmap")
@@ -466,44 +377,142 @@ install.packages("rworldmap")
 library(rworldmap)
 
 # Merge your data onto the world map
-data2 <- joinCountryData2Map(dF = data1, joinCode = "NAME", nameJoinColumn = "country")
+data_2021a <- joinCountryData2Map(dF = data_2021, 
+                                  joinCode = "NAME", 
+                                  nameJoinColumn = "country")
 
-# Output the basic map
-mapCountryData(data2, nameColumnToPlot = "measles_herd_immunity")
-
-# Tweak the map
-mapCountryData(data2, 
-               nameColumnToPlot = "measles_herd_immunity",
-               colourPalette = c("blue", "red"),
-               mapTitle = "Title Here")
+# Output the map
+mapCountryData(data_2021a, 
+               nameColumnToPlot = "total", 
+               colourPalette = "topo", 
+               mapTitle = "Freedom House: Total Scores (2021)")
 ```
 ]
 
 ???
 
-This isn't the only way to make a map in R, but it is the easiest way I've found.
+To help keep the code readable I'm showing you multiple lines within each function.
 
-- R has much more powerful mapping packages but this is a handy way to do quick analyses that still look pretty darn good.
-
-<br>
-
-*Walk them through the arguments in each function*
-
-- Basically, each mapping package tells R the lines for the map and you just need to merge your data onto those map lines
-
-- rworldmap is handy because it tries to automate this process for you
-
-- The trade-off is that it has fewer tweakable options and if it doesn't understand your data it just omits it (e.g. country name mispelled)
+- This code will work, but I suggest you keep your code on a single line until you're more comfortable diagnosing errors.
 
 <br>
 
-*Encourage the class to try other variables in the nameColumnToPlot argument*
+**SLIDE**: Let's look at one more way to answer the "current state of the world question."
 
-- Numeric variables are presented in 6 quantiles (e.g. 16% per color)
+    
+    
+    
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size40[**What is the current state of "freedom" in the world?**]]]
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
+ggplot(data_2021, aes(x = pr)) +
+  geom_histogram(bins = 20, color = "white", fill = "lightsteelblue3") +
+  theme_bw() + #<<
+  labs(x = "Political Rights Scores (2021)", y = "Country Count")
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
+ggplot(data_2021, aes(x = cl)) +
+  geom_histogram(bins = 20, color = "white", fill = "darkseagreen3") +
+  theme_bw() + #<<
+  labs(x = "Civil Liberties Scores (2021)", y = "Country Count")
+```
+]
+
+???
+
+As you know, the Freedom House total score is made up of two component pieces.
+- Political rights and civil liberties
+
+### What do we learn from visualizing these two distributions as histograms?
+- *force this discussion!*
 
 <br>
 
-### Any questions on using rworldmap to make a world map?
+**SLIDE**: Ok, let's jump to our second question
+    
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
+
+.size45[.center[**Context Option 3: Use the filter**]
+1. Load the dataset: FreedomHouse-2013-2021-tidy.xlsx
+
+2. Create a subset of the data for 2013 (filter)
+
+3. Make a bar plot of `status` for 2013 and 2021
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
+# Input data as new object
+data_all <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2013-2021-tidy.xlsx")
+
+# Create a subset of the data
+data_2013 <- filter(data_all, edition == 2013)
+
+# Bar plot 2013
+ggplot(data_2013, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(25, 50, 75), color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", title = "2013 Edition") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 100) #<<
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
+# Bar plot 2021
+ggplot(data_2021, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(25, 50, 75), color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", title = "2021 Edition") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 100) #<<
+```
+]
+
+???
+
+### What do we learn from visualizing these two distributions as bar plots?
+- *force this discussion!*
+
+- Slight decrease in "free" states, but this really isn't the ideal way to make this comparison...
+
+<br>
+
+**SLIDE**: Code on the next slide, but I also want to show you a better way to make this comparison.
 
 
 
@@ -515,30 +524,35 @@ background-size: 100%
 background-position: center
 class: middle
 
-.center[.size60[**Option 3: Let's Filter a Histogram!**]]
-
-.code110[
+.code100[
 ```{r, echo=TRUE, eval=FALSE}
-# Input the data
-data_all <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/WDI-2023-02/WDI-Measles_Across_Time.xlsx")
+# Input data as new object
+data_all <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2013-2021-tidy.xlsx")
 
-# Create two new data sets by year
-data_1985 <- filter(data_all, year == 1985)
-data_2019 <- filter(data_all, year == 2019)
+# Create a subset of the data
+data_2013 <- filter(data_all, edition == 2013)
 
-# Histogram 1985
-ggplot(data_1985, aes(x = measles_immunizations_pct)) +
-  geom_histogram()
+# Bar plot 2013
+ggplot(data_2013, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(25, 50, 75), color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", title = "2013 Edition") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 100)
 
-# Histogram 2019
-ggplot(data_2019, aes(x = measles_immunizations_pct)) +
-  geom_histogram()
+# Bar plot 2021
+ggplot(data_2021, aes(x = status)) +
+  geom_bar(width = .5, fill = "seagreen") +
+  geom_hline(yintercept = c(25, 50, 75), color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", title = "2021 Edition") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 100)
 ```
 ]
 
 ???
-
-*Encourage them to try other years in the data set*
 
 
 
@@ -549,44 +563,82 @@ background-size: 100%
 background-position: center
 class: middle
 
-.center[.size60[**Option 3: Let's Animate a Bar Plot!**]]
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.75, out.width='80%', fig.width=7}
+data_all |>
+  mutate(
+    status_f = factor(status, levels = c("F", "PF", "NF"))
+  ) |>
+  ggplot(aes(x = edition, fill = status_f)) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  scale_fill_brewer(type = "div", palette = 5, direction = -1) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "", y = "Proportion of Countries") +
+  scale_x_discrete(limits = 2013:2021) +
+  guides(fill = "none") +
+  annotate("text", x = 2013, y = .125, label = "NF") +
+  annotate("text", x = 2013, y = .41, label = "PF") +
+  annotate("text", x = 2013, y = .8, label = "F")
+```
 
-.code120[
-```{r, echo=TRUE, eval=FALSE}
-# Install animation package (one time)
-install.packages("gifski")
-install.packages("gganimate")
+???
 
+We'll get to this code in a few weeks, but this is an example of a bivariate analysis using a stacked bar plot converted into proportions of the total.
+
+### Questions on how to read this plot?
+
+<br>
+
+### What do we learn from this about the trend of freedom across time?
+
+<br>
+
+**SLIDE**: Last approach from Wednesday, animation!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
+
+.size45[.center[**Context Option 3: Animate!**]
+1. Use the dataset: FreedomHouse-2013-2021-tidy.xlsx
+
+2. Copy our animation code from Wednesday and track FH `status` across time
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, echo=FALSE, eval=TRUE, fig.retina=3, fig.asp=0.618,  fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
 # Load the package
-library(gifski)
 library(gganimate)
 
 # Histogram across time
-ggplot(data_all, aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 30) +
-  transition_time(year) +
-  labs(title = "Measles Immunizations ({as.integer(frame_time)})")
+data_all |>
+  ggplot(aes(x = status)) +
+  geom_bar(width = .5, fill = "cadetblue2") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", title = "{as.integer(frame_time)}") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  transition_time(edition)
 ```
-]
 
 ???
-
-The key here is the "transition_time" function
-
-- THAT's the piece that creates the animation as a gif
-
-<br>
-
-The wacky code in the title is just to mae the years appear cleanly to track the progress of the animation.
-
-<br>
-
-### Questions on these new techniques?
-
-- Benchmarks, mapping, filtering across time data and basic animation?
-
-
-
 
 
 
@@ -597,17 +649,58 @@ background-size: 100%
 background-position: center
 class: middle
 
-.size70[**For Friday**]
+.code120[
+```{r, echo=TRUE, eval=FALSE}
+# Load the package
+library(gganimate)
 
-.size50[
-1. Healy (2019) Chapter 8 “Refine your plots”
-
-2. Freedom House. (2022). *Freedom in the World: Methodology*.
+# Histogram across time
+data_all |>
+  ggplot(aes(x = status)) +
+  geom_bar(width = .5, fill = "cadetblue2") +
+  theme_bw() +
+  labs(x = "", y = "Country Count", 
+       title = "{as.integer(frame_time)}") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), 
+                   labels = c("Not Free", "Partly Free", "Free")) +
+  transition_time(edition)
+```
 ]
 
 ???
 
-Friday we'll practice all your new tools by exploring the Freedom House Freedom in the World data set.
+### What is our takeaway from this animation? How is "freedom" trending over time?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size70[.content-box-blue[**Our Job for Today**]]]
+
+<br>
+
+.size65[
+1. What is the current state of "freedom" in the world?
+
+2. How is "freedom" trending across time in the world?
+]
+
+???
+
+### Ok, how did we do today?
+
+<br>
+
+### Ready to go on the first report next week?
+
+
+
+
 
 
 

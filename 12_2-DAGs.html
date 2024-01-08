@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>12_2-DAGs.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+background-image: url('libs/Images/background-data_blue_v3.png')
+background-size: 100%
+background-position: center
+class: middle, inverse
+
+.size80[**Today's Agenda**]
+
+&lt;br&gt;
+
+.size50[
+Huntington-Klein (2022) Chapters 6 &amp; 7
+
+- Causal Diagrams
+
+- Directed Acyclic Graphs (DAGs)
+]
+
+&lt;br&gt;
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Review DGP submissions on Canvas
+
+&lt;br&gt;
+
+Readings:
+1. Huntington-Klein 2022 chapter 6 "Causal Diagrams" [LINK](https://theeffectbook.net/ch-CausalDiagrams.html)
+2. Huntington-Klein 2022 chapter 7 "Drawing Causal Diagrams"[LINK](https://theeffectbook.net/ch-DrawingCausalDiagrams.html)
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[.content-box-blue[**Building a Causal Argument**]]
+
+.size40[
+"Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e. intervention) was the 'cause' of the effect (or outcome) that was observed" (Frey 2018). 
+]]
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-2-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+???
+
+This week we are exploring the concepts and tools you will need to build an argument about causation using observational data.
+
+- e.g. making an argument with data about why the world works like it does.
+
+- In other words, we want to demonstrate that changes in our chosen predictors CAUSE a change in the outcome variable
+
+&lt;br&gt;
+
+### Any questions on the material from Monday before we push forward?
+
+- **SLIDE**: Let's do a quick refresher 
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+.pull-left[
+&lt;img src="libs/Images/13_1-classroom.jpg" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="libs/Images/13_1-student_success2.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-5-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Last class we proposed a hypothetical research project.
+
+### What theory about student success did we set out to test?
+
+- (Students in smaller classes receive more individualized attention and, therefore, experience more growth.)
+
+&lt;br&gt;
+
+### And what is the "gold standard" approach to running this test?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Randomized Controlled Trials (RCTs)**]]]
+
+&lt;br&gt;
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-6-1.png" width="77%" style="display: block; margin: auto;" /&gt;
+
+???
+
+A randomized controlled trial (RCT)!
+
+&lt;br&gt;
+
+### What is the primary benefit of testing this theory using a RCT?
+
+- When treatment is randomized, the only thing that distinguishes the treatment group from the control group BESIDES THE TREATMENT is chance. 
+
+- In other words, even though both groups are composed of different individuals, the two groups are comparable to each other on average in all respects.
+
+- Since the groups were identical, on average, going into the experiment we can use the factual outcome of each group as the counter-factual for the other group. 
+
+- In short, average scores in the treatment group can be compared to the average scores of the control group and the difference is the average treatment effect!
+
+### Everybody clear on why we refer to this as as a "gold standard"?
+
+&lt;br&gt;
+
+### What changes in this diagram when we shift from an experiment to observational data?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Randomized Controlled Trials (RCTs)**]]]
+
+&lt;br&gt;
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-7-1.png" width="77%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### What is the effect on our research design of moving from random allocation to allocation by nature (e.g. natural law / models)?
+- (Groups are no longer identical, on average!)
+
+- Therefore, we CANNOT simply compare the different outcomes!
+    - The outcome of the treatment group is unlikely to be a good estimate of the counterfactual for the control group
+    - And vice-versa
+
+&lt;br&gt;
+
+### How did we work to address this problem on Monday?
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. **Using theory, paint the most accurate picture possible of what the data generating process looks like**
+
+2. Use that data generating process to figure out the reasons our data might look the way it does that don’t answer our research question
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+The process proposed by HK (2022)
+
+&lt;br&gt;
+
+**SLIDE**: Our work on Monday focused on brainstorming the Data Generating Process for the variables in our proposed causal mechanism.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**The Data Generating Process (DGP)**]]]
+
+.pull-left[
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Let's recreate our lists from Monday!
+
+- e.g. two lists of mechanisms that could be used to explain why students might:
+    - Be in large vs small class sizes, and
+    - Get higher or lower scores on standardized tests.
+    
+&lt;br&gt;
+
+*ON BOARD: Two Columns*
+
+1. Class Size
+- ?
+
+2. Success
+- ?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. **Use that data generating process to figure out the reasons our data might look the way it does that don’t answer our research question**
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+With our DGP brainstorming done we can move to step 2 in HK's (2022) process.
+
+&lt;br&gt;
+
+I'll be honest here, this is NOT the clearest sentence I've ever read...
+
+- **SLIDE**: Let's try to clean this up.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. **Refine the DGP to only keep variables that confound the key mechanism**
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+I propose that we revise Step 2 to focus on finding confounders.
+
+### Has anybody ever heard of a confounder before?
+
+&lt;br&gt;
+
+### How about any statistical procedure that "controls" for something?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size65[.center[**Directed Acyclic Graphs (DAGs)**]]
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-10-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+.size50[
++ 'Directed' = Paths indicate direction of effect
+
++ 'Acyclic' = No immediate feedback loops
+
++ 'Graphs' = Visualized
+]
+
+???
+
+Before we talk confounders, let's refine our understanding of these wacky arrow graphs I keep using
+
+- e.g. Directed Acyclic Graphs (DAGs)
+
+&lt;br&gt;
+
+DAGs are incredibly useful tools for calrifying a causal argument.
+
+&lt;br&gt;
+
+Understanding confounding is much easier with this style of graphical representation for a causal argument.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-11-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+???
+
+I want to give you a nontechnical definition and some examples of confounders before I show you the technical definition.
+
+&lt;br&gt;
+
+In short, a confounder is a variable that explains some of the variation in both the treatment and the outcome variables.
+
+- In other words, the confounder causes at least some of the variation in the predictor, AND
+
+- The confounder causes at least some of the variation in the outcome.
+
+&lt;br&gt;
+
+This is how we show a confounder in a DAG.
+
+- Causal arrows run from the confounder variable to the predictor AND the outcome.
+
+&lt;br&gt;
+
+Two arguments required to establish a confounder:
+
+1. The confounder MUST cause BOTH variables in the mechanism
+
+2. The direction of effect is FROM the confounder TO the mechanism
+
+&lt;br&gt;
+
+### Questions on this?
+
+&lt;br&gt;
+
+**SLIDE**: Example 1
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[.center[**Do ice cream sales create arsonists?**]]
+
+.pull-left[
+&lt;img src="libs/Images/12_1-ice_cream_truck.jpg" width="80%" /&gt;
+]
+
+.pull-right[
+&lt;img src="libs/Images/12_1-forest_fire.png" width="80%" /&gt;
+]
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-14-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+???
+
+So, it turns out that there is a rather high correlation between ice cream sales and the number of forest fires in a given area.
+
+- I assume everybody senses that this is a case of correlation, not causation, right?
+
+- We don't actually think that buying ice cream leads someone to want to start a fire.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-15-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### So, what's likely going on here?
+
+### - What may be confounding this relationship?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-16-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Ice cream sales and forest fires are correlated because they both spike in the summertime!
+
+- Summer is confounding this mechanism.
+
+- If you adjust your analyses to this confounder, e.g. cities in summer vs other cities in summer, the correlation is greatly reduced.
+
+&lt;br&gt;
+
+This is what we call a spurious correlation, e.g. a fake relationship
+
+- This is also what people mean when they warn that correlation does not imply causation. 
+
+- Confounding effects can make two unrelated variables look related!
+
+&lt;br&gt;
+
+### Does this make sense?
+
+&lt;br&gt;
+
+**SLIDE**: Let me now introduce the technical definition of confounding.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size65[.content-box-blue[**Building a Causal Argument**]]
+
+&lt;br&gt;
+
+.size50[**Confronting Confounding Problems**
+
+"...any context in which the association between an outcome Y and a predictor of interest X is not the same as it would be, if we had experimentally determined the values of X" (Pearl 2000).
+]
+
+???
+
+This is Judea Pearl's technical definition of confounding.
+
+- Basically, with observational data we suspect our comparison groups are not identical on average, and so, we need to identify the important differences between them.
+
+- Thinking about confounding means thinking about what our data would look like if we had run this as an experiment.
+
+&lt;br&gt;
+
+**SLIDE**: I know this is a little dense, but let's think about what this means in the context of our ice cream and arson example.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-17-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Here's the DAG with summer included, BUT in a world where we are able to RANDOMLY assign ice cream sales to different cities.
+
+- In other words, what if we could run an RCT to test this hypothesis?
+
+- Flip a coin with head's meaning a city gets a bunch of ice cream and tails meaning almost none.
+
+&lt;br&gt;
+
+The confounding definition asks, if you could remove the effect of this proposed variable, summer, do we think the forest fire results would change?
+
+- If we believe that removing this causal path changes the results then it is a confounder in the relationship.
+
+- In other words, without summertime, we expect no effect of ice cream sales variation on forest fires.
+
+&lt;br&gt;
+
+### Does this make sense?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. **Refine the DGP to only keep variables that confound the key mechanism**
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+In short, the second step of our causal argument process is to refine the DGP to include only the confounders to the key mechanism
+
+&lt;br&gt;
+
+THIS represents your identification strategy.
+
+- Your list of confounders represents your argument that you have identified the causal mechanism
+
+&lt;br&gt;
+
+**SLIDE**: Let's practice this second step on our hypothetical class size project.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-18-1.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### What on our brainstormed lists might function as a confounder in this relationship?
+
+*EXPLORE and DISCUSS*
+
+- ?
+
+&lt;br&gt;
+
+**SLIDE**: Let's talk for a second about things that may LOOK like confounders but are not.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size45[**Is 'experience' a confounder in this mechanism?**]]]
+
+&lt;br&gt;
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-19-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Imagine we are developing a research project whose aim is to estimate the causal effect of 'education' on 'salary.'
+
+### Do we believe that 'experience' is a confounder of this mechanism? Why or why not?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size45[**Rule 2: Do not include mediators**]]]
+
+&lt;br&gt;
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-20-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Experience is a mediator in this mechanism.
+
+- It should NOT be included in our identification strategy.
+
+&lt;br&gt;
+
+Remember, your interest in "testing" this relationship is to identify the size of the main arrow
+
+- e.g. How big is the effect of education on future salary?
+
+&lt;br&gt;
+
+Including a mediator takes some of that effect you are interested in and redirects it to another mechanism
+
+- In other words, the estimated size of the effect of the main arrow will shrink which means it no longer represents a clean test of the mechanism.
+
+&lt;br&gt;
+
+### Does this make sense?
+
+&lt;br&gt;
+
+So, don't include mediators!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. **Refine the DGP to only keep variables that confound the key mechanism**
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+There are lots of other ways to add a variable to a DAG, but I think this is enough for us to move forward on our project.
+
+&lt;br&gt;
+
+### Any questions on our work with DAGs and confounders today?
+
+&lt;br&gt;
+
+We'll get into this third step more next week, but let me illustrate the effect of "controlling" for a confounder with toy data.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-21-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Here we see simulated data.
+
+### What is the relationship evident from this scatterplot and OLS line?
+
+&lt;br&gt;
+
+These correlations and OLS slope are an estimate of the association between these two variables.
+
+- This is NOT a test of the causal argument until we diagram the DGP and adjust the analysis for our confounders
+
+&lt;br&gt;
+
+- Correlation: 0.5752803
+
+.code80[
+
+```
+
+Call:
+lm(formula = fires ~ ice_cream, data = d10)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.0853 -3.5859 -0.3384  3.2324  8.1471 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  4.06037    2.96795   1.368    0.177    
+ice_cream    0.16564    0.03093   5.356 1.52e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.252 on 58 degrees of freedom
+Multiple R-squared:  0.3309,	Adjusted R-squared:  0.3194 
+F-statistic: 28.69 on 1 and 58 DF,  p-value: 1.525e-06
+```
+]
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="12_2-DAGs_files/figure-html/unnamed-chunk-23-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Here we see one approach to "controlling" for a confounder
+
+- I am splitting the sample using facets by season
+    - On the right is summer only
+    - On the left is the rest
+
+&lt;br&gt;
+
+### What is the relationship evident from this split sample scatterplots and OLS lines?
+
+.code80[
+
+```r
+# Summer
+cor(d10$ice_cream[d10$summer == 1], d10$fires[d10$summer == 1])
+```
+
+```
+[1] -0.02729393
+```
+
+```r
+# Other
+cor(d10$ice_cream[d10$summer == 0], d10$fires[d10$summer == 0])
+```
+
+```
+[1] 0.01899087
+```
+]
+
+&lt;br&gt;
+
+The OLS lines and estimated correlations are now, I argue, estimates of the effect of ice cream sales ON forest fires.
+
+- By adjusting for the confounder I can argue I have designed a test of the causal relationship here
+
+&lt;br&gt;
+
+### Does the intuition here make sense?
+
+&lt;br&gt;
+
+We'll dig into HOW to do this next week.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. Refine the DGP to only keep variables that confound the key mechanism
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+In short, making a causal argument using observational data requires:
+
+1. Describing the DGP, and then
+
+2. Refining the DGP to include only the confounders to the key mechanism
+
+3. Finally we adjust our analysis to "control" for the confounders
+
+&lt;br&gt;
+
+### Questions on the material today?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[**For Today:**]
+
+.size45[
+1. Read HK (2022) ch 6 and 7
+
+2. Brainstorm the DGP for our project (e.g. **SUBMIT** four separate lists of reasons why states would vary in):
+    - GII
+    - Education Spending
+    - Military Spending
+    - Healthcare Spending
+]
+
+???
+
+For class today you each submitted to Canvas DGPs for the main variables in our project.
+
+*IF TIME ENOUGH*: Get the lists on the board and discuss, NOT AS CONFOUNDERS, just as credible predictors for each variable
+
+*IF TIME IS SHORT*: Go to the next slide!
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[**For Next Class:**]
+
+.size45[
+Propose an identification strategy for each causal mechanism in our project:
+
+- Education Spending ---&gt; GII
+
+- Military Spending ---&gt; GII
+
+- Healthcare Spending ---&gt; GII
+]
+
+???
+
+### Questions on the assignment?
+
+- Make three DAGs, one per mechanism and submit your proposals to Canvas before class.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

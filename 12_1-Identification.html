@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>12_1-Identification.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+background-image: url('libs/Images/background-data_blue_v3.png')
+background-size: 100%
+background-position: center
+class: middle, inverse
+
+.size80[**Today's Agenda**]
+
+&lt;br&gt;
+
+.size50[
+Thinking Carefully About Causal Inference
+
+- The Data Generating Process (DGP)
+
+- An Identification Strategy
+]
+
+&lt;br&gt;
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Save brainstormed lists in this Rmd file AND next class
+
+&lt;br&gt;
+
+Reading: Huntington-Klein (2022) Chapter 5 [LINK](https://theeffectbook.net/ch-Identification.html)
+
+&lt;br&gt;
+
+This week I want us to explore causal inference.
+
+- What does it mean to establish causality with an argument and data?
+
+- How do we start to build this argument in our project this semester?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: center, middle
+  
+.size50[**Correlation Does Not Imply Causation (???)**]
+
+&lt;br&gt;
+
+&lt;img src="libs/Images/08_2-xkcd_correlation.png" width="75%" /&gt;
+
+???
+
+You've all probably heard the old saw, "correlation does not imply causation."
+
+- But if that's true, then what does "imply" causation?
+
+- In other words, how do we make a convincing argument that changes in our predictor variable cause changes in our outcome variable?
+
+&lt;br&gt;
+
+To do this I want us to take a proverbial step back from the work we've been doing all semester.
+
+- We need to start our exploration of causal inference by talking about where data comes from.
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Exploratory (aka Descriptive) Data Analyses**]]]
+
+&lt;br&gt;
+
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; gii &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; mmr &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; abr &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; se_f &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; se_m &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; pr_f &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; pr_m &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; lfpr_f &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; lfpr_m &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.68 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 638 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 82.56 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14.87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27.22 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72.78 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66.52 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Angola &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.54 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 241 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 138.40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 51.55 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29.55 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 70.45 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 73.97 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 79.07 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Albania &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14.52 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 95.39 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 93.04 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35.71 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 64.29 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.73 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66.15 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Andorra &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.89 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 70.67 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72.42 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 46.43 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 53.57 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; United Arab Emirates &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.08 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 82.00 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 85.60 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.00 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.00 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 46.54 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 88.00 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Argentina &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.29 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39.06 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 70.95 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 71.42 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 44.38 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 55.62 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 71.60 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Armenia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.22 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18.51 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 96.00 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 97.05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 33.64 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66.36 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 42.66 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 63.00 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Antigua and Barbuda &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 42 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 33.11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.43 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68.57 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Australia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.07 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 94.58 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 94.43 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37.89 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 62.11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 61.06 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 70.55 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+So far this semester we have been engaged in what might be called an exploratory or descriptive analysis process
+
+- In short, I gave you data (gathered by someone else) and you used it to tell me about the world FROM THE PERSPECTIVE OF THAT DATA.
+
+&lt;br&gt;
+
+**SLIDE**: Our approach to this task followed three general steps
+
+
+
+---
+
+class: middle
+
+.center[.size55[.content-box-blue[**1. Analyzed the Methodology**]]]
+
+&lt;br&gt;
+
+&lt;img src="libs/Images/03_2-GII_diagram2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+First we analyzed the research design that produced these measures.
+
+&lt;br&gt;
+
+We evaluated:
+
+1. The source(s) of the data,
+
+2. How the concepts were operationalized,
+
+3. The process by which those tools produced measurements, and
+
+4. The data validation done by the researchers.
+
+&lt;br&gt;
+
+I hope everyone now better understands how THESE choices are far more impactful on the data than anything we might do using "statistics."
+
+
+
+---
+
+class: middle
+
+.center[.size55[.content-box-blue[**2. Univariate Analyses of the  Distribution**]]]
+
+&lt;br&gt;
+
+.pull-left[
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; gii &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.68 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Angola &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.54 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Albania &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Andorra &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; United Arab Emirates &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Argentina &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.29 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Armenia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.22 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Antigua and Barbuda &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Australia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.07 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Austria &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-6-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Our second step was to use univariate analysis tools to describe the distribution of the data.
+
+- Is there variation in the measures?
+    - No variation, nothing to explain
+
+- What is the shape or distribution of these measures?
+
+&lt;br&gt;
+
+As I hope was clear from the reading today, THIS step is vital for learning about the world
+
+- THIS is the variation you want your model to explain!
+
+- The whole ballgame of statistical modeling!
+
+
+
+
+---
+
+class: middle
+
+.center[.size55[.content-box-blue[**3. Bivariate Analyses of the  Association**]]]
+
+&lt;br&gt;
+
+.pull-left[
+.size25[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; gii &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; military &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.66 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.12 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Angola &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.54 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.64 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Albania &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.30 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Andorra &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; United Arab Emirates &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.06 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Argentina &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.31 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.71 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Armenia &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.24 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.79 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Antigua and Barbuda &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Australia &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.08 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.87 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Austria &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.73 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Our third step was to use bivariate analysis tools to describe the relationships between our predictors and the outcome variables.
+
+- Bivariate tables, visualizations and simple OLS regressions
+
+- HOWEVER, these are associations, not evidence of causation!
+
+
+
+
+---
+
+class: center, middle, slideblue
+
+.size50[.content-box-blue[**Building a Causal Argument**]]
+
+.size40[
+"Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e. intervention) was the 'cause' of the effect (or outcome) that was observed" (Frey 2018). 
+]
+
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-9-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Our final job this semester is to try and push beyond demonstrating associations or correlations.
+
+&lt;br&gt;
+
+Our aim is explanatory or causal analysis
+
+- e.g. making an argument with data about why the world works like it does.
+
+- In other words, we want to demonstrate that changes in our chosen predictors CAUSE a change in the outcome variable
+
+&lt;br&gt;
+
+To be clear, a "causal relationship" refers to a cause-and-effect connection between a predictor variable and an outcome.
+
+- Much of this language comes from medicine where they focus on treatments and effects
+    - Think new medicines and curing a disease
+  
+- For our purposes think of treatment to effect as synonymous with predictor to outcome.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+.pull-left[
+&lt;img src="libs/Images/13_1-classroom.jpg" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="libs/Images/13_1-student_success2.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-12-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Let's step through a toy example to think about how we build a causal argument.
+
+&lt;br&gt;
+
+Example: Student class size (predictor) -&gt; Student success (outcome)
+
+- Theory is that smaller classes, more individualized attention, more growth
+
+&lt;br&gt;
+
+Let's talk about how to test this theory in a way that will CONCLUSIVELY demonstrate a causal relationship.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+.pull-left[
+&lt;img src="libs/Images/13_1-Student.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+&lt;img src="libs/Images/13_1-small_class.webp" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Step 1:
+
+- Take a specific student, say, Bob here who is a hypothetical 3rd grader.
+
+- This August (2023) place Bob in a small class and ensure he attends all year
+
+- Next May (2024) we record his test scores
+
+&lt;br&gt;
+
+Easy peasy.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+&lt;img src="libs/Images/13_1-delorean-time-travel.gif" width="90%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Step 2
+
+In May of 2024, AFTER RECORDING BOB's TEST SCORES, you use a time machine to return to August 2023
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+.pull-left[
+&lt;img src="libs/Images/13_1-Student.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+&lt;img src="libs/Images/13_1-large_class_size.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Step 3
+
+- August (2023) place Bob in a large class and ensure he attends all year
+
+- Next May (2024) we record his test scores
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+.pull-left[
+&lt;img src="libs/Images/13_1-small_class.webp" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+&lt;img src="libs/Images/13_1-large_class_size.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Step 4: Calculate the difference between Bob's two outcomes and there you go.
+
+- You have a firm estimate of the causal effect of class size on Bob's individual success.
+
+&lt;br&gt;
+
+Now all you have to do is repeat this process for a few hundred randomly selected students and you will be able to conclusively demonstrate a causal effect.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.center[.size50[.content-box-blue[**The Fundamental Problem of Causal Inference**]]]
+
+&lt;br&gt;
+
+.size50[
+"To measure causal effects, we need to compare the factual outcome with the counter-factual outcome, but we can never observe the counter-factual outcome" (Llaudet and Imai 2023).
+]
+
+???
+
+This is what we call the fundamental problem of causal inference
+
+- In the real world we observe only the actual outcome (Student X in small class) and never the  counter-factual (Student X in large class)!
+
+&lt;br&gt;
+
+NOTE: This is a problem for ALL science, not just the social sciences.
+
+- Whether its gravity, speed, biological reproduction or whatever we cannot observe the counter-factual.
+
+&lt;br&gt;
+
+**SLIDE**: So, how do we solve this problem?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Randomized Controlled Trials (RCTs)**]]]
+
+&lt;br&gt;
+
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-20-1.png" width="77%" style="display: block; margin: auto;" /&gt;
+
+???
+
+The "Gold" Standard Solution: Randomized Controlled Trials (RCTs)
+
+- The key here is a research design based on randomly assigning the treatment and control groups
+
+- For example, take a group of students and assign them to either a small class (the treatment) or a large class (the control) using the flip of a coin.
+
+&lt;br&gt;
+
+When treatment is randomized, the only thing that distinguishes the treatment group from the control group BESIDES THE TREATMENT is chance. 
+
+- In other words, even though both groups are composed of different individuals, the two groups are comparable to each other on average in all respects.
+
+&lt;br&gt;
+
+Since the groups were identical, on average, going into the experiment we can use the factual outcome of each group as the counter-factual for the other group. 
+
+- In other words, we can assume that the average outcome of the treatment group is a good estimate of the average outcome of the control group, had the control group received the treatment.
+
+&lt;br&gt;
+
+RCTs help us estimate the "average treatment effect"
+
+- The difference between the avg outcome of the treatment group and the avg outcome of the control group
+
+&lt;br&gt;
+
+Ultimately, even this "gold standard" approach is somewhat flawed
+
+- It still doesn't give us the counter-factual
+
+- It attempts to estimate the counter-factual which is sensitive to the size of the sample and the quality of the random allocation
+
+&lt;br&gt;
+
+### Make sense?
+
+
+
+---
+
+background-image: url('libs/Images/13_1-armed-forces-personnel.svg')
+background-size: 80%
+background-position: center
+class: middle
+
+???
+
+Our Challenge: Estimating causal effects using observational data
+
+- Much of what we do in the social sciences is dependent on observational, NOT experimental, data
+
+- e.g. data from observing the world, not directly manipulating it as is done in an RCT.
+
+&lt;br&gt;
+
+The countries of the world simply aren't going to let us randomly assign the size of their armies in order to test some theory.
+
+&lt;br&gt;
+
+So, the question becomes, how do you identify a causal effect in the absence of a time machine or random assignment.
+
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+.center[.size45[**Our Challenge:**]]
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+.center[.size45[**Estimating Causal Effects Using Observational Data**]]
+]
+
+.pull-right[
+&lt;img src="libs/Images/13_1-SPS_Map.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Let's keep going with our student success research, but shift to using observational data.
+
+&lt;br&gt;
+
+Let's say the local school board has agreed to give us last year's anonymized data on all of the third grade students in Springfield
+
+- e.g. The size of their classes and their end of year test scores
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**The Challenge of Observational Data**]]]
+
+&lt;br&gt;
+
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-22-1.png" width="77%" style="display: block; margin: auto;" /&gt;
+
+???
+
+This means we have students in different class sizes but we didn't get to assign them to those classes.
+
+- THEREFORE, the first thing we have to think about is what explains the variation in how students end up in different sized classes?
+
+&lt;br&gt;
+
+*BRAINSTORM ON BOARD*
+
+*GIVE THIS EXERCISE TIME TO BREATHE, WORK IN GROUPS BEFORE AS A CLASS*
+
+### In the real world, what mechanisms do you think explain why some students are in small classes and others are in large classes?
+
+- Wealthier families more likely to spend money (private tuition, move into a better district) to get their kids into smaller classes/better schools
+
+- Some kids might be in smaller class sizes because their district is more rural (e.g. fewer kids)
+
+- Some kids might be in smaller class sizes because they have special needs
+
+- # students in district
+
+- Level of funding from state / equalization of resources
+
+- # of schools in district
+
+&lt;br&gt;
+
+So, unlike in the RCT example we can see that we have a number of reasons to suspect that in the real world these two groups **ARE NOT** identical on average.
+
+- If the groups are not identical on average then we **cannot** interpret differences in the outcome as a measure of the effect of class sizes.
+
+- It is actually the effect of **class size differences + the effect of any other differences between the groups**
+
+&lt;br&gt;
+
+### Make sense?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+&lt;img src="libs/Images/13_1-HK_ch5.png" width="75%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;img src="libs/Images/13_1-HK_ch5_TOC.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Reading: Huntington-Klein 2022 chapter 5 "The Challenge of Identification" [LINK](https://theeffectbook.net/ch-Identification.html)
+
+&lt;br&gt;
+
+What do we do about this? 
+
+- Reading today all about introducing you to the big, important concepts we need to think about causality
+
+- Two big ideas we need to explore: The data generating process (DGP) and the need for an identification strategy
+
+&lt;br&gt;
+
+I'm always on the lookout for better and more accessible readings on this material.
+
+- Ideally, freely available is also key!
+
+&lt;br&gt;
+
+### So, what did you think of the reading? 
+
+&lt;br&gt;
+
+**SLIDE**: Let's build up to the first big idea: 
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.center[.size50[.content-box-blue[**Describing the Data Generating Process (DGP)**]]]
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+In order to make an argument that we have identified a causal mechanism using observational data we must first describe the Data Generating Process (DGP)
+
+&lt;br&gt;
+
+HOWEVER, before we can describe the DGP we must first take a step back and think about where DATA comes from.
+
+&lt;br&gt;
+
+Data is how we see and experience the world.
+
+- HOWEVER, data is the result of a system NOT the engine of that system
+
+- As scientists our goal is to understand the system!
+
+&lt;br&gt;
+
+This way of thinking about science reminds us that the data we see depends BOTH on the underlying laws of nature AND the measurements we use to "see" the world!
+
+- All data is the result of natural laws and measurement error which makes it very hard to simply use data to draw inferences about natural laws!
+
+- We simply can't be certain about which parts of our data represent the laws and which part the error!
+
+&lt;br&gt;
+
+**SLIDE**: In a slightly more applied way of thinking...
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Describing the Data Generating Process (DGP)**]]]
+
+&lt;br&gt;
+
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-26-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+.size40[
+1. Model produces data
+
+2. Model has unknown parameters
+
+3. Data reduces the uncertainty in the parameters
+]
+
+???
+
+We try to represent the laws of nature with a model so we'll switch to that language here.
+
+&lt;br&gt;
+
+1. ALL DATA is produced by a model
+
+2. We don't know what is in that model
+
+3. We can use data to uncover what is in that model and the more data we have the more of the model we can uncover.
+
+&lt;br&gt;
+
+### Does this make sense in broad strokes?
+
+&lt;br&gt;
+
+### Is this a fundamentally different way of thinking about data for you too?
+
+- Blew my damn mind when I first read this in graduate school!
+
+&lt;br&gt;
+
+In a sense, science is the process of studying data and measurement in order to learn about the models/laws that make the world move in the way that it does.
+
+- Our goal is to understand the underlying "rules" of the system but all we have to go on is the data!
+
+&lt;br&gt;
+
+And all of that brings us to the data generating process (DGP)
+
+- Per the HK chapter, in order to use the data we must first describe "the parts we know, and the parts we don't" that produced it
+
+&lt;br&gt;
+
+### How have we already started to do this in our student success research?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**The Data Generating Process (DGP)**]]]
+
+&lt;br&gt;
+
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-27-1.png" width="77%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Our work to describe how students in SGF end up in large vs small classrooms was us trying to describe the parts of the DGP that "we know"
+- Or think we do...
+
+&lt;br&gt;
+
+**SLIDE**: BUT, THIS work is only HALF of the DGP!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**The Data Generating Process (DGP)**]]]
+
+&lt;br&gt;
+
+&lt;img src="12_1-Identification_files/figure-html/unnamed-chunk-28-1.png" width="77%" style="display: block; margin: auto;" /&gt;
+
+???
+
+We also need to describe the DGP for our outcome variable!
+
+*BRAINSTORM ON BOARD*
+
+*GIVE THIS EXERCISE TIME TO BREATHE, WORK IN GROUPS BEFORE AS A CLASS*
+
+### In the real world, what mechanisms do you think explain why some students get high scores on standardized tests and why others get lower scores?
+
+- Wealthy families more likely to provide tutoring, read to their kids, provide enough food and healthcare so they can succeed at school
+
+- Highly educated families more likely to make education a priority
+
+- Some students have higher aptitude for test-taking than others
+
+- Some student experience stronger test anxiety than others
+
+- Willingness to hard work, 
+
+
+&lt;br&gt;
+
+Now we have two lists that together represent "the parts we know" of our DGP.
+
+&lt;br&gt;
+
+### What is the "parts we don't know" in our DGP?
+- (It's the part we are testing with our research!)
+    - e.g. How do class sizes effect student success?
+    
+&lt;br&gt;
+
+### Make sense?
+
+
+
+
+---
+
+background-image: url('libs/Images/13_1-cartoon-dog.jpg')
+background-size: 100%
+background-position: center
+class: top
+
+.center[.size55[.content-box-blue[**Identification**]]]
+
+???
+
+The second big step in making a causal argument using observational data is to move from the DGP to an identification strategy.
+
+- Per the chapter, "Identification is the process of figuring out what part of the variation in your data answers your research question. It’s called identification because we’ve ensured that our calculation identifies a single theoretical mechanism of interest."
+
+&lt;br&gt;
+
+### In the chapter, what did Abel and Annie do to figure out how their dog kept escaping the house at night?
+
+&lt;br&gt;
+
+### Do you understand how our brainstormed DGP is represented by Abel and Annie going through the house and identifying all the ways the dog could escape?
+
+&lt;br&gt;
+
+**SLIDE**: Let's wrap up our work for today with the suggested plan of attack from the reading
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[.content-box-blue[**Identification and the DGP**]]]
+
+.size45[
+1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+
+2. Use that data generating process to figure out the reasons our data might look the way it does that don’t answer our research question
+
+3. Find ways to block out those alternate reasons and so dig out the variation we need
+]
+
+???
+
+Our work today has primarily focused on this first step.
+
+- Our work on Wednesday will be much more focused on steps two and three.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[**For next class:**]
+
+.size45[
+1. Read HK (2022) ch 6 and 7
+
+2. Brainstorm the DGP for our project (e.g. **SUBMIT** four separate lists of reasons why states would vary in):
+    - GII
+    - Education Spending
+    - Military Spending
+    - Healthcare Spending
+]
+
+???
+
+Submit your lists to Canvas before class!
+
+- Remember, your list for GII should NOT include these three predictors! They are what we are hoping to test!
+
+### Questions on the assignment?
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>13_1-Multivariate-Viz.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+background-image: url('libs/Images/background-data_blue_v3.png')
+background-size: 100%
+background-position: center
+class: middle, inverse
+
+.size80[**Today's Agenda**]
+
+&lt;br&gt;
+
+.size45[
+**Multivariate Analyses**
+
+1. Descriptive statistics by groups
+
+2. Using facets to extend any visualization
+
+3. Mapping 3rd variables with colors or shapes
+]
+
+&lt;br&gt;
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Upload WDI data for class to Canvas: WDI-Life_Expectancy-2015.csv
+
+2. ???
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-2-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Last week we started exploring the concepts and approaches we can use to make causal arguments
+
+- e.g. arguments that changes in X cause a change in Y
+
+&lt;br&gt;
+
+We discussed:
+
+- the Data Generating Process (DGP), 
+
+- identification strategies, 
+
+- the use of Directed Acyclic Graphs (DAGs), and 
+
+- the need to adjust our analyses for confounders.
+
+&lt;br&gt;
+
+### Any questions on those big ideas?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-3-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+In class on Friday we worked to:
+
+1. Draw DAGs for each of our three hypotheses, and
+
+2. Gather data that operationalizes the concepts we identified as important confounders in these relatonships.
+
+&lt;br&gt;
+
+### Any questions on those DAGs or the variables we selected?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
+
+&lt;br&gt;
+
+.size55[
+1. Descriptive statistics by groups
+  
+2. Using facets to extend any visualization
+    
+3. Mapping 3rd variables with colors or shapes
+]
+
+???
+
+Today I will introduce you to a series of statistical tools that will allow you to adjust your analyses for a confounder variable.
+
+- These are what we call multivariate analyses
+
+- e.g. Analyses on three or more variables simultaneously
+
+&lt;br&gt;
+
+Note that you can also use these techniques to extend simple descriptive analyses to summarize data across multiple variables
+
+&lt;br&gt;
+
+I'll introduce these tools to you today and then we'll apply them in class on Friday on your research projects.
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size60[**Do countries with more hospital capacity have longer life expectancies?**]]]
+
+&lt;br&gt;
+
+&lt;br&gt;
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-4-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Let's say you were working on a research project exploring the impact of healthcare spending on key outcomes.
+
+- Specifically we are interested in estimating the effect of hospital capacity on life expectancies across the world.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Do countries with more hospital capacity have longer life expectancies?**]]]
+
+&lt;br&gt;
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; life_expectancy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hospital_beds_per_1k &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hosp_beds_cats &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; gdp &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; gdp_cats &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 62.7 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt; 1 per 1k &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.999816e+10 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Middle 50% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Algeria &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 75.6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.9 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;lt; 2 per 1k &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.659793e+11 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Middle 50% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Antigua and Barbuda &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 77.9 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;gt; 2 per 1k &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.336693e+09 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Bottom 25% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Argentina &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 76.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;gt; 2 per 1k &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.947493e+11 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Top 25% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Armenia &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 74.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;gt; 2 per 1k &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.055334e+10 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Middle 50% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Australia &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 82.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; &amp;gt; 2 per 1k &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.350616e+12 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Top 25% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.center[.size45[
+Import 'WDI-Life_Expectancy-2015.csv' into R
+]]
+
+???
+
+I've pulled the 2015 data from the World Bank's WDI database for us to explore.
+
+- Everybody grab this dataset from Canvas and import it into RStudio.
+
+&lt;br&gt;
+
+Variables
+
+- Life expectancy is total in years
+
+- Hospital beds is per 1,000 people in the population
+
+- GDP is gross domestic product
+
+- I've also given you a categorical version of both hospital beds and GDP for us to explore
+
+&lt;br&gt;
+
+### Ok, what is the first step we need to do to answer this question?
+
+### - e.g. the first thing you need a good sense of before building your causal argument?
+
+- (You MUST first analyze the variation in the outcome variable!)
+
+1. If there is no variation there, then your project cannot proceed, and
+
+2. Your job is then to explain the distribution you find there
+
+&lt;br&gt;
+
+Let's get started!
+
+- Everybody make a histogram of life expectancy and calculate the descriptive statistics for it.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size40[**Do countries with more hospital capacity have longer life expectancies?**]]]
+
+.pull-left[
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+.size40[
+&lt;table&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Min &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 54.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 1st Qu &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 72.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Median &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 76.4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mean &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 75.6 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 3rd Qu &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 80.7 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Max &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 83.8 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]]
+
+???
+
+### Analyze these univariate analyses for me
+
+### - What do we learn from this about the outcome we are trying to explain?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.content-box-blue[.size50[**Do countries with more hospital capacity have longer life expectancies?**]]
+
+&lt;br&gt;
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+.size45[Calculate the mean life expectancy ('life_expectancy') across the levels of hospital beds ('hosp_beds_cats')]
+
+???
+
+Let's now move from a univariate to a bivariate analysis.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.content-box-blue[.size50[**Do countries with more hospital capacity have longer life expectancies?**]]
+
+&lt;br&gt;
+
+.code130[
+
+```r
+aggregate(data = d, life_expectancy ~ hosp_beds_cats, FUN = mean)
+```
+
+```
+  hosp_beds_cats life_expectancy
+1     &lt; 1 per 1k        67.26267
+2     &lt; 2 per 1k        73.20436
+3     &gt; 2 per 1k        78.40434
+```
+]
+
+???
+
+### Analyze these bivariate analyses for me
+
+### - What do we learn from this about the relationship we are trying to test?
+
+&lt;br&gt;
+
+Key here is that we have established a correlation with this analysis, but not causation.
+
+### What do we need to add to make this a causal argument?
+
+- (**SLIDE**: An identification strategy that specifies the confounders!)
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-10-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+My DAG displays one identification strategy for this argument.
+
+### What does it mean to say that GDP is presented as a confounder?
+
+- Argument that the size of your economy influences your hospital capacity, and
+
+- Argument that the size of your economy influences your average life expectancies
+
+&lt;br&gt;
+
+**SLIDE**: Put another way...
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+
+&lt;br&gt;
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-11-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+This diagram argues that we cannot get a causal estimate of the effect of changing the number of hospital beds on life expectancy without adjusting our analysis for the size of the economy.
+
+&lt;br&gt;
+
+**SLIDE**: This brings us to the tools we will need to adjust our analyses for the confounders.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
+
+&lt;br&gt;
+
+.size55[
+1. **Descriptive statistics by groups**
+  
+2. .greytext[Using facets to extend any visualization]
+    
+3. .greytext[Mapping 3rd variables with colors or shapes]
+]
+
+???
+
+First approach extends our descriptive statistics across groups in the data.
+
+
+
+
+---
+
+class: middle, slideblue
+
+.center[.content-box-blue[.size60[**1. Descriptive Statistics by Group**]]]
+
+&lt;br&gt;
+
+.code110[
+
+```r
+# Bivariate Analyses
+# Numerical x Categorical
+aggregate(data = d, life_expectancy ~ hosp_beds_cats, FUN = mean)
+```
+
+```
+  hosp_beds_cats life_expectancy
+1     &lt; 1 per 1k        67.26267
+2     &lt; 2 per 1k        73.20436
+3     &gt; 2 per 1k        78.40434
+```
+]
+
+???
+
+Let's go back to the aggregate code you wrote earlier.
+
+
+
+
+---
+
+class: middle, slideblue
+
+.center[.content-box-blue[.size60[**1. Descriptive Statistics by Group**]]]
+
+&lt;br&gt;
+
+.code110[
+
+```r
+# Multivariate Analyses
+# Numerical x Categorical x Categorical
+aggregate(data = d, life_expectancy ~ hosp_beds_cats + gdp_cats, FUN = mean)
+```
+
+```
+  hosp_beds_cats   gdp_cats life_expectancy
+1     &lt; 1 per 1k Bottom 25%        54.85700
+2     &lt; 2 per 1k Bottom 25%        66.99950
+3     &gt; 2 per 1k Bottom 25%        75.36496
+4     &lt; 1 per 1k Middle 50%        67.85600
+5     &lt; 2 per 1k Middle 50%        74.32208
+6     &gt; 2 per 1k Middle 50%        76.71923
+7     &lt; 1 per 1k    Top 25%        68.88075
+8     &lt; 2 per 1k    Top 25%        74.49050
+9     &gt; 2 per 1k    Top 25%        80.13991
+```
+]
+
+???
+
+Adding a third variable that is categorical to the aggregate function is very simple.
+
+- Modify the formula argument to add a second predictor variable just like adding two numbers together with the plus sign.
+
+- You can add as many CATEGORICAL variables to the right side of the formula as you want.
+
+&lt;br&gt;
+
+### Does the code make sense?
+
+&lt;br&gt;
+
+### So, when we calculate the averages while adjusting for GDP what happens to our estimate of the effect we are interested in?
+
+### - Does increasing hospital beds increase life expectancies when controlling for GDP?
+
+&lt;br&gt;
+
+**SLIDE**: You can also add a third variable to the aggregate function if it is a numeric variable.
+
+
+
+
+---
+
+class: middle, slideblue
+
+.center[.content-box-blue[.size60[**1. Descriptive Statistics by Group**]]]
+
+&lt;br&gt;
+
+.pull-left[
+.code100[
+
+```r
+# Multivariate Statistics:
+# Num x Cat x Num
+aggregate(data = d, 
+          life_expectancy ~ hosp_beds_cats, 
+          FUN = mean,
+*         subset = gdp &lt; 8e10)
+```
+
+```
+  hosp_beds_cats life_expectancy
+1     &lt; 1 per 1k        66.87580
+2     &lt; 2 per 1k        71.44538
+3     &gt; 2 per 1k        76.37256
+```
+]]
+
+.pull-right[
+.code100[
+
+```r
+# Multivariate Statistics:
+# Num x Cat x Num
+aggregate(data = d, 
+          life_expectancy ~ hosp_beds_cats, 
+          FUN = mean,
+*         subset = gdp &gt; 8e10)
+```
+
+```
+  hosp_beds_cats life_expectancy
+1     &lt; 1 per 1k        68.03640
+2     &lt; 2 per 1k        75.10992
+3     &gt; 2 per 1k        79.84797
+```
+]]
+
+???
+
+You can also use the subset argument in aggregate to split your sample by a numeric variable.
+
+- The key here is to use evaluation functions like less than, greater than, less than or equal to and greater than or equal to.
+
+&lt;br&gt;
+
+I hope everyone can see now how powerful the aggregate function can be.
+
+- Add multiple categorical variables to the formula, OR
+
+- Use subset to add numeric variables.
+
+&lt;br&gt;
+
+### Questions on using subset in the aggregate function to adjust your results for a numeric variable?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
+
+&lt;br&gt;
+
+.size55[
+1. .greytext[Descriptive statistics by groups]
+  
+2. **Using facets to extend any visualization**
+    
+3. .greytext[Mapping 3rd variables with colors or shapes]
+]
+
+???
+
+Let's shift to our second multivariate analysis technique.
+
+- Using facets to extend any visualization
+
+&lt;br&gt;
+
+In short, facets let you take any visualization and break it into separate plots across levels of another variable.
+
+- Think of this like the visual version of what we just did using aggregate
+
+&lt;br&gt;
+
+**SLIDE**: Let's start with a bivariate visualization
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.content-box-blue[.size50[**Do countries with more hospital capacity have longer life expectancies?**]]
+
+&lt;br&gt;
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt;
+
+.size45[Visualize life expectancy ('life_expectancy') and hospital beds ('hospital_beds_per_1k') with a scatter plot]
+
+???
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+```r
+# 2. Using facets to extend any visualization
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-17-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### Analyze this bivariate analysis for me
+
+### - What do we learn from this about the relationship we are trying to test?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+```r
+# 2. Using facets to extend any visualization
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+* facet_wrap(~ gdp_cats)
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-18-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Here we see the facet_wrap function.
+
+- The argument requires a tilde ('~') and then the name of a third categorical variable.
+
+&lt;br&gt;
+
+### Analyze these multivariate analyses for me
+
+### - What do we learn from this about the relationship we are trying to test?
+
+&lt;br&gt;
+
+The slope is positive across all three levels of GDP!
+
+- This means we have more confidence that increasing hospital beds increases life expectancy across all three levels of economy size.
+
+- This is how we build a causal argument by pairing our analyses to our identification strategy.
+
+&lt;br&gt;
+
+### Any questions on using the facet_wrap function to adjust an analysis for a confounder?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
+
+&lt;br&gt;
+
+.size50[
+1. .greytext[Descriptive statistics by groups]
+  
+2. .greytext[Using facets to extend any visualization]
+    
+3. **Mapping 3rd variables with colors or shapes**
+]
+
+???
+
+Last multivariate approach for today!
+
+- Mapping 3rd variables with colors or shapes
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
+
+```r
+# 3. Mapping 3rd variables with colors or shapes
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy)) +
+  geom_point()
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-19-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Back to our standby baseline plot.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
+
+```r
+# 3. Mapping 3rd variables with colors or shapes
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
+*                    color = gdp_cats)) +
+  geom_point()
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-20-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Rather than facet wrap, we can tell R to assign colors to the levels of a categorical variable.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
+
+```r
+# 3. Mapping 3rd variables with colors or shapes
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
+*                    shape = gdp_cats)) +
+  geom_point()
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-21-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Printing in black and white?
+
+- Use shapes instead of colors!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
+
+```r
+# 3. Mapping 3rd variables with colors or shapes
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
+*                    color = gdp_cats, shape = gdp_cats)) +
+  geom_point()
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-22-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Best approach? Do both!
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
+
+```r
+# 3. Mapping 3rd variables with colors or shapes
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
+                     color = gdp_cats, shape = gdp_cats)) +
+  geom_point() +
+* facet_wrap(~ gdp_cats)
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-23-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+If your dots overlap too much then also add a facet wrap!
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
+
+```r
+# 3. Mapping 3rd variables with colors or shapes
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
+                     color = gdp_cats, shape = gdp_cats)) +
+  geom_point() +
+  facet_wrap(~ gdp_cats) +
+* guides(color = "none", shape = "none")
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-24-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+If doing both then omit the legend as it is redundant (each facet is labeled).
+
+- Because the plot adds a color and a shape you have to remove both of their legends hence the two arguments here
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code110[
+
+```r
+# 3. Mapping 3rd variables with colors or shapes
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
+                     color = gdp_cats, shape = gdp_cats)) +
+  geom_point() +
+  facet_wrap(~ gdp_cats) +
+  guides(color = "none", shape = "none") +
+* scale_color_manual(values = c("orange", "red", "blue"))
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-25-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+You can also pick the colors manually
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code110[
+
+```r
+# 3. Mapping 3rd variables with colors or shapes
+ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
+                     color = gdp_cats, shape = gdp_cats)) +
+  geom_point() +
+  facet_wrap(~ gdp_cats) +
+  guides(color = "none", shape = "none") +
+  scale_color_manual(values = c("orange", "red", "blue"))  +
+* geom_smooth(method = "lm")
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-26-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Finally, let's put our OLS lines back on!
+
+&lt;br&gt;
+
+### Any questions on this approach?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
+
+&lt;br&gt;
+
+.size50[
+1. Descriptive statistics by groups
+  
+2. Using facets to extend any visualization
+    
+3. Mapping 3rd variables with colors or shapes
+]
+
+???
+
+### Any questions on our multivariate tools from today?
+
+&lt;br&gt;
+
+**SLIDE**: Descriptive stats practice...
+
+
+
+
+---
+
+class: middle, center, slideblue
+
+.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
+
+.size30[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m6) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(av) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+&lt;br&gt;
+
+.size40[**Practice**: Which auto manufacturers improved their average city fuel economy when moving from 1999 to 2008 models?]
+
+???
+
+
+
+---
+
+class: middle, slideblue
+
+.pull-left[
+
+&lt;br&gt;
+
+.center[.size40[**Which auto manufacturers improved their average city fuel economy when moving from 1999 to 2008 models?**]]
+
+&lt;br&gt;
+
+.code100[
+
+```r
+# Save the group means
+x1 &lt;- aggregate(data = mpg, 
+          cty ~ manufacturer + year, 
+          FUN = mean)
+
+# Order the output
+arrange(x1, manufacturer)
+```
+]]
+
+.pull-right[
+.center[.code70[
+
+```
+   manufacturer year      cty
+1          audi 1999 17.11111
+2          audi 2008 18.11111
+3     chevrolet 1999 15.14286
+4     chevrolet 2008 14.91667
+5         dodge 1999 13.37500
+6         dodge 2008 12.95238
+7          ford 1999 13.93333
+8          ford 2008 14.10000
+9         honda 1999 24.80000
+10        honda 2008 24.00000
+11      hyundai 1999 18.33333
+12      hyundai 2008 18.87500
+13         jeep 1999 14.50000
+14         jeep 2008 13.16667
+15   land rover 1999 11.00000
+16   land rover 2008 12.00000
+17      lincoln 1999 11.00000
+18      lincoln 2008 12.00000
+19      mercury 1999 13.50000
+20      mercury 2008 13.00000
+21       nissan 1999 17.66667
+22       nissan 2008 18.42857
+23      pontiac 1999 17.00000
+24      pontiac 2008 17.00000
+25       subaru 1999 19.00000
+26       subaru 2008 19.50000
+27       toyota 1999 18.15000
+28       toyota 2008 19.07143
+29   volkswagen 1999 21.25000
+30   volkswagen 2008 20.45455
+```
+]]]
+
+???
+
+Because there are only two levels in year I treated it here as a categorical variable
+
+&lt;br&gt;
+
+### So, what do we learn from this?
+
+&lt;br&gt;
+
+**SLIDE**: Visualization practice...
+
+
+
+
+---
+
+class: middle, center, slideblue
+
+.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
+
+.size30[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m6) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(av) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+&lt;br&gt;
+
+.size40[**Practice**: How do various manufacturers design their fleets to meet the EPA requirements for corporate average fuel economy (CAFE)?]
+
+???
+
+EPA requires manufacturers to meet a certain level of fuel economy across their entire fleet.
+
+- So, some models can have big, less efficient engines but only if they offset those sales with sales of cleaner cars.
+
+&lt;br&gt;
+
+Let's try developing a visualization to let us see this dynamic in practice!
+
+### How could we visualize these four variables?
+
+- (**SLIDE**)
+
+
+---
+
+class: middle, slideblue
+
+.center[
+.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
+
+.size30[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; model &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; manual(m6) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: gold !important;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+]
+
+&lt;br&gt;
+
+.size35[
+Make a scatter plot of city fuel economy x engine size
+
+- Add colors and shapes for drive train
+
+- Add facet wrapping for the manufacturers
+]
+
+???
+
+
+
+---
+
+class: middle, slideblue
+
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty, color = drv, shape = drv)) +
+  geom_point() +
+  facet_wrap(~ manufacturer, ncol = 5)
+```
+
+&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-32-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### Lessons from this?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
+
+&lt;br&gt;
+
+.size50[
+1. Descriptive statistics by groups
+  
+2. Using facets to extend any visualization
+    
+3. Mapping 3rd variables with colors or shapes
+]
+
+???
+
+### Any questions on our multivariate tools from today?
+
+&lt;br&gt;
+
+**SLIDE**: Only if time remains...
+
+NOT COMPLETED, MAYBE ADD FOR NEXT YEAR
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
+
+&lt;br&gt;
+
+.size40[
+1. Descriptive statistics by groups
+  
+2. Using facets to extend any visualization
+    
+3. Mapping 3rd variables with colors or shapes
+
+4. **Bonus: Animate the 3rd/4th variable!**
+]
+
+
+
+---
+
+Repeat mpg plot but animate moving between each level of drv
+
+
+
+
+---
+
+class: middle
+
+.size40[.center[**Install the needed packages and load gganimate**]]
+
+&lt;br&gt;
+
+.code150[
+
+```r
+install.packages("gifski")
+
+install.packages("png")
+
+install.packages("gganimate")
+
+library(gganimate)
+```
+]
+
+
+
+
+
+---
+
+.center[**Transitions between different subsets of the data**]
+
+.code120[
+
+```r
+ggplot(data = mpg, aes(x = displ, y = cty)) +
+  geom_point() +
+* transition_states(cyl) +
+* labs(title = "Number of Cylinders: {closest_state}")
+```
+]
+
+???
+
+transition_states is for moving across levels of a categorical variable
+
+
+
+
+
+---
+
+.center[**Transitions across time use a different function**]
+
+.code120[
+
+```r
+ggplot(data = mpg, aes(x = class, y = cty)) +
+  geom_boxplot() +
+* transition_time(year) +
+* labs(title = 'Year: {frame_time}')
+```
+]
+
+
+---
+
+.center[**Transitions can also leave the prior data in place**]
+
+.code120[
+
+```r
+ggplot(data = economics, aes(x = date, y = pop)) +
+  geom_line(color = "darkblue", size = 1.4) +
+* transition_reveal(date) +
+  coord_cartesian(ylim = c(150000, 350000)) +
+  labs(title = "US Population (thousands)")
+```
+]
+
+
+
+---
+
+class: middle
+
+.size50[.center[**Last one, so let's make something awesome**]]
+
+.code135[
+
+```r
+## New package needed for the data (install before loading)
+install.packages("gapminder")
+
+library(gapminder)
+```
+]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; continent &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; lifeExp &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; pop &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; gdpPercap &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1952 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.801 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8425333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 779.4453 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1957 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30.332 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9240934 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 820.8530 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1962 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.997 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10267083 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 853.1007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1967 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34.020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11537966 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 836.1971 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1972 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.088 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13079460 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 739.9811 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1977 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38.438 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14880372 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 786.1134 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(alpha = 0.7, show.legend = FALSE)
+```
+]
+
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+* ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE)
+```
+]
+
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+* scale_x_log10()
+```
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+* filter(continent != "Oceania") |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+* facet_wrap(~ continent, ncol = 4)
+```
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  filter(continent != "Oceania") |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+* scale_colour_manual(values = country_colors)
+```
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  filter(continent != "Oceania") |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+  scale_colour_manual(values = country_colors) +
+* scale_size(range = c(3, 13))
+```
+]
+
+
+
+---
+
+class: middle
+
+.code115[
+
+```r
+gapminder |&gt;
+  filter(continent != "Oceania") |&gt;
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_x_log10() +
+  facet_wrap(~ continent, ncol = 4) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(3, 13)) +
+* transition_time(year) +
+* labs(title = 'Year: {frame_time}')
+```
+]
+
+
+
+---
+
+class: middle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[**For Friday**]
+
+.size40[
+1. *Linear Regression in R*, "Multiple OLS" section only
+
+2. Wheelan ch 12 "Common Regression Mistakes"
+]
+
+???
+
+Friday I want to introduce you to multiple regression (e.g. OLS regression with more than one predictor variable)
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

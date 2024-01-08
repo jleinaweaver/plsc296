@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>10_2-Simple_OLS_2.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+background-image: url('libs/Images/background-data_blue_v3.png')
+background-size: 100%
+background-position: center
+class: middle, inverse
+
+.size80[**Today's Agenda**]
+
+&lt;br&gt;
+
+.size65[.center[
+Evaluating the fit of OLS regressions
+]]
+
+&lt;br&gt;
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. 
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size60[**For today, fit, interpret and make predictions using OLS:**]
+
+.size50[
+1. Regress city fuel economy ('cty') on engine displacement ('displ') in the 'mpg' datatset
+
+2. Regress percent college educated ('percollege') on the percent of people below the  poverty line ('percbelowpoverty') in the 'midwest' datatset
+]
+
+???
+
+### How did this go?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**City Fuel Economy and Engine Size**]]
+
+.pull-left[
+
+&lt;br&gt;
+
+.size30[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Fuel Economy (City) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 9em; "&gt; Engine Size &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; −2.63* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 9em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.13) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 9em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25.99* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 9em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.48) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 9em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 234 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 9em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.638 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 9em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.636 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 9em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.56 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-3-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+.center[
+.code70[
+
+```
+# Predicted values of cty
+
+displ | Predicted |         95% CI
+----------------------------------
+ 1.50 |     22.05 | [21.44, 22.65]
+ 2.00 |     20.73 | [20.23, 21.23]
+ 3.00 |     18.10 | [17.75, 18.45]
+ 3.50 |     16.78 | [16.45, 17.12]
+ 4.00 |     15.47 | [15.11, 15.83]
+ 5.00 |     12.84 | [12.33, 13.35]
+ 5.50 |     11.52 | [10.91, 12.14]
+ 7.00 |      7.58 | [ 6.61,  8.54]
+```
+]]]
+
+???
+
+As you think about including OLS tables in reports, think about polishing them!
+
+- Variable names should be in plain english
+
+- Model name should be the dependent variable
+
+This table makes clear that this regression focuses on engine size as a predictor of fuel economy.
+
+### Make sense?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**College Education and Poverty**]]
+
+.pull-left[
+
+&lt;br&gt;
+
+.size30[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; College (%) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Below Poverty (%) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; −0.34* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.06) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 22.55* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (0.76) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 437 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.079 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.077 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6.00 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-6-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+.center[
+.code70[
+
+```
+# Predicted values of percollege
+
+percbelowpoverty | Predicted |         95% CI
+---------------------------------------------
+               0 |     22.55 | [21.07, 24.04]
+              10 |     19.13 | [18.50, 19.76]
+              20 |     15.71 | [14.71, 16.71]
+              30 |     12.29 | [10.28, 14.29]
+              40 |      8.87 | [ 5.79, 11.94]
+              50 |      5.45 | [ 1.29,  9.61]
+```
+]]]
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[**Evaluating the Fit of an OLS Regression**]]
+
+.size50[
+1. Missing data problems?
+
+2. Are the coefficients significant?
+
+3. What does the R&lt;sup&gt;2&lt;/sup&gt; indicate? 
+
+4. Any problems in the residuals plot?
+]
+
+???
+
+Everybody TAKE NOTES on these as we go!
+
+- These are the four parts to making an argument that your OLS regression is useful
+
+- In other words, you will need to make these four arguments in future reports that include an OLS regression
+
+&lt;br&gt;
+
+Let's go back to our diamond size models from last class.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[**Evaluate the Fit:**]
+
+.size40[**1. Missing data problems?**]
+]
+
+.pull-left[
+.size25[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt;  Diamond Value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Size (carats) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 7756.43* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; (14.07) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; −2256.36* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5pxbackground-color: white !important;"&gt; (13.06) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: orange !important;"&gt; 53940 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.849 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.849 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 1548.53 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+.code130[
+
+```r
+# How many observations in 
+#     the dataset?
+nrow(diamonds)
+```
+
+```
+[1] 53940
+```
+]]
+
+???
+
+Important note: R will omit observations with missing data and it's up to YOU to check for problems!
+
+&lt;br&gt;
+
+If your regression is being fit on less than ALL the data in your sample it's up to you to investigate why and to look for patterns in the missing data.
+
+- **SLIDE**: Examples of things to look out for...
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[**Missing Not At Random (MNAR)**]]
+
+.size40[
+- Survey Data
+    - Social-Desirability Bias
+    - Non-Response Bias
+    - Language Barriers / Cultural Differences
+
+- Observational Data
+    - Lack of infrastructure
+    - Inaccessibility
+    - Governmental Interference
+]
+
+???
+
+Collecting representative samples using surveys faces this problem in a big way.
+
+- Social-desirability bias: The tendency of survey respondents to answer questions in a manner that will be viewed favorably by others.
+    - It can take the form of over-reporting "good behavior" or under-reporting "bad", or undesirable behavior.
+    - Ex: Survey respondents tend to show more socially liberal positions when the survey interviewer is a woman or member of a minority group.
+    - Ex: Survey respondents less likely to truthfully report "bad" behaviors (e.g. drinking, drug use, etc)
+    
+- Non-response bias is currently a massive problem for political polling in this country.
+    - Trump voters have simply been less likely to participate in phone polls than Democratic voters in the last few cycles.
+    
+- Language Barriers: How do you word a survey question so it will have the same meaning across different languages? Across different cultures?
+    
+&lt;br&gt;
+
+Collecting observational data faces it's own serious challenges
+
+- World Bank reports GDP figures for most every economy on the planet, but let's not pretend the national economists working for the government of South Sudan is equivalently trained and resourced as those in a developed state.
+
+- Inaccessibility: Studies examining things like the effects of poverty, war or gender discrimination often cannot get reliable data from those places where these lived experiences are hardest.
+
+- Governmental Interference: If I have to hear one more idiotic report of "polling data" from Russia showing Putin's sky-high approval ratings I will lose it.
+
+&lt;br&gt;
+
+### Does all of this make sense? Questions on evaluation step 1?
+
+- This will be very relevant for us as we work on our project.
+
+- **Ultimately, it is your job to make an argument that the missing data isn't a problem for the conclusions you are drawing from the regression results.**
+
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[**Evaluate the Fit:**]
+
+.size40[**2. Are the coefficients significant?**]
+]
+
+.size30[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt;  Diamond Value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Size (carats) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7756.43* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (14.07) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; −2256.36* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (13.06) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 53940 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.849 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.849 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1548.53 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]
+
+???
+
+Statistical significance aka does the coefficient have a '*'?
+
+- Here we see that in this model the beta coefficient on diamond size clearly meets the test of statistical significance.
+
+- Ok, but what does that actually mean?
+
+&lt;br&gt;
+
+**SLIDE**: Let's take a brief detour to talk more deeply about statistical significance.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**What is Statistical Significance?**]]
+
+&lt;br&gt;
+
+.size40[H&lt;sub&gt;A&lt;/sub&gt; = Larger diamonds are more expensive than smaller ones]
+
+&lt;img src="libs/Images/11_1-Diamonds_2.jpg" width="75%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Conventional statistical significance testing is based on the idea of a null hypothesis.
+
+&lt;br&gt;
+
+In essence, we can frame our model as a competition between two hypotheses.
+
+- The alternative hypothesis is what we suspect is true, that larger diamonds are associated with higher prices.
+
+--
+
+&lt;br&gt;
+
+.size40[H&lt;sub&gt;0&lt;/sub&gt; = Diamond size has no impact on price]
+
+???
+
+&lt;br&gt;
+
+For every alternative hypothesis we can also describe the null hypothesis as the absence of that effect.
+
+- e.g. Diamond size is not associated with price.
+
+&lt;br&gt;
+
+We can do this with any hypothesis.
+
+### Does that make sense so far?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**What is Statistical Significance?**]]
+
+.pull-left[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Here you can see I've visualized the two hypotheses for us.
+
+### Why is the null hypothesis a horizontal line? What does that mean?
+- (For any level of diamond size, the model makes the same price prediction)
+    - In this case, the sample average of prices.
+    
+&lt;br&gt;
+
+### Is everybody clear on how we draw these two different lines?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**What is Statistical Significance?**]]
+
+.pull-left[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+.size25[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt;  Diamond Value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Size (carats) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: orange !important;"&gt; 7756.43* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; (14.07) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: orange !important;"&gt; −2256.36* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5pxbackground-color: white !important;"&gt; (13.06) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 53940 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.849 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.849 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 1548.53 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+???
+
+The significance test, as represented by the p-value, essentially tells us if the data better matches the red or the blue line.
+
+&lt;br&gt;
+
+To be completely technical, the p-value is a kind of weird test
+
+- ASSUMING the null hypothesis is true, how likely are you to get a value as extreme as the slope of the blue line?
+
+&lt;br&gt;
+
+Lots of problems with this, not least of which is, the null hypothesis is never likely to be true in the real-world.
+
+- Even if the relationship is small, assuming ZERO relationship is an extreme position to take.
+
+&lt;br&gt;
+
+**SLIDE**: Let me show you an insignificant relationship.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**Are deeper diamonds more expensive?**]]
+
+.pull-left[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+&lt;br&gt;
+
+.size25[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt;  Diamond Value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Total Depth &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: orange !important;"&gt; −32.64 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; (37.07) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: orange !important;"&gt; 5997.75* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5pxbackground-color: white !important;"&gt; (2290.32) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 5394 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 4002.45 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+???
+
+Here I'm fitting an OLS model to only 10% of the diamonds data.
+
+### Can everybody see why the regression cannot differentiate between the null and the alternative hypotheses?
+
+&lt;br&gt;
+
+### Questions on this basic intro to statistical significance?
+
+&lt;br&gt;
+
+Ultimately, statistical significance is one piece of evidence, among many, that implies your model "fits" the data better than the null argument.
+
+- None of these are the end-all, be-all, you need all of them!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[**Evaluate the Fit:**]
+
+.size40[**3. What does the R&lt;sup&gt;2&lt;/sup&gt; indicate?**]
+]
+
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-18-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+???
+
+R^2 represents the proportion of the variance of an outcome variable that's explained by a predictor variable (or set of predictor variables)
+
+- Larger the R^2, the more of the outcome explained by your model.
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[**Evaluate the Fit:**]
+
+.size40[**3. What does the R&lt;sup&gt;2&lt;/sup&gt; indicate?**]
+]
+
+.pull-left[
+.size25[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt;  Diamond Value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Size (carats) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7756.43* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (14.07) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; −2256.36* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (13.06) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 53940 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.849 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.849 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1548.53 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+.size25[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt;  Diamond Value &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Total Depth &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; −32.64 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (37.07) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5997.75* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (2290.32) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5394 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4002.45 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+???
+
+Here we see the OLS results from the regressions we were just examining to discuss statistical significance.
+
+- Nice visualization of a predictor that doesn't explain any of the variation in the outcome.
+
+&lt;br&gt;
+
+**SLIDE**: HUGE CAVEAT THOUGH, "bigger" doesn't always mean "better"
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size65[**Be Careful Interpreting the R&lt;sup&gt;2&lt;/sup&gt;**]
+]
+
+.pull-left[
+&lt;img src="libs/Images/11_2-Fire_with_Match.jpg" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Easy model example: Striking a match explains creation of fire
+- We would expect this model to have a very high R2
+
+--
+
+.pull-right[
+&lt;img src="libs/Images/11_2-voting.jpg" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+&lt;br&gt;
+
+MUCH more complicated example: Building a model of voting
+
+- Many, many factors inform the decision to vote
+
+- e.g. age, wealth, partisanship, history of prior voting
+
+&lt;br&gt;
+
+So, a model focused on just one of those will certainly have a small R^2 BUT might still offer us a useful estimate of the effect of that predictor on voting.
+
+- The estimate is useful for testing our hypothesis even if the R^2 is small.
+
+- Still valuable but not a complete model of the behavior.
+
+&lt;br&gt;
+
+### Make sense?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[**Evaluate the Fit:**]
+
+.size40[**4. Evaluate the Residuals**]
+]
+
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-23-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+???
+
+A residuals plot for fake data.
+
+- x-axis are all the predictions from your model
+
+- y-axis is the error in each predictions (e.g. the residual)
+
+- Your "best" model predictions would each have a value of zero on the y-axis (e.g. horizontal line at 0)
+
+&lt;br&gt;
+
+The red line is an effort to show you if your errors tend to be positive or negative and where along the line they happen.
+
+- Here we see a red line that indicates a more or less even spread of errors above and below the line.
+
+&lt;br&gt;
+
+**SLIDE**: What does a bad residual plot look like?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[**Evaluate the Fit:**]
+
+.size40[**4. Evaluate the Residuals**]
+]
+
+.pull-left[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-24-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-25-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+???
+
+Heteroskedastic Errors are Bad
+
+- Heteroskedasticity means that the variance of the errors is not constant across observations.
+
+- In other words, when the scatter of the errors is different, varying depending on the value of one or more of the independent variables, the error terms are heteroskedastic.
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[**Evaluate the Fit:**]
+
+.size40[**4. Evaluate the Residuals**]
+]
+
+&lt;img src="libs/Images/09_1-nonlinear_errors.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Non-Linear Errors are Bad
+
+- OLS assumes the residuals have constant variance (homoskedasticity) AND that there is no pattern in them 
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[
+.size50[**Evaluate the Fit:**]
+
+.size40[**4. Evaluate the Residuals**]
+]
+
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-27-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+???
+
+This is what you want a residuals plot to look like
+
+1. Homoskedastic errors 
+
+2. No evidence of trends in the errors
+
+&lt;br&gt;
+
+### Make sense?
+
+- **SLIDE**: How to do it in R
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+
+```r
+# Fit the OLS
+model3 &lt;- lm(data = diamonds, price ~ carat)
+
+# Plot the OLS object with the "which" option
+plot(model3, which = 1)
+```
+
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-28-1.png" width="68%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Here's the code you need to check the residuals plot.
+
+- My diamonds regression is named model3.
+
+&lt;br&gt;
+
+### Do we see anything of concern in the model residuals?
+
+- (Yes, both kinds!)
+
+1. Some heteroskedasticity
+    - Model is super accurate for cheap diamonds and then varying accuracy for the rest
+    - Slight funneling effect from left to right (bigger on left than right)
+
+2. A clear non-linear trend
+    - Low values diamonds have mostly positive errors (under-predicts actual prices)
+    - High value diamonds have mostly negative errors (over-estimates actual prices)
+    
+&lt;br&gt;
+
+### Questions?
+
+- Fixing this requires some more advanced tools for a future class!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size60[**Evaluating the Fit of an OLS Regression**]
+
+.size50[
+1. Missing data problems?
+
+2. Are the coefficients significant?
+
+3. What does the R&lt;sup&gt;2&lt;/sup&gt; indicate? 
+
+4. Any problems in the residuals plot?
+]
+
+???
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Do more expensive movies make more money?**]]]
+
+.pull-left[
+&lt;br&gt;
+
+.size30[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Box Office (millions) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Budget (millions) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.12* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.14) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 63.67* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (11.30) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1776 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 333.76 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-30-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Let's go back to our regression analysis of movie box office from last class so we can practice evaluating an OLS estimate.
+
+&lt;br&gt;
+
+### Everybody remember this data, this plot and these regression results?
+
+&lt;br&gt;
+
+**SLIDE**: Let's evaluate the fit.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.pull-left[
+.size30[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Box Office (millions) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Budget (millions) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 4.12* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; (0.14) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 63.67* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5pxbackground-color: white !important;"&gt; (11.30) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: orange !important;"&gt; 1776 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 333.76 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]
+
+&lt;br&gt;
+
+.code90[
+
+```r
+nrow(bechdel)
+```
+
+```
+[1] 1794
+```
+]]
+
+.pull-right[
+.size15[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Year &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Title &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1972 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1776 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Day of the Dead &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; My Beautiful Laundrette &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2006 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bandidas &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2006 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; London To Brighton &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; [Rec] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The Man from Earth &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; White Noise 2: The Light &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Day of the Dead &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Stargate: The Ark of Truth &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Three Kingdoms: Resurrection of the Dragon &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; I Come with the Rain &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Veronika Decides to Die &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yesterday Was a Lie &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2010 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Womb &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2011 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; A Lonely Place to Die &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2011 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Detention &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2013 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The Frozen Ground &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]]
+
+???
+
+### 1. Missing data problems?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**Do more expensive movies make more money?**]]
+
+.pull-left[
+
+&lt;br&gt;
+
+.size30[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Box Office (millions) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Budget (millions) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: orange !important;"&gt; 4.12* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; (0.14) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: orange !important;"&gt; 63.67* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5pxbackground-color: white !important;"&gt; (11.30) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 1776 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 333.76 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-35-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+### 2. Are the coefficients significant?
+
+### - What is the alternative hypothesis?
+
+### - What is the null hypothesis?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**Do more expensive movies make more money?**]]
+
+.pull-left[
+
+&lt;br&gt;
+
+.size30[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Box Office (millions) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Budget (millions) &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 4.12* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; (0.14) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 63.67* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5pxbackground-color: white !important;"&gt; (11.30) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 1776 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: orange !important;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: white !important;"&gt; 333.76 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-37-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+### 3. What does the R&lt;sup&gt;2&lt;/sup&gt; indicate?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[**Do more expensive movies make more money?**]]
+
+.pull-left[
+
+&lt;br&gt;
+
+.size30[
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto; font-size: 24px; margin-left: auto; margin-right: auto;" class="table table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Box Office (millions) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Budget (millions) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.12* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.14) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Constant &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 63.67* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5pxwidth: 10em; "&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (11.30) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1776 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.315 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;width: 10em; "&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 333.76 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; * p &amp;lt; 0.05&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+&lt;img src="10_2-Simple_OLS_2_files/figure-html/unnamed-chunk-39-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+### 4. Any problems in the residuals plot?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size60[**For next class, evaluate the fit of both regressions (all four steps):**]
+
+.size50[
+1. Regress city fuel economy on engine displacement ('mpg' datatset)
+
+2. Regress percent college educated on the percent of people below the  poverty line ('midwest' datatset)
+]
+
+???
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

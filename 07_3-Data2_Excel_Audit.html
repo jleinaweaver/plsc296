@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>07_3-Data2_Excel_Audit.knit</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+background-image: url('libs/Images/background-data_blue_v3.png')
+background-size: 100%
+background-position: center
+class: middle, inverse
+
+.size80[**Today's Agenda**]
+
+&lt;br&gt;
+
+.size50[
+1. Clarify the basic data structure
+
+2. Report your early findings
+
+3. Audit the data
+]
+
+&lt;br&gt;
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. 
+
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size55[**Exploratory Analysis: What did you find?**]
+
+.size30[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; country_code &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; military &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; health &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; education &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweden &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SWE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.09 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.64 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chad &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TCD &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.19 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.37 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bangladesh &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BGD &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.48 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.97 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Guinea &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; GIN &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.45 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.85 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Honduras &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; HND &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.62 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.28 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.91 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Colombia &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; COL &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.71 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.51 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Eritrea &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ERI &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.46 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Burkina Faso &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BFA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.61 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.46 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.70 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cambodia &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; KHM &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.23 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.99 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.90 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sao Tome and Principe &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; STP &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.53 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.92 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+Let's explore the data (CAREFULLY) in Excel.
+
+### 1. How are the observations organized?
+
+&lt;br&gt;
+
+### 2. Do we understand all of the measures here and can we connect them back to the codebook?
+
+### - What does it mean for us that all three measures are a "% of GDP" instead of absolute spending?
+
+&lt;br&gt;
+
+**SLIDE**: Let's think about the military measure for a sec.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.pull-left[
+.size30[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Rank &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; military &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Oman &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.64 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Saudi Arabia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.24 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Algeria &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.02 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Kuwait &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.48 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Israel &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.11 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Armenia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.79 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Lebanon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.71 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Jordan &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.64 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pakistan &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.11 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bahrain &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.06 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]]
+
+.pull-right[
+
+&lt;br&gt;
+
+.size50[**SIPRI Data**]
+
+&lt;img src="libs/Images/08_3-top_spenders_military.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+On the left are the top ten military spenders in our data (% of GDP).
+
+On the right is the current table from SPIRI focused on total actual spending.
+
+### What are the pros and cons of using % of GDP for our project?
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size55[**Exploratory Analysis: What did you find?**]
+
+.size30[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; country_code &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; military &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; health &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; education &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweden &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SWE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.09 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.64 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chad &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TCD &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.19 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.37 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bangladesh &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BGD &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.48 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.97 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Guinea &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; GIN &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.45 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.85 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Honduras &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; HND &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.62 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.28 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.91 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Colombia &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; COL &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.71 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.51 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Eritrea &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ERI &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.46 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Burkina Faso &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BFA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.61 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.46 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.70 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cambodia &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; KHM &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.23 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.99 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.90 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sao Tome and Principe &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; STP &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.53 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.92 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+### 3. What did you find from your pre-class explorations?
+
+- *Share interesting/puzzling/surprising findings*
+
+- *ON BOARD*
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size70[**Audit the Data: Missing Data**]
+
+.size60[
+1) How much missing data per variable? (overall)
+]
+
+???
+
+Let's import the data into RStudio and start auditing!
+
+&lt;br&gt;
+
+The first big thing we need to grapple with here is the missing data problem.
+
+- So, let's try to pinpoint how big the problem is.
+
+### How can we do this?
+
+- (**SLIDE**)
+
+
+
+---
+
+class: middle
+
+.code130[
+
+```r
+# 1. How much missing data per variable (overall)?
+summary(d$military)
+summary(d$health)
+summary(d$education)
+```
+]
+
+&lt;br&gt;
+
+.size35[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Vars &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Missing &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; N &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Prop &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; education &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 685 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2821 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.24 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; health &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 575 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2821 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.20 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; military &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 866 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2821 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.31 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+### Lessons from this? Cautions for us as we go forward?
+
+- Looks like we may have a serious problem across all three measures!
+
+- Missing between 1 in 5 and 1 in 3 countries is a ton.
+
+&lt;br&gt;
+
+Let's try to figure out how big a problem this will be.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size70[**Audit the Data: Missing Data**]
+
+.size60[
+2) How much missing data per variable-year? 
+
+(Check 2008, 2014 and 2020)
+]
+
+???
+
+### How can we check this?
+
+- (Filter and summarize!)
+
+
+
+---
+
+class: middle
+
+.size35[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Vars &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Missing &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; N &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Prop &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; education &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 88 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.41 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; education &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2014 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 46 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.21 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; education &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 59 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.27 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;br&gt;
+
+.pull-left[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Vars &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Missing &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; N &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Prop &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; health &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; health &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2014 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; health &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1.00 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Vars &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Missing &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; N &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Prop &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; military &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.30 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; military &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2014 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 63 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.29 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; military &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 68 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 217 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.31 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+]
+
+???
+
+### Lessons from this?
+
+&lt;br&gt;
+
+(**SLIDE**: Line plot of all years)
+
+
+---
+
+class: middle
+
+&lt;img src="07_3-Data2_Excel_Audit_files/figure-html/unnamed-chunk-11-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### Lessons from this? Cautions for us as we go forward?
+
+&lt;br&gt;
+
+Clearly we have some missing data problems here, but...
+
+- Almost all the missing data in health is in 2020 (reporting cycle incomplete)
+
+- Education reporting coverage appears to be getting better over time (except 2020)
+
+- Military looks like the biggest problem here.
+
+&lt;br&gt;
+
+Our next job is to check and see if there are regional patterns in the missing data
+
+- It is preferable for us if our missing data is randomly spread around the world than if it is all in one region or area.
+
+&lt;br&gt;
+
+It looks like we may have a problem in military and education spending.
+
+- **SLIDE**: Let's investigate these two variables for regional patterns in the missing data!
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[**Audit the Data: Missing Data**]]
+
+.size50[
+Let's make maps of the military variable and highlight the missing countries
+- Include: missingCountryCol = "purple"
+]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; country_code &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; military &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; health &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; education &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; AFG &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.34 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10.26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.51 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Albania &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; ALB &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.98 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.14 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Algeria &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; DZA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.02 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.34 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; American Samoa &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; ASM &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Andorra &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; AND &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.79 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.87 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+???
+
+*Assign a different year to each student (2008:2020)*
+
+- Use rworldmap
+
+- Join using ISO3 and the variable is country_code
+
+&lt;br&gt;
+
+Go see everybody's maps and let's see if we have any regional concerns in military spending!
+
+&lt;br&gt;
+
+
+```r
+# Build a map of missing data
+library(rworldmap)
+
+d_2008 &lt;- filter(d, year ==  2008)
+
+d_2008_map &lt;- joinCountryData2Map(dF = d_2008, joinCode = "ISO3", nameJoinColumn = "country_code")
+
+mapCountryData(d_2008_map, nameColumnToPlot = "military", missingCountryCol = "purple")
+
+# Version with NA as dummy variable
+d_2008 &lt;- filter(d, year ==  2008) |&gt;
+  mutate(
+    Missing = if_else(is.na(military), "Data Missing", "Data Available")
+  )
+
+d_2008_map &lt;- joinCountryData2Map(dF = d_2008, joinCode = "ISO3", nameJoinColumn = "country_code")
+
+mapCountryData(d_2008_map, nameColumnToPlot = "Missing", colourPalette = c("skyblue", "red"))
+```
+
+&lt;br&gt;
+
+**SLIDE**: My results as gif
+
+
+
+---
+
+class: middle
+
+
+
+&lt;img src="libs/Images/military_Spending.gif" width="90%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### Bottom line, do we have a selection bias problem in missing data?
+
+- Not a clear regional pattern BUT we are definitely missing almost every tiny country on the planet!
+
+&lt;br&gt;
+
+**SLIDE**: Let's check education!
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size55[**Audit the Data: Missing Data**]]
+
+.size50[
+Let's make maps of the education variable and highlight the missing countries
+- Include: missingCountryCol = "purple"
+]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; country_code &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; military &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; health &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; education &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; AFG &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.34 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10.26 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.51 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Albania &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; ALB &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.98 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.14 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Algeria &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; DZA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.02 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.20 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.34 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; American Samoa &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; ASM &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Andorra &lt;/td&gt;
+   &lt;td style="text-align:center;background-color: yellow !important;"&gt; AND &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.79 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.87 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+???
+
+*Assign a different year to each student (2008:2020)*
+
+&lt;br&gt;
+
+Go see everybody's maps and let's see if we have any regional concerns in military spending!
+
+&lt;br&gt;
+
+**SLIDE**: My results as gif
+
+
+
+
+---
+
+class: middle
+
+
+
+&lt;img src="libs/Images/education_Spending.gif" width="90%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### Bottom line, do we have a selection bias problem in the missing data?
+
+- Less missing data in education but some big countries and regional problems evident here.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.size50[**Report 2: Analyzing our Predictor Variable(s)**]
+
+.size50[
+1. **What is it and why is this project important?**
+
+2. **How confident should we be in the methodology?**
+
+3. What do the measures currently show us?
+
+4. How are these measures changing across time?
+]
+
+???
+
+After Spring Break we'll write the second report!
+
+Hopefully everyone has a bunch of material for the first two sections now.
+
+Dive into the data analyses over the break!
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
