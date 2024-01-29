@@ -17,8 +17,8 @@ output:
 ## Images not appearing? Put images folder inside the libs folder as that is the main data directory
 
 library(tidyverse)
-library(readxl)
-library(stargazer)
+# library(readxl)
+# library(stargazer)
 ##library(kableExtra)
 ##library(modelr)
 
@@ -39,10 +39,8 @@ class: middle, inverse
 
 <br>
 
-.size50[
-1. Review the descriptive statistics
-
-2. Start building univariate visualizations
+.size60[
+Building univariate visualizations
 ]
 
 <br>
@@ -56,19 +54,20 @@ class: middle, inverse
 ## Prep for Class
 1. Bring paper and rulers to class.
 
+<br>
+
+**SLIDE**: Let's talk about your practice exercises!
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size45[.content-box-blue[**Practice Exercises for Monday**]]]
-
-.size30[
+.size35[
 1. What proportion of US presidents since 1953 have been Republicans? (Built-in Data: presidential, Variable: party)
     
 2. Why are the mean and median total populations in the midwest so different from each other? (Built-in Data: midwest, Variable: poptotal)
@@ -80,18 +79,32 @@ class: middle
 
 ???
 
-### How did this go?
+For today I asked you to practice our coding skills and descriptive stats from last class.
+
+<br>
+
+### Did everybody finish the assignment? 
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
 
 .center[.size50[**What proportion of US presidents since 1953 have been Republicans?**]]
+
+???
+
+### Ok, how did you complete this?
+
+### - What function(s) did you run?
+
+- (**SLIDE**)
+
+--
 
 <br>
 
@@ -104,7 +117,45 @@ prop.table(table(presidential$party))
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[**Why are the mean and median total populations in the midwest so different from each other?**]]
+
+???
+
+Next question asked you to do a couple things.
+
+### First, how different are the mean and median populations?
+
+- (**SLIDE**)
+
+--
+
+.code130[
+```{r, echo=TRUE, eval=TRUE}
+# Measures of the Middle
+mean(midwest$poptotal)
+median(midwest$poptotal)
+
+# The Difference
+mean(midwest$poptotal) - median(midwest$poptotal)
+```
+]
+
+???
+
+### Ok, how do we explain this substantial difference?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -112,37 +163,38 @@ class: middle
 .center[.size40[**Why are the mean and median total populations in the midwest so different from each other?**]]
 
 .code130[
-```{r, echo=TRUE, eval=FALSE}
-# Measures of the Middle
-mean(midwest$poptotal)
-median(midwest$poptotal)
-```
-
 ```{r, echo=TRUE, eval=TRUE}
 # Measures of the Spread
-sd(midwest$poptotal)
 range(midwest$poptotal)
+max(midwest$poptotal) - min(midwest$poptotal)
+sd(midwest$poptotal)
 ```
 ]
 
 ???
 
-```{r, echo=TRUE, eval=TRUE}
-# Measures of the Middle
-mean(midwest$poptotal)
-median(midwest$poptotal)
-```
+
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
 
 .center[.size45[**How many hours per day do you have to sleep to sleep longer than 75% of studied mammals?**]]
+
+???
+
+### Ok, how did you complete this?
+
+### - What function(s) did you run?
+
+- (**SLIDE**)
+
+--
 
 <br>
 
@@ -154,31 +206,72 @@ quantile(msleep$sleep_total, probs = .75)
 
 ???
 
-### Out of curiosity, based on your average sleep which mammal are you closest to?
-
-```{r, echo=TRUE}
-filter(msleep, sleep_total > 7.5, sleep_total < 8.5) |>
-select(name, sleep_total)
-```
-
-
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
 
 .center[.size45[**Which mammal sleeps the least and which the most?**]]
 
-.code170[
-```{r, echo=TRUE, eval=FALSE}
-# Identify the range (min and max)
-range(msleep$sleep_total)
+???
 
-# View() or use the filter() function
+### Ok, how did you complete this?
+
+### - What function(s) did you run?
+
+- (**SLIDE**)
+
+--
+
+.code110[
+```{r, echo=TRUE, eval=TRUE}
+# Identify the range, View() the data and sort by sleep
+range(msleep$sleep_total)
+```
+]
+
+.pull-left[
+```{r, echo=FALSE, eval=TRUE}
+# Identify the range and view the data
+msleep |>
+  select(name, sleep_total) |>
+  arrange(sleep_total)
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, eval=TRUE}
+# Identify the range and view the data
+msleep |>
+  select(name, sleep_total) |>
+  arrange(desc(sleep_total))
+```
+]
+
+???
+
+<br>
+
+**SLIDE**: Let me show you a new function that will prove very useful for questions like this.
+
+
+
+---
+
+background-image: url('libs/Images/background-blue_triangles2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[**Which mammal sleeps the least and which the most?**]]
+
+.code90[
+```{r, echo=TRUE, eval=TRUE}
+# Use the filter() function
 filter(msleep, sleep_total == 1.9)
 filter(msleep, sleep_total == 19.9)
 ```
@@ -186,25 +279,23 @@ filter(msleep, sleep_total == 19.9)
 
 ???
 
-```{r, echo=TRUE, eval=TRUE}
-# Option 1: Identify the range and then 
-#           look at the data
-range(msleep$sleep_total)
+Filter() is a very useful function!
 
-# Option 2: Use the filter() function
-filter(msleep, sleep_total == 1.9) |>
-  select(name)
+- Note the double equals sign here from our notes back in week 3.
 
-filter(msleep, sleep_total == 19.9) |>
-  select(name)
-```
+- One equals sign is to save a value
 
+- Two is to compare two values
+
+<br>
+
+**SLIDE**: Alright let's move to our new work for today!
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -221,7 +312,7 @@ A method for summarizing data in more compelling, easier to understand and more 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -236,7 +327,7 @@ knitr::include_graphics("libs/Images/03_1-By_hand.jpg")
 
 ???
 
-Today we will practice the univariate visualizations working entirely by hand!
+Today we practice making data visualizations working entirely by hand!
 
 - I've brought paper and rulers!
 
@@ -254,7 +345,7 @@ Why do this?
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -276,11 +367,14 @@ knitr::include_graphics("libs/Images/03_1-By_hand.jpg")
 
 Learning these intutions by hand will help drive home the lesson of connnecting variable types to visualization tools.
 
+- Certain types of variables tie to specific tools
+
+- e.g. Tables of categorical variables often look better as a bar plot
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -310,7 +404,7 @@ Being a programmer, e.g. writing code, is a means of solving problems in small s
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -359,12 +453,14 @@ The better you learn how specific descriptive stats connect to specific viz, the
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
 
 .center[.size45[.content-box-blue[**Principle 3: Variable Type Determines Tool**]]]
+
+<br>
 
 .size40[
 **Univariate Visualizations**
@@ -378,13 +474,15 @@ class: middle
 
 ???
 
-Here is our plan of atack for today.
+Here is our plan of attack for today.
 
 - We will first draw bar plots of categorical variables,
 
 - Then histograms and box plots for numeric variables, and
 
 - Finally, line plots of numeric variables that change across time.
+
+<br>
 
 ### Everybody have this written down?
 
@@ -393,7 +491,7 @@ Here is our plan of atack for today.
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -423,7 +521,7 @@ Bar plots, as the Johnson reading explains, represent the number (or proportion)
 
 Drawing a bar plot is super easy:
 
-1. Count the levels in the variable,
+1. Count the levels in the variable (e.g. make a table),
 
 2. Draw the x axis with labels for each level,
 
@@ -431,34 +529,53 @@ Drawing a bar plot is super easy:
 
 4. Draw each bar to represent the number of observations in that level
 
+<br>
+
 ### Make sense?
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle, center
 
-.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]
+.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]
 
 <br>
 
-.size50[
 **By hand**, draw a bar plot of drive train levels (drv) for the 234 cars in the mpg dataset.
 ]
 
-.size30[Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars]
+.size35[
+
+<br>
+
+Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars]
 
 ???
+
+Everybody make us this bar plot
+
+- Quick and dirty!
+
+- Our aim is learning the intuition behind each tool NOT making art
+
+- Go!
+
+<br>
+
+*After 2 minutes, you make it on the board*
+
+- *Have the class walk you through what to do*
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -504,7 +621,7 @@ Let's practice this one more time!
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -513,19 +630,33 @@ class: middle, center
 
 <br>
 
-.size50[
-**By hand**, draw a bar plot of **the proportion** of parties that have controlled the presidency since 1953 in the presidential data set.
+.size50[**By hand**, draw a bar plot of **the proportion** of parties that have controlled the presidency since 1953 in the presidential data set.
 ]
 
-.size30[Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars]
+.size35[Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars]
 
 ???
+
+Everybody make us this bar plot
+
+- Quick and dirty!
+
+- Our aim is learning the intuition behind each tool NOT making art
+
+- Go!
+
+<br>
+
+*After 2 minutes, you make it on the board*
+
+- *Have the class walk you through what to do*
+
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -573,7 +704,7 @@ prop.table(table(presidential$party))
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -596,12 +727,14 @@ Everybody try it!
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle, center
 
 .size50[.content-box-blue[**Numerical Variable: Make a Bar Plot?**]]
+
+<br>
 
 .code40[
 ```{r, echo=FALSE}
@@ -621,6 +754,8 @@ In the realm of numerical data there may not be any overlap in numbers in the da
     
 - That's, arguably, less informative than just giving someone the actual data.
 
+<br>
+
 ### Make sense?
 
 <br>
@@ -633,20 +768,24 @@ In the realm of numerical data there may not be any overlap in numbers in the da
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
 
 .center[.size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]]
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '70%'}
+<br>
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '65%'}
 knitr::include_graphics("libs/Images/03_1-Johnson-Histogram.png")
 ```
 
 ???
 
 In a bar plot for a categorical variable, each bar represents the count of each level.
+
+<br>
 
 To build a bar plot for numeric data we group numbers that are close together into each bar.
 
@@ -658,6 +797,8 @@ This example from the book chapter shows a histogram of women's ages.
 
 - It looks like five bars per 15 years so I'm guessing the bins are each five years wide.
 
+<br>
+
 ### Does that make sense?
 
 <br>
@@ -668,7 +809,7 @@ Let's practice building a histogram to see if that helps drive the intuition hom
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -694,13 +835,27 @@ class: middle
     
 2. THEN draw the bars for the new groups!
 
+<br>
+
+Everybody make us this histogram (e.g. a bar plot of bins)
+
+- Quick and dirty!
+
+- Go!
+
+<br>
+
+*After 2 minutes, you make it on the board*
+
+- *Have the class walk you through what to do*
+
 
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -753,7 +908,7 @@ mpg |>
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -790,6 +945,8 @@ Using software you can easily adjust the size of the bins in order to find a ver
 
 - The 25 bins version is slightly more than 1 mpg per bar
 
+<br>
+
 ### Is everybody clear on how a histogram is like a bar plot applied to a numeric variable?
 
 <br>
@@ -803,7 +960,7 @@ So, a histogram is a binned bar plot and it attempts to show us the shape of the
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -836,11 +993,15 @@ An alternative to the histogram is the box plot.
 
 - Typically harder for untrained people to understand
 
+<br>
+
 ### Any questions on the components of a box plot?
 
 <br>
 
 Let's practice!
+
+<br>
 
 By hand, everybody draw me a box plot of city fuel economy in the mpg data set.
 
@@ -850,7 +1011,7 @@ By hand, everybody draw me a box plot of city fuel economy in the mpg data set.
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -877,7 +1038,8 @@ mpg |>
   geom_boxplot(fill = "orange3") +
   theme_bw() +
   labs(x = "Fuel Economy (City)", y = "") +
-  scale_y_continuous(limits = c(0.25, 1.75), breaks = c(0, .5, 1, 1.5, 2), labels = rep("", 5))
+  scale_y_continuous(limits = c(0.25, 1.75), breaks = c(0, .5, 1, 1.5, 2), labels = rep("", 5)) +
+  scale_x_continuous(limits = c(0, 40))
 ```
 ]
 
@@ -887,77 +1049,85 @@ mpg |>
 
 
 
-
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size40[.content-box-blue[**Numerical Variable: Histograms and Box Plots**]]]
+.center[.size35[.content-box-blue[**Numerical Variable: Histograms and Box Plots**]]]
 
-.pull-left[
-```{r, echo=FALSE, fig.retina=3, fig.width=4, fig.asp=1, out.width='90%'}
-mpg |>
-  ggplot(aes(x = cty)) +
-  geom_histogram(fill = "orange3", color = "white", bins = 25) +
-  theme_bw() +
-  scale_x_continuous(limits = c(0, 40)) +
-  labs(x = "Fuel Economy (City)", y = "")
-```
-]
+<br>
 
-.pull-right[
-```{r, echo=FALSE, fig.retina=3, fig.width=4, fig.asp=1, out.width='90%'}
-mpg |>
-  ggplot(aes(y = 1, x = cty)) +
-  geom_boxplot(fill = "orange3") +
-  theme_bw() +
-  labs(x = "Fuel Economy (City)", y = "") +
-  scale_x_continuous(limits = c(0, 40)) +
-  scale_y_continuous(limits = c(0.25, 1.75), breaks = c(0, .5, 1, 1.5, 2), labels = rep("", 5))
+```{r, echo = FALSE, fig.align = 'center', out.width = '62%'}
+knitr::include_graphics("libs/Images/04_2-Fuel_Economy.gif")
 ```
-]
+
+```{r}
+## Create a gif of three plots:
+# 1. Histogram
+# 2. Boxplot overlaid on histogram
+# 3. Box plot
+
+# Step 1 save each as png file
+# Histogram
+# mpg |>
+#   ggplot(aes(x = cty)) +
+#   geom_histogram(fill = "white", color = "black", bins = 25) +
+#   theme_bw() +
+#   scale_x_continuous(limits = c(0, 40)) +
+#   labs(x = "Fuel Economy (City)", y = "")
+# 
+# ggsave("libs/Images/04_2-Histogram_mpg.png")
+
+# Overlapping
+# mpg |>
+#   ggplot(aes(x = cty)) +
+#   geom_histogram(fill = "white", color = "black", bins = 25) +
+#   theme_bw() +
+#   labs(x = "Fuel Economy (City)", y = "") +
+#   #geom_boxplot(fill = "orange3", aes(y = 20)) +
+#   scale_x_continuous(limits = c(0, 40)) +
+#   annotate("segment", x = quantile(mpg$cty, probs = .25)-1.5*IQR(mpg$cty), xend = quantile(mpg$cty, probs = .75)+1.5*IQR(mpg$cty), y = 20, yend = 20) +
+#   annotate("rect", xmin = quantile(mpg$cty, probs = .25), xmax = quantile(mpg$cty, probs = .75), ymin = 15, ymax = 25, fill = "orange3") +
+#   annotate("segment", x = median(mpg$cty), xend = median(mpg$cty), y = 15, yend = 25, linewidth = 1.5) +
+#   annotate("segment", x = quantile(mpg$cty, probs = c(.25, .75)), xend = quantile(mpg$cty, probs = c(.25, .75)), y = 15, yend = 25, linewidth = 1) +
+#   annotate("segment", x = quantile(mpg$cty, probs = .25), xend = quantile(mpg$cty, probs = .75), y = c(15, 25), yend = c(15, 25))
+# 
+# ggsave("libs/Images/04_2-Overlaid_Histogram_mpg.png")
+
+# Box plot drawn in pieces
+# mpg |>
+#   ggplot(aes(x = cty)) +
+#   geom_histogram(fill = "white", color = "white", bins = 25) +
+#   theme_bw() +
+#   labs(x = "Fuel Economy (City)", y = "") +
+#   #geom_boxplot(fill = "orange3", aes(y = 20)) +
+#   scale_x_continuous(limits = c(0, 40)) +
+#   annotate("segment", x = quantile(mpg$cty, probs = .25)-1.5*IQR(mpg$cty), xend = quantile(mpg$cty, probs = .75)+1.5*IQR(mpg$cty), y = 20, yend = 20) +
+#   annotate("rect", xmin = quantile(mpg$cty, probs = .25), xmax = quantile(mpg$cty, probs = .75), ymin = 15, ymax = 25, fill = "orange3") +
+#   annotate("segment", x = median(mpg$cty), xend = median(mpg$cty), y = 15, yend = 25, linewidth = 1.5) +
+#   annotate("segment", x = quantile(mpg$cty, probs = c(.25, .75)), xend = quantile(mpg$cty, probs = c(.25, .75)), y = 15, yend = 25, linewidth = 1) +
+#   annotate("segment", x = quantile(mpg$cty, probs = .25), xend = quantile(mpg$cty, probs = .75), y = c(15, 25), yend = c(15, 25))
+# 
+# ggsave("libs/Images/04_2-Boxplot_mpg.png")
+
+###########################
+## Create gif
+# library(gifski)
+# 
+# png_files1 <- c("libs/Images/04_2-Histogram_mpg.png",
+#                 "libs/Images/04_2-Overlaid_Histogram_mpg.png")
+# 
+#gifski(png_files1, gif_file = "libs/Images/04_2-Fuel_Economy.gif", delay = 2)
+```
 
 ???
 
 ### Does everybody see how these figures attempt to represent the same thing?
 
 <br>
-
-**SLIDE**: Let's try it this way
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.center[.size40[.content-box-blue[**Numerical Variable: Histograms and Box Plots**]]]
-
-<br>
-
-```{r, echo=FALSE, fig.retina=3, fig.width=7, fig.asp=.75, out.width='60%'}
-mpg |>
-  ggplot(aes(x = cty)) +
-  geom_histogram(fill = "white", color = "black", bins = 25) +
-  theme_bw() +
-  labs(x = "Fuel Economy (City)", y = "") +
-  #geom_boxplot(fill = "orange3", aes(y = 20)) +
-  scale_x_continuous(limits = c(0, 40)) +
-  annotate("segment", x = quantile(mpg$cty, probs = .25)-1.5*IQR(mpg$cty), xend = quantile(mpg$cty, probs = .75)+1.5*IQR(mpg$cty), y = 20, yend = 20) +
-  annotate("rect", xmin = quantile(mpg$cty, probs = .25), xmax = quantile(mpg$cty, probs = .75), ymin = 15, ymax = 25, fill = "orange3") +
-  annotate("segment", x = median(mpg$cty), xend = median(mpg$cty), y = 15, yend = 25, linewidth = 1.5) +
-  annotate("segment", x = quantile(mpg$cty, probs = c(.25, .75)), xend = quantile(mpg$cty, probs = c(.25, .75)), y = 15, yend = 25, linewidth = 1) +
-  annotate("segment", x = quantile(mpg$cty, probs = .25), xend = quantile(mpg$cty, probs = .75), y = c(15, 25), yend = c(15, 25))
-```
-
-???
 
 ### Under what conditions should we prefer a histogram and when a box plot?
 
@@ -966,7 +1136,7 @@ mpg |>
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -979,17 +1149,31 @@ class: middle
 knitr::include_graphics("libs/Images/03_1-Johnson-Line_plot.png")
 ```
 
-.center[.size40[**Make a line plot of the US population since 1790 (data set: uspop)**]]
+???
+
+Last visualization tool is a line plot
+
+- This is what we make when you have a numeric variable across time.
+
+<br>
+
+**SLIDE**: Let's practice!
+
+--
+
+<br>
+
+.center[.size35[Make a line plot of the US population since 1790 (data set: uspop)]]
 
 ???
 
-###
+
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1021,12 +1205,14 @@ Line plots super easy, no?
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
 
 .center[.size45[.content-box-blue[**Principle 3: Variable Type Determines Tool**]]]
+
+<br>
 
 .size40[
 **Univariate Visualizations**
@@ -1047,12 +1233,14 @@ class: middle
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-blue_triangles2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.size70[**For Next Class**]
+.size70[.content-box-blue[**For Next Class**]]
+
+<br>
 
 .size60[
 1. Review ALL notes and code from today
@@ -1064,7 +1252,16 @@ class: middle
 
 From this point forward, a big part of your job in this class is to spend time after EVERY CLASS making sure you understand what we did today.
 
-- That means reviewing your notes to make sure you understand 1) why we ran the code we did, 2) how to run the code AND 3) how to interpret the results. 
+<br>
 
+That means reviewing your notes to make sure you understand 
+
+1. why we ran the code we did, 
+
+2. how to run the code, AND 
+
+3. how to interpret the results. 
+
+<br>
 
 ### Questions on the assignment?
