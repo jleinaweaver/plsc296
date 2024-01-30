@@ -19,7 +19,7 @@ output:
 library(tidyverse)
 # library(readxl)
 # library(stargazer)
-##library(kableExtra)
+library(kableExtra)
 ##library(modelr)
 
 knitr::opts_chunk$set(echo = FALSE,
@@ -62,7 +62,7 @@ Building univariate visualizations
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -89,157 +89,109 @@ For today I asked you to practice our coding skills and descriptive stats from l
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size50[**What proportion of US presidents since 1953 have been Republicans?**]]
-
-???
-
-### Ok, how did you complete this?
-
-### - What function(s) did you run?
-
-- (**SLIDE**)
-
---
+.center[.size60[**What proportion of US presidents since 1953 have been Republicans?**]]
 
 <br>
 
-.code150[
+.code170[
 ```{r, echo=TRUE}
 prop.table(table(presidential$party))
 ```
 ]
 
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size40[**Why are the mean and median total populations in the midwest so different from each other?**]]
-
 ???
 
-Next question asked you to do a couple things.
-
-### First, how different are the mean and median populations?
-
-- (**SLIDE**)
-
---
-
-.code130[
-```{r, echo=TRUE, eval=TRUE}
-# Measures of the Middle
-mean(midwest$poptotal)
-median(midwest$poptotal)
-
-# The Difference
-mean(midwest$poptotal) - median(midwest$poptotal)
-```
-]
-
-???
-
-### Ok, how do we explain this substantial difference?
-
-- (**SLIDE**)
-
+### Everybody get this?
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size40[**Why are the mean and median total populations in the midwest so different from each other?**]]
+.center[.size60[**Why are the mean and median total populations in the midwest so different from each other?**]]
 
-.code130[
-```{r, echo=TRUE, eval=TRUE}
-# Measures of the Spread
-range(midwest$poptotal)
-max(midwest$poptotal) - min(midwest$poptotal)
+<br>
+
+.code170[
+```{r, echo=TRUE}
+summary(midwest$poptotal)
+
 sd(midwest$poptotal)
 ```
 ]
 
 ???
 
+### So, what's your answer to this question?
 
+<br>
+
+On average, the cities in the midwest differ from the mean by nearly 300k!
+
+- Huge variance in city sizes
+
+- Some VERY small (sub-2k) and some MASSIVE (5+ million)
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
 .center[.size45[**How many hours per day do you have to sleep to sleep longer than 75% of studied mammals?**]]
 
-???
-
-### Ok, how did you complete this?
-
-### - What function(s) did you run?
-
-- (**SLIDE**)
-
---
-
 <br>
 
 .code170[
 ```{r, echo=TRUE, eval=TRUE}
+summary(msleep$sleep_total)
+
 quantile(msleep$sleep_total, probs = .75)
 ```
 ]
 
 ???
 
+The third quartile IS the 75th percentile
+
+- Here I'm also showing you the function to calculate ANY percentile
+
+<br>
+
+Interpret this result for me
+
+### What does this 13.75 mean?
+
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size45[**Which mammal sleeps the least and which the most?**]]
-
-???
-
-### Ok, how did you complete this?
-
-### - What function(s) did you run?
-
-- (**SLIDE**)
-
---
-
-.code110[
-```{r, echo=TRUE, eval=TRUE}
-# Identify the range, View() the data and sort by sleep
-range(msleep$sleep_total)
-```
-]
+.center[.size55[**Which mammal sleeps the least and which the most?**]]
 
 .pull-left[
 ```{r, echo=FALSE, eval=TRUE}
 # Identify the range and view the data
 msleep |>
   select(name, sleep_total) |>
-  arrange(sleep_total)
+  arrange(sleep_total) |>
+  slice_head(n = 10) |>
+  kbl(align = c('l', 'c'))
 ```
 ]
 
@@ -248,44 +200,15 @@ msleep |>
 # Identify the range and view the data
 msleep |>
   select(name, sleep_total) |>
-  arrange(desc(sleep_total))
+  arrange(desc(sleep_total)) |>
+  slice_head(n = 10) |>
+  kbl(align = c('l', 'c'))
 ```
 ]
 
 ???
 
-<br>
-
-**SLIDE**: Let me show you a new function that will prove very useful for questions like this.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[**Which mammal sleeps the least and which the most?**]]
-
-.code90[
-```{r, echo=TRUE, eval=TRUE}
-# Use the filter() function
-filter(msleep, sleep_total == 1.9)
-filter(msleep, sleep_total == 19.9)
-```
-]
-
-???
-
-Filter() is a very useful function!
-
-- Note the double equals sign here from our notes back in week 3.
-
-- One equals sign is to save a value
-
-- Two is to compare two values
+The most direct approach is probably to use the View() function and click the arrow next to sleep_total to sort the data
 
 <br>
 
@@ -295,7 +218,7 @@ Filter() is a very useful function!
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -312,7 +235,7 @@ A method for summarizing data in more compelling, easier to understand and more 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -345,7 +268,7 @@ Why do this?
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -374,7 +297,7 @@ Learning these intutions by hand will help drive home the lesson of connnecting 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -404,7 +327,7 @@ Being a programmer, e.g. writing code, is a means of solving problems in small s
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -453,7 +376,7 @@ The better you learn how specific descriptive stats connect to specific viz, the
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -491,7 +414,7 @@ Here is our plan of attack for today.
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -537,7 +460,7 @@ Drawing a bar plot is super easy:
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -575,7 +498,7 @@ Everybody make us this bar plot
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -621,7 +544,7 @@ Let's practice this one more time!
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -656,7 +579,7 @@ Everybody make us this bar plot
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -704,7 +627,7 @@ prop.table(table(presidential$party))
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -727,7 +650,7 @@ Everybody try it!
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -768,7 +691,7 @@ In the realm of numerical data there may not be any overlap in numbers in the da
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -809,7 +732,7 @@ Let's practice building a histogram to see if that helps drive the intuition hom
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -855,7 +778,7 @@ Everybody make us this histogram (e.g. a bar plot of bins)
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -908,7 +831,7 @@ mpg |>
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -960,7 +883,7 @@ So, a histogram is a binned bar plot and it attempts to show us the shape of the
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1011,7 +934,7 @@ By hand, everybody draw me a box plot of city fuel economy in the mpg data set.
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1051,7 +974,7 @@ mpg |>
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1131,12 +1054,50 @@ knitr::include_graphics("libs/Images/04_2-Fuel_Economy.gif")
 
 ### Under what conditions should we prefer a histogram and when a box plot?
 
+<br>
+
+We'll find that the value of a box plot increases DRAMATICALLY when comparing multiple distributions
+
+- Put a pin in that for now...
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[.content-box-blue[**Numeric Variables Across Time: Line Plots**]]]
+
+<br>
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '70%'}
+knitr::include_graphics("libs/Images/03_1-Johnson-Line_plot.png")
+```
+
+???
+
+Last visualization tool is a line plot
+
+- This is what we make when you have a numeric variable across time.
+
+<br>
+
+Technically this is our first BIVARIATE visualization because it depends on two variables
+
+- However, I include it here because our interest focuses on one variable (but allows it to vary in time)
+
+<br>
+
+**SLIDE**: Let's practice!
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1149,21 +1110,9 @@ class: middle
 knitr::include_graphics("libs/Images/03_1-Johnson-Line_plot.png")
 ```
 
-???
-
-Last visualization tool is a line plot
-
-- This is what we make when you have a numeric variable across time.
-
 <br>
 
-**SLIDE**: Let's practice!
-
---
-
-<br>
-
-.center[.size35[Make a line plot of the US population since 1790 (data set: uspop)]]
+.center[.size40[Draw a line plot of US unemployment (`unemploy`) for the most recent 12 months in the `economics` data set.]]
 
 ???
 
@@ -1173,7 +1122,7 @@ Last visualization tool is a line plot
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1183,15 +1132,14 @@ class: middle
 <br>
 
 ```{r, echo=FALSE, fig.retina=3, fig.width=7, fig.asp=0.618, out.width='70%', fig.align='center'}
-tibble(
-  pop = uspop,
-  year = seq(1790, 1970, 10)
-) |>
-  ggplot(aes(x = year, y = pop)) +
+economics |>
+  slice_tail(n = 12) |>
+  ggplot(aes(x = date, y = unemploy)) +
   geom_line() +
   geom_point() +
   theme_bw() +
-  labs(x = "", y = "Population (millions)")
+  labs(x = "", y = "Unemployment (thousands)",
+       caption = "Source: St Louis Federal Reserve")
 ```
 
 ???
@@ -1205,7 +1153,7 @@ Line plots super easy, no?
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1233,7 +1181,7 @@ class: middle
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle

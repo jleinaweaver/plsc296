@@ -69,7 +69,7 @@ Let's get to work!
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -106,7 +106,7 @@ This iterative process allows us to learn the coding and statistics we need in a
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -198,7 +198,7 @@ So, if these were a list of house prices in SGF it would be super useful to know
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -224,7 +224,7 @@ Now, don't get me wrong, we learn a TON from basic description and summary, but 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -251,7 +251,7 @@ So, those are the big, initial goals.
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-class: center
 class: middle
@@ -288,12 +288,20 @@ Let's set off on the right foot!
 
 - Create a new script file for your notes today and label it descriptive statistics.
 
+<br>
+
+Last week we used R as a calculator on single numbers and on a vector of numbers.
+
+- Starting today we'll be using R to work with data, but the logic of taking notes and writing code work the exact same
+
+- If you get confused, don't forget the Healy reading from Friday walks you through the way R does things and why we use functions!
+
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-class: center
 class: middle
@@ -330,35 +338,33 @@ The "mpg" data set is provided as part of an extra package.
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
 .code160[
 ```{r, echo=TRUE, eval=FALSE}
-# Load the package that includes the data set 'mpg'
+# Load packages
 library(tidyverse)
 
-# View the 'mpg' data set
+# View the data in the console
+mpg
+
+# View the data in a spreadsheet
 View(mpg)
 
-# List all of the variables in the data set
+# List the variables in the data set
 names(mpg)
 
-# To access a single variable use '$'
+# Access any single variable using '$'
 mpg$manufacturer
-mpg$year
 ```
 ]
 
 ???
 
-Last week we used R as a calculator on single numbers and on a vector of numbers.
 
-- Starting today we'll be using R to work with data, but the logic of taking notes and writing code work the exact same
-
-- If you get confused, don't forget the Healy reading from Friday walks you through the way R does things and why we use functions!
 
 <br>
 
@@ -390,7 +396,7 @@ Relevant notes from Healy:
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-class: center
 class: middle
@@ -415,7 +421,7 @@ Now, as we start calculating descriptive statistics don't forget our third princ
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-class: center
 class: middle
@@ -462,7 +468,7 @@ The mpg dataset has the manufacturer information for 234 cars
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -471,15 +477,28 @@ class: middle
 
 <br>
 
-.code170[
+.code180[
 ```{r, echo=TRUE, eval=FALSE}
 # Count the levels with table()
 table(mpg$manufacturer)
+```
+]
 
-# Calculate Proportions (Method 1)
-table(mpg$manufacturer)/234
+.code80[
+```{r, echo=FALSE}
+table(mpg$manufacturer)
+```
+]
 
-# Calculate Proportions (Method 2)
+.code180[
+```{r, echo=TRUE, eval=FALSE}
+# Convert to proportions with prop.table()
+prop.table(table(mpg$manufacturer))
+```
+]
+
+.code80[
+```{r, echo=FALSE}
 prop.table(table(mpg$manufacturer))
 ```
 ]
@@ -492,33 +511,73 @@ prop.table(table(mpg$manufacturer))
 
 Our first line of code uses the table function to count the levels in the variable
 
-Our second line divides the results of the table by the number of cars in the dataset (234)
-- e.g. Counts converted to a proportion of the whole
+<br>
 
-The third line of code uses a function on a function
+Our second line uses a function on a function
 - Basically the input for prop.table is the result of the table function
 
 <br>
 
-### Questions?
+### Questions? Got it working?
 
 <br>
 
 **SLIDE**: Let's practice!
 
---
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size45[
+.center[.content-box-blue[**Descriptive Statistics on Categorical Variables**]]
 
 <br>
+]
 
-.center[.size40[.content-box-white[What proportion of cars in mpg are four-wheel drive ('drv')?]]]
+.size40[
+.center[.content-box-white[What proportion of cars in `mpg` are four-wheel drive (`drv`)?]]
+]
 
 ???
 
-```{r, echo=TRUE}
-prop.table(table(mpg$drv))
-```
+Use the code we just wrote to answer this question
+
+- Same dataset, just focus on a different categorical variable.
+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Descriptive Statistics on Categorical Variables**]]]
+
+.size40[
 
 <br>
+
+.center[.content-box-white[What proportion of cars in `mpg` are four-wheel drive (`drv`)?]]]
+
+<br>
+
+.code140[
+```{r, echo=TRUE, eval=TRUE}
+# Count the levels in `drv` and convert to proportions
+prop.table(table(mpg$drv))
+```
+]
+
+???
 
 That's all there is to it.
 
@@ -526,11 +585,15 @@ That's all there is to it.
 
 - Count the levels and, optionally, convert the count to a proportion
 
+<br>
+
+It looks like very few of the "popular" cars in this dataset from 1999 - 2008 were rear-wheel drive.
+
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-class: center
 class: middle
@@ -572,7 +635,7 @@ Now, what if you'd like to summarize a numeric variable instead of a categorical
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -581,13 +644,17 @@ class: middle
 
 <br>
 
-.center[.size45[**I. Measures of Central Tendency**]]
+.center[.size45[.content-box-blue[**I. Measures of Central Tendency**]]]
 
 .code180[
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE, eval=TRUE}
 # 1. Find the average with mean() 
 mean(mpg$cty)
+```
+]
 
+.code180[
+```{r, echo=TRUE, eval=TRUE}
 # 2. Find the median value with median()
 median(mpg$cty)
 ```
@@ -607,35 +674,14 @@ Let's make sure the intuition is clear.
 
 <br>
 
-### And what does it mean that the mean and median city mileage are so close to each other?
-- (No massive outliers!)
-
---
-
-<br>
-
-.center[.size40[.content-box-white[What is the "middle" highway fuel economy ('hwy') in 'mpg'?]]]
-
-???
-
-<br>
-
-Let's practice!
-
-<br>
-
-### To practice, what's the average fuel economy on the highway in this data set?
-```{r, echo=TRUE}
-mean(mpg$hwy)
-median(mpg$hwy)
-```
-
+### And what do we learn about a numeric variable if the mean and the median are very close to each other?
+- (No big outliers!)
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -644,25 +690,46 @@ class: middle
 
 <br>
 
-.center[.size40[**II. Measures of the Spread**]]
+.center[.size45[.content-box-blue[**I. Measures of Central Tendency**]]]
 
-.code110[
-```{r, echo=TRUE, eval=FALSE}
-# 1. Find the minimum and maximum values 
-min(mpg$cty)
-max(mpg$cty)
-range(mpg$cty)
+.size40[
 
-# 2. Find ANY percentiles with quantile() or the IQR()
-quantile(mpg$cty, probs = .1) 
-quantile(mpg$cty, probs = .9) 
-IQR(mpg$cty)
+<br>
 
-# 3. Do all of the above with summary()
-summary(mpg$cty)
+<br>
 
-# 4. Find the standard deviation with sd() 
-sd(mpg$cty)
+.center[.content-box-white[What is the "middle" highway fuel economy (`hwy`) in `mpg`?]]]
+
+???
+
+### To practice, what's the average fuel economy on the highway in this data set?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Descriptive Statistics on Numerical Variables**]]]
+
+<br>
+
+.center[.size45[.content-box-blue[**I. Measures of Central Tendency**]]]
+
+<br>
+
+.code150[
+```{r, echo=TRUE, eval=TRUE}
+# 1. Find the average with mean() 
+mean(mpg$hwy)
+
+# 2. Find the median value with median()
+median(mpg$hwy)
 ```
 ]
 
@@ -672,33 +739,62 @@ So, you can summarize a data distribution with the mean or median as its middle,
 
 - How do we know if the "middle" is a good summary?
 
-- We need to check the spread of the data!
+- **SLIDE**: We need to check the spread of the data!
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size45[.content-box-blue[**Descriptive Statistics on Numerical Variables**]]]
 
 <br>
 
-Everybody write down and test the code.
+.size40[.center[.content-box-blue[**II. Measures of the Spread**]]]
 
 <br>
 
-Quick hit practice!
+.code150[
+```{r, echo=TRUE, eval=TRUE}
+# Use summary() for a selection of descriptive stats
+summary(mpg$cty)
 
-### What's the earliest and latest year in the data set?
-```{r}
-range(mpg$year)
+# Use sd() for the standard deviation
+sd(mpg$cty)
 ```
+]
+
+???
+
+Everybody write down the code and make sure it works.
 
 <br>
 
-### What is the difference between the 50th percentile for cty fuel economy and the median value of city fuel economy?
-```{r}
-median(mpg$cty)
-quantile(mpg$cty, probs = .5)
-```
+Let's talk about what summary() gives you from the outside in
+
+- On the ends the summary output gives you the minimum and maximum values
+    - e.g. the range
+    
+- Next comes the 25th and 75th percentiles
+    - e.g. the IQR or middle 50%
+    
+- The middle two values are two measures of the "middle"
 
 <br>
 
-### Any questions on this code or the interpretation of these tools?
+The only fairly standard thing summary() doesn't give you is the std dev
 
+<br>
+
+### Any questions on these descriptive stats covered in the reading?
+
+<br>
+
+#### Notes
 *If they ask about percentiles*
 - The most common definition of a percentile is a number where a certain percentage of scores fall below that number. 
 - In statistics, a k-th percentile (percentile score or centile) is a score below which a given percentage k of scores in its frequency distribution falls (exclusive definition) or a score at or below which a given percentage falls (inclusive definition). 
@@ -716,7 +812,86 @@ knitr::include_graphics("libs/Images/04-1-Std_Dev_Formula.svg")
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size65[.center[What is the earliest and latest year in the `mpg` dataset?]]
+
+???
+
+Quick hit practice!
+
+--
+
+.code120[
+```{r, echo=TRUE}
+summary(mpg$year)
+
+min(mpg$year)
+
+max(mpg$year)
+```
+]
+
+???
+
+I'm also using this as a chance to show you the functions for calculating the minimum or maximum alone.
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size60[.center[Is it more useful to summarize the number of engine cylinders (`cyl`) as a table() or with summary()?]]
+
+???
+
+One more quick hit practice!
+
+- Sometimes it can be hard to tell the difference between a numeric and a categorical variable with levels represented by numbers!
+
+- Make both and tell me which you would use in a report meant to describe the distribution of cars
+
+--
+
+.code120[
+```{r, echo=TRUE}
+summary(mpg$cyl)
+
+table(mpg$cyl)
+```
+]
+
+???
+
+### What conclusion do you draw from these statistics?
+
+<br>
+
+The table makes clear that most cars are 4, 6 or 8 cylinders and the distribution is quite even across them (in this dataset)
+
+- Measures of the "middle" in a sense misrepresent these categories
+
+- The "average" of a Ford F150 and Kia Sorento doesn't really mean what we might think it does
+
+<br>
+
+The lesson: Sometimes categorical variables use numbers!
+
+- Be careful.
+
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -730,8 +905,8 @@ Functions for Categorical Variables
 - table() and prop.table()
 
 Functions for Numerical Variables
-- mean(), median(), range(), quartile(), IQR(), sd() 
-- summary()
+- summary() and sd()
+- OR min(), max(), mean(), median(), quantile()
 ]
 
 ???
@@ -744,7 +919,7 @@ Functions for Numerical Variables
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -767,7 +942,7 @@ class: middle
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle

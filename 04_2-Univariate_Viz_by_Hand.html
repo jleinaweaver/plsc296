@@ -47,7 +47,7 @@ Building univariate visualizations
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -74,26 +74,16 @@ For today I asked you to practice our coding skills and descriptive stats from l
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size50[**What proportion of US presidents since 1953 have been Republicans?**]]
-
-???
-
-### Ok, how did you complete this?
-
-### - What function(s) did you run?
-
-- (**SLIDE**)
-
---
+.center[.size60[**What proportion of US presidents since 1953 have been Republicans?**]]
 
 &lt;br&gt;
 
-.code150[
+.code170[
 
 ```r
 prop.table(table(presidential$party))
@@ -106,89 +96,31 @@ Democratic Republican
 ```
 ]
 
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size40[**Why are the mean and median total populations in the midwest so different from each other?**]]
-
 ???
 
-Next question asked you to do a couple things.
-
-### First, how different are the mean and median populations?
-
-- (**SLIDE**)
-
---
-
-.code130[
-
-```r
-# Measures of the Middle
-mean(midwest$poptotal)
-```
-
-```
-[1] 96130.3
-```
-
-```r
-median(midwest$poptotal)
-```
-
-```
-[1] 35324
-```
-
-```r
-# The Difference
-mean(midwest$poptotal) - median(midwest$poptotal)
-```
-
-```
-[1] 60806.3
-```
-]
-
-???
-
-### Ok, how do we explain this substantial difference?
-
-- (**SLIDE**)
-
+### Everybody get this?
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size40[**Why are the mean and median total populations in the midwest so different from each other?**]]
+.center[.size60[**Why are the mean and median total populations in the midwest so different from each other?**]]
 
-.code130[
+&lt;br&gt;
 
-```r
-# Measures of the Spread
-range(midwest$poptotal)
-```
-
-```
-[1]    1701 5105067
-```
+.code170[
 
 ```r
-max(midwest$poptotal) - min(midwest$poptotal)
+summary(midwest$poptotal)
 ```
 
 ```
-[1] 5103366
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1701   18840   35324   96130   75651 5105067 
 ```
 
 ```r
@@ -202,32 +134,39 @@ sd(midwest$poptotal)
 
 ???
 
+### So, what's your answer to this question?
 
+&lt;br&gt;
+
+On average, the cities in the midwest differ from the mean by nearly 300k!
+
+- Huge variance in city sizes
+
+- Some VERY small (sub-2k) and some MASSIVE (5+ million)
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
 .center[.size45[**How many hours per day do you have to sleep to sleep longer than 75% of studied mammals?**]]
 
-???
-
-### Ok, how did you complete this?
-
-### - What function(s) did you run?
-
-- (**SLIDE**)
-
---
-
 &lt;br&gt;
 
 .code170[
+
+```r
+summary(msleep$sleep_total)
+```
+
+```
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1.90    7.85   10.10   10.43   13.75   19.90 
+```
 
 ```r
 quantile(msleep$sleep_total, probs = .75)
@@ -241,133 +180,136 @@ quantile(msleep$sleep_total, probs = .75)
 
 ???
 
+The third quartile IS the 75th percentile
 
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[**Which mammal sleeps the least and which the most?**]]
-
-???
-
-### Ok, how did you complete this?
-
-### - What function(s) did you run?
-
-- (**SLIDE**)
-
---
-
-.code110[
-
-```r
-# Identify the range, View() the data and sort by sleep
-range(msleep$sleep_total)
-```
-
-```
-[1]  1.9 19.9
-```
-]
-
-.pull-left[
-
-```
-# A tibble: 83 × 2
-   name             sleep_total
-   &lt;chr&gt;                  &lt;dbl&gt;
- 1 Giraffe                  1.9
- 2 Pilot whale              2.7
- 3 Horse                    2.9
- 4 Roe deer                 3  
- 5 Donkey                   3.1
- 6 African elephant         3.3
- 7 Caspian seal             3.5
- 8 Sheep                    3.8
- 9 Asian elephant           3.9
-10 Cow                      4  
-# ℹ 73 more rows
-```
-]
-
-.pull-right[
-
-```
-# A tibble: 83 × 2
-   name                           sleep_total
-   &lt;chr&gt;                                &lt;dbl&gt;
- 1 Little brown bat                      19.9
- 2 Big brown bat                         19.7
- 3 Thick-tailed opposum                  19.4
- 4 Giant armadillo                       18.1
- 5 North American Opossum                18  
- 6 Long-nosed armadillo                  17.4
- 7 Owl monkey                            17  
- 8 Arctic ground squirrel                16.6
- 9 Golden-mantled ground squirrel        15.9
-10 Tiger                                 15.8
-# ℹ 73 more rows
-```
-]
-
-???
+- Here I'm also showing you the function to calculate ANY percentile
 
 &lt;br&gt;
 
-**SLIDE**: Let me show you a new function that will prove very useful for questions like this.
+Interpret this result for me
+
+### What does this 13.75 mean?
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size45[**Which mammal sleeps the least and which the most?**]]
+.center[.size55[**Which mammal sleeps the least and which the most?**]]
 
-.code90[
+.pull-left[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; sleep_total &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Giraffe &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Pilot whale &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.7 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Horse &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Roe deer &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Donkey &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; African elephant &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Caspian seal &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sheep &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.8 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Asian elephant &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Cow &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
 
-```r
-# Use the filter() function
-filter(msleep, sleep_total == 1.9)
-```
-
-```
-# A tibble: 1 × 11
-  name    genus vore  order conservation sleep_total sleep_rem sleep_cycle awake
-  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
-1 Giraffe Gira… herbi Arti… cd                   1.9       0.4          NA  22.1
-# ℹ 2 more variables: brainwt &lt;dbl&gt;, bodywt &lt;dbl&gt;
-```
-
-```r
-filter(msleep, sleep_total == 19.9)
-```
-
-```
-# A tibble: 1 × 11
-  name    genus vore  order conservation sleep_total sleep_rem sleep_cycle awake
-  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;
-1 Little… Myot… inse… Chir… &lt;NA&gt;                19.9         2         0.2   4.1
-# ℹ 2 more variables: brainwt &lt;dbl&gt;, bodywt &lt;dbl&gt;
-```
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; sleep_total &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Little brown bat &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 19.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Big brown bat &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 19.7 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Thick-tailed opposum &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 19.4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Giant armadillo &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18.1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; North American Opossum &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 18.0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Long-nosed armadillo &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17.4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Owl monkey &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17.0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Arctic ground squirrel &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16.6 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Golden-mantled ground squirrel &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Tiger &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15.8 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 ]
 
 ???
 
-Filter() is a very useful function!
-
-- Note the double equals sign here from our notes back in week 3.
-
-- One equals sign is to save a value
-
-- Two is to compare two values
+The most direct approach is probably to use the View() function and click the arrow next to sleep_total to sort the data
 
 &lt;br&gt;
 
@@ -377,7 +319,7 @@ Filter() is a very useful function!
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -392,7 +334,7 @@ A method for summarizing data in more compelling, easier to understand and more 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -423,7 +365,7 @@ Why do this?
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -450,7 +392,7 @@ Learning these intutions by hand will help drive home the lesson of connnecting 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -478,7 +420,7 @@ Being a programmer, e.g. writing code, is a means of solving problems in small s
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -543,7 +485,7 @@ The better you learn how specific descriptive stats connect to specific viz, the
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -581,7 +523,7 @@ Here is our plan of attack for today.
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -625,7 +567,7 @@ Drawing a bar plot is super easy:
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -663,7 +605,7 @@ Everybody make us this bar plot
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -671,7 +613,7 @@ class: middle
 .center[.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]]
 
 .pull-left[
-&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-16-1.png" width="100%" /&gt;
+&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-13-1.png" width="100%" /&gt;
 ]
 
 .pull-right[
@@ -707,7 +649,7 @@ Let's practice this one more time!
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -742,7 +684,7 @@ Everybody make us this bar plot
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -750,7 +692,7 @@ class: middle
 .center[.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]]
 
 .pull-left[
-&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-18-1.png" width="100%" /&gt;
+&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-15-1.png" width="100%" /&gt;
 ]
 
 .pull-right[
@@ -784,7 +726,7 @@ Democratic Republican
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -807,7 +749,7 @@ Everybody try it!
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -882,7 +824,7 @@ In the realm of numerical data there may not be any overlap in numbers in the da
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -921,7 +863,7 @@ Let's practice building a histogram to see if that helps drive the intuition hom
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -967,7 +909,7 @@ Everybody make us this histogram (e.g. a bar plot of bins)
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -975,7 +917,7 @@ class: middle, center
 .size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]
 
 .pull-left[
-&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-22-1.png" width="100%" /&gt;
+&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-19-1.png" width="100%" /&gt;
 ]
 
 .pull-right[
@@ -1020,7 +962,7 @@ class: middle, center
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
@@ -1028,11 +970,11 @@ class: middle, center
 .size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]
 
 .pull-left[
-&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-24-1.png" width="100%" /&gt;
+&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-21-1.png" width="100%" /&gt;
 ]
 
 .pull-right[
-&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-25-1.png" width="100%" /&gt;
+&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-22-1.png" width="100%" /&gt;
 ]
 
 ???
@@ -1058,7 +1000,7 @@ So, a histogram is a binned bar plot and it attempts to show us the shape of the
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1107,7 +1049,7 @@ By hand, everybody draw me a box plot of city fuel economy in the mpg data set.
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1147,7 +1089,7 @@ median(mpg$cty) + IQR(mpg$cty)*1.5
 ]
 
 .pull-right[
-&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-28-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
@@ -1158,7 +1100,7 @@ median(mpg$cty) + IQR(mpg$cty)*1.5
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1179,12 +1121,48 @@ class: middle
 
 ### Under what conditions should we prefer a histogram and when a box plot?
 
+&lt;br&gt;
+
+We'll find that the value of a box plot increases DRAMATICALLY when comparing multiple distributions
+
+- Put a pin in that for now...
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size40[.content-box-blue[**Numeric Variables Across Time: Line Plots**]]]
+
+&lt;br&gt;
+
+&lt;img src="libs/Images/03_1-Johnson-Line_plot.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Last visualization tool is a line plot
+
+- This is what we make when you have a numeric variable across time.
+
+&lt;br&gt;
+
+Technically this is our first BIVARIATE visualization because it depends on two variables
+
+- However, I include it here because our interest focuses on one variable (but allows it to vary in time)
+
+&lt;br&gt;
+
+**SLIDE**: Let's practice!
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1195,21 +1173,9 @@ class: middle
 
 &lt;img src="libs/Images/03_1-Johnson-Line_plot.png" width="50%" style="display: block; margin: auto;" /&gt;
 
-???
-
-Last visualization tool is a line plot
-
-- This is what we make when you have a numeric variable across time.
-
 &lt;br&gt;
 
-**SLIDE**: Let's practice!
-
---
-
-&lt;br&gt;
-
-.center[.size35[Make a line plot of the US population since 1790 (data set: uspop)]]
+.center[.size40[Draw a line plot of US unemployment (`unemploy`) for the most recent 12 months in the `economics` data set.]]
 
 ???
 
@@ -1219,7 +1185,7 @@ Last visualization tool is a line plot
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1228,7 +1194,7 @@ class: middle
 
 &lt;br&gt;
 
-&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-32-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="04_2-Univariate_Viz_by_Hand_files/figure-html/unnamed-chunk-30-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -1241,7 +1207,7 @@ Line plots super easy, no?
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -1269,7 +1235,7 @@ class: middle
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
