@@ -23,11 +23,13 @@ class: middle, inverse
 &lt;br&gt;
 
 .size40[
-Practice building, polishing and interpreting univariate analyses
+Practicing univariate analyses in R
 
-- Script: 2023-02-17-Univariate_Practice-WDI.R
+- Review: Practice exercises
 
-- Data: 2023-02-17-WDI_Data_Extract.xlsx
+- New: Tools for modeling across time data
+
+- Canvas: "WDI-Tidy_Data_Extract-2024-02-06.xlsx"
 ]
 
 &lt;br&gt;
@@ -39,7 +41,7 @@ Practice building, polishing and interpreting univariate analyses
 ???
 
 ## Prep for Class
-1. 
+1. Review Canvas submissions
 
 
 
@@ -52,27 +54,23 @@ class: middle
 
 ???
 
-On Friday we began exploring data from the World Bank's WDI database.
+Last class, we began exploring data from the World Bank's WDI database.
 
-- I'd like us to keep digging into this data today.
-
-&lt;br&gt;
-
-Two aims:
-
-1. Practice building univariate analyses in R, and
-
-2. Practice analyzing and interpreting the visualizations and statistics you are producing.
+- A very useful repository of national statistics from something around 217 "economies" around the world.
 
 &lt;br&gt;
 
-Before we get to work, let's talk about presenting visualization to professional audiences.
+Today we'll start by reviewing your practice exercises, and then use our tools to expand our analyses across time
+
+&lt;br&gt;
+
+**SLIDE**: Quick aside...
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 
@@ -80,13 +78,15 @@ background-position: center
 
 ???
 
-Ok, evaluate the quality of this visualization for me.
-
-### What does it do well? What does it do badly?
+My hope is that as we work with data and grapple with the importance of uncertainty for our knowledge you will begin to see just how AWFUL many visualizations are.
 
 &lt;br&gt;
 
-Trick question! It does NOTHING good. NOTHING!
+### Why is this an abomination of data?
+
+&lt;br&gt;
+
+This visualization gives me nightmares
 
 - Don't use 3-d if the 3-d provides ZERO new information
 
@@ -108,14 +108,14 @@ Trick question! It does NOTHING good. NOTHING!
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-class: center
 class: middle
 
 .center[.size50[.content-box-blue[**Polishing your Visualizations**]]]
 
-.size40[
+.size45[
 1. Include an informative title
 
 2. Add a figure label and caption
@@ -125,15 +125,13 @@ class: middle
 4. Ensure the axis labels are clear and readable
 
 5. Maximize the data-to-ink ratio
-
-6. No chart junk!
 ]
 
 ???
 
-Let's talk general rules of thumb when producing visualizations for a professional audience.
+As we began to discuss last class, I expect you to produce high quality data visualizations
 
-- This means producing high quality visualizations that would look good in any presentation, report, book, web post, poster, etc.
+- This means producing visualizations that would look good in any presentation, report, book, web post, poster, etc.
 
 &lt;br&gt;
 
@@ -155,81 +153,24 @@ Let's talk general rules of thumb when producing visualizations for a profession
     - As much as possible, the "ink" should be tied directly to data
     - e.g. No extra 3-d nonsense!
     - e.g. No big empty spaces
-
-6. No chart junk!
-    - It's super easy to add nonsense to your plot and much of it simply distracts from the central point of the visualization.
-    - Focus on the central argument of the viz!
+    - e.g. No chart junk!
 
 &lt;br&gt;
 
 ### Questions on these?
 
-- **SLIDE**: Example...
-
-
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-class: center
-class: middle
-
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-3-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-
-**Figure 1**: Global life expectancy for 2019 is taken from the World Bank's World Development Indicators (WDI) database and organized by UN region.
-
-???
-
-Let's call this level 1 of polished.
-
-- The title is a clear, simple description
-- The Figure label is good and includes the source info,
-- The axis labels are clear
-- There's no extraneous chart junk and no wasted space
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-class: center
-class: middle
-
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-4-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-
-**Figure 1**: Global life expectancy for 2019 is taken from the World Bank's World Development Indicators (WDI) database and organized by UN region.
-
-???
-
-Let's call this level 2 of polished!
-
-- Added descriptive statistics (the mean) for context
-
-- Added a title that conveys an important conclusion
-
-### Make sense?
-
-&lt;br&gt;
-
-### Questions on polishing a visualization?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size50[.content-box-blue[**Assignment for Wednesday**]
-]]
+.size50[.content-box-blue[**For Today**]]
 
 .size45[
-**1) Create a high quality, polished visualization for these six variables:**
+.center[**What is the state of global development in 2021?**]
 - WB Income
 - gdp_per_capita
 - measles_herd_immunity
@@ -240,312 +181,212 @@ class: middle
 
 ???
 
-Today you have two jobs.
+### Ok, how did your assignment for today go?
 
-Job 1: Produce six HIGHLY polished visualizations
-
-- The good news is, we've already worked on the first four in class!
+### - Any trouble copying images into Canvas? Or polishing the visualizations?
 
 &lt;br&gt;
-
-### Questions on Job 1?
-
-- If you think of cool things you'd like to add to a visualization, ask me!
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Assignment for Wednesday**]
-]]
-
-.size45[
-**2) Submit to Canvas an argument that answers this question:**
-
-.center[**What is the state of global development in 2019?**]
-
-- Paragraph form
-- Critical analysis, not simple description
-- At least three pieces of evidence (polished figures)
-]
-
-???
-
-Before class you must submit an argument answering this question that:
-
-- Is in paragraph form (e.g. not just bullet points, complete sentences and each paragraph makes a complete point)
-
-- Is built on critical analysis, not just simple descriptions of what you made,
-
-- Includes at least THREE pieces of evidence inserted in the text to support your claims (figures MUST be highly polished)
-
-&lt;br&gt;
-
-Note, the RStudio export image tool will let you copy images and then you can paste them into the Canvas discussion board.
-
-&lt;br&gt;
-
-### Questions on the assignment?
-
-Let's get to work!
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Assignment for Today**]
-]]
-
-.size45[
-**Submit to Canvas an argument that answers this question:**
-
-.center[**What is the state of global development in 2019?**]
-
-- Paragraph form
-- Critical analysis, not simple description
-- At least three pieces of evidence (polished figures)
-]
-
-
-
-???
-
-1. WB Income
-2. gdp_per_capita
-3. measles_herd_immunity
-4. measles_immunizations_pct
-5. birth_rate
-6. death_rate
-
-### How did this go for you?
-
-### - Any trouble copying images into Canvas?
-
-### - Any trouble polishing the graphics? e.g. things you wanted to tweak but couldn't?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size55[**What does your variable alone teach us about the world in 2019?**]]]
-
-.size45[
-1. WB Income
-2. gdp_per_capita
-3. measles_herd_immunity
-4. measles_immunizations_pct
-5. birth_rate
-6. death_rate
-]
-
-???
-
-*Save plenty of time for new stuff!*
-
-&lt;br&gt;
-
-*Split class into 6 groups, 1 per variable*
-
-Groups, in a few minutes you will present your critical analysis of this variable.
-
-- Use this as a chance to show us a highly polished viz, AND
-    
-- To make sure everyone understands the difference between simple description and analysis
-
-&lt;br&gt;
-
-### Questions on the task?
-
-Get to it!
-
-&lt;br&gt;
-
-*PRESENT each and DISCUSS*
-
-&lt;br&gt;
-
-World Bank Income Levels
-- Low: &lt; 1,045
-- Low-middle: &lt; 4,095
-- Upper-middle: &lt; 12,695
-- Upper: 12,695
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-6-2.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-.pull-right[
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-7-2.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-???
 
 Taking all of this on board, where do we end up?
 
 ### Based on this data and these analyses, what would you argue is the current state of global development?
 
-### - High confidence conclusions?
-
-### - Low confidence conclusions?
+- *Encourage this discussion*
 
 &lt;br&gt;
 
-Personal reflection time!
+**SLIDE**: One way I tried to help your analyses was by giving you two ways of thinking about health and wealth
 
-This exercise represents the kind of exercise I want you all to get really good at doing this semester.
 
-- Be presented with a question, collect and clean data, apply statistical tools to the data and then use your findings to make a convincing argument.
 
-### What do you need to do to get better at this exercise?
+---
 
-&lt;br&gt;
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
 
-**SLIDE**: As I think you've seen from this exercise that univariate tools can be hard to interpret without context.
+.center[.content-box-blue[.size50[**Analysis Option 1: Benchmark the Data**]]]
+
+.pull-left[
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+### From our discussions last class, how does pairing these two pieces of data on measles vaccinations help us understand the state of the problem in the world?
+
+- (**SLIDE**: Better visualization titles and analyses!)
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Analysis Option 1: Benchmark the Data**]]]
+
+.pull-left[
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Without the context of the herd immunity threshold it would be much harder for us to interpret and explain the substantive importance of these visualizations
 
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.content-box-blue[.size50[**Option 1: Benchmark the Data**]]]
+.center[.content-box-blue[.size50[**Analysis Option 1: Benchmark the Data**]]]
 
 .pull-left[
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
 &lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-
-]
-
-.pull-right[
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
 
-The first way we can add context to our analyses is with a "benchmark"
-
-- e.g. Can we define "good" vs "bad" values?
+### What do we learn from comparing and contrasting these two methods for measuring the wealth of a country?
 
 &lt;br&gt;
 
-### Why does having both of these visualizations make our analyses so much more useful?
-
-- (**SLIDE**: Better titles!)
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 1: Benchmark the Data**]]]
-
-.pull-left[
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-
-]
-
-.pull-right[
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-11-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-### Does everybody see from these the power of a title that makes the "point" of the analysis clear?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 2: Make a Map**]]]
-
-
-
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-13-1.png" width="95%" style="display: block; margin: auto;" /&gt;
-
-???
-
-The second way we can add context to our analyses is with a map.
-
-- Geographic information can show patterns in the spatial layout
+### Which is the more "accurate" takeaway? Is most of the world "rich" or "poor"?
 
 &lt;br&gt;
 
-### What does this map add to our analysis of measles risk?
+What I hope is clear from this is that while a univariate visualization is useful for describing variation, it is VERY limited for helping us understand what that variation means on the ground
 
-- (**SLIDE**: Better title!)
+- One option is to include external benchmarks (like these) or alternative ways of measuring the same problem
 
+- The handy thing here is that this just requires you to pair two visualizations together, no new code required!
 
+&lt;br&gt;
 
----
+#### Notes
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 2: Make a Map**]]]
-
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-14-1.png" width="95%" style="display: block; margin: auto;" /&gt;
-
-???
-
-### What's another title that draws out other important analyses from this map?
+WB categories
+- Low: up to 1,045
+- Low-mid: up to 4,095
+- Upper-mid: up to 12,695
+- High: 12,695+
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.content-box-blue[.size50[**Option 3: Across Time Data**]]]
+.center[.content-box-blue[.size40[**Analysis Option 2: Flag an Observation**]]]
 
 .pull-left[
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-9-1.png" width="90%" style="display: block; margin: auto;" /&gt;&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-9-2.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
-&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" /&gt;&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-10-2.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Another option might be to flag where in a given distribution example countries might appear.
+
+- For an American audience I can imagine this helping us think about the world relative to our own experiences.
+
+&lt;br&gt;
+
+### Other than just the host country, any other things you think we could flag on these plots to help the reader understand them better?
+
+&lt;br&gt;
+
+**SLIDE**: Code for adding an arrow to a plot
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+
+```r
+ggplot(data2021, aes(x = gdp_per_capita)) +
+  geom_histogram(bins = 15) +
+  annotate("text", x = 67000, y = 39, label = "US") +
+  annotate("segment", x = 67000, y = 35, xend = 67000, yend = 13, arrow = arrow())
+```
+
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-11-1.png" width="65%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Here is the code you need to:
+
+1. Add text to any plot, AND
+
+2. Add an arrow
+
+&lt;br&gt;
+
+*Walk them through the code arguments for each*
+
+&lt;br&gt;
+
+Test it out.
+
+- Try adding random text somewhere on the plot, and
+
+- an arrow
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size40[**Analysis Option 3: Snapshots Across Time**]]]
+
+.code120[
+
+```r
+# Subset the data by one year
+data1985 &lt;- filter(data1, year == 1985)
+
+ggplot(data1985, aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white")
+```
+
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-12-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
@@ -556,165 +397,69 @@ The third way we can add context to our analyses is with across time data
 
 &lt;br&gt;
 
-### Why does having both of these visualizations make our analyses so much more useful?
+The WDI dataset I provided you has country-year data going back to 1985
+
+- So let's use that data to see how measles vaccinations have changed over time!
 
 &lt;br&gt;
 
-### What's a better title for these plots?
+### Everybody clear on how to extract subsets of the data using the filter?
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Analysis Option 3: Snapshots Across Time**]]]
+
+.pull-left[
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-13-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+### Why does having both of these visualizations make our analyses so much more useful?
+
+- (Allows us to track a distribution across time)
 
 - (The world has made incredible progress in fighting measles but there is much left to do!)
 
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Option 3: Across Time Data**]]]
-
-
-```
-NULL
-```
-
-???
-
-R will also let us add a lot more time context with an animation!
-
-### What does this help us see in the data?
-
 &lt;br&gt;
 
-Ok, let's learn to build all these things!
-
-- You've already made the benchmark plots so let's move to the map!
-
+**SLIDE**: We can do better than two snapshots though, right?
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size60[**Option 2: Let's Make a Map!**]]
-
-&lt;br&gt;
-
-.code100[
-
-```r
-# Install the rworldmap package (only once per computer)
-install.packages("rworldmap")
-
-# Load the package
-library(rworldmap)
-
-# Merge your data onto the world map
-data2 &lt;- joinCountryData2Map(dF = data1, joinCode = "NAME", nameJoinColumn = "country")
-
-# Output the basic map
-mapCountryData(data2, nameColumnToPlot = "measles_herd_immunity")
-
-# Tweak the map
-mapCountryData(data2, 
-               nameColumnToPlot = "measles_herd_immunity",
-               colourPalette = c("blue", "red"),
-               mapTitle = "Title Here")
-```
-]
-
-???
-
-This isn't the only way to make a map in R, but it is the easiest way I've found.
-
-- R has much more powerful mapping packages but this is a handy way to do quick analyses that still look pretty darn good.
-
-&lt;br&gt;
-
-*Walk them through the arguments in each function*
-
-- Basically, each mapping package tells R the lines for the map and you just need to merge your data onto those map lines
-
-- rworldmap is handy because it tries to automate this process for you
-
-- The trade-off is that it has fewer tweakable options and if it doesn't understand your data it just omits it (e.g. country name mispelled)
-
-&lt;br&gt;
-
-*Encourage the class to try other variables in the nameColumnToPlot argument*
-
-- Numeric variables are presented in 6 quantiles (e.g. 16% per color)
-
-&lt;br&gt;
-
-### Any questions on using rworldmap to make a world map?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Option 3: Let's Filter a Histogram!**]]
-
-.code110[
-
-```r
-# Input the data
-data_all &lt;- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/WDI-2023-02/WDI-Measles_Across_Time.xlsx")
-
-# Create two new data sets by year
-data_1985 &lt;- filter(data_all, year == 1985)
-data_2019 &lt;- filter(data_all, year == 2019)
-
-# Histogram 1985
-ggplot(data_1985, aes(x = measles_immunizations_pct)) +
-  geom_histogram()
-
-# Histogram 2019
-ggplot(data_2019, aes(x = measles_immunizations_pct)) +
-  geom_histogram()
-```
-]
-
-???
-
-*Encourage them to try other years in the data set*
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Option 3: Let's Animate a Bar Plot!**]]
+.center[.content-box-blue[.size50[**Analysis Option 3: Snapshots Across Time**]]]
 
 .code120[
 
 ```r
-# Install animation package (one time)
+# Install the animation packages (one time)
 install.packages("gifski")
 install.packages("gganimate")
 
-# Load the package
+# Load the packages
 library(gifski)
 library(gganimate)
 
 # Histogram across time
-ggplot(data_all, aes(x = measles_immunizations_pct)) +
+ggplot(data1, aes(x = measles_immunizations_pct)) +
   geom_histogram(bins = 30) +
   transition_time(year) +
   labs(title = "Measles Immunizations ({as.integer(frame_time)})")
@@ -729,41 +474,71 @@ The key here is the "transition_time" function
 
 &lt;br&gt;
 
-The wacky code in the title is just to mae the years appear cleanly to track the progress of the animation.
+**SLIDE**: Results!
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Analysis Option 3: Snapshots Across Time**]]]
+
+&lt;img src="05_2-Practice_Univariate_Analyses2_files/figure-html/unnamed-chunk-16-1.gif" width="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+### What does this help us see in the data?
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size70[.content-box-blue[**For Next Class**]]
 
 &lt;br&gt;
 
-### Questions on these new techniques?
+.size55[
+1. Freedom House. (2022). *Freedom in the World: Methodology*.
 
-- Benchmarks, mapping, filtering across time data and basic animation?
+2. Practice Exercises
+]
 
+???
 
+Next class we'll start working with Freedom House data
+
+- The reading introduces you to their methodology
+
+&lt;br&gt;
+
+So, do that reading and the following practice exercises!
 
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.size70[**For Friday**]
+.size40[
+1. Visualize the distribution of countries by birth rate at two points in time (1985 and 2021) and include an arrow for the approximate location of the US in each
 
-.size50[
-1. Healy (2019) Chapter 8 “Refine your plots”
-
-2. Freedom House. (2022). *Freedom in the World: Methodology*.
+2. Is the world getting richer or more unequal? Create an animated histogram of GDP per capita across time
 ]
 
 ???
-
-Friday we'll practice all your new tools by exploring the Freedom House Freedom in the World data set.
-
-
-
-
 
 
 

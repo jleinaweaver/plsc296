@@ -20,16 +20,18 @@ background-size: 100%
 background-position: center
 class: middle, inverse
 
-.size80[**Today's Agenda**]
+.size65[**Today's Agenda**]
 
 &lt;br&gt;
 
-.size45[
-1. Inputting Excel files into R
+.size40[
+Practicing univariate analyses in R
 
-2. Practicing univariate analyses
+- Review: Practice exercises
 
-3. Polishing visualizations
+- New: Inputting Excel data &amp; polishing visualizations
+
+- Canvas: "WDI-Tidy_Data_Extract-2024-02-06.xlsx"
 ]
 
 &lt;br&gt;
@@ -42,10 +44,17 @@ class: middle, inverse
 
 ## Prep for Class
 1. Pull WDI data and post on Canvas
+    - Both the original and the tidy version
+
+2. Check Canvas submissions
 
 &lt;br&gt;
 
-*Jump to getting set-up slide*
+*While students coming in*: Everybody make sure they finished the practice exercises for today AND grab the dataset we'll be using from Canvas.
+
+&lt;br&gt;
+
+**SLIDE**: Lots to do so let's dive in with your practice exercises for today!
 
 
 
@@ -56,674 +65,86 @@ background-size: 100%
 background-position: center
 class: middle
 
-.code120[
 
 ```r
-# Install new package (only 1 time)
-install.packages("carData")
-
-# Load the package to access the following datasets (each time)
-library(carData)
+# 1. What is the regional breakdown of UN member states?
+practice1 &lt;- ggplot(data = UN, aes(y = region))
+practice1 + geom_bar(fill = "mediumpurple")
 ```
-]
 
-.size40[
-1. What is the regional breakdown of UN member states? (`UN` dataset, `region` variable)
-
-2. How much variation is there in life expectancy rates around the world? (`UN` dataset, `lifeExpF` variable)
-
-3. Visualize the growth in the US population since 1790  (`USPop` dataset, `population` variable)
-]
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-2-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 ???
 
+Don't forget that accessing this dataset requires installing AND loading carData
+
+&lt;br&gt;
+
+### Everybody get this? (or the rotated version?)
+
+&lt;br&gt;
+
+### What did we learn from this?
+- (Who are the NAs? Mostly non-state territories e.g. American Samoa, Guam, etc)
+
+- Africa has a lot of countries!
+
+&lt;br&gt;
+
+**SLIDE**: Let's use this as an opportunity to practice polishing our visualizations for professional audiences (and your reports!)
 
 
 
 ---
 
-
-
-
-
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
-background-class: center
+background-position: center
 class: middle
 
-.size55[.center[**Let's Get Set-up!**]]
-
 .pull-left[
-
-&lt;br&gt;
-
-.size30[
-**New Script**
-
-2023-02-17-Univariate_Practice-WDI.R
-
-&lt;br&gt;
-
-**New Data**
-
-2023-02-17-WDI_Data_Extract.xlsx
-]
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
-&lt;img src="libs/Images/05_1-Class_Data_Folder.png" width="75%" style="display: block; margin: auto;" /&gt;
-]
+.center[.size45[
+.content-box-white[
+**Visualizations MUST include:**]
+
+1. Informative titles,
+
+2. Clear axis labels, and
+
+3. Data sources
+]]]
 
 ???
 
-Let's get set-up!
+At a minimum, professional visualizations must include:
 
-- Everybody create a new R script for our practice work today
+1. A title or figure caption that explains the key takeaway of the visualization in your argument,
 
-- Everybody download the WDI data from Canvas and save it in your "Data" folder
+2. Clearly defined axis labels, and
 
-*SAVE: WDI-Measles_Across_Time.xlsx*
+3. A plot caption or figure label that identifies where the data came from
+
+&lt;br&gt;
+
+We can get even fancier, but this represents my minimum expectations from you this semester.
+
+&lt;br&gt;
+
+### Do these criteria make sense?
+
+&lt;br&gt;
+
+**SLIDE**: How to do it...
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size60[.center[.content-box-blue[**Inputting Excel Data into R**]]]
-
-&lt;br&gt;
-
-&lt;img src="libs/Images/05_1-Chang_Recipe5_1.png" width="100%" style="display: block; margin: auto;" /&gt;
-
-.size35[.center[https://r-graphics.org/loading-data-from-an-excel-file.html]]
-
-???
-
-First new thing today: Inputting Excel data into R!
-
-&lt;br&gt;
-
-BEFORE we write the code for our work today, let's look at the cookbook recipe in Chang (2018).
-
-- Change recipe 1.5
-
-- Remember, the R Graphics Cookbook is a great reference book online for anytime you know WHAT you want to do but can't remember HOW to do it.
-
-&lt;br&gt;
-
-R Coding Lessons:
-
-1. 'readxl' is an optional package you add only when you need to input an Excel file
-
-2. Like ALL add-on packages, you only have to install it one time on your computer (unless you upgrade R)
-
-3. You then load the package in each script that needs it using the library() function
-
-### Make sense?
-
-- **SLIDE**: Ok, let's apply this recipe to our new script.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size60[.center[.content-box-blue[**Inputting Excel Data into R**]]]
-
-&lt;br&gt;
-
-
-
-.code130[
-
-```r
-# Install package (one time)
-install.packages("readxl")
-
-# Load readxl package
-library(readxl)
-
-# Input data as new object
-# Assumes Excel file in this folder
-data1 &lt;- read_excel("Data/2023-02-17-WDI_Data_Extract.xlsx")
-
-# Check the data loaded
-data1
-```
-]
-
-???
-
-This code assumes the excel file is in the data folder I asked you to create on our configuration day.
-
-### Did everybody get the data loaded?
-
-If you did, go help someone who is struggling!
-
-- Solving other people's coding problems will make YOU a better coder!
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size40[.center[.content-box-blue[**Inputting Excel Data into R**]]]
-
-&lt;img src="libs/Images/05_1-RStudio_Import2.png" width="80%" style="display: block; margin: auto;" /&gt;
-
-???
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size40[.center[.content-box-blue[**Inputting Excel Data into R**]]]
-
-&lt;img src="libs/Images/05_1-RStudio_Import3.png" width="90%" style="display: block; margin: auto;" /&gt;
-
-???
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size40[.center[.content-box-blue[**Inputting Excel Data into R**]]]
-
-&lt;img src="libs/Images/05_1-RStudio_Import4_v2.png" width="100%" style="display: block; margin: auto;" /&gt;
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size40[.center[.content-box-blue[**Inputting Excel Data into R**]]]
-
-&lt;img src="libs/Images/05_1-RStudio_Import5_v2.png" width="100%" style="display: block; margin: auto;" /&gt;
-
-???
-
-
-
----
-
-class: middle
-
-.size18[
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; wb_income &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; gdp_per_capita &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; measles_herd_immunity &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; measles_immunizations_pct &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Low &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 500.5 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; At Risk &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 64 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Albania &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Upper-middle &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5396.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Herd Immunity &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 95 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Algeria &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Lower-middle &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4022.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; At Risk &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 80 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; American Samoa &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 13672.6 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Andorra &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 41327.5 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Herd Immunity &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 99 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Angola &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Lower-middle &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2142.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; At Risk &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 51 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Antigua and Barbuda &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 18319.5 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; At Risk &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 93 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Argentina &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Upper-middle &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 9963.7 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; At Risk &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 86 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Armenia &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Upper-middle &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4828.5 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Herd Immunity &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 95 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Aruba &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 31650.8 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Australia &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; High &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 54941.4 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; At Risk &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 94 &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-]
-
-???
-
-Let's talk through the data set!
-
-- `wb_income` categorizes all states per WB terms: low, lower-middle, upper-middle and high
-
-- `gdp_per_capita` is gross domestic product divided by population
-
-- `measles_immunizations_pct` is the percent of under 2s are immunized against measles
-
-- `measles_herd_immunity` is a categorization of states as to whether they've achieved herd immunity (e.g. 95%).
-
-&lt;br&gt;
-
-**OMIT FOR NOW**
-- `birth_rate` is the number of births per 1,000 people
-- `death_rate` is the number of deaths per 1,000 people
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size60[.content-box-blue[**Univariate Analyses**]]
-
-.size40[
-**Analyzing Child Protection**
-1. Make a bar plot of `measles_herd_immunity`
-
-2. Make a histogram of `measles_immunizations_pct`
-
-3. Calculate the descriptive statistics for `measles_immunizations_pct`
-]
-
-???
-
-In the data set I have given you two measures of how a state protects children from Measles.
-
-- `measles_immunizations_pct` is the percent of under 2s are immunized against measles
-
-- `measles_herd_immunity` is a categorization of states as to whether they've achieved herd immunity (e.g. 95%).
-
-&lt;br&gt;
-
-Let's complete these three univariate analyses!
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size55[.content-box-blue[**Univariate Analyses**]]]
-
-&lt;br&gt;
-
-.code120[
-
-```r
-# Bar Plot
-measles1 &lt;- ggplot(data = data1, aes(x = measles_herd_immunity))
-measles1 + geom_bar()
-
-# Histogram
-measles2 &lt;- ggplot(data = data1, aes(x = measles_immunizations_pct))
-measles2 + geom_histogram()
-
-# Descriptive Stats
-summary(data1$measles_immunizations_pct)
-```
-]
-
-???
-
-### How did we do?
-
-&lt;br&gt;
-
-### How do the plots look?
-
-- **SLIDE**: Let's clean up the bar plot!
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code130[
-
-```r
-# Bar Plot
-measles1 &lt;- ggplot(data = data1, aes(x = measles_herd_immunity))
-
-measles1 + geom_bar()
-```
-
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-14-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Let's practice polishing a bar plot for including in a report.
-
-- Change cookbook has lots of handy recipes on this.
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code130[
-
-```r
-measles1 &lt;- ggplot(data = data1, aes(x = measles_herd_immunity))
-
-measles1 + 
-  geom_bar()
-```
-
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-15-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-First step to polishing, change the organization of the code.
-
-&lt;br&gt;
-
-Once you create a ggplot object (measles1) you can then add to it in this style.
-
-- Each piece of the ggplot function gets a separate line that ends with a '+'
-
-- RStudio will automatically indent your code by two spaces to help you organize and read your code.
-
-- This way you can keep adding to the ggplot object to add complexity to your picture
-
-&lt;br&gt;
-
-**Be VERY careful with this as a '+' with no line after it will stop your R script from working**
-
-&lt;br&gt;
-
-### Did everybody get this to work?
-
-Ok, let's make some tweaks!
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code130[
-
-```r
-# Adjust width of the bars
-measles1 + 
-* geom_bar(width = .5)
-```
-
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-16-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Inside the geom_bar function you can specify a width for the bars
-
-- Take a sec to experiment with any values from 0 to 1
-
-&lt;br&gt;
-
-**SLIDE**: Let's add some color.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code130[
-
-```r
-# Adjust the color of the bars
-measles1 + 
-* geom_bar(width = .5, fill = "blue")
-```
-
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-17-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Inside the geom_bar function you can specify a color for the bars using the "fill" argument.
-
-- e.g. The color you "fill" the bars with.
-
-&lt;br&gt;
-
-You can use essentially any color you can imagine but let's save color specification for later.
-
-- For now, stick with the simple colors you can name.
-
-- Try a few and see what happens
-
-&lt;br&gt;
-
-**SLIDE**: Now let's change the ordering of the bars.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-
-```r
-# change the order of the bars
-measles1 + 
-  geom_bar(width = .5, fill = "blue") +
-* scale_x_discrete(limits = c("Herd Immunity", "At Risk"))
-```
-
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-18-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-The function scale_x_discrete lets you change which levels in the categorical variable are shown and in what order.
-- Chang Recipe 8.4
-
-**SLIDE**: Everybody try reversing the order and see what happens
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**The Missing Data Problem**]]]
-
-.pull-left[
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-19-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-.pull-right[
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-20-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-
-???
-
-### What are the pros and cons of removing vs including the NA count? 
-
-### Which is the more "accurate" answer to the question about global vulnerability to measles?
-
-&lt;br&gt;
-
-**SLIDE**: Let's now clean up the axis labels.
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-
-```r
-measles1 + 
-  geom_bar(width = .5, fill = "blue") +
-  scale_x_discrete(limits = c("Herd Immunity", "At Risk")) +
-* labs(x = "", y = "Count of Countries", title = "Measles Immunity Across the World")
-```
-
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-21-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Time to clean up the labels with the labs() function
-
-- Inside labs you can specify what you want on the x axis, the y axis, the title, a subtitle and a caption at the bottom
-
-&lt;br&gt;
-
-### How are we doing? Questions on polishing a bar plot?
-
-Everybody take a minute to make sure you have all of this copied into your notes 
-
-AND
-
-Make some notes on what each line does and how you used it!
-
-- Think of future you trying to understand the code, what could you tell yourself that will help?
-
-&lt;br&gt;
-
-**SLIDE**: Let's switch to the histogram now
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -731,42 +152,226 @@ class: middle
 .code110[
 
 ```r
-# Histogram
-measles2 &lt;- ggplot(data = data1, aes(x = measles_immunizations_pct))
-measles2 + geom_histogram()
+# The labs() function
+practice1 + 
+  geom_bar() +
+  labs(x = "Count") +
+  labs(y = "") +
+  labs(caption = "Source: UNSD (2012)") +
+  labs(title = "UN tracking covers some non-member states")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-22-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-4-1.png" width="45%" style="display: block; margin: auto;" /&gt;
 ]
-
-.center[.size35[**To Do: 1) Bins to 15, 2) Add a fill color, 3) Add title and labels**]]
 
 ???
 
-Here's the basic histogram we made.
+We will primarily use the labs() function to label your plots 
 
-### Everybody tweak this viz to do these three tasks
+- Each labs function is added using the '+' style that ggplot requires
 
+- Essentially, within the ggplot function you can keep adding customizations
+
+&lt;br&gt;
+
+To keep things clear, I have added each of these elements using a separate labs() function.
+
+- I want it to be clear that you can add whichever pieces you want/need
+
+&lt;br&gt;
+
+*Step through each argument: x, y, title, caption*
+
+&lt;br&gt;
+
+**SLIDE**: You can also do this with one labs function
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.code100[
+.code110[
 
 ```r
-measles2 + 
-  geom_histogram(bins = 15, fill = "orange") +
-  labs(x = "Measles Immunizations (%)", y = "", title = "Global Measles Coverage (2019)")
+# The labs() function
+practice1 + 
+  geom_bar() +
+  labs(x = "Count", y = "", caption = "Source: UNSD (2012)", 
+       title = "UN tracking covers some non-member states")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-23-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 ]
+
+???
+
+Here I'm doing the same thing as before with one labs function but multiple arguments each separated by a comma.
+
+- Totally up to you
+
+&lt;br&gt;
+
+### Is everybody clear on my expectation for your polished visualizations?
+
+&lt;br&gt;
+
+### And clear on how to use the labs function?
+
+&lt;br&gt;
+
+This represents the absolute baseline for a visualization in this class.
+
+- However, as you add skills I will hopefully see you making your visualizations even more compelling.
+
+- **SLIDE**: For example
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code110[
+
+```r
+# The labs() function
+practice1 + 
+  geom_bar(fill = c(rep("darkblue", 8), "red")) +
+  labs(x = "Count", y = "", caption = "Source: UNSD (2012)", 
+       title = "UN tracking covers some non-member states")
+```
+
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-6-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+We should continuously look for ways to draw the reader's eye to the key aspects of the visualization
+
+- Your informative title helps, but there is much more we can do!
+
+- In a paper all about data tracking around the world, making the NA bar stand out helps draw the readers eye to the key point!
+
+&lt;br&gt;
+
+### Make sense?
+
+&lt;br&gt;
+
+**SLIDE**: Practice question number 2, life expectancy in the world
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+```r
+# 2. How much variation is there in life expectancy rates around the world?
+practice2 &lt;- ggplot(data = UN, aes(x = lifeExpF))
+```
+
+.pull-left[
+
+```r
+practice2 + geom_histogram()
+```
+
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+```r
+practice2 + geom_boxplot()
+```
+
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+### Everybody get these two plots?
+
+&lt;br&gt;
+
+### Which visualization is a more useful way to present the distribution of life expectancies around the world? Why?
+
+&lt;br&gt;
+
+Let's practice our polishing!
+
+- Everybody add a title, caption and labels to the histogram!
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code110[
+
+```r
+practice2 + 
+  geom_histogram() +
+  labs(x = "Life Expectancy (years)", y = "Count", 
+       caption = "Source: UNSD (2012)", 
+       title = "Almost 1/3 of the states have a life expectancy below 70")
+```
+
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-11-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Coloring bars in a histogram is a little more complicated, but we'll get there.
+
+&lt;br&gt;
+
+### For now, does the aim of polishing a visualization make sense?
+
+&lt;br&gt;
+
+**SLIDE**: Last practice exercise - US population since 1790
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+```r
+# 3. Visualize the growth in the US population since 1790
+practice3 &lt;- ggplot(data = USPop, aes(x = year, y = population))
+
+practice3 + 
+  geom_line() +
+  labs(x = "", y = "US Population (millions)", 
+       caption = "Source: U.S. Census Bureau (2008)", 
+       title = "The US has rapidly added population since 1780")
+```
+
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-12-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -774,14 +379,552 @@ measles2 +
 
 &lt;br&gt;
 
-**SLIDE**: One other tweak I suggest for your histograms
+### Any questions on polishing your plots for a professional audience?
 
+&lt;br&gt;
+
+We'll keep tweaking our plots, but this represents the basics you must include.
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/06_1-WDI_Front.png')
+background-size: 75%
+background-position: center
+class: middle
+
+???
+
+Today we:
+
+1. Continue practicing our univariate tools, 
+
+2. We pick up some new skills, and 
+
+3. We do it by exploring data from the World Bank's World Development Indicators.
+
+&lt;br&gt;
+
+As you hopefully got from the reading for today, the WDI is a very useful repository of data on countries around the world.
+
+- I've posted the untidy data so you can see what the output from the WDI looks like
+
+- HOWEVER, for our work in R please use the "tidy" version of the dataset
+
+&lt;br&gt;
+
+**SLIDE**: Let's talk about importing Excel data into R
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="libs/Images/05_1-RStudio_Import2.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+???
+
+You can import data purely with code, HOWEVER, in my experience new users have a MUCH easier time using the menus for this.
+
+- These importing data slides are on Canvas in case you forget how to do this.
+
+&lt;br&gt;
+
+Step 1 is to open the import window
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="libs/Images/05_1-RStudio_Import3.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Here you see the excel input window 
+
+- Note that all the choices you make here get written into code in the bottom-right corner.
+
+- Useful for learning the code approach
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="libs/Images/05_1-RStudio_Import4_v2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Step 2: "Browse" to the data you saved on your hard drive
+
+- Sorry that the file name on the screen is not matching yours
+
+- WDI-Tidy_Data_Extract-2024-02-06.xlsx
+
+&lt;br&gt;
+
+After selecting your data you'll get a preview of it in R
+
+- VERY IMPORTANT to look at the data in the preview window
+
+&lt;br&gt;
+
+In this example you can see that R thinks the variable for measles immunizations is a categorical variable (e.g. character)!
+
+- This is because it sees the NAs as words not as missing data!
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="libs/Images/05_1-RStudio_Import5_v2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Step 3: Name the data AND specify how the dataset records missing data
+
+- Can name it anything but let's all use "data1" today
+
+- MAKE SURE you put "NA" in the NA field
+
+&lt;br&gt;
+
+After you update the NA field you should see the variables change in the preview window
+
+- Numeric variables now are numeric and the NAs get italicized and made lighter so we understand it is missing data
+
+&lt;br&gt;
+
+### Make sense? Any questions on importing tidy Excel data using the menu?
+
+- FYI: Code preview shows that importing data in code uses the read_excel() function.
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+```r
+View(data1)
+```
+
+.size18[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; wb_income &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; gdp_per_capita &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; measles_herd_immunity &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; measles_immunizations_pct &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; birth_rate &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; death_rate &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 50.6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 29.7 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Albania &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Low &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 639.9 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Herd Immunity &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 96 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26.3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.8 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Algeria &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Lower-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2617.7 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 68 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 38.7 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7.6 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; American Samoa &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Andorra &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Upper-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7914.9 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Angola &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Low &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 758.1 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 44 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 52.1 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21.6 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Antigua and Barbuda &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Lower-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3703.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 69 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21.9 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7.1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Argentina &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Lower-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2919.3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 54 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 22.6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8.5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Armenia &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 26.4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7.6 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Aruba &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 20.9 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6.5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1985 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Australia &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Upper-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 11441.2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 68 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15.7 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6.6 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+Let's talk through the data I've pulled for you from WDI
+
+- All countries in the WDI from 2003 to 2021
+
+- `wb_income` categorizes all states by their income level using the World Bank thresholds from 2021 (low, lower-middle, upper-middle and high)
+
+- `gdp_per_capita` is gross domestic product divided by population
+
+- `measles_herd_immunity` is a categorization of states as to whether they've achieved herd immunity in measles (e.g. 95%).
+
+- `measles_immunizations_pct` is the actual percent of under 2s immunized against measles
+
+- `birth_rate` is the number of births per 1,000 people
+
+- `death_rate` is the number of deaths per 1,000 people
+
+&lt;br&gt;
+
+### Any questions on the data?
+
+&lt;br&gt;
+
+**SLIDE**: Filter to current year
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+```r
+# Extract some observations from the dataset
+data2021 &lt;- filter(data1, year == 2021)
+
+View(data2021)
+```
+
+.size18[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; country &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; wb_income &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; gdp_per_capita &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; measles_herd_immunity &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; measles_immunizations_pct &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; birth_rate &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; death_rate &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Afghanistan &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Low &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 355.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 63 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 35.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7.3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Albania &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Upper-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6377.2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10.2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 11.3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Algeria &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Lower-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3700.3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 79 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; American Samoa &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; High &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 16653.7 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Andorra &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; High &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 42072.3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Herd Immunity &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 99 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Angola &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Lower-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1927.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 36 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 38.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 8.0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Antigua and Barbuda &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; High &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 17178.5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 85 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 12.1 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6.4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Argentina &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Upper-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10650.9 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 86 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13.9 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 9.0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2021 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Armenia &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Upper-middle &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4972.8 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; At Risk &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 94 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 12.0 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13.0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+???
+
+While I've given you data across time, I'd like us to work today focused on only the most recent year with complete data in the WDI: 2021.
+
+&lt;br&gt;
+
+Everybody create a new object called "data2021" and use the filter function to extract only those rows in our dataset from the year 2021
+
+- The filter function requires the dataset and then the conditions you are interested in
+
+- Remember the double equals sign means "equals to"
+
+&lt;br&gt;
+
+### Everybody got that?
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size60[.center[.content-box-blue[**Filter() is Very Useful**]]]
+
+&lt;br&gt;
+
+.code160[
+
+```r
+# Filter for one variable
+filter(data1, wb_income == "Low")
+```
+
+
+```r
+# Filter by relative values
+filter(data1, death_rate &gt; 20)
+```
+
+
+```r
+# Filter by two variables
+filter(data1, country == "Ireland", year == 2008)
+```
+]
+
+???
+
+Filter is an INCREDIBLY useful function
+
+- You can use it to filter a dataset by ANY variable or multiple variables
+
+&lt;br&gt;
+
+### Questions on the filter function?
+
+&lt;br&gt;
+
+**SLIDE**: Let's practice!
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size40[.content-box-blue[**Univariate Analyses of Global Child Protection in 2021**]]
+
+&lt;br&gt;
+
+.size40[
+1. Visualize: How many countries have reached herd immunity for measles?
+
+2. Visualize: What is the distribution of countries by the percent of 2 year olds immunized against measles?
+
+3. Calculate: What are the descriptive statistics that describe the proportion of 2 year olds immunized against measles?
+]
+
+???
+
+Focus only on 2021 as our most recent complete year of data
+
+&lt;br&gt;
+
+As noted, I have given you two measures of measles vaccinations in children around the world.
+
+- `measles_immunizations_pct` is the percent of under 2s are immunized against measles
+
+- `measles_herd_immunity` is a categorization of states as to whether they've achieved herd immunity (e.g. 95%).
+
+&lt;br&gt;
+
+I would like you to analyze those two variables in these three ways so we can learn something about childhood disease prevention in 2021.
+
+- Make sure to polish your visualizations!
+
+- Go!
+
+&lt;br&gt;
+
+**SLIDE**: Q1
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
@@ -789,9 +932,13 @@ class: middle
 .code100[
 
 ```r
-measles2 + 
-  geom_histogram(bins = 15, fill = "orange", color = "white") +
-  labs(x = "Measles Immunizations (%)", y = "", title = "Global Measles Coverage (2019)")
+# How many countries have reached herd immunity for measles?
+measles1 &lt;- ggplot(data = data2021, aes(x = measles_herd_immunity))
+
+measles1 + 
+  geom_bar(fill = c("red1", "blue3", "blue3")) +
+  labs(x = "", y = "Count", caption = "Source: WDI (2021)",
+       title = "The great majority of countries are at risk of measles outbreaks")
 ```
 
 &lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-24-1.png" width="60%" style="display: block; margin: auto;" /&gt;
@@ -799,20 +946,32 @@ measles2 +
 
 ???
 
-Add a color argument to change the color of the lines around each box.
+### Everybody get something like this for the first question?
 
-- I think "white" makes it much easier to read the histogram
+&lt;br&gt;
+
+### Ok, what do we learn from this visualization?
+
+- *Force this discussion*
+
+- (Big risk in the world)
+
+- (Might be a serious missing data problem!)
+
+&lt;br&gt;
+
+**SLIDE**: the missing data problem
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size50[.content-box-blue[**Analyzing Child Protection**]]]
+.center[.size55[.content-box-blue[**The Missing Data Problem**]]]
 
 .pull-left[
 &lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" /&gt;
@@ -822,6 +981,115 @@ class: middle
 &lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-26-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
+???
+
+A constant challenge for you as a data researchers is deciding what to do about missing data.
+
+### Do these two plots tell a different story? How?
+
+- *Force this discussion*
+
+&lt;br&gt;
+
+### When do we use the left plot and when the right plot in a report?
+
+- *Force this discussion*
+
+&lt;br&gt;
+
+First key lesson: Don't hide your missing data unless you are sure it doesn't create a selection bias problem for your analysis.
+
+- That means you have to believe these countries are missing more or less at random
+
+- If all the missing countries look alike (e.g. poor states) then removing them misrepresents the story
+
+&lt;br&gt;
+
+Almost 25 countries missing data here (approx 12%)
+
+- My guess is that these countries undoubtedly look alike (e.g. lacking infrastructure)
+
+- In other words, my guess is the risk bar should be much higher...
+
+&lt;br&gt;
+
+For now I'm not going to give you the code to remove the missing data.
+
+- Let's work with our data as it exists and then decide what to do about it.
+
+&lt;br&gt;
+
+**SLIDE**: Histogram time!
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code110[
+
+```r
+# Histogram
+measles2 &lt;- ggplot(data = data2021, aes(x = measles_immunizations_pct))
+
+measles2 + 
+  geom_histogram(bins = 20, fill = "slateblue3") +
+  labs(x = "Measles Immunizations (%)", y = "Count",
+       caption = "Source: WDI (2021)",
+       title = "??")
+```
+
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-27-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+I tweaked the number of bins here to smooth out the distribution a bit.
+
+- Histogram bins is often a matter of taste rather than hard and fast rule (although many "rules" are out there)
+
+- Choose bins to help the reader see the distribution WITHOUT distorting it
+
+&lt;br&gt;
+
+### What title does this need?
+
+### - What is a key conclusion you want the reader to draw from this?
+
+&lt;br&gt;
+
+- (25% of countries are woefully unprepared for a measles outbreak (&lt;75%))
+
+
+```
+
+    FALSE      TRUE 
+0.7512953 0.2487047 
+```
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size50[.content-box-blue[**Analyzing Child Protection in 2021**]]]
+
+.pull-left[
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-29-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-30-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
 &lt;br&gt;
 
 .center[
@@ -829,7 +1097,7 @@ class: middle
 
 ```
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-  33.00   83.00   93.00   87.48   97.00   99.00      24 
+  18.00   75.00   89.00   83.13   95.00   99.00      24 
 ```
 ]]
 
@@ -839,7 +1107,7 @@ Alright, let's talk about what we've made.
 
 ### Which of these approaches tells the clearest story about global measles vaccinations in 2019?
 
-- (Bar Plot: Cleanest story if message is half the world is at risk)
+- (Bar Plot: Cleanest story if message is more than half the world is at risk)
 
 - (Histogram: Nicely helps us unpack the extensive variation in the "at risk" population)
 
@@ -849,130 +1117,57 @@ Alright, let's talk about what we've made.
 
 ### Does everybody see how these three tools give us a WAY better grasp of the data than just looking at the spreadsheet?
 
+&lt;br&gt;
+
 THIS is the power of univariate analyses!
 
 - I can't emphasize this enough, these simple tools add SO, SO much to a written argument.
 
 
 
-
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.size55[.content-box-blue[**For Wednesday: Univariate Analyses**]]
+.size50[.content-box-blue[**For Next Class**]]
 
 .size45[
-**Analyzing Country Wealth**
-1. Polish a bar plot of `wb_income`
-
-2. Polish a histogram of `gdp_per_capita`
-
-3. Calculate the descriptive statistics for `gdp_per_capita`
+.center[**What is the state of global development in 2021?**]
+- WB Income
+- gdp_per_capita
+- measles_herd_immunity
+- measles_immunizations_pct
+- birth_rate
+- death_rate
 ]
 
 ???
 
-Let's practice this one more time!
+For next class I want you to:
+
+FIRST, produce a polished visualization for each of these six variables in our WDI dataset for 2021
+
+- Good news is two of these are already done!
 
 &lt;br&gt;
 
-In the data set I have given you two measures of a state's wealth.
+SECOND, I want you to submit a short argument to Canvas before class that answers this question.
 
-- One is the classification of states in terms of their income level
-    - low, lower-middle, upper-middle and high
+- I want your analysis of the visualizations not just simple descriptions of what you made
 
-- The other is actual GDP per capita
-
-&lt;br&gt;
-
-Let's complete these three univariate analyses!
-
-
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code130[
-
-```r
-# Install animation package (one time)
-install.packages("gganimate")
-
-# Load the package
-library(gganimate)
-
-# Input the data
-data2 &lt;- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/WDI-2023-02/WDI-Measles_Across_Time.xlsx")
-
-# Histogram across time
-data2 |&gt;
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram() +
-  transition_time(year) +
-  labs(title = "Measles Immunizations ({as.integer(frame_time)})")
-```
-]
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-29-1.gif" width="85%" style="display: block; margin: auto;" /&gt;
-
-???
-
-### What lessons we can take from this animation?
-
-### What is the trend in measles immunizations around the world?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Next Week: Report 1**]]]
+- The goals: You've done the analyses and now you have a deeper understanding of the world. Explain what you've learned!
 
 &lt;br&gt;
 
-.code120[
+### Questions on the assignment?
 
-```r
-# New Script: Report_1_Notes.R
+- Get to it!
 
-# Load the packages
-library(readxl)
-library(tidyverse)
 
-# Input the data
-data1 &lt;- read_excel("Data/GII-2021-Tidy.xlsx", na = "NA")
-```
-]
 
-???
-
-*SAVE*
-data2 &lt;- read_excel("Data/GII-1990_2021-Tidy.xlsx")
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

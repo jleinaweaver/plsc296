@@ -790,10 +790,10 @@ class: middle, center
 mpg |>
   mutate(
     cty2 = case_when(
-      cty < 10 ~ "0 - 10",
-      cty < 20 ~ "11 - 20",
-      cty < 30 ~ "21 - 30",
-      cty < 40 ~ "31 - 40")
+      cty <= 10 ~ "0 - 10",
+      cty <= 20 ~ "11 - 20",
+      cty <= 30 ~ "21 - 30",
+      cty <= 40 ~ "31 - 40")
   ) |>
   ggplot(aes(x = cty2)) +
   geom_bar(width = .75, fill = "orange3") +
@@ -812,10 +812,10 @@ mpg |>
 mpg |>
   mutate(
     cty2 = case_when(
-      cty < 10 ~ "0 - 10",
-      cty < 20 ~ "11 - 20",
-      cty < 30 ~ "21 - 30",
-      cty < 40 ~ "31 - 40")
+      cty <= 10 ~ "0 - 10",
+      cty <= 20 ~ "11 - 20",
+      cty <= 30 ~ "21 - 30",
+      cty <= 40 ~ "31 - 40")
   ) |>
   count(cty2) |>
   kableExtra::kbl(col.names = c("City Fuel Economy", "Count"), align = "c")
@@ -947,11 +947,15 @@ class: middle
 ```{r, echo=TRUE}
 # Summary stats
 summary(mpg$cty)
-
-# Calculate the tails
-median(mpg$cty) - IQR(mpg$cty)*1.5
-median(mpg$cty) + IQR(mpg$cty)*1.5
 ```
+
+.code80[
+```{r, echo=TRUE}
+# Calculate the tails
+quantile(mpg$cty, probs = .25) - IQR(mpg$cty)*1.5
+quantile(mpg$cty, probs = .75) + IQR(mpg$cty)*1.5
+```
+]
 ]
 
 .pull-right[
