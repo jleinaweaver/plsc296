@@ -18,9 +18,6 @@ output:
 
 library(tidyverse)
 library(readxl)
-#library(stargazer)
-#library(kableExtra)
-#library(modelr)
 
 knitr::opts_chunk$set(echo = FALSE,
                       eval = TRUE,
@@ -28,6 +25,11 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
                       warning = FALSE,
                       comment = NA)
+
+# Data for today
+data1 <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
+
+data2021 <- filter(data1, year == 2021)
 ```
 
 background-image: url('libs/Images/background-data_blue_v3.png')
@@ -40,13 +42,13 @@ class: middle, inverse
 <br>
 
 .size40[
-Practice building, polishing and interpreting univariate analyses
+Practicing univariate analyses in R
 
-- Script: Univariate_Analyses_FreedomHouse.R
+- Review: Practice exercises
 
-- Data 1: FreedomHouse-2021-tidy.xlsx
+- New: Freedom House Data
 
-- Data 2: FreedomHouse-2013-2021-tidy.xlsx
+- Canvas: "FreedomHouse-Tidy-1972-2023.xlsx"
 ]
 
 <br>
@@ -62,14 +64,174 @@ Practice building, polishing and interpreting univariate analyses
 
 <br>
 
+Today we continue practicing our univariate analyses tools in R
+
+- **SLIDE**: Let's kick things off with your practice work for today.
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("libs/Images/05_2-Assignment.png")
+```
+
+???
+
+### In broad strokes, how did this go?
+
+### - Were you able to make all the visualizations?
+
 <br>
 
-Today we practice our univariate analysis tools by examining the Freedom House data.
+Everybody open up Canvas and review the submissions.
 
-### In very broad strokes, what is the purpose of the measures produced by Freedom House? What are they trying to measure?
+- Let's highlight compelling answers to the two questions that do a good job drawing on descriptive statistics as evidence!
 
-- (**SLIDE**)
+<br>
 
+### Any questions on making an argument in text and supporting it with descriptive statistics as evidence?
+
+<br>
+
+**SLIDE**: Let's now shift to the visualizations you made
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size30[.content-box-blue[**Is the world getting richer or more unequal?**]]]
+
+.pull-left[
+```{r, cache=TRUE, fig.retina=3, out.width='86%', fig.asp=0.618}
+# Snapshot bar plots
+data1 |>
+  filter(year == 1985) |>
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
+  labs(x = "", y = "Countries", title = "World bank Income Categories (1985)", caption = "Source: WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
+
+data1 |>
+  filter(year == 2021) |>
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
+  labs(x = "", y = "Countries", title = "World bank Income Categories (2021)", caption = "Source: WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
+```
+]
+
+.pull-right[
+
+.size20[
+<br>
+]
+
+```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.9}
+library(gganimate)
+
+ggplot(data1, aes(x = wb_income)) +
+  geom_bar(fill = "green3") +
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High")) +
+  transition_time(year) +
+  labs(title = "World Bank Income Categories ({as.integer(frame_time)})",
+       x = "", y = "Countries", caption = "Source: WDI (2024)")
+```
+]
+
+???
+
+### How did we do making these visualizations?
+
+<br>
+
+### Which approach, in this case, is a better choice for supporting an argument about global change over time?
+
+<br>
+
+**SLIDE**: Are birth rates rising or falling around the world?
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.size30[.content-box-blue[**Are birth rates changing across time?**]]]
+
+.pull-left[
+```{r, cache=TRUE, fig.retina=3, out.width='86%', fig.asp=0.618}
+# Snapshot bar plots
+data1 |>
+  filter(year == 1985) |>
+  ggplot(aes(x = birth_rate)) +
+  geom_histogram(bins = 20, color = "white", fill = "darkgoldenrod3") +
+  labs(x = "(per 1,000 people)", y = "Countries", title = "Global Birth Rates (1985)", caption = "Source: WDI (2024)") +
+  xlim(5, 50)
+
+data1 |>
+  filter(year == 2021) |>
+  ggplot(aes(x = birth_rate)) +
+  geom_histogram(bins = 20, color = "white", fill = "darkgoldenrod3") +
+  labs(x = "(per 1,000 people)", y = "Countries", title = "Global Birth Rates (2021)", caption = "Source: WDI (2024)") +
+  xlim(5, 50)
+```
+]
+
+.pull-right[
+
+.size20[
+<br>
+]
+
+```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.9}
+ggplot(data1, aes(x = birth_rate)) +
+  geom_histogram(bins = 20, color = "white", fill = "darkgoldenrod3") +
+  transition_time(year) +
+  labs(title = "Global Birth Rates ({as.integer(frame_time)})",
+       x = "(per 1,000 people)", y = "Countries",
+       caption = "Source: WDI (2024)") +
+  xlim(5, 50)
+```
+]
+
+???
+
+### How did we do making these visualizations?
+
+<br>
+
+### Which approach, in this case, is a better choice for supporting an argument about global change over time?
+
+<br>
+
+I'm hopeful everyone is convinced that the most compelling answer to each question requires:
+1. Complete sentence explanations of your answers, 
+
+2. Evidence in visualizations, AND 
+
+3. Evidence in descriptive statistics
+
+<br>
+
+ALSO, the utility of an animation depends on the clarity of the trend over time!
+
+<br>
+
+**SLIDE**: Alright, let's analyze some new data!
 
 
 
@@ -81,6 +243,12 @@ background-class: center
 class: middle
 
 ???
+
+Today we practice our univariate analysis tools by examining some of the data produced by Freedom House.
+
+### In very broad strokes, what is the purpose of the measures produced by Freedom House? What are they trying to measure?
+
+<br>
 
 Freedom House's "Freedom in the World" project is an attempt to quantify "freedom" in countries across the world in terms of "political rights" and "civil liberties"
 
@@ -107,6 +275,8 @@ If we had chosen Freedom House as our data set we would need to spend quite a bi
 
 - Are these valid definitions? Are they reliable?
 
+<br>
+
 ### Did any of the individual questions stand out to you as being a problem in terms of their validity or reliability?
 
 
@@ -129,6 +299,8 @@ The process in oversimplified terms:
 - The results are summed together to give separate scores for PR (0 to 40) and CL (0 to 60)
 
 - These two numbers are then combined using this table to produce a categorization of the country as being "free", "partly free" or "not free"
+
+<br>
 
 ### Make sense?
 
