@@ -18,6 +18,7 @@ output:
 
 library(tidyverse)
 library(readxl)
+library(gganimate)
 
 knitr::opts_chunk$set(echo = FALSE,
                       eval = TRUE,
@@ -30,6 +31,12 @@ knitr::opts_chunk$set(echo = FALSE,
 data1 <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
 
 data2021 <- filter(data1, year == 2021)
+
+fh <- read_excel("../Data_in_Class-SP24/Freedom_House/FreedomHouse-Tidy-1972-2023.xlsx")
+
+fh1972 <- filter(fh, year == 1972)
+
+fh2023 <- filter(fh, year == 2023)
 ```
 
 background-image: url('libs/Images/background-data_blue_v3.png')
@@ -138,8 +145,6 @@ data1 |>
 ]
 
 ```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.9}
-library(gganimate)
-
 ggplot(data1, aes(x = wb_income)) +
   geom_bar(fill = "green3") +
   scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High")) +
@@ -175,19 +180,34 @@ class: middle
 .pull-left[
 ```{r, cache=TRUE, fig.retina=3, out.width='86%', fig.asp=0.618}
 # Snapshot bar plots
+data1 <- data1 |>
+  mutate(
+    birth_groups = case_when(
+      birth_rate <= 12 ~"A",
+      birth_rate <= 22 ~"B",
+      birth_rate <= 32 ~"C",
+      birth_rate <= 42 ~"D",
+      birth_rate <= 52 ~"E"
+    )
+  )
+
 data1 |>
   filter(year == 1985) |>
-  ggplot(aes(x = birth_rate)) +
-  geom_histogram(bins = 20, color = "white", fill = "darkgoldenrod3") +
+  ggplot(aes(x = birth_rate, fill = birth_groups)) +
+  geom_histogram(bins = 20, color = "white", breaks = seq(0,50,2)) +
   labs(x = "(per 1,000 people)", y = "Countries", title = "Global Birth Rates (1985)", caption = "Source: WDI (2024)") +
-  xlim(5, 50)
+  xlim(5, 50) +
+  scale_fill_brewer(type = "div", palette = 4, direction = -1) +
+  guides(fill = "none")
 
 data1 |>
   filter(year == 2021) |>
-  ggplot(aes(x = birth_rate)) +
-  geom_histogram(bins = 20, color = "white", fill = "darkgoldenrod3") +
+  ggplot(aes(x = birth_rate, fill = birth_groups)) +
+  geom_histogram(bins = 20, color = "white", breaks = seq(0,50,2)) +
   labs(x = "(per 1,000 people)", y = "Countries", title = "Global Birth Rates (2021)", caption = "Source: WDI (2024)") +
-  xlim(5, 50)
+  xlim(5, 50) +
+  scale_fill_brewer(type = "div", palette = 4, direction = -1) +
+  guides(fill = "none")
 ```
 ]
 
@@ -277,28 +297,96 @@ If we had chosen Freedom House as our data set we would need to spend quite a bi
 
 <br>
 
-### Did any of the individual questions stand out to you as being a problem in terms of their validity or reliability?
+Our focus today is to practice our univariate analyses so we'll set methodology aside for the moment.
+
 
 
 
 ---
 
-background-image: url('libs/Images/05_2-Freedom_House2.png')
-background-size: 90%
-background-class: center
-class: middle
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size70[.content-box-blue[**Exercise 1**]]
+
+<br>
+
+.size60[How is global freedom changing across time?]
+
+<br>
+
+.size60[Visualize FH `status` in 1972 and 2023]
 
 ???
 
-The process in oversimplified terms: 
+Alright, let's crunch some data!
 
-- Each country is evaluated by experts across the 25 questions (PR = 10, CL = 15)
+- Answer my question with two visualizations!
 
-- Each question scored between 0 (the smallest degree of freedom) and 4 (the greatest degree of freedom)
+<br>
 
-- The results are summed together to give separate scores for PR (0 to 40) and CL (0 to 60)
+### What's the answer to our question?
 
-- These two numbers are then combined using this table to produce a categorization of the country as being "free", "partly free" or "not free"
+### - How did you get to that answer?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[.content-box-blue[**How is global freedom changing across time?**]]
+
+<br>
+
+.pull-left[
+```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.85, fig.width=5}
+fh |>
+  filter(year == 1972) |>
+  ggplot(aes(x = status)) +
+  geom_bar(fill = c("cornflowerblue", "red3", "pink")) +
+  labs(title = "Freedom House Status (1972)", x = "", y = "Countries",
+       caption = "Source: Freedom House (2024)") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 85)
+```
+]
+
+.pull-right[
+```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.85, fig.width=5}
+fh |>
+  filter(year == 2023) |>
+  ggplot(aes(x = status)) +
+  geom_bar(fill = c("cornflowerblue", "red3", "pink")) +
+  labs(title = "Freedom House Status (2023)", x = "", y = "Countries",
+       caption = "Source: Freedom House (2024)") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 85)
+```
+]
+
+???
+
+A big problem for us in interpreting these counts is that the number of countries being studied increased DRAMATICALLY between the two ends of our dataset
+
+- 1972 obs: `r nrow(fh1972)`
+
+- 2023 obs: `r nrow(fh2023)`
+
+- +`r round((nrow(fh2023)/nrow(fh1972)-1)*100, 1)`%
+
+<br>
+
+Key lesson: IF the sample changes across time, then counts and proportions are very dangerous to interpret!
+
+- We really can't tell from this if states are becoming more free or if new states are more likely to be free
 
 <br>
 
@@ -306,579 +394,363 @@ The process in oversimplified terms:
 
 <br>
 
-An incredibly ambitious undertaking with LOTS of sources for uncertainty!
+Let's try some alternative analyses to see if we can unpack what is happening here.
 
-- Our focus today is on analyzing the measured data, but I never want you to forget that "meaning" is more a function of research design as it is statistics.
+- To start, everybody make me a bar plot of the number of countries in each year in the full dataset
+
+- We're going to treat `year` as a categorical variable
+
+- So, our aim is to count countries in each year
+
+<br>
+
+(**SLIDE**)
 
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size70[.content-box-blue[**Our Job for Today**]]]
-
-<br>
-
-.size65[
-1. What is the current state of "freedom" in the world?
-
-2. How is "freedom" trending across time in the world?
-]
-
-```{r, echo=FALSE}
-# Load readxl package
-library(readxl)
-
-# Input data as new object
-data_2021 <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2021-tidy.xlsx")
+.code110[
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+# Observations counted across time
+ggplot(fh, aes(x = year)) +
+  geom_bar()
 ```
-
-???
-
-On Wednesday we discussed and tested out different ways to add context to our univariate tools that would deepen our analyses.
-
-### What three "contexts" did we add?
-- (The use of benchmarks, maps and across time data.)
-
-<br>
-
-**SLIDE**: Let's follow that as an outline for our work today.
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.content-box-blue[.size60[**What is the current state of "freedom" in the world?**]]
-
-.size55[
-**Option 1: Check the Benchmarks**
-
-Compare the distribution of `status` to the distribution of the `total` score in 2021
 ]
 
 ???
 
-### What type of variable is `status`?
+### What do we learn from this about the world and about Freedom House?
 
-### - And what tools do we use when we have a categorical variable?
+- (Spike in 1991 as USSR collapses so maybe some new countries were more free?)
 
-<br>
-
-### What type of variable is `total`?
-
-### - And what tools do we use when we have a numerical variable?
+- (Not as sure about that spike in 2023)
 
 <br>
 
-Ok, get to it!
-
-- **SLIDE**: My Version
-- **SLIDE**: The code
-
+**SLIDE**: Now, we can also take this one step further by tracking the count of each type of country in this plot.
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.pull-left[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
-# Bar plot
-ggplot(data_2021, aes(x = status)) +
-  geom_bar(width = .5, fill = "seagreen") +
-  geom_hline(yintercept = c(20, 40, 60, 80), color = "white") +
-  theme_bw() +
-  labs(x = "", y = "Country Count") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free"))
-```
-]
-
-.pull-right[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
-# Histogram
-ggplot(data_2021, aes(x = total)) +
-  geom_histogram(bins = 20, color = "white", fill = "seagreen") +
-  theme_bw() +
-  labs(x = "Total Freedom House Score (2021)", y = "Country Count")
+.code110[
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+# Counts of one variable across time
+ggplot(fh, aes(x = year, fill = status)) +
+  geom_bar()
 ```
 ]
 
 ???
 
-### What is our takeaway from these two plots? What is the state of "freedom" in 2021?
+Kind of cool, right?
 
-### - How helpful is `status` as a benchmark for "good" and "bad" values?
-- (Debatabale, no?)
+- Think of this like what you've been doing all semester to "fill" in the bars with color
+
+- This tells R to "fill" in the bars with a different variable!
 
 <br>
 
-### What is a good title for each of these plots? Something that directs the viewer to an important conclusion?
-
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-```{r, echo=TRUE, eval=FALSE}
-# Load packages
-library(tidyverse)
-library(readxl)
-
-# Load the data
-data_2021 <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2021-tidy.xlsx")
-
-# Bar plot
-ggplot(data_2021, aes(x = status)) +
-  geom_bar(width = .5, fill = "seagreen") +
-  geom_hline(yintercept = c(20, 40, 60, 80), color = "white") + #<<
-  theme_bw() + #<<
-  labs(x = "", y = "Country Count") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free"))
-
-# Histogram
-ggplot(data_2021, aes(x = total)) +
-  geom_histogram(bins = 20, color = "white", fill = "seagreen") +
-  theme_bw() + #<<
-  labs(x = "Total Freedom House Score (2021)", y = "Country Count")
-```
-]
-
-???
-
-New code bits
-
-- ggplot has built in themes for changing the general look of your plot
-    - theme_bw is good for printing to black and white
-    
-- geom_hline adds horizontal lines to your plot
-    - I like a bar plot with the bars divided into sections, it helps me compare sizes more easily
-    
-<br>
-
-### What's another piece of context we could add to go deeper in our analyses of FH scores?
-
-- (**SLIDE**: Maps and time!)
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.content-box-blue[.size70[**What is the current state of "freedom" in the world?**]]
-
-.size55[
-**Context Option 2: Check the Map**
-
-Build a world map for `total` in 2021
-]
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, message=FALSE, warning=FALSE, results='hide'}
-# Load the package
-library(rworldmap)
-
-# Merge the data
-data_2021a <- joinCountryData2Map(dF = data_2021, joinCode = "NAME", nameJoinColumn = "country")
-```
-
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.6, out.width='100%', fig.width=12}
-# Output the map
-mapCountryData(data_2021a, nameColumnToPlot = "total", colourPalette = "topo", mapTitle = "Freedom House: Total Scores (2021)")
-```
-
-???
-
-### What is our takeaway from this map?
+### Did everybody make this?
 
 <br>
 
-### What is a good title for this plot? Something that directs the viewer to an important conclusion?
+One problem here is that the levels in our status variable are not in a logical order
 
+- Should probably go NF, PF to F on top
+
+- **SLIDE**
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.code120[
-```{r, echo=TRUE, eval=FALSE}
-# Install the rworldmap package (only once per computer)
-install.packages("rworldmap")
+.code110[
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"))
 
-# Load the package
-library(rworldmap)
-
-# Merge your data onto the world map
-data_2021a <- joinCountryData2Map(dF = data_2021, 
-                                  joinCode = "NAME", 
-                                  nameJoinColumn = "country")
-
-# Output the map
-mapCountryData(data_2021a, 
-               nameColumnToPlot = "total", 
-               colourPalette = "topo", 
-               mapTitle = "Freedom House: Total Scores (2021)")
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar()
 ```
 ]
 
 ???
 
-To help keep the code readable I'm showing you multiple lines within each function.
+*Talk them through creating a new variable*
 
-- This code will work, but I suggest you keep your code on a single line until you're more comfortable diagnosing errors.
+- Don't overwrite your variables, make new ones!
+
+- The levels represents the order you want
+
+- This order looks backwards because the bar plot builds up from the bottom
 
 <br>
 
-**SLIDE**: Let's look at one more way to answer the "current state of the world question."
-
-    
-    
-    
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size40[**What is the current state of "freedom" in the world?**]]]
-
-.pull-left[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
-ggplot(data_2021, aes(x = pr)) +
-  geom_histogram(bins = 20, color = "white", fill = "lightsteelblue3") +
-  theme_bw() + #<<
-  labs(x = "Political Rights Scores (2021)", y = "Country Count")
-```
-]
-
-.pull-right[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
-ggplot(data_2021, aes(x = cl)) +
-  geom_histogram(bins = 20, color = "white", fill = "darkseagreen3") +
-  theme_bw() + #<<
-  labs(x = "Civil Liberties Scores (2021)", y = "Country Count")
-```
-]
-
-???
-
-As you know, the Freedom House total score is made up of two component pieces.
-- Political rights and civil liberties
-
-### What do we learn from visualizing these two distributions as histograms?
-- *force this discussion!*
+### Everybody get this?
 
 <br>
 
-**SLIDE**: Ok, let's jump to our second question
-    
+**SLIDE**: Before we analyze, let's fix the colors
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
-
-.size45[.center[**Context Option 3: Use the filter**]
-1. Load the dataset: FreedomHouse-2013-2021-tidy.xlsx
-
-2. Create a subset of the data for 2013 (filter)
-
-3. Make a bar plot of `status` for 2013 and 2021
-]
-
-???
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.pull-left[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
-# Input data as new object
-data_all <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2013-2021-tidy.xlsx")
-
-# Create a subset of the data
-data_2013 <- filter(data_all, edition == 2013)
-
-# Bar plot 2013
-ggplot(data_2013, aes(x = status)) +
-  geom_bar(width = .5, fill = "seagreen") +
-  geom_hline(yintercept = c(25, 50, 75), color = "white") +
-  theme_bw() +
-  labs(x = "", y = "Country Count", title = "2013 Edition") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
-  ylim(0, 100) #<<
-```
-]
-
-.pull-right[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=4}
-# Bar plot 2021
-ggplot(data_2021, aes(x = status)) +
-  geom_bar(width = .5, fill = "seagreen") +
-  geom_hline(yintercept = c(25, 50, 75), color = "white") +
-  theme_bw() +
-  labs(x = "", y = "Country Count", title = "2021 Edition") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
-  ylim(0, 100) #<<
+.code110[
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+# Use a built-in color palette
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_brewer(type = "div", palette = 5, direction = -1)
 ```
 ]
 
 ???
 
-### What do we learn from visualizing these two distributions as bar plots?
-- *force this discussion!*
+This function draws on the R Color Brewer which is a package full of built in color palettes
 
-- Slight decrease in "free" states, but this really isn't the ideal way to make this comparison...
+- You should explore the options on this as it can do a ton!
+
+- Three types available: "seq" (sequential), "div" (diverging) or "qual" (qualitative)
+
+- A big number of different color palettes
+
+- And I've used "direction" here to reverse the order of the colors so red is not free.
 
 <br>
 
-**SLIDE**: Code on the next slide, but I also want to show you a better way to make this comparison.
+### What do we learn from this about the world and about Freedom House?
 
+<br>
 
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-```{r, echo=TRUE, eval=FALSE}
-# Input data as new object
-data_all <- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2013-2021-tidy.xlsx")
-
-# Create a subset of the data
-data_2013 <- filter(data_all, edition == 2013)
-
-# Bar plot 2013
-ggplot(data_2013, aes(x = status)) +
-  geom_bar(width = .5, fill = "seagreen") +
-  geom_hline(yintercept = c(25, 50, 75), color = "white") +
-  theme_bw() +
-  labs(x = "", y = "Country Count", title = "2013 Edition") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
-  ylim(0, 100)
-
-# Bar plot 2021
-ggplot(data_2021, aes(x = status)) +
-  geom_bar(width = .5, fill = "seagreen") +
-  geom_hline(yintercept = c(25, 50, 75), color = "white") +
-  theme_bw() +
-  labs(x = "", y = "Country Count", title = "2021 Edition") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
-  ylim(0, 100)
-```
-]
-
-???
+**SLIDE**: One more tweak possible here...
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.75, out.width='80%', fig.width=7}
-data_all |>
-  mutate(
-    status_f = factor(status, levels = c("F", "PF", "NF"))
-  ) |>
-  ggplot(aes(x = edition, fill = status_f)) +
+.code110[
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+# Convert the counts to proportions
+ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar(position = "fill") +
-  theme_bw() +
-  scale_fill_brewer(type = "div", palette = 5, direction = -1) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(x = "", y = "Proportion of Countries") +
-  scale_x_discrete(limits = 2013:2021) +
-  guides(fill = "none") +
-  annotate("text", x = 2013, y = .125, label = "NF") +
-  annotate("text", x = 2013, y = .41, label = "PF") +
-  annotate("text", x = 2013, y = .8, label = "F")
-```
-
-???
-
-We'll get to this code in a few weeks, but this is an example of a bivariate analysis using a stacked bar plot converted into proportions of the total.
-
-### Questions on how to read this plot?
-
-<br>
-
-### What do we learn from this about the trend of freedom across time?
-
-<br>
-
-**SLIDE**: Last approach from Wednesday, animation!
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
-
-.size45[.center[**Context Option 3: Animate!**]
-1. Use the dataset: FreedomHouse-2013-2021-tidy.xlsx
-
-2. Copy our animation code from Wednesday and track FH `status` across time
-]
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, echo=FALSE, eval=TRUE, fig.retina=3, fig.asp=0.618,  fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-# Load the package
-library(gganimate)
-
-# Histogram across time
-data_all |>
-  ggplot(aes(x = status)) +
-  geom_bar(width = .5, fill = "cadetblue2") +
-  theme_bw() +
-  labs(x = "", y = "Country Count", title = "{as.integer(frame_time)}") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
-  transition_time(edition)
-```
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-```{r, echo=TRUE, eval=FALSE}
-# Load the package
-library(gganimate)
-
-# Histogram across time
-data_all |>
-  ggplot(aes(x = status)) +
-  geom_bar(width = .5, fill = "cadetblue2") +
-  theme_bw() +
-  labs(x = "", y = "Country Count", 
-       title = "{as.integer(frame_time)}") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), 
-                   labels = c("Not Free", "Partly Free", "Free")) +
-  transition_time(edition)
+  scale_fill_brewer(type = "div", palette = 5, direction = -1)
 ```
 ]
 
 ???
 
-### What is our takeaway from this animation? How is "freedom" trending over time?
+Position = 'fill' asks the bar plot to convert itself into proportions on the y axis
+
+- Think of this like using prop.table()
+
+<br>
+
+### How does this change our conclusions?
+
+<br>
+
+### Why is this SUPER risky?
+
+- Completely hides the change in the number of countries per year
+
+- Assumes changes in % are the same when there are 149 countries vs 210...
+
+<br>
+
+**SLIDE**: Let's look at one more option for analyzing change across time before we practice
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size70[.content-box-blue[**Exercise 2**]]
+
+<br>
+
+.size60[How are political rights changing across time?]
+
+<br>
+
+.size60[Visualize `pr` across time for the United States only] 
+
+???
+
+A second option for tracking change across time is to focus on a single observation
+
+<br>
+
+- Filter the dataset to only include the US
+
+- geom_line()
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size70[.content-box-blue[**Our Job for Today**]]]
+```{r, echo=TRUE, cache=TRUE, fig.align='center', fig.retina=3, out.width='60%', fig.asp=0.618, fig.width=7}
+fh_US <- filter(fh, fh_country == "United States")
+
+ggplot(fh_US, aes(x = year, y = pr)) +
+  geom_line() +
+  scale_y_continuous(limits = c(1,7), breaks = 1:7) +
+  labs(x = "", y = "Political Rights (1-7)", 
+       caption = "Source: Freedom House (2024)", 
+       title = "Political Rights in the United States have been remarkably stable over time")
+```
+
+???
+
+A fairly stable story over time, right?
+
+- Something weird happened in 2016...
 
 <br>
 
-.size65[
-1. What is the current state of "freedom" in the world?
+Everybody try this again but find us a country with tons of yearly variation!
 
-2. How is "freedom" trending across time in the world?
+<br>
+
+### Report back, what countries are basket cases per this measure?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[.content-box-blue[**Practice Exercises**]]
+
+<br>
+
+.size55[
+1. Are countries getting richer over time? Make a stacked bar plot of `wb_income` across time
+
+2. Track the `gdp_per_capita` across time for the country you found with big variation in FH Political Rights
+
 ]
 
 ???
 
-### Ok, how did we do today?
+Let's practice applying today's tools using the WDI data we've been exploring all week.
+
+- Make and polish me two plots!
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, echo=TRUE, cache=TRUE, fig.align='center', fig.retina=3, out.width='60%', fig.asp=0.7, fig.width=7}
+data1$wb_income_f <- factor(data1$wb_income, 
+                            levels = c(NA, "High", "Upper-middle", "Lower-middle", "Low"))
+
+data1 |>
+  ggplot(aes(x = year, fill = wb_income_f)) +
+  geom_bar() +
+  scale_fill_viridis_d(end = .9, na.value = "grey50")
+```
+
+???
+
+An alternative to brewer for color palettes is viridis.
+
+- Viridis is designed to be friendly to the color blind
+
+- They don't always look as good, but let's not forget we should be inclusive in our visualizations!
+
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, cache=TRUE, fig.align='center', fig.retina=3, out.width='90%', fig.asp=0.618, fig.width=9}
+# Identify biggest Std Devs in FH 'pr'
+# fh |>
+#   group_by(fh_country) |>
+#   summarize(sd = sd(pr)) |>
+#   arrange(desc(sd))
+
+# Plot GDP pc for top 10
+data1 |>
+  filter(country %in% c("Mongolia", "Bulgaria", "Ghana", "Romania", "Benin", "Chile", "Cabo Verde", "Poland", "Panama", "Mali")) |>
+  ggplot(aes(x = year, y = gdp_per_capita, color = country)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::dollar_format(scale = 1/1000, suffix = "k")) +
+  labs(x = "", y = "GDP per capita (current USD)", title = "Tracking wealth for the states with the least stable political rights in the world") +
+  scale_color_brewer(type = "qual", palette = 3)
+```
+
+???
+
+As a programming process I first calculated the SD for each state across time
+
+- Big Std Dev = big changes year to year in political rights for that country
 
 <br>
 
-### Ready to go on the first report next week?
+Then I filtered the WDI database for the ten states with the biggest SD in FH
 
+- Made a line plot for those ten and colored the lines
 
+<br>
 
+Super fascinating divide here between:
 
+- Mostly African countries where rights are unstable and growth is non-existent, and
 
-
-
-
-
-
+- European / C. American countries with erratice rights BUT economic growth!
 
 
 

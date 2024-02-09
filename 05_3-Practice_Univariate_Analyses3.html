@@ -209,28 +209,78 @@ If we had chosen Freedom House as our data set we would need to spend quite a bi
 
 &lt;br&gt;
 
-### Did any of the individual questions stand out to you as being a problem in terms of their validity or reliability?
+Our focus today is to practice our univariate analyses so we'll set methodology aside for the moment.
+
 
 
 
 ---
 
-background-image: url('libs/Images/05_2-Freedom_House2.png')
-background-size: 90%
-background-class: center
-class: middle
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle, center
+
+.size70[.content-box-blue[**Exercise 1**]]
+
+&lt;br&gt;
+
+.size60[How is global freedom changing across time?]
+
+&lt;br&gt;
+
+.size60[Visualize FH `status` in 1972 and 2023]
 
 ???
 
-The process in oversimplified terms: 
+Alright, let's crunch some data!
 
-- Each country is evaluated by experts across the 25 questions (PR = 10, CL = 15)
+- Answer my question with two visualizations!
 
-- Each question scored between 0 (the smallest degree of freedom) and 4 (the greatest degree of freedom)
+&lt;br&gt;
 
-- The results are summed together to give separate scores for PR (0 to 40) and CL (0 to 60)
+### What's the answer to our question?
 
-- These two numbers are then combined using this table to produce a categorization of the country as being "free", "partly free" or "not free"
+### - How did you get to that answer?
+
+- (**SLIDE**)
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[.content-box-blue[**How is global freedom changing across time?**]]
+
+&lt;br&gt;
+
+.pull-left[
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
+]
+
+.pull-right[
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-8-1.png" width="100%" /&gt;
+]
+
+???
+
+A big problem for us in interpreting these counts is that the number of countries being studied increased DRAMATICALLY between the two ends of our dataset
+
+- 1972 obs: 149
+
+- 2023 obs: 210
+
+- +40.9%
+
+&lt;br&gt;
+
+Key lesson: IF the sample changes across time, then counts and proportions are very dangerous to interpret!
+
+- We really can't tell from this if states are becoming more free or if new states are more likely to be free
 
 &lt;br&gt;
 
@@ -238,492 +288,369 @@ The process in oversimplified terms:
 
 &lt;br&gt;
 
-An incredibly ambitious undertaking with LOTS of sources for uncertainty!
+Let's try some alternative analyses to see if we can unpack what is happening here.
 
-- Our focus today is on analyzing the measured data, but I never want you to forget that "meaning" is more a function of research design as it is statistics.
+- To start, everybody make me a bar plot of the number of countries in each year in the full dataset
+
+- We're going to treat `year` as a categorical variable
+
+- So, our aim is to count countries in each year
+
+&lt;br&gt;
+
+(**SLIDE**)
 
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.center[.size70[.content-box-blue[**Our Job for Today**]]]
+.code110[
 
-&lt;br&gt;
+```r
+# Observations counted across time
+ggplot(fh, aes(x = year)) +
+  geom_bar()
+```
 
-.size65[
-1. What is the current state of "freedom" in the world?
-
-2. How is "freedom" trending across time in the world?
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-9-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 ]
-
-
 
 ???
 
-On Wednesday we discussed and tested out different ways to add context to our univariate tools that would deepen our analyses.
+### What do we learn from this about the world and about Freedom House?
 
-### What three "contexts" did we add?
-- (The use of benchmarks, maps and across time data.)
+- (Spike in 1991 as USSR collapses so maybe some new countries were more free?)
+
+- (Not as sure about that spike in 2023)
 
 &lt;br&gt;
 
-**SLIDE**: Let's follow that as an outline for our work today.
+**SLIDE**: Now, we can also take this one step further by tracking the count of each type of country in this plot.
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code110[
+
+```r
+# Counts of one variable across time
+ggplot(fh, aes(x = year, fill = status)) +
+  geom_bar()
+```
+
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-10-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Kind of cool, right?
+
+- Think of this like what you've been doing all semester to "fill" in the bars with color
+
+- This tells R to "fill" in the bars with a different variable!
+
+&lt;br&gt;
+
+### Did everybody make this?
+
+&lt;br&gt;
+
+One problem here is that the levels in our status variable are not in a logical order
+
+- Should probably go NF, PF to F on top
+
+- **SLIDE**
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code110[
+
+```r
+# Create a new variable using factor()
+fh$status_f &lt;- factor(fh$status, levels = c("F", "PF", "NF"))
+
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar()
+```
+
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-11-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+*Talk them through creating a new variable*
+
+- Don't overwrite your variables, make new ones!
+
+- The levels represents the order you want
+
+- This order looks backwards because the bar plot builds up from the bottom
+
+&lt;br&gt;
+
+### Everybody get this?
+
+&lt;br&gt;
+
+**SLIDE**: Before we analyze, let's fix the colors
 
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code110[
+
+```r
+# Use a built-in color palette
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_brewer(type = "div", palette = 5, direction = -1)
+```
+
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-12-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+This function draws on the R Color Brewer which is a package full of built in color palettes
+
+- You should explore the options on this as it can do a ton!
+
+- Three types available: "seq" (sequential), "div" (diverging) or "qual" (qualitative)
+
+- A big number of different color palettes
+
+- And I've used "direction" here to reverse the order of the colors so red is not free.
+
+&lt;br&gt;
+
+### What do we learn from this about the world and about Freedom House?
+
+&lt;br&gt;
+
+**SLIDE**: One more tweak possible here...
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code110[
+
+```r
+# Convert the counts to proportions
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar(position = "fill") +
+  scale_fill_brewer(type = "div", palette = 5, direction = -1)
+```
+
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-13-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Position = 'fill' asks the bar plot to convert itself into proportions on the y axis
+
+- Think of this like using prop.table()
+
+&lt;br&gt;
+
+### How does this change our conclusions?
+
+&lt;br&gt;
+
+### Why is this SUPER risky?
+
+- Completely hides the change in the number of countries per year
+
+- Assumes changes in % are the same when there are 149 countries vs 210...
+
+&lt;br&gt;
+
+**SLIDE**: Let's look at one more option for analyzing change across time before we practice
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle, center
 
-.content-box-blue[.size60[**What is the current state of "freedom" in the world?**]]
+.size70[.content-box-blue[**Exercise 2**]]
+
+&lt;br&gt;
+
+.size60[How are political rights changing across time?]
+
+&lt;br&gt;
+
+.size60[Visualize `pr` across time for the United States only] 
+
+???
+
+A second option for tracking change across time is to focus on a single observation
+
+&lt;br&gt;
+
+- Filter the dataset to only include the US
+
+- geom_line()
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+
+```r
+fh_US &lt;- filter(fh, fh_country == "United States")
+
+ggplot(fh_US, aes(x = year, y = pr)) +
+  geom_line() +
+  scale_y_continuous(limits = c(1,7), breaks = 1:7) +
+  labs(x = "", y = "Political Rights (1-7)", 
+       caption = "Source: Freedom House (2024)", 
+       title = "Political Rights in the United States have been remarkably stable over time")
+```
+
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-14-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+???
+
+A fairly stable story over time, right?
+
+- Something weird happened in 2016...
+
+&lt;br&gt;
+
+Everybody try this again but find us a country with tons of yearly variation!
+
+&lt;br&gt;
+
+### Report back, what countries are basket cases per this measure?
+
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size55[.content-box-blue[**Practice Exercises**]]
+
+&lt;br&gt;
 
 .size55[
-**Option 1: Check the Benchmarks**
+1. Are countries getting richer over time? Make a stacked bar plot of `wb_income` across time
 
-Compare the distribution of `status` to the distribution of the `total` score in 2021
+2. Track the `gdp_per_capita` across time for the country you found with big variation in FH Political Rights
+
 ]
 
 ???
 
-### What type of variable is `status`?
+Let's practice applying today's tools using the WDI data we've been exploring all week.
 
-### - And what tools do we use when we have a categorical variable?
-
-&lt;br&gt;
-
-### What type of variable is `total`?
-
-### - And what tools do we use when we have a numerical variable?
-
-&lt;br&gt;
-
-Ok, get to it!
-
-- **SLIDE**: My Version
-- **SLIDE**: The code
-
+- Make and polish me two plots!
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-.pull-left[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-.pull-right[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-### What is our takeaway from these two plots? What is the state of "freedom" in 2021?
-
-### - How helpful is `status` as a benchmark for "good" and "bad" values?
-- (Debatabale, no?)
-
-&lt;br&gt;
-
-### What is a good title for each of these plots? Something that directs the viewer to an important conclusion?
-
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
 
 ```r
-# Load packages
-library(tidyverse)
-library(readxl)
+data1$wb_income_f &lt;- factor(data1$wb_income, 
+                            levels = c(NA, "High", "Upper-middle", "Lower-middle", "Low"))
 
-# Load the data
-data_2021 &lt;- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2021-tidy.xlsx")
-
-# Bar plot
-ggplot(data_2021, aes(x = status)) +
-  geom_bar(width = .5, fill = "seagreen") +
-* geom_hline(yintercept = c(20, 40, 60, 80), color = "white") +
-* theme_bw() +
-  labs(x = "", y = "Country Count") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free"))
-
-# Histogram
-ggplot(data_2021, aes(x = total)) +
-  geom_histogram(bins = 20, color = "white", fill = "seagreen") +
-* theme_bw() +
-  labs(x = "Total Freedom House Score (2021)", y = "Country Count")
+data1 |&gt;
+  ggplot(aes(x = year, fill = wb_income_f)) +
+  geom_bar() +
+  scale_fill_viridis_d(end = .9, na.value = "grey50")
 ```
-]
+
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-15-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 ???
 
-New code bits
+An alternative to brewer for color palettes is viridis.
 
-- ggplot has built in themes for changing the general look of your plot
-    - theme_bw is good for printing to black and white
-    
-- geom_hline adds horizontal lines to your plot
-    - I like a bar plot with the bars divided into sections, it helps me compare sizes more easily
-    
-&lt;br&gt;
+- Viridis is designed to be friendly to the color blind
 
-### What's another piece of context we could add to go deeper in our analyses of FH scores?
+- They don't always look as good, but let's not forget we should be inclusive in our visualizations!
 
-- (**SLIDE**: Maps and time!)
 
 
 
 ---
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.content-box-blue[.size70[**What is the current state of "freedom" in the world?**]]
-
-.size55[
-**Context Option 2: Check the Map**
-
-Build a world map for `total` in 2021
-]
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-position: center
 class: middle
 
-
-
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-12-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 
 ???
 
-### What is our takeaway from this map?
+As a programming process I first calculated the SD for each state across time
+
+- Big Std Dev = big changes year to year in political rights for that country
 
 &lt;br&gt;
 
-### What is a good title for this plot? Something that directs the viewer to an important conclusion?
+Then I filtered the WDI database for the ten states with the biggest SD in FH
 
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-
-```r
-# Install the rworldmap package (only once per computer)
-install.packages("rworldmap")
-
-# Load the package
-library(rworldmap)
-
-# Merge your data onto the world map
-data_2021a &lt;- joinCountryData2Map(dF = data_2021, 
-                                  joinCode = "NAME", 
-                                  nameJoinColumn = "country")
-
-# Output the map
-mapCountryData(data_2021a, 
-               nameColumnToPlot = "total", 
-               colourPalette = "topo", 
-               mapTitle = "Freedom House: Total Scores (2021)")
-```
-]
-
-???
-
-To help keep the code readable I'm showing you multiple lines within each function.
-
-- This code will work, but I suggest you keep your code on a single line until you're more comfortable diagnosing errors.
+- Made a line plot for those ten and colored the lines
 
 &lt;br&gt;
 
-**SLIDE**: Let's look at one more way to answer the "current state of the world question."
+Super fascinating divide here between:
 
-    
-    
-    
----
+- Mostly African countries where rights are unstable and growth is non-existent, and
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size40[**What is the current state of "freedom" in the world?**]]]
-
-.pull-left[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-14-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-.pull-right[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-15-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-As you know, the Freedom House total score is made up of two component pieces.
-- Political rights and civil liberties
-
-### What do we learn from visualizing these two distributions as histograms?
-- *force this discussion!*
-
-&lt;br&gt;
-
-**SLIDE**: Ok, let's jump to our second question
-    
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
-
-.size45[.center[**Context Option 3: Use the filter**]
-1. Load the dataset: FreedomHouse-2013-2021-tidy.xlsx
-
-2. Create a subset of the data for 2013 (filter)
-
-3. Make a bar plot of `status` for 2013 and 2021
-]
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-16-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-.pull-right[
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-17-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-### What do we learn from visualizing these two distributions as bar plots?
-- *force this discussion!*
-
-- Slight decrease in "free" states, but this really isn't the ideal way to make this comparison...
-
-&lt;br&gt;
-
-**SLIDE**: Code on the next slide, but I also want to show you a better way to make this comparison.
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-
-```r
-# Input data as new object
-data_all &lt;- read_excel("../../Course_History/2023-Spring/Data_in_Class-SP23/Freedom_House/FreedomHouse-2013-2021-tidy.xlsx")
-
-# Create a subset of the data
-data_2013 &lt;- filter(data_all, edition == 2013)
-
-# Bar plot 2013
-ggplot(data_2013, aes(x = status)) +
-  geom_bar(width = .5, fill = "seagreen") +
-  geom_hline(yintercept = c(25, 50, 75), color = "white") +
-  theme_bw() +
-  labs(x = "", y = "Country Count", title = "2013 Edition") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
-  ylim(0, 100)
-
-# Bar plot 2021
-ggplot(data_2021, aes(x = status)) +
-  geom_bar(width = .5, fill = "seagreen") +
-  geom_hline(yintercept = c(25, 50, 75), color = "white") +
-  theme_bw() +
-  labs(x = "", y = "Country Count", title = "2021 Edition") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
-  ylim(0, 100)
-```
-]
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-19-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-
-???
-
-We'll get to this code in a few weeks, but this is an example of a bivariate analysis using a stacked bar plot converted into proportions of the total.
-
-### Questions on how to read this plot?
-
-&lt;br&gt;
-
-### What do we learn from this about the trend of freedom across time?
-
-&lt;br&gt;
-
-**SLIDE**: Last approach from Wednesday, animation!
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**How is "freedom" trending across time in the world?**]]]
-
-.size45[.center[**Context Option 3: Animate!**]
-1. Use the dataset: FreedomHouse-2013-2021-tidy.xlsx
-
-2. Copy our animation code from Wednesday and track FH `status` across time
-]
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-&lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-20-1.gif" width="90%" style="display: block; margin: auto;" /&gt;
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-
-```r
-# Load the package
-library(gganimate)
-
-# Histogram across time
-data_all |&gt;
-  ggplot(aes(x = status)) +
-  geom_bar(width = .5, fill = "cadetblue2") +
-  theme_bw() +
-  labs(x = "", y = "Country Count", 
-       title = "{as.integer(frame_time)}") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), 
-                   labels = c("Not Free", "Partly Free", "Free")) +
-  transition_time(edition)
-```
-]
-
-???
-
-### What is our takeaway from this animation? How is "freedom" trending over time?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size70[.content-box-blue[**Our Job for Today**]]]
-
-&lt;br&gt;
-
-.size65[
-1. What is the current state of "freedom" in the world?
-
-2. How is "freedom" trending across time in the world?
-]
-
-???
-
-### Ok, how did we do today?
-
-&lt;br&gt;
-
-### Ready to go on the first report next week?
-
-
-
-
-
-
-
-
-
-
+- European / C. American countries with erratice rights BUT economic growth!
 
 
 
