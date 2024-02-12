@@ -67,12 +67,14 @@ class: middle
 
 
 ```r
-# 1. What is the regional breakdown of UN member states?
-practice1 &lt;- ggplot(data = UN, aes(y = region))
-practice1 + geom_bar(fill = "mediumpurple")
+# 1. What is the regional breakdown of UN member states? 
+library(carData)
+
+ggplot(data = UN, aes(y = region)) +
+  geom_bar(fill = "mediumpurple")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-2-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-2-1.png" width="55%" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -91,7 +93,8 @@ Don't forget that accessing this dataset requires installing AND loading carData
 
 &lt;br&gt;
 
-**SLIDE**: Let's use this as an opportunity to practice polishing our visualizations for professional audiences (and your reports!)
+**SLIDE**: Time to talk about polishing a visualization for a professional audience
+
 
 
 
@@ -120,9 +123,14 @@ class: middle
 
 ???
 
-At a minimum, professional visualizations must include:
+From this point forward, anytime you submit a visualization it must be polished enough that you could present it to a professional audience.
+
+&lt;br&gt;
+
+At a minimum, that means you include:
 
 1. A title or figure caption that explains the key takeaway of the visualization in your argument,
+    - Not just a simple description of the plot (that's what the axis labels are for!)
 
 2. Clearly defined axis labels, and
 
@@ -134,11 +142,7 @@ We can get even fancier, but this represents my minimum expectations from you th
 
 &lt;br&gt;
 
-### Do these criteria make sense?
-
-&lt;br&gt;
-
-**SLIDE**: How to do it...
+**SLIDE**: Let's add each piece one at a time
 
 
 
@@ -153,38 +157,25 @@ class: middle
 
 ```r
 # The labs() function
-practice1 + 
+ggplot(data = UN, aes(y = region)) +
   geom_bar() +
-  labs(x = "Count") +
-  labs(y = "") +
-  labs(caption = "Source: UNSD (2012)") +
-  labs(title = "UN tracking covers some non-member states")
+  labs(x = "Count", y = "United Nations Regions")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-4-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-4-1.png" width="55%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
 
-We will primarily use the labs() function to label your plots 
+The labs function has a bunch of possible arguments, e.g. labels you can add to your plot
 
-- Each labs function is added using the '+' style that ggplot requires
+- Here I'm adding x and y axis labels
 
-- Essentially, within the ggplot function you can keep adding customizations
-
-&lt;br&gt;
-
-To keep things clear, I have added each of these elements using a separate labs() function.
-
-- I want it to be clear that you can add whichever pieces you want/need
+- Just separate each argument with a comma
 
 &lt;br&gt;
 
-*Step through each argument: x, y, title, caption*
-
-&lt;br&gt;
-
-**SLIDE**: You can also do this with one labs function
+**SLIDE**: Add a caption
 
 
 
@@ -195,24 +186,53 @@ background-size: 100%
 background-position: center
 class: middle
 
-.code110[
+.code100[
 
 ```r
 # The labs() function
-practice1 + 
+ggplot(data = UN, aes(y = region)) +
   geom_bar() +
-  labs(x = "Count", y = "", caption = "Source: UNSD (2012)", 
-       title = "UN tracking covers some non-member states")
+  labs(x = "Count", y = "United Nations Regions", caption = "Source: UNSD (2012)")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-5-1.png" width="55%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
 
-Here I'm doing the same thing as before with one labs function but multiple arguments each separated by a comma.
+The caption argument adds a small note on the bottom right of the plot
 
-- Totally up to you
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+
+```r
+# The labs() function
+ggplot(data = UN, aes(y = region)) +
+  geom_bar() +
+  labs(x = "Count", y = "United Nations Regions", caption = "Source: UNSD (2012)",
+       title = "The UN tracks data for a large number of non-member states")
+```
+
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-6-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Finally we add a thesis statement for our visualization
+
+- No simple description titles in here!
+
+- Your title should convey the key takeaway from the visualization for the reader
+
+- The goal is that someone could go through your report only looking at the figures and follow along with your argument!
 
 &lt;br&gt;
 
@@ -220,7 +240,7 @@ Here I'm doing the same thing as before with one labs function but multiple argu
 
 &lt;br&gt;
 
-### And clear on how to use the labs function?
+### Any questions on using the labs function?
 
 &lt;br&gt;
 
@@ -239,17 +259,18 @@ background-size: 100%
 background-position: center
 class: middle
 
-.code110[
+.code100[
 
 ```r
 # The labs() function
-practice1 + 
+ggplot(data = UN, aes(y = region)) +
   geom_bar(fill = c(rep("darkblue", 8), "red")) +
-  labs(x = "Count", y = "", caption = "Source: UNSD (2012)", 
-       title = "UN tracking covers some non-member states")
+  labs(x = "Count", y = "United Nations Regions", 
+       caption = "Source: UNSD (2012)", 
+       title = "The UN tracks data for a large number of non-member states")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-6-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-7-1.png" width="55%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
@@ -289,7 +310,7 @@ practice2 &lt;- ggplot(data = UN, aes(x = lifeExpF))
 practice2 + geom_histogram()
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
@@ -298,7 +319,7 @@ practice2 + geom_histogram()
 practice2 + geom_boxplot()
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
@@ -329,14 +350,14 @@ class: middle
 .code110[
 
 ```r
-practice2 + 
+ggplot(data = UN, aes(x = lifeExpF)) +
   geom_histogram() +
   labs(x = "Life Expectancy (years)", y = "Count", 
        caption = "Source: UNSD (2012)", 
        title = "Almost 1/3 of the states have a life expectancy below 70")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-11-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-12-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
@@ -362,16 +383,14 @@ class: middle
 
 ```r
 # 3. Visualize the growth in the US population since 1790
-practice3 &lt;- ggplot(data = USPop, aes(x = year, y = population))
-
-practice3 + 
+ggplot(data = USPop, aes(x = year, y = population)) +
   geom_line() +
   labs(x = "", y = "US Population (millions)", 
        caption = "Source: U.S. Census Bureau (2008)", 
        title = "The US has rapidly added population since 1780")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-12-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-13-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -465,27 +484,14 @@ background-size: 100%
 background-position: center
 class: middle
 
-&lt;img src="libs/Images/05_1-RStudio_Import4_v2.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="libs/Images/05_1-RStudio_Import3-SP24-Browse.png" width="95%" style="display: block; margin: auto;" /&gt;
 
 ???
 
 Step 2: "Browse" to the data you saved on your hard drive
 
-- Sorry that the file name on the screen is not matching yours
+- It should then populate all the fields below with its best guesses
 
-- WDI-Tidy_Data_Extract-2024-02-06.xlsx
-
-&lt;br&gt;
-
-After selecting your data you'll get a preview of it in R
-
-- VERY IMPORTANT to look at the data in the preview window
-
-&lt;br&gt;
-
-In this example you can see that R thinks the variable for measles immunizations is a categorical variable (e.g. character)!
-
-- This is because it sees the NAs as words not as missing data!
 
 
 ---
@@ -495,21 +501,43 @@ background-size: 100%
 background-position: center
 class: middle
 
-&lt;img src="libs/Images/05_1-RStudio_Import5_v2.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="libs/Images/05_1-RStudio_Import3-SP24-NAs.png" width="100%" style="display: block; margin: auto;" /&gt;
 
 ???
 
-Step 3: Name the data AND specify how the dataset records missing data
+Step 3, use the preview code to make sure R "sees" the data as you expect it to
 
-- Can name it anything but let's all use "data1" today
-
-- MAKE SURE you put "NA" in the NA field
+- VERY IMPORTANT to look at the data in the preview window
 
 &lt;br&gt;
 
-After you update the NA field you should see the variables change in the preview window
+In this example you can see that R thinks all of our numeric variables are actually categorical variables!
 
-- Numeric variables now are numeric and the NAs get italicized and made lighter so we understand it is missing data
+- This is because it sees the NAs as words not as missing data!
+
+- In a variable with words and numbers it is forced to treat all of the values as words
+
+&lt;br&gt;
+
+In the NA field put in 'NA' and after you click out of that box you should see the preview refresh to show numeric variables are now "double" which is a type of numeric variable
+
+- **SLIDE**
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+&lt;img src="libs/Images/05_1-RStudio_Import4-SP24.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+???
+
+Last step, name the dataset object
+
+- This is what we will type in to access this data in R
 
 &lt;br&gt;
 
@@ -528,7 +556,7 @@ class: middle
 
 
 ```r
-View(data1)
+View(wdi)
 ```
 
 .size18[
@@ -698,9 +726,9 @@ class: middle
 
 ```r
 # Extract some observations from the dataset
-data2021 &lt;- filter(data1, year == 2021)
+wdi2021 &lt;- filter(wdi, year == 2021)
 
-View(data2021)
+View(wdi2021)
 ```
 
 .size18[
@@ -845,19 +873,19 @@ class: middle
 
 ```r
 # Filter for one variable
-filter(data1, wb_income == "Low")
+filter(wdi, wb_income == "Low")
 ```
 
 
 ```r
 # Filter by relative values
-filter(data1, death_rate &gt; 20)
+filter(wdi, death_rate &gt; 20)
 ```
 
 
 ```r
 # Filter by two variables
-filter(data1, country == "Ireland", year == 2008)
+filter(wdi, country == "Ireland", year == 2008)
 ```
 ]
 
@@ -933,15 +961,13 @@ class: middle
 
 ```r
 # How many countries have reached herd immunity for measles?
-measles1 &lt;- ggplot(data = data2021, aes(x = measles_herd_immunity))
-
-measles1 + 
+ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
   geom_bar(fill = c("red1", "blue3", "blue3")) +
   labs(x = "", y = "Count", caption = "Source: WDI (2021)",
        title = "The great majority of countries are at risk of measles outbreaks")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-24-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-26-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
@@ -974,11 +1000,11 @@ class: middle
 .center[.size55[.content-box-blue[**The Missing Data Problem**]]]
 
 .pull-left[
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-25-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-27-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-26-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-28-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
@@ -1034,16 +1060,14 @@ class: middle
 
 ```r
 # Histogram
-measles2 &lt;- ggplot(data = data2021, aes(x = measles_immunizations_pct))
-
-measles2 + 
+ggplot(data = wdi2021, aes(x = measles_immunizations_pct)) +
   geom_histogram(bins = 20, fill = "slateblue3") +
   labs(x = "Measles Immunizations (%)", y = "Count",
        caption = "Source: WDI (2021)",
        title = "??")
 ```
 
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-27-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-29-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 ???
@@ -1083,11 +1107,11 @@ class: middle
 .center[.size50[.content-box-blue[**Analyzing Child Protection in 2021**]]]
 
 .pull-left[
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-29-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-31-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
-&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-30-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="05_1-Practice_Univariate_Analyses1_files/figure-html/unnamed-chunk-32-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 &lt;br&gt;

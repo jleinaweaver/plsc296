@@ -29,7 +29,7 @@ knitr::opts_chunk$set(echo = FALSE,
 # Data for today
 library(carData)
 
-data1 <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
+wdi <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
 ```
 
 background-image: url('libs/Images/background-data_blue_v3.png')
@@ -82,10 +82,12 @@ background-size: 100%
 background-position: center
 class: middle
 
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='60%'}
-# 1. What is the regional breakdown of UN member states?
-practice1 <- ggplot(data = UN, aes(y = region))
-practice1 + geom_bar(fill = "mediumpurple")
+```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.75, out.width='55%'}
+# 1. What is the regional breakdown of UN member states? 
+library(carData)
+
+ggplot(data = UN, aes(y = region)) +
+  geom_bar(fill = "mediumpurple")
 ```
 
 ???
@@ -105,7 +107,8 @@ Don't forget that accessing this dataset requires installing AND loading carData
 
 <br>
 
-**SLIDE**: Let's use this as an opportunity to practice polishing our visualizations for professional audiences (and your reports!)
+**SLIDE**: Time to talk about polishing a visualization for a professional audience
+
 
 
 
@@ -119,10 +122,10 @@ class: middle
 .pull-left[
 ```{r, cache=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=1.1, out.width='100%'}
 # The labs() function
-practice1 + 
+ggplot(data = UN, aes(y = region)) +
   geom_bar() +
-  labs(x = "Count", y = "", caption = "Source: UNSD (2012)", 
-       title = "UN tracking covers some non-member states")
+  labs(x = "x Axis Label", y = "y Axis Label", caption = "Source: Where did the data come from?", 
+       title = "A title like a thesis statement for the visualization")
 ```
 ]
 
@@ -140,9 +143,14 @@ practice1 +
 
 ???
 
-At a minimum, professional visualizations must include:
+From this point forward, anytime you submit a visualization it must be polished enough that you could present it to a professional audience.
+
+<br>
+
+At a minimum, that means you include:
 
 1. A title or figure caption that explains the key takeaway of the visualization in your argument,
+    - Not just a simple description of the plot (that's what the axis labels are for!)
 
 2. Clearly defined axis labels, and
 
@@ -154,11 +162,7 @@ We can get even fancier, but this represents my minimum expectations from you th
 
 <br>
 
-### Do these criteria make sense?
-
-<br>
-
-**SLIDE**: How to do it...
+**SLIDE**: Let's add each piece one at a time
 
 
 
@@ -170,38 +174,25 @@ background-position: center
 class: middle
 
 .code110[
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='45%'}
+```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='55%'}
 # The labs() function
-practice1 + 
+ggplot(data = UN, aes(y = region)) +
   geom_bar() +
-  labs(x = "Count") +
-  labs(y = "") +
-  labs(caption = "Source: UNSD (2012)") +
-  labs(title = "UN tracking covers some non-member states")
+  labs(x = "Count", y = "United Nations Regions")
 ```
 ]
 
 ???
 
-We will primarily use the labs() function to label your plots 
+The labs function has a bunch of possible arguments, e.g. labels you can add to your plot
 
-- Each labs function is added using the '+' style that ggplot requires
+- Here I'm adding x and y axis labels
 
-- Essentially, within the ggplot function you can keep adding customizations
-
-<br>
-
-To keep things clear, I have added each of these elements using a separate labs() function.
-
-- I want it to be clear that you can add whichever pieces you want/need
+- Just separate each argument with a comma
 
 <br>
 
-*Step through each argument: x, y, title, caption*
-
-<br>
-
-**SLIDE**: You can also do this with one labs function
+**SLIDE**: Add a caption
 
 
 
@@ -212,21 +203,47 @@ background-size: 100%
 background-position: center
 class: middle
 
-.code110[
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='50%'}
+.code100[
+```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='55%'}
 # The labs() function
-practice1 + 
+ggplot(data = UN, aes(y = region)) +
   geom_bar() +
-  labs(x = "Count", y = "", caption = "Source: UNSD (2012)", 
-       title = "UN tracking covers some non-member states")
+  labs(x = "Count", y = "United Nations Regions", caption = "Source: UNSD (2012)")
 ```
 ]
 
 ???
 
-Here I'm doing the same thing as before with one labs function but multiple arguments each separated by a comma.
+The caption argument adds a small note on the bottom right of the plot
 
-- Totally up to you
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='55%'}
+# The labs() function
+ggplot(data = UN, aes(y = region)) +
+  geom_bar() +
+  labs(x = "Count", y = "United Nations Regions", caption = "Source: UNSD (2012)",
+       title = "The UN tracks data for a large number of non-member states")
+```
+]
+
+???
+
+Finally we add a thesis statement for our visualization
+
+- No simple description titles in here!
+
+- Your title should convey the key takeaway from the visualization for the reader
+
+- The goal is that someone could go through your report only looking at the figures and follow along with your argument!
 
 <br>
 
@@ -234,7 +251,7 @@ Here I'm doing the same thing as before with one labs function but multiple argu
 
 <br>
 
-### And clear on how to use the labs function?
+### Any questions on using the labs function?
 
 <br>
 
@@ -253,13 +270,14 @@ background-size: 100%
 background-position: center
 class: middle
 
-.code110[
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='50%'}
+.code100[
+```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='55%'}
 # The labs() function
-practice1 + 
+ggplot(data = UN, aes(y = region)) +
   geom_bar(fill = c(rep("darkblue", 8), "red")) +
-  labs(x = "Count", y = "", caption = "Source: UNSD (2012)", 
-       title = "UN tracking covers some non-member states")
+  labs(x = "Count", y = "United Nations Regions", 
+       caption = "Source: UNSD (2012)", 
+       title = "The UN tracks data for a large number of non-member states")
 ```
 ]
 
@@ -332,7 +350,7 @@ class: middle
 
 .code110[
 ```{r, cache=TRUE, echo=TRUE, eval=FALSE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='70%'}
-practice2 + 
+ggplot(data = UN, aes(x = lifeExpF)) +
   geom_histogram() +
   labs(x = "Life Expectancy (years)", y = "Count", 
        caption = "Source: UNSD (2012)", 
@@ -376,9 +394,7 @@ class: middle
 
 ```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='60%'}
 # 3. Visualize the growth in the US population since 1790
-practice3 <- ggplot(data = USPop, aes(x = year, y = population))
-
-practice3 + 
+ggplot(data = USPop, aes(x = year, y = population)) +
   geom_line() +
   labs(x = "", y = "US Population (millions)", 
        caption = "Source: U.S. Census Bureau (2008)", 
@@ -481,29 +497,16 @@ background-size: 100%
 background-position: center
 class: middle
 
-```{r, fig.align='center', out.width='100%'}
-knitr::include_graphics("libs/Images/05_1-RStudio_Import4_v2.png")
+```{r, fig.align='center', out.width='95%'}
+knitr::include_graphics("libs/Images/05_1-RStudio_Import3-SP24-Browse.png")
 ```
 
 ???
 
 Step 2: "Browse" to the data you saved on your hard drive
 
-- Sorry that the file name on the screen is not matching yours
+- It should then populate all the fields below with its best guesses
 
-- WDI-Tidy_Data_Extract-2024-02-06.xlsx
-
-<br>
-
-After selecting your data you'll get a preview of it in R
-
-- VERY IMPORTANT to look at the data in the preview window
-
-<br>
-
-In this example you can see that R thinks the variable for measles immunizations is a categorical variable (e.g. character)!
-
-- This is because it sees the NAs as words not as missing data!
 
 
 ---
@@ -514,22 +517,46 @@ background-position: center
 class: middle
 
 ```{r, fig.align='center', out.width='100%'}
-knitr::include_graphics("libs/Images/05_1-RStudio_Import5_v2.png")
+knitr::include_graphics("libs/Images/05_1-RStudio_Import3-SP24-NAs.png")
 ```
 
 ???
 
-Step 3: Name the data AND specify how the dataset records missing data
+Step 3, use the preview code to make sure R "sees" the data as you expect it to
 
-- Can name it anything but let's all use "data1" today
-
-- MAKE SURE you put "NA" in the NA field
+- VERY IMPORTANT to look at the data in the preview window
 
 <br>
 
-After you update the NA field you should see the variables change in the preview window
+In this example you can see that R thinks all of our numeric variables are actually categorical variables!
 
-- Numeric variables now are numeric and the NAs get italicized and made lighter so we understand it is missing data
+- This is because it sees the NAs as words not as missing data!
+
+- In a variable with words and numbers it is forced to treat all of the values as words
+
+<br>
+
+In the NA field put in 'NA' and after you click out of that box you should see the preview refresh to show numeric variables are now "double" which is a type of numeric variable
+
+- **SLIDE**
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, fig.align='center', out.width='100%'}
+knitr::include_graphics("libs/Images/05_1-RStudio_Import4-SP24.png")
+```
+
+???
+
+Last step, name the dataset object
+
+- This is what we will type in to access this data in R
 
 <br>
 
@@ -547,12 +574,12 @@ background-position: center
 class: middle
 
 ```{r, echo=TRUE, eval=FALSE}
-View(data1)
+View(wdi)
 ```
 
 .size18[
 ```{r}
-data1 |>
+wdi |>
   slice_head(n = 11) |>
   kableExtra::kbl(digits = 1, align = "c")
 ```
@@ -595,16 +622,16 @@ class: middle
 
 ```{r, echo=TRUE, eval=FALSE}
 # Extract some observations from the dataset
-data2021 <- filter(data1, year == 2021)
+wdi2021 <- filter(wdi, year == 2021)
 
-View(data2021)
+View(wdi2021)
 ```
 
 .size18[
 ```{r}
-data2021 <- filter(data1, year == 2021)
+wdi2021 <- filter(wdi, year == 2021)
 
-data2021 |>
+wdi2021 |>
   slice_head(n = 9) |>
   kableExtra::kbl(digits = 1, align = "c")
 ```
@@ -642,17 +669,17 @@ class: middle
 .code160[
 ```{r, echo=TRUE, eval=FALSE}
 # Filter for one variable
-filter(data1, wb_income == "Low")
+filter(wdi, wb_income == "Low")
 ```
 
 ```{r, echo=TRUE, eval=FALSE}
 # Filter by relative values
-filter(data1, death_rate > 20)
+filter(wdi, death_rate > 20)
 ```
 
 ```{r, echo=TRUE, eval=FALSE}
 # Filter by two variables
-filter(data1, country == "Ireland", year == 2008)
+filter(wdi, country == "Ireland", year == 2008)
 ```
 ]
 
@@ -727,9 +754,7 @@ class: middle
 .code100[
 ```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, out.width='60%'}
 # How many countries have reached herd immunity for measles?
-measles1 <- ggplot(data = data2021, aes(x = measles_herd_immunity))
-
-measles1 + 
+ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
   geom_bar(fill = c("red1", "blue3", "blue3")) +
   labs(x = "", y = "Count", caption = "Source: WDI (2021)",
        title = "The great majority of countries are at risk of measles outbreaks")
@@ -768,9 +793,7 @@ class: middle
 .pull-left[
 ```{r, cache=TRUE, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
 # How many countries have reached herd immunity for measles?
-measles1 <- ggplot(data = data2021, aes(x = measles_herd_immunity))
-
-measles1 + 
+ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
   geom_bar(fill = c("red1", "blue3", "blue3")) +
   labs(x = "", y = "Count", caption = "Source: WDI (2021)")
 ```
@@ -778,7 +801,7 @@ measles1 +
 
 .pull-right[
 ```{r, cache=TRUE, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
-measles1 + 
+ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
   geom_bar(fill = c("red1", "blue3")) +
   labs(x = "", y = "Count", caption = "Source: WDI (2021)") +
   scale_x_discrete(limits = c("At Risk", "Herd Immunity"))
@@ -837,9 +860,7 @@ class: middle
 .code110[
 ```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, out.width='60%'}
 # Histogram
-measles2 <- ggplot(data = data2021, aes(x = measles_immunizations_pct))
-
-measles2 + 
+ggplot(data = wdi2021, aes(x = measles_immunizations_pct)) +
   geom_histogram(bins = 20, fill = "slateblue3") +
   labs(x = "Measles Immunizations (%)", y = "Count",
        caption = "Source: WDI (2021)",
@@ -866,7 +887,7 @@ I tweaked the number of bins here to smooth out the distribution a bit.
 - (25% of countries are woefully unprepared for a measles outbreak (<75%))
 
 ```{r}
-prop.table(table(data2021$measles_immunizations_pct < 75))
+prop.table(table(wdi2021$measles_immunizations_pct < 75))
 ```
 
 
@@ -882,7 +903,7 @@ class: middle
 
 .pull-left[
 ```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.7, out.width='100%'}
-measles1 + 
+ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
   geom_bar(width = .5, fill = c("red1", "blue3", "pink")) +
   labs(x = "", y = "Count", caption = "Source: WDI (2021)",
        title = "The great majority of countries are at risk of measles outbreaks")
@@ -891,7 +912,7 @@ measles1 +
 
 .pull-right[
 ```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.7, out.width='100%'}
-measles2 + 
+ggplot(data = wdi2021, aes(x = measles_immunizations_pct)) +
   geom_histogram(bins = 20, fill = "slateblue3") +
   labs(x = "Measles Immunizations (%)", y = "Count",
        caption = "Source: WDI (2021)",
@@ -904,7 +925,7 @@ measles2 +
 .center[
 .code120[
 ```{r}
-summary(data2021$measles_immunizations_pct)
+summary(wdi2021$measles_immunizations_pct)
 ```
 ]]
 

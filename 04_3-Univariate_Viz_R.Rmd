@@ -710,35 +710,21 @@ class: middle
 
 .pull-left[
 
-.center[.size35[.content-box-blue[**By Hand**]]]
+.center[.size35[.content-box-blue[**geom_histogram(bins = 5)**]]]
 
 ```{r, echo=FALSE, fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
-mpg |>
-  mutate(
-    cty2 = case_when(
-      cty < 10 ~ "0 - 10",
-      cty < 20 ~ "11 - 20",
-      cty < 30 ~ "21 - 30",
-      cty < 40 ~ "31 - 40")
-  ) |>
-  ggplot(aes(x = cty2)) +
-  geom_bar(width = .75, fill = "orange3") +
-  theme_bw() +
-  labs(x = "Fuel Economy (City)", y = "Proportion of Observations") +
-  geom_hline(yintercept = seq(50, 150, 50), color = "white")
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 5, color = "white")
 ```
 ]
 
 .pull-right[
 
-.center[.size35[.content-box-blue[**geom_histogram(bins = 4)**]]]
+.center[.size35[.content-box-blue[**geom_histogram(bins = 20)**]]]
 
 ```{r, echo=FALSE, fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
-## GGplot Step 1: Map the Tidy Data
-plot3 <- ggplot(data = mpg, aes(x = cty))
-
-## GGplot Step 2: Add a geom
-plot3 + geom_histogram(bins = 4, color = "white")
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram(bins = 20, color = "white")
 ```
 ]
 

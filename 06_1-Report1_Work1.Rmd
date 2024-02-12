@@ -18,10 +18,6 @@ output:
 
 library(tidyverse)
 library(readxl)
-#library(stargazer)
-library(kableExtra)
-library(rworldmap)
-#library(modelr)
 
 knitr::opts_chunk$set(echo = FALSE,
                       eval = TRUE,
@@ -30,14 +26,8 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       comment = NA)
 
-# # Input data
-data_2021 <- read_excel("../../Course_History/2023-Spring/Project-SP23/Mirror_Class_Folder_Structure/Data/GII-2021-Tidy.xlsx", na = "NA")
-# 
-# # Test code for map
-# data21_map <- joinCountryData2Map(dF = data_2021, nameJoinColumn = "iso3", joinCode = "ISO3")
-# 
-# mapCountryData(mapToPlot = data21_map, )
-
+# Input data
+d <- read_excel("../Data_in_Class-SP24/Fragile_States_Index/Data-FSI-Historical-Tidy.xlsx")
 ```
 
 background-image: url('libs/Images/background-data_blue_v3.png')
@@ -64,32 +54,33 @@ Build the First Report
 ???
 
 ## Prep for Class
-1. Make sure all data available on Canvas
+1. Make sure all data and the assignment is available on Canvas
 
 2. Post Section 3 assignment details on Canvas
 
 <br>
 
-*Canvas*
-1. Analyze the main index (`gii`) with a histogram (Fig 1) and a map (Fig 2)
-2. Analyze at least two of the component measures with visualizations (Figs 3 and 4)
+This week we finish up your first report!
+
 
 
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-class: center
 class: middle
 
-.size65[**Report 1: Submission Requirements**]
+.center[.size50[.content-box-blue[**Report 1: Analyzing our Outcome Variable(s)**]]]
 
-.size55[
-- Submit a **pdf** to **Canvas** (due **Mar 5th**)
+.size45[
+1. Due Feb 23rd (Canvas "Assignments")
 
-- Include an **APA** formatted bibliography
+2. PDFs only
 
-- Polish **all** included visualizations
+3. Support ALL claims with evidence
+    - APA formatted in-text citations
+    - APA formatted bibliography
 ]
 
 ???
@@ -102,18 +93,19 @@ Ok, this week we work on your first report.
 
 
 
-
 ---
 
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-class: center
 class: middle
 
-.size50[**Report 1: Analyzing our Outcome Variable(s)**]
+.center[.size50[.content-box-blue[**Report 1: Analyzing our Outcome Variable(s)**]]]
 
-.size50[
-1. What is it and why is this project important?
+<br>
+
+.size45[
+1. Why is this project important?
 
 2. How confident should we be in the methodology?
 
@@ -124,159 +116,86 @@ class: middle
 
 ???
 
-1. In Section 1 your job is to give the reader a crash course in the chosen data project: What is it, who is behind it and why is it important?
-
-2. Section 2 should step through the strengths and weaknesses of the measurements in the project.
-
-3. Section 3 should focus on the most recent year available in the dataset and present a univariate analysis of it.
-
-4. Section 4 should present univariate analyses at different snapshots in time so we can analyze the trends in the data
-
-### Questions on the sections?
+As we discussed in week 3, the report is in four sections, each making a separate argument
 
 <br>
 
-Plan of Attack:
+Usefully, and I hope you took good notes, we worked on Sections 1 and 2 in class during week 3!
 
-- Today we'll make our visualizations for Section 3
+- Made some excellent points that week as I recall!
 
-- Wednesday we'll make our visualizations for Section 4.
+<br>
 
-- Friday we'll polish it all up
+Plan of Attack for this week:
 
+- Today we'll work on the univariate analyses for Section 3
+
+- Wednesday we'll work on the univariate analyses for Section 4.
+
+- Friday we'll finish it all up, writing workshop style
 
 
 
 ---
 
-background-image: url('libs/Images/07_1-Import_GII_2.png')
-background-size: 90%
-background-position: center
-class: middle, slideblue
-
-???
-
-First thing's first, let's import the data.
-- Seems like everyone prefers the RStudio menu approach
-
-<br>
-
-Make sure you:
-
-1. Give the new object a clear name, and
-
-2. If needed, identify how the data set records missing data.
-    - Here you see the GII uses "NA" as a word to show missing data
-    - With no argument in the NA field R assumes these variables are categorical and not numeric.
-    - e.g. character vectors
-
-### Make sense?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
+background-image: url('libs/Images/background-slate_v2.png')
 background-size: 100%
 background-class: center
 class: middle
 
-.size70[**For Today**]
+.center[.size45[.content-box-blue[**Section 3: What do the measures currently show us?**]]]
 
-.size50[
-1. Make separate histograms for the index (`gii`) and the five component measures (`mmr`, `abr`, `pr_f`, `se_f` and `lfpr_f`)
+.size40[
+Analyze the `Total` score and each of the indicator measures (x12) for all countries in 2023
 
-2. Make a map of `gii`<sup>*</sup>
-]
-
-.right[.size30[<sup>*</sup> Let me help with the map code...]]
-
-???
-
-**Don't polish, just get these seven visualizations built!**
-
-<br>
-
-**SLIDE**: Let me know when you get to the map step because we have to do this slightly differently.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size35[
-```{r, echo=FALSE}
-data_2021 |>
-  select(iso3:gii) |>
-  slice_head(n = 6) |>
-  kbl(digits = 3) |>
-  kableExtra::column_spec(column = 1, background = "orange")
-```
-]
-
-.code130[
-```{r, echo=TRUE, eval=FALSE}
-# Join GII data to the map data
-data_2021_map <- joinCountryData2Map(dF = data_2021, 
-                                     joinCode = "ISO3", #<<
-                                     nameJoinColumn = "iso3") #<<
-```
+- Provide visualizations and descriptive statistics
 ]
 
 ???
 
-The key step in making a map with rworldmap is when you have to merge your data onto the map data.
+That's 13 plots plus the descriptive stats (summary functions)
 
-- The GII includes a special variable for this called "iso3"
-
-<br>
-
-Technically this is ISO 3166-1 which is a standard three letter country code published by the International Organization for Standardization (ISO), to represent countries, dependent territories, and special areas of geographical interest.
-
-- Much more precise than asking rworldmap to guess based on country name.
+- **Don't polish, just get all of this code written!**
 
 <br>
 
-If you're curious:
+For the report this section should include your analysis of:
 
-- rworldmap only understands 183 country names in our dataset, but
+- The `Total` index score, and
 
-- it understands 195 of the ISO3 codes.
-
-<br>
-
-**SLIDE**: Ok, what should end up in your report?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size45[**Report 1: Analyzing our Outcome Variable(s)**]
+- detailed analysis of the three indicators you argue are most important for thinking about state fragility (and an argument why)
 
 <br>
 
-.size40[**Section 3: What do the measures currently show us?**
+Wed Plan
 
-1. Analyze the main index (`gii`) with a **histogram** (Fig 1) and a **map** (Fig 2)
-    
-2. Analyze **at least two** of the component measures with visualizations (Figs 3 and 4)
-]
+- Analyze `total` at snapshots across time (4 times?)
 
-???
+- You give them collections of countries (e.g. EU, OECD, BRICS, etc), they pick one and track the member countries across time
 
-Here's how I think you should take today's work and use it in your report.
 
-### Questions on this?
 
-<br>
+
 
 For Wednesday you should select and polish the four figures you will use in your report.
+
+
+
+
+
+
+
+
+
+```{r, eval=FALSE}
+names(d)
+
+
+
+
+
+
+
+
+```
+
