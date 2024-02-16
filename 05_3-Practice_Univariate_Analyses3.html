@@ -425,10 +425,10 @@ class: middle
 .code110[
 
 ```r
-# Use a built-in color palette
+# Add colors
 ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar() +
-  scale_fill_brewer(type = "div", palette = 5, direction = -1)
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3"))
 ```
 
 &lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-12-1.png" width="70%" style="display: block; margin: auto;" /&gt;
@@ -469,7 +469,8 @@ class: middle
 # Convert the counts to proportions
 ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar(position = "fill") +
-  scale_fill_brewer(type = "div", palette = 5, direction = -1)
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  scale_y_continuous(labels = scales::percent_format())
 ```
 
 &lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-13-1.png" width="70%" style="display: block; margin: auto;" /&gt;
@@ -604,10 +605,9 @@ class: middle
 data1$wb_income_f &lt;- factor(data1$wb_income, 
                             levels = c(NA, "High", "Upper-middle", "Lower-middle", "Low"))
 
-data1 |&gt;
-  ggplot(aes(x = year, fill = wb_income_f)) +
+ggplot(data1, aes(x = year, fill = wb_income_f)) +
   geom_bar() +
-  scale_fill_viridis_d(end = .9, na.value = "grey50")
+  scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", "pink", "red3"))
 ```
 
 &lt;img src="05_3-Practice_Univariate_Analyses3_files/figure-html/unnamed-chunk-15-1.png" width="60%" style="display: block; margin: auto;" /&gt;

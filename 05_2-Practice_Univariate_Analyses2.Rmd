@@ -249,41 +249,6 @@ class: middle
 
 .pull-left[
 ```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
-data2021 |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2021)")
-```
-]
-
-.pull-right[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
-data2021 |>
-  ggplot(aes(x = measles_herd_immunity)) +
-  geom_bar(fill = "blue") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2021)")
-```
-]
-
-???
-
-### From our discussions last class, how does pairing these two pieces of data on measles vaccinations help us understand the state of the problem in the world?
-
-- (**SLIDE**: Better visualization titles and analyses!)
-
-
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Analysis Option 1: Benchmark the Data**]]]
-
-.pull-left[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
 data2021$measles1 <- if_else(data2021$measles_immunizations_pct < 96, "risk", "immune")
 
 data2021 |>
@@ -365,6 +330,30 @@ WB categories
 - Low-mid: up to 4,095
 - Upper-mid: up to 12,695
 - High: 12,695+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, out.width='70%', fig.width=5}
+# Use scale_x_discrete to reorder bars in bar plot
+ggplot(data2021, aes(x = wb_income)) +
+  geom_bar(fill = "green3") +
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
+```
+
+
+???
+
+
+Add slide giving the code for rearranging x axis order of categorical levels
+
 
 
 

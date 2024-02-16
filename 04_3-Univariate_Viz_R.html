@@ -152,7 +152,7 @@ Map your tidy data
 
 ```r
 ## GGplot Step 1: Map the Data
-newobject &lt;- ggplot(data = ?, aes(x = ?, y = ?))
+ggplot(data = ?, aes(x = ?, y = ?))
 ```
 ]
 
@@ -201,15 +201,15 @@ Add a geom
 ]
 
 .pull-right[
-.code140[
+.code130[
 
 ```r
 # GGplot Step 2
 # Add a geom
-newobject + geom_bar()
-newobject + geom_histogram()
-newobject + geom_boxplot()
-newobject + geom_line()
+ggplot(...) + geom_bar()
+ggplot(...) + geom_histogram()
+ggplot(...) + geom_boxplot()
+ggplot(...) + geom_line()
 ```
 ]
 ]
@@ -281,7 +281,7 @@ class: middle
 
 ```r
 ## GGplot Step 1: Map the data
-plot1 &lt;- ggplot(data = ?, aes(x = ?, y = ?))
+ggplot(data = ?, aes(x = ?, y = ?))
 ```
 ]]
 
@@ -319,7 +319,7 @@ class: middle
 
 ```r
 ## GGplot Step 1: Map the data
-plot1 &lt;- ggplot(data = mpg, aes(x = ?, y = ?))
+ggplot(data = mpg, aes(x = ?, y = ?))
 ```
 ]]
 
@@ -356,9 +356,7 @@ class: middle
 
 ```r
 ## GGplot Step 1: Map the Data
-plot1 &lt;- ggplot(data = mpg, aes(x = drv))
-
-plot1
+ggplot(data = mpg, aes(x = drv))
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-10-1.png" width="70%" style="display: block; margin: auto;" /&gt;
@@ -395,14 +393,11 @@ background-size: 100%
 background-position: center
 class: middle
 
-.code100[
+.code130[
 
 ```r
-## GGplot Step 1: Map the Data
-plot1 &lt;- ggplot(data = mpg, aes(x = drv))
-
-## GGplot Step 2: Add a geom
-plot1 + geom_bar()
+## Make a bar plot
+ggplot(data = mpg, aes(x = drv)) + geom_bar()
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-11-1.png" width="55%" style="display: block; margin: auto;" /&gt;
@@ -441,14 +436,11 @@ background-size: 100%
 background-position: center
 class: middle
 
-.code100[
+.code130[
 
 ```r
-## GGplot Step 1: Map the Data
-plot1 &lt;- ggplot(data = mpg, aes(y = drv))
-
-## GGplot Step 2: Add a geom
-plot1 + geom_bar()
+## Make a bar plot (on the y-axis)
+ggplot(data = mpg, aes(y = drv)) + geom_bar()
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-12-1.png" width="55%" style="display: block; margin: auto;" /&gt;
@@ -472,11 +464,9 @@ class: middle
 .code100[
 
 ```r
-## GGplot Step 1: Map the Data
-plot1 &lt;- ggplot(data = mpg, aes(y = drv))
-
-## GGplot Step 2: Add a geom
-plot1 + geom_bar(width = .5, fill = "blue")
+## Shrink the bars and fill them with color 
+ggplot(data = mpg, aes(y = drv)) +
+  geom_bar(width = .5, fill = "blue")
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-13-1.png" width="55%" style="display: block; margin: auto;" /&gt;
@@ -535,11 +525,9 @@ class: middle
 .code100[
 
 ```r
-## GGplot Step 1: Map the Data
-plot2 &lt;- ggplot(data = presidential, aes(x = party))
-
-## GGplot Step 2: Add a geom
-plot2 + geom_bar(width = .5, fill = c("royalblue1", "firebrick3"))
+## Use separate colors for each bar
+ggplot(data = presidential, aes(x = party)) +
+  geom_bar(width = .5, fill = c("royalblue1", "firebrick3"))
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-14-1.png" width="55%" style="display: block; margin: auto;" /&gt;
@@ -633,11 +621,9 @@ class: middle
 .code100[
 
 ```r
-## GGplot Step 1: Map the Tidy Data
-plot3 &lt;- ggplot(data = mpg, aes(x = cty))
-
-## GGplot Step 2: Add a geom
-plot3 + geom_histogram()
+## Make a histogram
+ggplot(data = mpg, aes(x = cty)) +
+  geom_histogram()
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-15-1.png" width="55%" style="display: block; margin: auto;" /&gt;
@@ -758,11 +744,9 @@ class: middle
 .code100[
 
 ```r
-## GGplot Step 1: Map the Tidy Data
-plot4 &lt;- ggplot(data = mpg, aes(x = cty))
-
-## GGplot Step 2: Add a geom
-plot4 + geom_boxplot()
+## Step 1: Map the Data and Step 2: Add a geom
+ggplot(data = mpg, aes(x = cty)) +
+  geom_boxplot()
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-20-1.png" width="55%" style="display: block; margin: auto;" /&gt;
@@ -808,11 +792,8 @@ class: middle
 .code80[
 
 ```r
-## GGplot Step 1: Map the Tidy Data
-p5 &lt;- ggplot(data = midwest, aes(x = percollege))
-
-## GGplot Step 2: Add a geom
-p5 + geom_histogram(bins = 25)
+ggplot(data = midwest, aes(x = percollege)) +
+  geom_histogram(bins = 25)
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-21-1.png" width="100%" style="display: block; margin: auto;" /&gt;
@@ -823,11 +804,8 @@ p5 + geom_histogram(bins = 25)
 .code80[
 
 ```r
-## GGplot Step 1: Map the Tidy Data
-p5 &lt;- ggplot(data = midwest, aes(x = percollege))
-
-## GGplot Step 2: Add a geom
-p5 + geom_boxplot()
+ggplot(data = midwest, aes(x = percollege)) +
+  geom_boxplot()
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-22-1.png" width="100%" style="display: block; margin: auto;" /&gt;
@@ -879,11 +857,9 @@ class: middle
 .code130[
 
 ```r
-## GGplot Step 1: Map the Tidy Data
-plot6 &lt;- ggplot(data = economics, aes(x = date, y = unemploy))
-
-## GGplot Step 2: Add a geom
-plot6 + geom_line()
+# Make a line plot
+ggplot(data = economics, aes(x = date, y = unemploy)) +
+  geom_line()
 ```
 
 &lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-23-1.png" width="47%" style="display: block; margin: auto;" /&gt;
@@ -1022,56 +998,6 @@ Something not working? Notes incomplete?
 
 - Just copy the recipes into your notes, update the names of the data and variables and it should work!
 
-
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
-.code80[
-
-```r
-# Split the Two Steps
-p2 &lt;- ggplot(data = presidential, aes(x = party))
-
-p2 + geom_bar()
-```
-
-&lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-27-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-]
-
-.pull-right[
-.code80[
-
-```r
-# Combine the two steps
-
-ggplot(data = presidential, aes(x = party)) + 
-  geom_bar()
-```
-
-&lt;img src="04_3-Univariate_Viz_R_files/figure-html/unnamed-chunk-28-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-]
-
-???
-
-One note so you don't get confused when using the cookbook.
-
-- Winston Chang makes visualizations in one step, not two like we've been doing today.
-
-- Essentially, in either approach you are doing the same thing
-
-- You add a map of the data with ggplot to a geom and you get as visualization
-
-&lt;br&gt;
-
-### Questions on this?
 
 
 

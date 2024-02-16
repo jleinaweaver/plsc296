@@ -126,14 +126,14 @@ data1 |>
   filter(year == 1985) |>
   ggplot(aes(x = wb_income)) +
   geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
-  labs(x = "", y = "Countries", title = "World bank Income Categories (1985)", caption = "Source: WDI (2024)") + 
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (1985)", caption = "Source: WDI (2024)") + 
   scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
 
 data1 |>
   filter(year == 2021) |>
   ggplot(aes(x = wb_income)) +
   geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
-  labs(x = "", y = "Countries", title = "World bank Income Categories (2021)", caption = "Source: WDI (2024)") + 
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (2021)", caption = "Source: WDI (2024)") + 
   scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
 ```
 ]
@@ -149,6 +149,8 @@ ggplot(data1, aes(x = wb_income)) +
   geom_bar(fill = "green3") +
   scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High")) +
   transition_time(year) +
+  # transition_states(year, transition_length = 4, state_length = 1) +
+  # view_follow(fixed_x = TRUE)  +
   labs(title = "World Bank Income Categories ({as.integer(frame_time)})",
        x = "", y = "Countries", caption = "Source: WDI (2024)")
 ```
@@ -521,10 +523,10 @@ class: middle
 
 .code110[
 ```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
-# Use a built-in color palette
+# Add colors
 ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar() +
-  scale_fill_brewer(type = "div", palette = 5, direction = -1)
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3"))
 ```
 ]
 
@@ -562,7 +564,8 @@ class: middle
 # Convert the counts to proportions
 ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar(position = "fill") +
-  scale_fill_brewer(type = "div", palette = 5, direction = -1)
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  scale_y_continuous(labels = scales::percent_format())
 ```
 ]
 
@@ -691,10 +694,9 @@ class: middle
 data1$wb_income_f <- factor(data1$wb_income, 
                             levels = c(NA, "High", "Upper-middle", "Lower-middle", "Low"))
 
-data1 |>
-  ggplot(aes(x = year, fill = wb_income_f)) +
+ggplot(data1, aes(x = year, fill = wb_income_f)) +
   geom_bar() +
-  scale_fill_viridis_d(end = .9, na.value = "grey50")
+  scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", "pink", "red3"))
 ```
 
 ???
