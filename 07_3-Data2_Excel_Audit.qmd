@@ -1,0 +1,297 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
+
+```{r}
+#  background-size="1920px 1080px"
+library(tidyverse)
+library(readxl)
+```
+
+```{=html}
+<style type="text/css">
+    :root {
+        --r-main-font-size: 45px;
+    }
+</style>
+```
+<br>
+
+Auditing and exploring the second data project  
+
+<br>
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
+
+::: notes
+Prep for Class
+
+1. Check the Canvas submissions
+
+2. Update slides BEFORE class
+    - Add data view for discussing observations
+    - Add code checking for missing data by variable, region and year
+    - Is it time to introduce rworldmap for checking regional missing data
+:::
+
+
+
+## For Today {background-image="libs/Images/background-blue_cubes_lighter3.png"}
+
+<br>
+
+**Data Project 2**
+
+1. **Audit**: How is the data organized? Are there missing data problems (time or region)?
+
+2. **Explore**: Submit **THREE** interesting, puzzling or surprising things about the world of this dataset.
+
+::: notes
+
+From Canvas
+
+- Audit the Dataset: Make sure you understand how the data is organized (observations and variables), and have spent time auditing it for missing data (time or region)
+
+- Explore the Dataset: Submit THREE interesting, puzzling or surprising things about the world of this dataset. Fully explain each of your findings and how you can support your claims using the data.
+:::
+
+
+## Auditing Data Project 2 {background-image="libs/Images/background-blue_cubes_lighter3.png"}
+
+```{r, eval=FALSE}
+# Show data
+d |>
+  filter(year == 2019) |>
+  slice_sample(n = 10) |>
+  kbl(digits = 2)
+```
+
+::: notes
+
+How is the data organized? 
+
+<br>
+
+### 1. How are the observations organized?
+
+<br>
+
+### 2. Do we understand all of the measures here and can we connect them back to the codebook?
+
+<br>
+
+### 3. What missing data issues did you identify?
+
+### e.g. regional, temporal or related to specific measures?
+:::
+
+
+## Auditing Data Project 2 {background-image="libs/Images/background-blue_cubes_lighter3.png"}
+
+```{r, eval=FALSE, echo=TRUE}
+# Missing Data by Variable
+# Method 1 - Numeric Variables
+summary(?$?)
+
+# Method 2 - Categorical or Numeric Variables
+table(is.na(?$?))
+```
+
+::: notes
+
+?
+
+:::
+
+
+
+## Auditing Data Project 2 {background-image="libs/Images/background-blue_cubes_lighter3.png"}
+
+```{r, eval=FALSE, echo=TRUE}
+# Missing Data by Variable Across Time
+table(d$Year, is.na(d$Total))
+```
+
+::: notes
+
+?
+
+:::
+
+
+
+## Auditing Data Project 2 {background-image="libs/Images/background-blue_cubes_lighter3.png"}
+
+```{r, eval=FALSE, echo=TRUE}
+# Missing Data by Variable by Region - Making a Map
+
+# Example below using fragile states total index
+
+# Install package (one time)
+install.packages("rworldmap")
+
+# Load package (every time)
+library(rworldmap)
+
+# Filter data to one year
+d2023 <- filter(d, Year == 2023)
+
+# Merge data to the map data
+map_data_2023 <- joinCountryData2Map(dF = d2023, joinCode = "NAME", nameJoinColumn = "Country")
+
+# Output the Map
+mapCountryData(map_data_2023, nameColumnToPlot = "Total")
+
+# Tweak the map
+mapCountryData(map_data_2023, nameColumnToPlot = "Total", 
+               mapTitle = "Fragile States Index (Total 2023)", 
+               colourPalette = "heat",
+               catMethod = c(0, 25, 50, 75, 100, 125))
+
+# catMethod = seq(0, 120, 20)
+# catMethod = "quantiles"
+```
+
+::: notes
+
+?
+
+:::
+
+
+
+## Auditing Data Project 2 {background-image="libs/Images/background-blue_cubes_lighter3.png"}
+
+```{r, eval=FALSE, echo=TRUE}
+# Map result to discuss
+
+
+```
+
+::: notes
+
+**Any obvious missing data issues here?**
+
+<br>
+
+Split up years from the dataset and have each person in class make a different map so we can walk around and see them all
+
+<br>
+
+Then you show an animated gif of all maps
+:::
+
+
+
+## Auditing Data Project 2 {background-image="libs/Images/background-blue_cubes_lighter3.png"}
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '90%'}
+knitr::include_graphics("libs/Images/military_Spending.gif")
+```
+
+```{r, eval=FALSE, echo=TRUE}
+# Animate the map (gif)
+
+
+```
+
+::: notes
+
+```{r}
+# Code to share with class
+
+# # Packages
+# library(tidyverse)
+# library(readxl)
+# library(rworldmap)
+# library(gifski)
+# 
+# # Load across time data and save as 'd'
+# 
+# # Create and save separate maps by year using a for loop
+# for (i in 2008:2020) {
+# 
+#   # Create a subset for each year
+#   # Create a new categorical variable for missing data
+#   d_repo <- filter(d, year ==  i) |>
+#   mutate(
+#     Missing = if_else(is.na(military), "Data Missing", "Data Available")
+#   )
+# 
+#   # Join WDI data to map data
+#   d_repo_map <- joinCountryData2Map(dF = d_repo, joinCode = "ISO3", nameJoinColumn = "country_code")
+# 
+#   # Save each map as a png file
+#   png(str_c("map-", i, "-military.png"),
+#       width = 850,
+#       height = 600,
+#       units = "px")
+# 
+#   mapCountryData(d_repo_map,
+#                  nameColumnToPlot = "Missing",
+#                  catMethod = "categorical",
+#                  mapTitle = str_c("Military Spending: ", i),
+#                  colourPalette = c("skyblue", "red"),
+#                  borderCol = "black")
+# 
+#   dev.off()
+# }
+# 
+# # Make a list of the saved map files
+# png_files <- list.files(pattern = ".*military.png$", full.names = TRUE)
+# 
+# # Use gifski to combine the separate images
+# gifski(png_files, 
+#        gif_file = "libs/Images/military_Spending.gif", 
+#        width = 850, 
+#        height = 600, 
+#        delay = 1)
+```
+
+:::
+
+
+
+## Exploring Data Project 2 {background-image="libs/Images/background-blue_cubes_lighter3.png"}
+
+::: notes
+
+**What did you find from your pre-class explorations?**
+
+- *Share interesting/puzzling/surprising findings*
+
+- *ON BOARD*
+
+:::
+
+
+
+## Report 2 {background-image="libs/Images/background-slate_v2.png"}
+
+**Analyzing our Predictor Variable(s)**
+
+<br>
+
+1. Why is this project important?
+
+2. How confident should we be in the methodology?
+
+3. What do the measures currently show us?
+
+4. How are these measures changing across time?
+
+::: notes
+
+Next week we'll write the second report!
+
+Hopefully everyone has a bunch of material for the first two sections now.
+
+Dive into the data analyses over the break!
+
+:::
