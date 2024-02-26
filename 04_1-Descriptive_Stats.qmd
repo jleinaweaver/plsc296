@@ -1,23 +1,20 @@
 ---
 format: revealjs
-title: "Univariate Analyses 1"
-subtitle: "Calculating and analyzing descriptive statistics"
-author: "Justin Leinaweaver (Spring 2024)"
-background-image: "libs/Images/background-data_blue_v3.png"
-editor: visual
 ---
 
 # Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
 ```{r, echo=FALSE}
 library(tidyverse)
+
+options(width = 75)
 ```
 
 <br>
 
 **Univariate Analyses**
 
--   Descriptive Statistics
+-   Calculating and analyzing descriptive statistics
 
 ::: notes
 Prep for Class
@@ -65,7 +62,7 @@ This iterative process allows us to learn the coding and statistics we need in a
 **SLIDE**: To complete the first two reports you will need a set of skills we refer to as univariate analyses
 :::
 
-## Univariate Analyses {background-image="libs/Images/background-slate_v2.png"}
+## Univariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
 
 1.  Descriptive Statistics
     -   Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges and Interquartile Ranges (IQR)
@@ -94,7 +91,10 @@ Write these down!
 **SLIDE**: Ok, so why do we need univariate analyses?
 :::
 
-# 
+
+## What do we do with data? {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
 
 ```{r, echo=FALSE}
 set.seed(543)
@@ -137,9 +137,9 @@ So, if these were a list of house prices in SGF it would be super useful to know
 
 # Defining Statistics {background-image="libs/Images/background-slate_v2.png"}
 
-**Level 1**
-
 <br>
+
+**Level 1**
 
 Statistics is a set of tools we use to summarize data
 
@@ -155,9 +155,9 @@ Now, don't get me wrong, we learn a TON from basic description and summary, but 
 
 # Defining Statistics {background-image="libs/Images/background-slate_v2.png"}
 
-**Level 2**
-
 <br>
+
+**Level 2**
 
 "The practice or science of collecting and analyzing numerical data in large quantities, especially for the purpose of **inferring proportions in a whole from those in a representative sample**" (Oxford Dictionary).
 
@@ -175,15 +175,16 @@ So, those are the big, initial goals.
 
 
 
-# Descriptive_Statistics.R {background-image="libs/Images/background-slate_v2.png"}
+## Descriptive_Statistics.R {background-image="libs/Images/background-slate_v2.png"}
 
 <br>
 
 ::: columns
-::: {.column width="50%"}
-**Option 1**
+::: {.column width="40%"}
 
-"File"
+<br>
+
+"File" 
 
 ↓
 
@@ -194,14 +195,23 @@ So, those are the big, initial goals.
 "R Script"
 :::
 
-::: {.column width="50%"}
-**Option 2**
+::: {.column width="20%"}
 
-```{r, fig.align='center', out.width='38%'}
+<br>
+
+<br>
+
+<br>
+
+**OR**
+:::
+
+::: {.column width="40%"}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/03_3-New_Script.png")
 ```
 :::
-:::
+::::
 
 ::: notes
 Let's set off on the right foot!
@@ -217,8 +227,6 @@ Last week we used R as a calculator on single numbers and on a vector of numbers
 -   If you get confused, don't forget the Healy reading from Friday walks you through the way R does things and why we use functions!
 :::
 
-
-
 ##  {background-image="libs/Images/background-slate_v2.png"}
 
 ```{r, fig.align='center', out.width='60%'}
@@ -229,7 +237,7 @@ knitr::include_graphics("libs/Images/04_1-mpg_dataset.png")
 mpg |>
   slice(1:5) |>
   select(manufacturer:trans) |>
-  kableExtra::kbl()
+  kableExtra::kbl(align = 'c')
 ```
 
 ::: notes
@@ -250,9 +258,7 @@ The "mpg" data set is provided as part of an extra package.
 **SLIDE**: To access the data set...
 :::
 
-
-
-## {background-image="libs/Images/background-slate_v2.png"}
+##  {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo=TRUE, eval=FALSE}
 # Load packages
@@ -292,50 +298,38 @@ Relevant notes from Healy:
 2.  R is case sensitive so you have to write the code EXACTLY
     -   the "V" in view is capitalized
 3.  We can use \$ to access a single variable at a time in a dataset
-
 :::
 
-
-
-## {background-image="libs/Images/background-slate_v2.png"}
-
-3. **Variable type determines the tool**
-
-<br>
+## 3. Variable type determines the tool {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.align='center', out.width='90%'}
 knitr::include_graphics("libs/Images/01_2-levels_measurement.png")
 ```
 
 ::: notes
-
 Now, as we start calculating descriptive statistics don't forget our third principle of data analysis
 
 -   Variable Type Determines Tool
 
 -   Today we start applying this insight
-
 :::
 
+## 3. Variable type determines the tool {background-image="libs/Images/background-slate_v2.png" .center}
 
-
-## {background-image="libs/Images/background-slate_v2.png"}
-
-3. **Variable type determines the tool**
-
-<br>
-
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE}
 mpg$manufacturer
 ```
 
-```{r, echo=FALSE, eval=TRUE}
-mpg$manufacturer[1:126]
-```
-
 ::: notes
-
 We'll start by summarizing or describing categorical variables
+
+<br>
+
+When you ask R to show you a single variable with "$" it will provide all the observations in a list.
+
+- The numbers in brackets on the side is which number observation starts that row
+
+<br>
 
 ### Refresh my memory, why is manufacturer a categorical variable?
 
@@ -358,30 +352,17 @@ The mpg dataset has the manufacturer information for 234 cars
 <br>
 
 **SLIDE**: Let's do those things in R!
-
 :::
 
+## If you have a categorical variable... {background-image="libs/Images/background-slate_v2.png"}
 
-
-## {background-image="libs/Images/background-slate_v2.png"}
-
-**Descriptive Statistics on Categorical Variables**
-
-```{r, echo=TRUE, eval=FALSE}
-# Count the levels with table()
+**1. Count the levels with table()**
+```{r, echo=TRUE}
 table(mpg$manufacturer)
 ```
 
-```{r, echo=FALSE}
-table(mpg$manufacturer)
-```
-
-```{r, echo=TRUE, eval=FALSE}
-# Convert to proportions with prop.table()
-prop.table(table(mpg$manufacturer))
-```
-
-```{r, echo=FALSE}
+**2. Convert to proportions with prop.table()**
+```{r, echo=TRUE}
 prop.table(table(mpg$manufacturer))
 ```
 
@@ -406,47 +387,28 @@ Our second line uses a function on a function - Basically the input for prop.tab
 :::
 
 
-## {background-image="libs/Images/background-slate_v2.png"}
 
-**Descriptive Statistics on Categorical Variables**
 
-What proportion of cars in `mpg` are four-wheel drive (`drv`)?
+## What proportion of cars in `mpg` are four-wheel drive (`drv`)? {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+::: {.fragment .fade-in}
+Count the levels in `drv` and convert to proportions
+
+```{r, echo=TRUE}
+prop.table(table(mpg$drv))
+```
+:::
 
 ::: notes
-
 Use the code we just wrote to answer this question
 
 -   Same dataset, just focus on a different categorical variable.
 
-:::
-
-
-------------------------------------------------------------------------
-
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
-
-.center\[.size45\[.content-box-blue\[**Descriptive Statistics on Categorical Variables**\]\]\]
-
-.size40\[
-
 <br>
 
-.center\[.content-box-white\[What proportion of cars in `mpg` are four-wheel drive (`drv`)?\]\]\]
-
-<br>
-
-.code140\[
-
-```{r, echo=TRUE, eval=TRUE}
-# Count the levels in `drv` and convert to proportions
-prop.table(table(mpg$drv))
-```
-
-\]
-
-???
-
-That's all there is to it.
+*Show Results*: That's all there is to it.
 
 -   Descriptive stats on categorical variables is super easy.
 
@@ -455,28 +417,18 @@ That's all there is to it.
 <br>
 
 It looks like very few of the "popular" cars in this dataset from 1999 - 2008 were rear-wheel drive.
+:::
 
-------------------------------------------------------------------------
 
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-class: center class: middle
-
-.size45\[.content-box-blue\[**3. Variable .textblue\[type\] determines the .textblue\[tool\]**\]\]
+## 3. Variable type determines the tool  {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, echo=FALSE, eval=TRUE}
-options(width = 70)
-```
-
-.code120\[
-
-```{r, echo=TRUE, eval=TRUE}
+```{r, echo=TRUE}
 mpg$cty
 ```
 
-\]
-
-???
+::: notes
 
 Now, what if you'd like to summarize a numeric variable instead of a categorical one?
 
@@ -493,36 +445,29 @@ Now, what if you'd like to summarize a numeric variable instead of a categorical
 <br>
 
 **SLIDE**: As you saw in the reading, we have lots of good options for summarizing numeric variables.
+:::
 
-------------------------------------------------------------------------
 
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
 
-.center\[.size45\[.content-box-blue\[**Descriptive Statistics on Numerical Variables**\]\]\]
+## If you have a numerical variable... {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Measures of Central Tendency**
 
 <br>
 
-.center\[.size45\[.content-box-blue\[**I. Measures of Central Tendency**\]\]\]
-
-.code180\[
-
-```{r, echo=TRUE, eval=TRUE}
-# 1. Find the average with mean() 
+**1. Find the average value with mean()**
+```{r, echo=TRUE}
 mean(mpg$cty)
 ```
 
-\]
+<br>
 
-.code180\[
-
-```{r, echo=TRUE, eval=TRUE}
-# 2. Find the median value with median()
+**2. Find the median value with median()**
+```{r, echo=TRUE}
 median(mpg$cty)
 ```
 
-\]
-
-???
+::: notes
 
 Let's find the middle!
 
@@ -539,88 +484,56 @@ Let's make sure the intuition is clear.
 ### And what do we learn about a numeric variable if the mean and the median are very close to each other?
 
 -   (No big outliers!)
+:::
 
-------------------------------------------------------------------------
 
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
 
-.center\[.size45\[.content-box-blue\[**Descriptive Statistics on Numerical Variables**\]\]\]
 
-<br>
-
-.center\[.size45\[.content-box-blue\[**I. Measures of Central Tendency**\]\]\]
-
-.size40\[
+## What is the "middle" highway fuel economy (`hwy`) in `mpg`? {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-<br>
-
-.center\[.content-box-white\[What is the "middle" highway fuel economy (`hwy`) in `mpg`?\]\]\]
-
-???
-
-### To practice, what's the average fuel economy on the highway in this data set?
-
--   (**SLIDE**)
-
-------------------------------------------------------------------------
-
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
-
-.center\[.size45\[.content-box-blue\[**Descriptive Statistics on Numerical Variables**\]\]\]
-
-<br>
-
-.center\[.size45\[.content-box-blue\[**I. Measures of Central Tendency**\]\]\]
-
-<br>
-
-.code150\[
-
-```{r, echo=TRUE, eval=TRUE}
-# 1. Find the average with mean() 
+::: {.fragment .fade-in}
+1. Find the average with mean() 
+```{r, echo=TRUE}
 mean(mpg$hwy)
-
-# 2. Find the median value with median()
-median(mpg$hwy)
 ```
 
-\]
+2. Find the median value with median()
+```{r, echo=TRUE}
+median(mpg$hwy)
+```
+:::
 
-???
-
+::: notes
 So, you can summarize a data distribution with the mean or median as its middle, BUT
 
 -   How do we know if the "middle" is a good summary?
 
 -   **SLIDE**: We need to check the spread of the data!
+:::
 
-------------------------------------------------------------------------
 
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
 
-.center\[.size45\[.content-box-blue\[**Descriptive Statistics on Numerical Variables**\]\]\]
+## If you have a numerical variable... {background-image="libs/Images/background-slate_v2.png" .center}
 
-<br>
-
-.size40\[.center\[.content-box-blue\[**II. Measures of the Spread**\]\]\]
+**Measures of the Spread**
 
 <br>
 
-.code150\[
-
-```{r, echo=TRUE, eval=TRUE}
-# Use summary() for a selection of descriptive stats
+**Use summary() for a selection of descriptive stats**
+```{r, echo=TRUE}
 summary(mpg$cty)
+```
 
-# Use sd() for the standard deviation
+<br>
+
+**Use sd() for the standard deviation**
+```{r, echo=TRUE}
 sd(mpg$cty)
 ```
 
-\]
-
-???
+::: notes
 
 Everybody write down the code and make sure it works.
 
@@ -654,61 +567,59 @@ The only fairly standard thing summary() doesn't give you is the std dev
 knitr::include_graphics("libs/Images/04-1-Std_Dev_Formula.svg")
 ```
 
-------------------------------------------------------------------------
+:::
 
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
 
-.size65\[.center\[What is the earliest and latest year in the `mpg` dataset?\]\]
 
-???
+## What is the earliest and latest `year` in the `mpg` dataset? {background-image="libs/Images/background-slate_v2.png" .center}
 
-Quick hit practice!
-
---
-
-.code120\[
-
+::: {.fragment .fade-in}
+Summarize
 ```{r, echo=TRUE}
 summary(mpg$year)
-
-min(mpg$year)
-
-max(mpg$year)
 ```
 
-\]
+Minimum
+```{r, echo=TRUE}
+min(mpg$year)
+```
 
-???
+Maximum
+```{r, echo=TRUE}
+max(mpg$year)
+```
+:::
+
+::: notes
+Practice time!
 
 I'm also using this as a chance to show you the functions for calculating the minimum or maximum alone.
+:::
 
-------------------------------------------------------------------------
 
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
 
-.size60\[.center\[Is it more useful to summarize the number of engine cylinders (`cyl`) as a table() or with summary()?\]\]
+## Is it more useful to summarize the number of engine cylinders (`cyl`) as a table() or with summary()? {background-image="libs/Images/background-slate_v2.png" .center}
 
-???
+::: {.fragment .fade-in}
+Treat as a numeric variable
+```{r, echo=TRUE}
+summary(mpg$cyl)
+```
 
+Treat as a categorical variable
+```{r, echo=TRUE}
+table(mpg$cyl)
+```
+:::
+
+::: notes
 One more quick hit practice!
 
 -   Sometimes it can be hard to tell the difference between a numeric and a categorical variable with levels represented by numbers!
 
 -   Make both and tell me which you would use in a report meant to describe the distribution of cars
 
---
-
-.code120\[
-
-```{r, echo=TRUE}
-summary(mpg$cyl)
-
-table(mpg$cyl)
-```
-
-\]
-
-???
+<br>
 
 ### What conclusion do you draw from these statistics?
 
@@ -725,47 +636,56 @@ The table makes clear that most cars are 4, 6 or 8 cylinders and the distributio
 The lesson: Sometimes categorical variables use numbers!
 
 -   Be careful.
+:::
 
-------------------------------------------------------------------------
 
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
 
-.center\[.size65\[.content-box-blue\[**Descriptive Stats: Summary**\]\]\]
-
-<br>
-
-.size45\[ Functions for Categorical Variables - table() and prop.table()
-
-Functions for Numerical Variables - summary() and sd() - OR min(), max(), mean(), median(), quantile() \]
-
-???
-
-### Any questions on these functions and how to interpret what they produce?
-
-------------------------------------------------------------------------
-
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
-
-.size70\[.content-box-blue\[**For Next Class**\]\]
+## Descriptive Statistics {background-image="libs/Images/background-slate_v2.png"}
 
 <br>
 
-.size55\[ 1. Read Johnson (2012) p376-392 on univariate visualizations, and
+**Functions for Categorical Variables**
 
-2.  Finish the practice exercises (next slide) \]
+- table() and prop.table()
 
-???
+<br>
 
-### Questions on the assignment?
+**Functions for Numeric Variables**
 
-------------------------------------------------------------------------
+- summary() and sd(), OR
+- min(), max(), mean(), median(), quantile()
 
-background-image: url('libs/Images/background-slate_v2.png') background-size: 100% background-position: center class: middle
+::: notes
 
-.size35\[ 1. What proportion of US presidents since 1953 have been Republicans? (Built-in Data: presidential, Variable: party)
+**Any questions on these functions and how to interpret what they produce?**
+
+:::
+
+
+
+
+## For Next Class {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+1. Johnson (2012) p376-392 on univariate visualizations
+
+2. Finish the practice exercises (next slide)
+
+::: notes
+
+**Questions on the assignment?**
+
+:::
+
+
+
+## Practice Exercises {background-image="libs/Images/background-slate_v2.png"}
+
+1. What proportion of US presidents since 1953 have been Republicans? (Built-in Data: presidential, Variable: party)
 
 2.  Why are the mean and median total populations in the midwest so different from each other? (Built-in Data: midwest, Variable: poptotal)
 
 3.  How many hours per day do you have to sleep to sleep longer than 75% of studied mammals? (Built-in Data: msleep, Variable: sleep_total)
 
-4.  Which mammal sleeps the least and which the most? (Built-in Data: msleep, Variable: sleep_total) \]
+4.  Which mammal sleeps the least and which the most? (Built-in Data: msleep, Variable: sleep_total)
