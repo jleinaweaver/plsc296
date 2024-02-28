@@ -1,6 +1,8 @@
 # plsc296
 Data, slides and errata for my class at Drury University (PLSC 296: Data Analysis in Political Science)
 
+00-Configuring_RStudio.html
+
 01_1-Welcome_to_296.html
 
 01_2-Answering_Questions_with_Data.html
@@ -37,15 +39,11 @@ Data, slides and errata for my class at Drury University (PLSC 296: Data Analysi
 
 07_1-Predictor_Data_Options.html
 
-07_2-Data2_Codebook.html
+07_2-Revise_and_Resubmit.html
 
-07_3-Data2_Excel_Audit.html
+07_3-Presentation_Report1.html
 
-08_1-Report2_Work1.html
-
-08_2-Report2_Work2.html
-
-08_3-Report2_Work3.html
+08_1-Data2_Codebook.html
 
 09_1-Bivariate_Descriptives.html
 
@@ -76,8 +74,6 @@ Data, slides and errata for my class at Drury University (PLSC 296: Data Analysi
 13_3-Multivariate_Analyses_Project.html
 
 14_1-Multivariate-OLS.html
-
-14_2 Class cancelled - Fusion Day
 
 14_3-Multivariate-OLS_Applied.html
 
