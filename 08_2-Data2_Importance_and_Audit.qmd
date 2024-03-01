@@ -1,0 +1,454 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
+
+```{r}
+#  background-size="1920px 1080px"
+library(tidyverse)
+library(haven)
+
+d <- read_csv("../Data_in_Class-SP24/CoW-National_Material_Capabailities/CoW-NMC-Data.csv", na = "-9")
+```
+
+<br>
+
+Working on Report 2
+
+- Importance Arguments (Section 1)
+
+- Auditing the Data
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
+
+::: notes
+Prep for Class
+
+1. Check the Canvas submissions
+
+2. Update slides BEFORE class
+    - Add data view for discussing observations
+    - Add code checking for missing data by variable, region and year
+    - Is it time to introduce rworldmap for checking regional missing data
+
+<br>
+
+For today I asked each of you to come to class with material for Section 1 and having audited the dataset.
+
+<br>
+
+**Everybody ready to go with these?**
+
+<br>
+
+**SLIDE**: Let's start with the Section 1 evidence
+:::
+
+
+
+## Section 1 {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Why is this project important?**
+
+<br>
+
+- What problem are the researchers trying to solve?
+
+- How does the problem impact actors, institutions or interactions in the real world?
+
+- Why should we take these researchers seriously? (e.g. credentials, funding, transparency, etc.) 
+ 
+- Is there evidence that the project has had concrete impacts on the world?
+
+::: notes
+Here is the general advice I offered you in week 3 for the kinds of elements that help construct an argument about importance.
+
+- My hope is the evidence you found for today will help everyone in class make this a compelling and well supported argument!
+
+<br>
+
+Let's go around the room so you can each briefly introduce the evidence you found and how you think it helps us make this argument.
+
+- *PRESENT and DISCUSS each*
+
+<br>
+
+An excellent jump-start on Section 1.
+
+- **Any questions before we jump to auditing the data?**
+:::
+
+
+
+## Section 2: Auditing the Data  {background-image="libs/Images/background-slate_v2.png" .smaller .center}
+
+```{r}
+d |>
+  select(stateabb, year:cinc) |>
+  slice_sample(n=10) |>
+  kableExtra::kbl(digits = 2)
+```
+
+::: notes
+Let's go back to our work on Section 2 of the report
+
+- The codebook gives us vital information about how the researchers actually measure the world
+
+<br>
+
+BUT, that's only ONE source of uncertainty
+
+- Data sources and weaknesses in the measurement instrument can often only be spotted once you begin to explore the data itself
+
+<br>
+
+Everybody import the data and get ready to explore!
+
+- Don't forget the missing data code is -9 for the CoW NMC data project
+:::
+
+
+
+## Audit: Missing Data (Indicators) {background-image="libs/Images/background-slate_v2.png"}
+
+<br>
+
+::: {.fragment}
+```{r}
+d |>
+  pivot_longer(cols = milex:upop, names_to = "Indicators", values_to = "Values") |>
+  group_by(Indicators) |>
+  reframe(
+    NAs = sum(is.na(Values))
+  ) |>
+  mutate(
+    Proportion = str_c(round(NAs/15951, 3)*100, "%")
+  ) |>
+  kableExtra::kbl(align = c("l", "c", "c"))
+```
+:::
+
+::: notes
+Let's start by looking for missing data by variable
+
+- Everybody use the summary function to check for NAs in each of the six indicators
+
+<br>
+
+**SLIDE: What do we learn from these results?**
+:::
+
+
+
+## Audit: Missing Data (Years) {background-image="libs/Images/background-slate_v2.png"}
+
+```{r, fig.asp=.618, out.width='95%', fig.align='center', fig.width=8, cache=TRUE}
+d |>
+  pivot_longer(cols = milex:upop, names_to = "Indicators", values_to = "Values") |>
+  group_by(year) |>
+  reframe(
+    NAs = sum(is.na(Values))
+  ) |>
+  ggplot(aes(x = year, y = NAs)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "", y = "Missing Data (count)") +
+  scale_x_continuous(breaks = seq(1820, 2020, 20))
+```
+
+::: notes
+Here we see missing data by year
+
+- Estimating missing data overall can be a little tricky so I'm just showing you the results
+
+<br>
+
+The spikes coincide with WWI, WWII, the collapse of the USSR and the year 2014
+
+- I get the first three of those, but am not sure about the 2014 spike
+
+<br>
+
+**SLIDE: What do we learn from these results?**
+
+<br>
+
+**SLIDE**: Let's split this out by variable
+:::
+
+
+
+## Audit: Missing Data (Years) {background-image="libs/Images/background-slate_v2.png"}
+
+```{r, fig.asp=.618, out.width='95%', fig.align='center', fig.width=8, cache=TRUE}
+d |>
+  pivot_longer(cols = milex:upop, names_to = "Indicators", values_to = "Values") |>
+  group_by(year, Indicators) |>
+  reframe(
+    NAs = sum(is.na(Values))
+  ) |>
+  ggplot(aes(x = year, y = NAs, color = Indicators)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "", y = "Missing Data (count)") +
+  scale_color_brewer(type = "qual", palette = 3) +
+  scale_x_continuous(breaks = seq(1820, 2020, 20))
+```
+
+::: notes
+**What do we learn from splitting out the data?**
+
+<br>
+
+It makes a ton of sense to me that military spending would be the hardest data to acquire!
+
+<br>
+
+Clearly, the sample size changes across the years so let's now examine by how much.
+
+- Everybody make us a bar plot of countries across time (e.g. count the years!)
+
+<br>
+
+**SLIDE**: Results
+:::
+
+
+
+## Audit: How does the sample change? {background-image="libs/Images/background-slate_v2.png"}
+
+```{r, fig.asp=.618, out.width='95%', fig.align='center', fig.width=8, cache=TRUE}
+ggplot(d, aes(x = year)) +
+  geom_bar() +
+  theme_bw() +
+  labs(x = "", y = "Number of Countries") +
+  scale_x_continuous(breaks = seq(1820, 2020, 20))
+```
+
+::: notes
+**What do we learn from this visualization?**
+
+<br>
+
+If we are going to understand "proportion as a whole" to be meaningful, then we better be confident the sample has the whole!
+
+<br>
+
+**So, what does this count represent?**
+
+- **Does the codebook say this is a count of ALL countries or just those relevant to power?**
+
+<br>
+
+**SLIDE**: Last audit step for us today, let's try to verify the calculation of the `cinc` scores
+:::
+
+
+
+## Audit 2: Verifying CINC scores  {background-image="libs/Images/background-slate_v2.png" .smaller}
+
+<br>
+
+::: {.fragment}
+**1. Filter the Data**
+```{r, echo=TRUE}
+d1910 <- filter(d, year == 1910) 
+```
+
+<br>
+
+```{r, echo=TRUE}
+# View the top of the dataset
+d1910
+```
+:::
+
+::: notes
+Remember, the CINC score for each country-year is an average of the proportions in the six indicator measures
+
+- That's dense, so let's unpack it as an audit check on the data
+
+- In other words, can we replicate their index? If not that should cause us concerns!
+
+<br>
+
+As practice, let's verify the US cinc score for the year 1910
+
+- I'm picking a spot four years before the outbreak of WW1.
+
+<br>
+
+Let's attack this with our programmer hats on.
+
+- That simply means breaking a complex question down into simpler steps
+
+<br>
+
+**SLIDE**: I've input the NMC dataset as 'd' and my first step is to extract only the observations from 1910
+
+<br>
+
+**What's our next step in this process?**
+
+- (**SLIDE**: We need to calculate the sum of each variable in this year)
+:::
+
+
+
+## Audit 2: Verifying CINC scores  {background-image="libs/Images/background-slate_v2.png"}
+
+<br>
+
+**2. Sum together all observations for each variable in one year**
+
+```{r, echo=TRUE}
+sum(d1910$milex, na.rm = TRUE)
+sum(d1910$milper, na.rm = TRUE)
+sum(d1910$irst, na.rm = TRUE)
+sum(d1910$pec, na.rm = TRUE)
+sum(d1910$tpop, na.rm = TRUE)
+sum(d1910$upop, na.rm = TRUE)
+```
+
+::: notes
+Note here that you have to include the argument "na.rm = TRUE" so that R knows what to do with missing data.
+
+- Otherwise, adding together all values in a column with missing data results in an "NA."
+
+<br>
+
+This is a good thing!
+
+- We don't want to produce results that we don't understand
+
+- If there is missing data and you CHOOSE to ignore it, you have to make that choice EXPLICITLY in the code.
+
+<br>
+
+**Make sense?**
+:::
+
+
+
+## Audit 2: Verifying CINC scores  {background-image="libs/Images/background-slate_v2.png"}
+
+<br>
+
+**3. Identify the US amounts by the totals**
+
+```{r, echo=TRUE}
+d1910_USA <- filter(d1910, stateabb == "USA")
+```
+
+<br>
+
+```{r, echo=TRUE}
+d1910_USA
+```
+
+::: notes
+**Everybody understand this step and how we got these results?**
+:::
+
+
+
+## Audit 2: Verifying CINC scores  {background-image="libs/Images/background-slate_v2.png"}
+
+<br>
+
+**4. Calculate the US proportions**
+
+```{r, echo=TRUE}
+d1910_USA$milex / sum(d1910$milex, na.rm = TRUE)
+
+d1910_USA$milper / sum(d1910$milper, na.rm = TRUE)
+
+d1910_USA$irst / sum(d1910$irst, na.rm = TRUE)
+
+d1910_USA$pec / sum(d1910$pec, na.rm = TRUE)
+
+d1910_USA$tpop / sum(d1910$tpop, na.rm = TRUE)
+
+d1910_USA$upop / sum(d1910$upop, na.rm = TRUE)
+```
+
+
+::: notes
+**Everybody understand this step and how we got these results?**
+
+<br>
+
+Everybody calculate the average of these six proportions
+
+- Add together the six values and divide them by six
+
+- Try it!
+:::
+
+
+
+## Audit 2: Verifying CINC scores  {background-image="libs/Images/background-slate_v2.png"}
+
+<br>
+
+**5. Calculate the CINC**
+
+```{r, echo=TRUE}
+(.133 + .0218 + .4527 + .4581 + .0778 + .2153) / 6
+```
+
+<br>
+
+```{r, echo=TRUE}
+d1910_USA$cinc
+```
+
+::: notes
+**Everybody understand this step and how we got these results?**
+
+<br>
+
+**Alright, what have we learned about the cinc score?**
+
+- **Are we more or less confident in the measure?**
+
+<br>
+
+**SLIDE**: Let's talk about Sections 3 and 4 for the second report
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png"}
+
+**Section 3: Current Snapshot (2016)**
+
+1. Analyze the current distribution of the `cinc` score
+
+2. Analyze the current distribution of one of the indicators in the dataset (assigned)
+
+::: {.fragment}
+**Section 4: Across Time (since WWII)**
+
+1. Analyze the `cinc` score **AND** your assigned indicator across time (1946, 1969, 1993, 2016)
+
+2. Select a country that has experienced variation in its `cinc` score and your assigned indicator across time (e.g. avoid the stable cases).
+:::
+
+::: notes
+Just like last time!
+
+<br>
+
+**Questions on the assignment?**
+
+- Get to it!
+:::
+
+
+
+

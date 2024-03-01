@@ -45,6 +45,10 @@ Data, slides and errata for my class at Drury University (PLSC 296: Data Analysi
 
 08_1-Data2_Codebook.html
 
+08_2-Data2_Importance_and_Audit.html
+
+08_3-Report2_Work.html
+
 09_1-Bivariate_Descriptives.html
 
 09_2-Bivariate_Viz.html
