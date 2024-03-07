@@ -1,90 +1,53 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
 library(readxl)
-library(stargazer)
 library(kableExtra)
 library(modelsummary)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
+<br>
 
 <br>
 
-.size65[.center[
-Fitting, interpreting and analyzing simple OLS regressions
-]]
+**Fitting, interpreting and analyzing simple OLS regressions**
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+<br>
 
-???
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-## Prep for Class
-1. 
+::: notes
+Prep for Class
+
+1. ...
+:::
 
 
 
+## Part 1 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size80[
-**Part 1**
+<br>
 
 **Why do we need regressions?**
-]
 
-???
-
+::: notes
 Both in terms of the approach to summarizing data and what do we mean by the word 'regression'?
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-```{r, fig.align = 'center', fig.retina=3, fig.asp=.7, out.width = '80%', fig.width = 6, cache=TRUE}
+```{r, fig.align = 'center', fig.asp=.7, fig.width = 6, cache=TRUE}
 diamonds |>
   slice_sample(prop = .1) |>
   ggplot(aes(x = carat, y = price)) +
@@ -96,22 +59,17 @@ diamonds |>
   coord_cartesian(xlim = c(0,4))
 ```
 
-???
+::: notes
 
 ### What conclusions can we draw based on the visualization and the correlation?
 
 ### - In other words, based on these stats what is the specific relationship between diamond size and price?
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-```{r, fig.align = 'center', fig.retina=3, fig.asp=.7, out.width = '80%', fig.width = 6, cache=TRUE}
+```{r, fig.align = 'center', fig.asp=.7, fig.width = 6, cache=TRUE}
 range1 <- range(diamonds$price[diamonds$carat == 1.5])
 range2 <- range(diamonds$price[diamonds$carat == 2.5])
 
@@ -128,7 +86,7 @@ diamonds |>
   annotate("segment", x = 2.5, xend = 2.5, y = range2[1], yend = range2[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both"))
 ```
 
-???
+::: notes
 
 Let's get more specific!
 
@@ -139,40 +97,30 @@ Let's get more specific!
 <br>
 
 **SLIDE**: Regression is an estimation tool that aims to answer this type of question.
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size60[
 Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.
-]
 
-.size80[
+<br>
+
 Y = $\alpha$ + $\beta$ X
-]
 
-???
-
-### What clarifications do you need from the readings?
-
+::: notes
+**What clarifications do you need from the readings?**
+:::
 
 
----
+## Why 'Regression'? {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+<br>
 
-.size60[**Why 'Regression'?**]
-
-.pull-left[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r, eval=FALSE}
 # Let's try creating an animation showing various diamonds pulled from the "bag"
 library(gifski)
@@ -211,12 +159,12 @@ png_files <- list.files(pattern = ".*diamonds.png$", full.names = TRUE)
 gifski(png_files, gif_file = "libs/Images/11_1-diamonds_carats.gif", delay = 1) #, width = 850, height = 600
 ```
 
-```{r, echo = FALSE, fig.retina=3, fig.align = 'center', out.width = '100%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/11_1-diamonds_carats.gif")
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 ```{r, eval=FALSE}
 # Let's try creating an animation showing various diamonds pulled from the "bag"
 library(gifski)
@@ -256,12 +204,13 @@ png_files <- list.files(pattern = ".*diamonds.png$", full.names = TRUE)
 gifski(png_files, gif_file = "libs/Images/11_1-diamonds_prices.gif", delay = 1) #, width = 850, height = 600
 ```
 
-```{r, echo = FALSE, fig.retina=3, fig.align = 'center', out.width = '100%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/11_1-diamonds_prices.gif")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Imagine you are holding a bag of diamonds.
 
@@ -273,23 +222,18 @@ Imagine you are holding a bag of diamonds.
 
 <br>
 
-
 ### If you pull a single diamond from this collection at random, what is the most likely price and size it will be?
+:::
 
 
 
+## Why 'Regression'? {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size60[**Why 'Regression'?**]
-
-.pull-left[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', cache=TRUE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
 diamonds |>
   #slice_sample(prop = .4) |>
   ggplot(aes(x = carat)) +
@@ -297,12 +241,12 @@ diamonds |>
   theme_bw() +
   labs(x = "Carats", y = "") +
   geom_vline(xintercept = mean(diamonds$carat), color = "red", linewidth=1.5) +
-  annotate("text", x = 3, y = 12500, label = str_c("Mean(Carats) = ", round(mean(diamonds$carat), 2)), size = 7)
+  annotate("text", x = 3, y = 12500, label = str_c("Mean(Carats) = ", round(mean(diamonds$carat), 2)), size = 6)
 ```
-]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, , fig.align = 'center', out.width = '100%', cache=TRUE}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
 diamonds |>
   #slice_sample(prop = .4) |>
   ggplot(aes(x = price)) +
@@ -311,31 +255,27 @@ diamonds |>
   labs(x = "Price", y = "") +
   geom_vline(xintercept = mean(diamonds$price), color = "red", linewidth=1.5) +
   scale_x_continuous(labels = scales::dollar_format()) +
-  annotate("text", x = 12500, y = 12500, label = str_c("Mean(Price) = ", round(mean(diamonds$price), 2)), size = 7)
+  annotate("text", x = 12500, y = 12500, label = str_c("Mean(Price) = ", round(mean(diamonds$price), 2)), size = 6)
 ```
-]
+:::
+::::
 
-???
-
-### Pros and cons of guessing the average?
+::: notes
+**Pros and cons of guessing the average?**
 
 - Clearly the price of the diamonds isn't normally distributed, so maybe you're better off guessing lower.
 
+:::
 
 
 
+## Why 'Regression'? {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size60[**Why 'Regression'?**]
-
-.pull-left[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', cache=TRUE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
 diamonds |>
   #slice_sample(prop = .4) |>
   ggplot(aes(x = carat)) +
@@ -344,10 +284,10 @@ diamonds |>
   labs(x = "Carats", y = "") +
   annotate("segment", x = 2.2, xend = 2.2, y = 5000, yend = 1000, arrow = arrow(angle = 30, length = unit(0.1, "inches")), color = "red")
 ```
-]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, , fig.align = 'center', out.width = '100%', cache=TRUE}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
 diamonds |>
   #slice_sample(prop = .4) |>
   ggplot(aes(x = price)) +
@@ -357,27 +297,23 @@ diamonds |>
   annotate("segment", x = 14600, xend = 14600, y = 5000, yend = 1000, arrow = arrow(angle = 30, length = unit(0.1, "inches")), color = "red") +
   scale_x_continuous(labels = scales::dollar_format())
 ```
-]
+:::
+::::
 
-???
+::: notes
+**Does your guess change if the first diamond you pull out of the bag is massive?**
 
-### Does your guess change if the first diamond you pull out of the bag is massive?
-
-### - In other words, if you first pull a massive diamond from the collection, what is the most likely price and size of the next one you draw?
-
+- **In other words, if you first pull a massive diamond from the collection, what is the most likely price and size of the next one you draw?**
+:::
 
 
----
+## 'Regression to the mean'{background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+<br>
 
-.size60[**Regression aka 'regression to the mean'**]
-
-.pull-left[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', cache=TRUE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', cache=TRUE}
 diamonds |>
   #slice_sample(prop = .4) |>
   ggplot(aes(x = carat)) +
@@ -386,10 +322,10 @@ diamonds |>
   labs(x = "Carats", y = "") +
   geom_vline(xintercept = mean(diamonds$carat), color = "red", size=1.5)
 ```
-]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, , fig.align = 'center', out.width = '100%', cache=TRUE}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', cache=TRUE}
 diamonds |>
   #slice_sample(prop = .4) |>
   ggplot(aes(x = price)) +
@@ -399,9 +335,10 @@ diamonds |>
   geom_vline(xintercept = mean(diamonds$price), color = "red", size=1.5) +
   scale_x_continuous(labels = scales::dollar_format())
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 (A random draw of an outlier is more likely to be followed by an average value than another outlier.)
 
@@ -410,22 +347,17 @@ diamonds |>
 In statistical terms, we tend to see data trend toward its central tendency.
 
 - e.g. "middle" values are more common than outliers.
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## 'Regression to the mean'{background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo = FALSE, fig.align = 'center', out.width = '66%'}
 knitr::include_graphics("libs/Images/11_1-Galtons-rate_regression-diagram.png")
 ```
 
-???
+::: notes
 
 We get the word "regression" from Sir Francis Galton
 - A statistician working in the late 19th century
@@ -453,17 +385,14 @@ In 1886 he ran a now very famous experiment in which he gathered the heights of 
 <br>
 
 **SLIDE**: Let me see if I can clarify this intuition using a simple simulated counting experiment.
+:::
 
 
+## Let's Simulate an Experiment! {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**Let's Simulate an Experiment!**]]]
-
-.pull-left[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 # Set up
 d_base <- tibble(
   obs = 1:100,
@@ -484,10 +413,10 @@ p1 <- ggplot(data = d_base, aes(x = current, y = obs)) +
 p1 +
   geom_point(data = d_base, size = 2.5, color = "red")
 ```
-]
+:::
 
-.pull-right[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 d_base |>
   mutate(
     current_f = factor(current, levels = seq(40,60, 1))
@@ -498,9 +427,10 @@ d_base |>
   scale_x_discrete(drop = FALSE) +
   labs(x = "", y = "Count of Positions")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 *Idea taken from McElreath book*
 
@@ -523,16 +453,17 @@ On the right I have a bar plot showing where on the field each person is now
 <br>
 
 ### Questions on the set-up here?
+:::
 
 
----
 
-class: middle, slideblue
+## Coin Flip 1 {background-image="libs/Images/background-slate_v2.png" .center}
 
-.center[.content-box-blue[.size60[**Coin Flip 1**]]]
+<br>
 
-.pull-left[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 # Flip 1 coin
 d1 <- d_base |>
   mutate(
@@ -543,10 +474,10 @@ d1 <- d_base |>
 p1 +
   geom_point(data = d1, size = 2.5, color = "red", aes(x = new))
 ```
-]
+:::
 
-.pull-right[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 d1 |>
   mutate(
     new_f = factor(new, levels = seq(45,55, 1))
@@ -557,22 +488,21 @@ d1 |>
   scale_x_discrete(drop = FALSE) +
   labs(x = "", y = "Count of Positions")
 ```
-]
+:::
+::::
 
-???
+::: notes
+**What happens after the first flip? Describe the outcome for me.**
+:::
 
-### What happens after the first flip? Describe the outcome for me.
 
+## Coin Flip 2 {background-image="libs/Images/background-slate_v2.png" .center}
 
+<br>
 
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**Coin Flip 2**]]]
-
-.pull-left[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 # Flip again
 d2a <- d1 |>
   mutate(
@@ -590,10 +520,10 @@ d2 <- d2a |>
 p1 +
   geom_point(data = d2, size = 2.5, color = "red", aes(x = new))
 ```
-]
+:::
 
-.pull-right[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 d2 |>
   mutate(
     new_f = factor(new, levels = seq(45,55, 1))
@@ -604,22 +534,21 @@ d2 |>
   scale_x_discrete(drop = FALSE) +
   labs(x = "", y = "Count of Positions")
 ```
-]
+:::
+::::
 
-???
+::: notes
+**What happens after the second flip? Describe the outcome for me.**
+:::
 
-### What happens after the second flip? Describe the outcome for me.
 
+## Coin Flip 3 {background-image="libs/Images/background-slate_v2.png" .center}
 
+<br>
 
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**Coin Flip 3**]]]
-
-.pull-left[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 # Flip again
 d3a <- d2 |>
   mutate(
@@ -637,10 +566,10 @@ d3 <- d3a |>
 p1 +
   geom_point(data = d3, size = 2.5, color = "red", aes(x = new))
 ```
-]
+:::
 
-.pull-right[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 d3 |>
   mutate(
     new_f = factor(new, levels = seq(45,55, 1))
@@ -651,24 +580,24 @@ d3 |>
   scale_x_discrete(drop = FALSE) +
   labs(x = "", y = "Count of Positions")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Ok, third flip.
 
-### What do we see here?
+**What do we see here?**
+:::
 
 
+## Coin Flip 4 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**Coin Flip 4**]]]
-
-.pull-left[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 # Flip again
 d4a <- d3 |>
   mutate(
@@ -686,10 +615,10 @@ d4 <- d4a |>
 p1 +
   geom_point(data = d4, size = 2.5, color = "red", aes(x = new))
 ```
-]
+:::
 
-.pull-right[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 d4 |>
   mutate(
     new_f = factor(new, levels = seq(45,55, 1))
@@ -700,24 +629,24 @@ d4 |>
   scale_x_discrete(drop = FALSE) +
   labs(x = "", y = "Count of Positions")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Flip 4!
 
 And then on to...
+:::
 
 
+## Coin Flip 10 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**Coin Flip 10**]]]
-
-.pull-left[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 # Simulate 10 flips
 repo10 <- vector("list", 10)
 
@@ -733,10 +662,10 @@ d10$current <- as_tibble(repo10, .name_repair = "unique") |>
 p1 +
   geom_point(data = d10, size = 2.5, color = "red")
 ```
-]
+:::
 
-.pull-right[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 d10 |>
   mutate(
     current_f = factor(current, levels = seq(40,60, 1))
@@ -747,13 +676,14 @@ d10 |>
   scale_x_discrete(drop = FALSE) +
   labs(x = "", y = "Count of Positions")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Ok, what are we seeing develop here?
 
-### Describe this distribution for me.
+**Describe this distribution for me.**
 
 <br>
 
@@ -763,25 +693,21 @@ Ok, what are we seeing develop here?
 <br>
 
 **SLIDE**: Let's unpack this using counting!
+:::
 
 
+## Coin Flip 3: Possible Paths {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**Coin Flip 3: Possible Paths**]]]
-
-.pull-left[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 # Flip again
 p1 +
   geom_point(data = d3, size = 2.5, color = "red", aes(x = new))
 ```
-]
+:::
 
-.pull-right[
-.size45[
+::: {.column width="50%"}
 - T, T, T = -3
 - H, T, T = -1
 - T, H, T = -1
@@ -790,9 +716,10 @@ p1 +
 - H, T, H = +1
 - T, H, H = +1
 - H, H, H = +3
-]]
+:::
+::::
 
-???
+::: notes
 
 Go back to flip 3
 
@@ -808,32 +735,22 @@ Go back to flip 3
 <br>
 
 **SLIDE**: Let's check four flips!
+:::
 
 
+## Coin Flip 4: Possible Paths {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
+<br>
 
-class: middle, slideblue
-
-.center[.content-box-blue[.size50[**Coin Flip 4: Possible Paths**]]]
-
-.pull-left[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+:::: {.columns}
+::: {.column width="40%"}
+```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 p1 +
   geom_point(data = d4, size = 2.5, color = "red", aes(x = new))
 ```
-]
+:::
 
-.pull-right[
-.size25[
-- T, T, T, T = -4
-- H, T, T, T = -2
-- T, H, T, T = -2
-- T, T, H, T = -2
-- T, T, T, H = -2
-- H, H, T, T = 0
-- T, H, H, T = 0
-- T, T, H, H = 0
+::: {.column width="30%"}
 - T, H, T, H = 0
 - H, T, H, T = 0
 - H, T, T, H = 0
@@ -842,9 +759,21 @@ p1 +
 - H, T, H, H = +2
 - T, H, H, H = +2
 - H, H, H, H = +4
-]]
+:::
 
-???
+::: {.column width="30%"}
+- T, T, T, T = -4
+- H, T, T, T = -2
+- T, H, T, T = -2
+- T, T, H, T = -2
+- T, T, T, H = -2
+- H, H, T, T = 0
+- T, H, H, T = 0
+- T, T, H, H = 0
+:::
+::::
+
+::: notes
 
 Here we see the 16 ways a person could flip a coin four times.
 
@@ -857,24 +786,23 @@ Here we see the 16 ways a person could flip a coin four times.
 - 14/16 (88%) are within 2!
 
 - Only 2 paths reach the extremes!
+:::
 
 
+## Coin Flip 4 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**Coin Flip 4**]]]
-
-.pull-left[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 p1 +
   geom_point(data = d4, size = 2.5, color = "red", aes(x = new))
 ```
-]
+:::
 
-.pull-right[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, cache=FALSE}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 d4 |>
   mutate(
     new_f = factor(new, levels = seq(45,55, 1))
@@ -885,10 +813,10 @@ d4 |>
   scale_x_discrete(drop = FALSE) +
   labs(x = "", y = "Count of Positions")
 ```
-]
+:::
+::::
 
-???
-
+::: notes
 And here we see the results of our experiment after flip 4.
 
 - We know from the counts WHY extreme values are unlikely and the bar plot shows us that those values WERE unlikely
@@ -912,22 +840,17 @@ Expecting "regression to the mean" can be explained through a counting process
 <br>
 
 ### Does this make sense?
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## 'Regression to the mean'{background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo = FALSE, fig.align = 'center', out.width = '66%'}
 knitr::include_graphics("libs/Images/11_1-Galtons-rate_regression-diagram.png")
 ```
 
-???
+::: notes
 
 THIS is what Galton found with his research into parent-child heights.
 
@@ -946,19 +869,14 @@ THIS is the power of regression.
 <br>
 
 ### Any questions on the intuition of why predicting the average is frequently useful for us?
+:::
 
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-```{r, fig.retina=3, fig.align='center', out.width='96%', fig.width=8, fig.asp=0.618, cache=TRUE}
+```{r, fig.retina=3, fig.align='center', fig.width=8, fig.asp=0.618, cache=TRUE}
 diamonds |>
   slice_sample(prop = .4) |>
   ggplot(aes(x = carat, y = price)) +
@@ -972,7 +890,7 @@ diamonds |>
   annotate("text", x = 3, y = 2500, label = str_c("mean(Price) = ", round(mean(diamonds$price), 2)), size = 5)
 ```
 
-???
+::: notes
 
 Back to the diamonds!
 
@@ -985,16 +903,11 @@ If data tends towards its 'central tendency' then let's start building a model o
 <br>
 
 ### Make sense?
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.retina=3, fig.align='center', out.width='96%', fig.width=8, fig.asp=0.618, cache=TRUE}
 ## Add line guesses
@@ -1033,8 +946,7 @@ diamonds |>
   annotate("text", x = 3, y = 2500, label = str_c("mean(Price) = ", round(mean(diamonds$price), 2)), size = 5)
 ```
 
-???
-
+::: notes
 That gives us our first point in our model.
 
 - However, we need two points to make a line.
@@ -1042,16 +954,11 @@ That gives us our first point in our model.
 <br>
 
 ### How do we pick the second point we need to identify the "best" line?
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.retina=3, fig.align='center', out.width='96%', fig.width=8, fig.asp=0.618, cache=TRUE}
 # Quadrant Counts
@@ -1086,21 +993,15 @@ diamonds |>
            size = 5, hjust = 0)
 ```
 
-???
-
+::: notes
 The model line should follow the data, so let's divide the plot into four quadrants split around the mean values.
 
 - Once we have our quadrants we can focus on the one with the most observations.
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.retina=3, fig.align='center', out.width='96%', fig.width=8, fig.asp=0.618, cache=TRUE}
 # Quadrant 3 stats
@@ -1134,20 +1035,16 @@ diamonds |>
   annotate("text", x = 2.8, y = 11000, label = str_c("mean(Carat)= ", quad3$Mean[1]), hjust=0, size = 5)
 ```
 
-???
-
+::: notes
 The mean values in quadrant three give us a second point!
+:::
 
 
+## Two-Point Line {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+**Price = -2,203 + 7,689 (Carats)**
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size40[**Two-Point Line: Price = -2,203 + 7,689 (Carats)**]
+<br>
 
 ```{r, fig.retina=3, fig.align='center', out.width='82%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
 diamonds |>
@@ -1163,11 +1060,10 @@ diamonds |>
   scale_y_continuous(labels = scales::dollar_format())
 ```
 
-???
+::: notes
+**How do we interpret this estimated formula for a line?**
 
-### How do we interpret this estimated formula for a line?
-
-### - In other words, what does the slope indicate?
+- **In other words, what does the slope indicate?**
 
 <br>
 
@@ -1180,17 +1076,14 @@ Crucial for us is that we can improve the fit of our model using Ordinary Least 
 ### Per the readings, how does OLS fit a line to the data?
 
 - (**SLIDE**)
+:::
 
 
+## OLS {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+**Price = -2,256 + 7,756 (Carats)**
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size40[**OLS: Price = -2,256 + 7,756 (Carats)**]
+<br>
 
 ```{r, fig.retina=3, fig.align='center', out.width='82%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
 model1 <- lm(data = diamonds, price ~ carat)
@@ -1213,22 +1106,15 @@ d2 |>
   scale_y_continuous(labels = scales::dollar_format())
 ```
 
-???
+::: notes
 
 OLS finds the line that minimizes the squared residuals of ALL THE POINTS.
 
 - e.g. the line of "best fit"
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size45[**What is the predicted price of a 1.5 carat diamond?**]
+## What is the predicted price of a 1.5 carat diamond? {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.retina=3, fig.align='center', out.width='65%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
 diamonds |>
@@ -1242,19 +1128,13 @@ diamonds |>
   scale_y_continuous(labels = scales::dollar_format())
 ```
 
-.size45[**Price = -2,256.36 + 7,756.43 x Carats**]
+<br>
+
+**Price = -2,256.36 + 7,756.43 x Carats**
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size45[**What is the predicted price of a 1.5 carat diamond?**]
+## What is the predicted price of a 1.5 carat diamond? {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.retina=3, fig.align='center', out.width='50%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
 diamonds |>
@@ -1271,31 +1151,23 @@ diamonds |>
   scale_y_continuous(labels = scales::dollar_format())
 ```
 
-.size40[
-**Price = -2,256.36 + 7,756.43 x 1.5 = $9,378.29**
+**Price = -2,256.36 + 7,756.43 x 1.5**
 
-**(95% confidence interval: $9,354 - $9,401)**
-]
+- Price = $9,378.29
 
-???
+- (95% confidence interval: $9,354 - $9,401)
 
-### Make sense?
+::: notes
+**Make sense?**
 
 <br>
 
 CLASS: Now you calculate the predicted price of a 2.5 carat diamond using this estimate of the model
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size45[**What is the predicted price of a 2.5 carat diamond?**]
+## What is the predicted price of a 2.5 carat diamond? {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.retina=3, fig.align='center', out.width='50%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
 diamonds |>
@@ -1312,31 +1184,24 @@ diamonds |>
   scale_y_continuous(labels = scales::dollar_format())
 ```
 
-.size40[
-**Price = -2,256.36 + 7,756.43 x 2.5 = $17,134.72**
+**Price = -2,256.36 + 7,756.43 x 2.5**
 
-**(95% confidence interval: $17,085 - $17,183)**
+- Price = $17,134.72
+
+- (95% confidence interval: $17,085 - $17,183)
 ]
 
-???
-
-### Questions on making a prediction using the OLS estimates?
+::: notes
+**Questions on making a prediction using the OLS estimates?**
 
 <br>
 
 **SLIDE**: Now we can answer our question from  the start of class: What is the average price difference between 1.5 and 2.5 carat diamonds?
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size45[**Predicted price difference of a 1.5 and a 2.5 carat diamond?**]
+## Predicted price difference of a 1.5 and a 2.5 carat diamond? {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.retina=3, fig.align='center', out.width='58%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
 diamonds |>
@@ -1352,48 +1217,40 @@ diamonds |>
   scale_y_continuous(labels = scales::dollar_format())
 ```
 
-.size40[
 **$17,134.72 - $9,378.29 = $7,756.43 (on average)**
-]
 
-???
-
-<br>
-
+::: notes
 **SLIDE**: Let's practice!
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.618, fig.align = 'center', out.width = '96%', fig.width=12}
+```{r, fig.asp=0.618, fig.align = 'center', fig.width=9, cache=TRUE}
 library(fivethirtyeight)
 
 bechdel2 <- bechdel |>
   mutate(
-    box_office = (domgross_2013 + intgross_2013)/1e6,
+    box_office = (domgross_2013 + intgross_2013)/1e9,
     budget = budget_2013/1e6
   )
 
 bechdel_labels <- bechdel2 |>
-  filter(box_office > 2000 | budget > 270)
+  filter(box_office > 2 | budget > 270)
 
 ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
   geom_point(alpha = .2) +
   #geom_smooth(method = "lm") +
   ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
   theme_bw() +
-  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+  labs(x = "Budget (2013 USD)", y = "Box Office (2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight") +
+  scale_x_continuous(labels = scales::dollar_format(suffix = "m")) +
+  scale_y_continuous(labels = scales::dollar_format(suffix = "b"))
 
 ```
 
-???
+::: notes
 
 **What explains the variation in movie box office?**
 
@@ -1404,20 +1261,11 @@ ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
 Values here in millions of 2013 dollars.
 
 ### First, what do we learn from this scatterplot?
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.content-box-blue[.size45[**What explains the variation in movie box office?**]]
-
-<br>
+## What explains the variation in movie box office? {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo = FALSE, fig.retina=3, fig.asp=0.618, fig.align = 'center', out.width = '65%', fig.width=9}
 model3 <- lm(data = bechdel2, box_office ~ budget)
@@ -1437,10 +1285,9 @@ predictions3 <- ggeffects::ggpredict(model3, terms = "budget")
 #   kable_styling(font_size = 24)
 ```
 
-.size45[**Box Office = 63.7 + 4.17 x Budget**]
+**Box Office = 63.7 + 4.17 x Budget**
 
-???
-
+::: notes
 Now let's fit an OLS model to this.
 
 ### Interpret this model for me!
@@ -1458,112 +1305,85 @@ Now let's fit an OLS model to this.
 <br>
 
 ### Any questions on interpreting an OLS using the formula for a line?
+:::
 
 
+## Why use OLS regressions? {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Why use OLS regressions?**]]
-
-.size50[
 **Basics**
+
 - Quantifies the relationship between variables
 
 - Can be used to make predictions
 
 - Provides estimates of uncertainty
-]
 
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+## Why use OLS regressions? {background-image="libs/Images/background-slate_v2.png" .center}
 
-.center[.size60[**Why use OLS regressions?**]]
+<br>
 
-.size40[
 **Basics**
+
 - Quantifies the relationship between variables
+
 - Can be used to make predictions
+
 - Provides estimates of uncertainty
 
 **Future Weeks**
+
 - Can be adjusted for confounders (e.g. control variables), nonlinear relationships and different data structures
-]
 
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## Part 2 {background-image="libs/Images/background-slate_v2.png" .center}
 
-.size80[
-**Part 2**
+<br>
 
 **How do we fit a regression and make predictions in R?**
-]
 
-???
+::: notes
+?
+:::
 
 
+## Fitting OLS Regressions in R {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
+lm(data = dataset, outcome ~ predictor)
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
 ```{r, echo = TRUE, eval = FALSE}
-## Fitting OLS Regressions in R
-## lm(data = dataset, outcome ~ predictor)
-
 ## Regress `price` on `carat` in the `diamonds` dataset
 model1 <- lm(data = diamonds, price ~ carat)
 
 ## Check the Results
 summary(model1)
 ```
-]
 
-.center[.code70[
+<br>
+
 ```{r}
 model1 <- lm(data = diamonds, price ~ carat)
 summary(model1)
 ```
-]]
 
-???
-
-### Everybody get these results?
-
+::: notes
+**Everybody get these results?**
+:::
 
 
 
+## An OLS Estimate of Diamond Prices {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size60[**An OLS Estimate of Diamond Prices**]
-
-.pull-left[
+:::: {.columns}
+::: {.column width="40%"}
 ```{r, echo = FALSE, fig.retina=3, fig.asp=0.8, fig.align = 'center', out.width = '85%', fig.width = 5, cache=TRUE}
 diamonds |>
   slice_sample(prop = .1) |>
@@ -1575,69 +1395,64 @@ diamonds |>
   coord_cartesian(ylim = c(0, 18000), xlim = c(0,4)) +
   scale_y_continuous(labels = scales::dollar_format())
 ```
-]
+:::
 
-.pull-right[
-
-.code70[
+::: {.column width="60%"}
 ```{r, echo = FALSE}
 model1 <- lm(data = diamonds, price ~ carat)
 
 summary(model1)
 ```
-]]
+:::
+::::
 
-.size40[
-Y = $\alpha$ + $\beta$ X
+- Y = $\alpha$ + $\beta$ X
 
-Price = -2,256.36 + 7,756.43 x Carats
-]
+- Price = -2,256.36 + 7,756.43 x Carats
 
-???
-
-### Everybody clear on how to connect the summary results to the formula for a line?
+::: notes
+**Everybody clear on how to connect the summary results to the formula for a line?**
 
 <br>
 
-### Everybody clear on how to make predictions using the formula for a line?
+**Everybody clear on how to make predictions using the formula for a line?**
+:::
 
 
 
----
+## An OLS Estimate of Diamond Prices {.center .smaller}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.pull-left[
-.code100[
+:::: {.columns}
+::: {.column width="55%"}
 ```{r, echo=TRUE, eval=FALSE}
 # Fit the OLS
 model1 <- lm(data = diamonds, price ~ carat)
 
 # Output OLS table for reports
 # (install package 'modelsummary')
+library(modelsummary)
+
 modelsummary(model1)
 
 # Optional arguments
-modelsummary(model1, 
-             fmt = 2, 
+modelsummary(model1, fmt = 2, 
              stars = c('*' = .05), 
              gof_omit = "IC|Log|F")
 ```
-]]
+:::
 
-.pull-right[
+::: {.column width="45%"}
 ```{r}
 modelsummary(model1, fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F", output = "kableExtra") |>
   column_spec(1, width = "10em") |>
   kable_styling(font_size = 24)
 ```
-]
+:::
+::::
 
-???
-
+::: notes
 For reporting OLS results
 
 - fmt is how many digits after the decimal
@@ -1645,17 +1460,12 @@ For reporting OLS results
 - I set the significance stars to one level (.05)
 
 - I omitted a bunch of fit statistics we don't need at the moment
+:::
 
 
+## Making Predictions {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Making Predictions**]]
+<br>
 
 ```{r, echo=TRUE}
 # Automated Option (install package 'ggeffects')
@@ -1665,48 +1475,46 @@ library(ggeffects)
 predictions1 <- ggpredict(model1, terms = "carat")
 ```
 
-.pull-left[
+<br>
+
+:::: {.columns}
+::: {.column width="55%"}
 ```{r, echo=TRUE}
 # Predictions as a table
 predictions1
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="45%"}
 ```{r, echo = TRUE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '70%', fig.width = 5, cache=TRUE}
 # Predictions as Viz
 plot(predictions1)
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Automated approach with confidence intervals
 
-### Questions on this code or these results?
+**Questions on this code or these results?**
+:::
 
 
 
+## For next class, fit, interpret and make predictions using OLS: {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+1. Regress city fuel economy (`cty`) on engine displacement (`displ`) in the `mpg` datatset
 
-.size60[**For next class, fit, interpret and make predictions using OLS:**]
+2. Regress percent college educated (`percollege`) on the percent of people below the  poverty line (`percbelowpoverty`) in the `midwest` datatset
 
-.size50[
-1. Regress city fuel economy ('cty') on engine displacement ('displ') in the 'mpg' datatset
-
-2. Regress percent college educated ('percollege') on the percent of people below the  poverty line ('percbelowpoverty') in the 'midwest' datatset
-]
-
-???
+::: notes
 
 ```{r}
 lm(data = mpg, cty ~ displ) |> summary()
 
 lm(data = midwest, percollege ~ percbelowpoverty) |> summary()
 ```
+:::

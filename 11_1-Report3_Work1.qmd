@@ -1,61 +1,36 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
 library(readxl)
-library(stargazer)
 library(kableExtra)
 library(modelsummary)
 library(ggeffects)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
+<br>
 
 <br>
 
-.size60[
-Build the Third Report
+**Build the Third Report**
 
 - Bivariate Analyses: Simple OLS
-]
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+<br>
 
-???
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-## Prep for Class
+::: notes
+Prep for Class
+
 1. Make sure merged data available on Canvas
 
 2. Post assignment details on Canvas
@@ -63,44 +38,30 @@ Build the Third Report
 <br>
 
 **SLIDE**: Before we start on the third report, let's review your work for today evaluating the fit of our practice OLS regressions.
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size60[**Evaluate the fit of both regressions:**]
-
-.size50[
-1. Regress city fuel economy ('cty') on engine displacement ('displ') in the 'mpg' datatset
-
-2. Regress percent college educated ('percollege') on the percent of people below the  poverty line ('percbelowpoverty') in the 'midwest' datatset
-]
-
-???
-
-### How did this go?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**City Fuel Economy and Engine Size**]]
-
-.pull-left[
+## Evaluate the fit of both regressions: {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size30[
+1. Regress city fuel economy ('cty') on engine displacement ('displ') in the 'mpg' datatset
+
+2. Regress percent college educated ('percollege') on the percent of people below the  poverty line ('percbelowpoverty') in the 'midwest' datatset
+
+:::notes
+**How did this go?**
+:::
+
+
+
+## City Fuel Economy and Engine Size {.center .smaller}
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 model1 <- lm(data = mpg, cty ~ displ)
 
@@ -110,20 +71,23 @@ modelsummary(list("Fuel Economy (City)" = model1), fmt = 2, stars = c('*' = .05)
   column_spec(2, background = c("orange", rep("white", 3), "orange", "orange", "white", "white")) |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 ```{r, echo=TRUE}
 nrow(mpg)
 ```
+
+<br>
 
 ```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '90%', fig.width=7, cache=TRUE}
 # Check residuals
 plot(model1, which = 1)
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 1. Missing data problems?
 
@@ -132,24 +96,16 @@ plot(model1, which = 1)
 3. What does the R<sup>2</sup> indicate? 
 
 4. Any problems in the residuals plot?
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**College Education and Poverty**]]
-
-.pull-left[
+## College Education and Poverty  {.center .smaller}
 
 <br>
 
-.size30[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 model2 <- lm(data = midwest, percollege ~ percbelowpoverty)
 
@@ -159,20 +115,23 @@ modelsummary(list("College (%)" = model2), fmt = 2, stars = c('*' = .05), gof_om
   column_spec(2, background = c("orange", rep("white", 3), "orange", "orange", "white", "white")) |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 ```{r, echo=TRUE}
 nrow(midwest)
 ```
+
+<br>
 
 ```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '90%', fig.width=7, cache=TRUE}
 # Check residuals
 plot(model2, which = 1)
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 1. Missing data problems?
 
@@ -181,71 +140,57 @@ plot(model2, which = 1)
 3. What does the R<sup>2</sup> indicate? 
 
 4. Any problems in the residuals plot?
+:::
 
 
 
+## Report 3 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+**Submission Requirements**
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+<br>
 
-.size65[**Report 3: Submission Requirements**]
-
-.size55[
 - Submit a **pdf** to **Canvas** (due **Mar 26th**)
 
 - Include an **APA** formatted bibliography
 
 - Polish **all** included visualizations and tables
-]
 
-???
+::: notes
 
 Ok, this week we work on your second report.
 
 - The basic requirements same as last time
 
 - Late penalty (-10) points per day
+:::
 
 
 
+## Report 3 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+**Bivariate Test of your Hypotheses**
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+<br>
 
-.size55[**Report 3: Bivariate Test of your Hypotheses**]
-
-.size55[
 1. Introduction
 
 2. Test hypotheses with bivariate visualizations and statistics
 
 3. Test hypotheses with simple OLS regressions
-]
 
-???
-
+::: notes
 Next report has three required sections.
+:::
 
 
 
----
+## Report 3 {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+**Bivariate Test of your Hypotheses**
 
-.size45[**Report 3: Bivariate Test of your Hypotheses**]
+<br>
 
-.size40[
 1. Introduction
     - Research Question?
     - Why is it important?
@@ -254,28 +199,23 @@ class: middle
 2. Test hypotheses with bivariate visualizations and statistics
 
 3. Test hypotheses with simple OLS regressions
-]
 
-???
+::: notes
 
 Section 1: Introduction
 - What is the research question?
 - Make an argument: Why should we care?
 - What are your hypotheses? List all three
+:::
 
 
 
+## Report 3 {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
+**Bivariate Test of your Hypotheses**
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+<br>
 
-.size40[**Report 3: Bivariate Test of your Hypotheses**]
-
-.size40[
 1. Introduction
 
 2. Test hypotheses with bivariate visualizations and statistics
@@ -286,9 +226,8 @@ class: middle
         - GII x health
 
 3. Test hypotheses with simple OLS regressions
-]
 
-???
+::: notes
 
 This is what we worked on in class last Friday.
 
@@ -300,20 +239,16 @@ Section 2: Test your hypothesis using bivariate visualizations and statistics
     - GII x military
     - GII x education
     - GII x health
+:::
     
     
     
-    
----
+## Report 3 {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+**Bivariate Test of your Hypotheses**
 
-.size40[**Report 3: Bivariate Test of your Hypotheses**]
+<br>
 
-.size40[
 1. Introduction
 
 2. Test hypotheses with bivariate visualizations and statistics
@@ -324,24 +259,12 @@ class: middle
         - GII ~ military
         - GII ~ education
         - GII ~ health
-]
 
-???
+::: notes
 
 Today's work!
 
 Section 3: Test your hypothesis using simple OLS regressions
 
 - Fit, interpret and evaluate three simple OLS regressions (2019 only)
-    
-
-
-
-
-
-
-
-
-
-
-
+::: 

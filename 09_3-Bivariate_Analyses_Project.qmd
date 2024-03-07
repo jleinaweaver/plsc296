@@ -8,6 +8,9 @@ format: revealjs
 library(tidyverse)
 library(readxl)
 library(kableExtra)
+
+# Input merged project data
+d <- read_excel("../Data_in_Class-SP24/Merged_Dataset-2006-2016.xlsx", na = "NA")
 ```
 
 <br>
@@ -27,12 +30,12 @@ Justin Leinaweaver (Spring 2024)
 ::: notes
 Prep for Class
 
-1. ?
+1. Make the merged data file available on Canvas
 :::
 
 
 
-## For Today: Present your "best" visualizations {background-image="libs/Images/background-slate_v2.png" .center}
+## Present your "best" visualizations {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
@@ -56,22 +59,15 @@ Ok, here's what I asked you to do for class today
 
 
 
-## Diamonds: 'cut' and 'clarity' {background-image="libs/Images/background-slate_v2.png" .center}
+## How did you visualize the relationship between `cut` and `clarity`? {background-image="libs/Images/background-slate_v2.png" .center}
 
-<br>
-
-::: {.fragment}
-```{r, echo=FALSE, fig.align='center', fig.asp=.618, fig.width=8, cache=TRUE}
-ggplot(diamonds, aes(x = clarity, fill = forcats::fct_rev(cut))) +
-  geom_bar(position = "fill") +
-  theme_bw() +
-  scale_y_continuous(labels = scales::percent_format()) +
-  scale_fill_brewer(type = "seq", palette = 4) +
-  labs(x = "Diamond Clarity", fill = "Cut Type",
-       caption = "Source: The Loose Diamonds Search Engine",
-       title = "Jewelers appear to use higher quality cuts with higher quality diamonds")
+```{r, fig.align='center'}
+knitr::include_graphics("libs/Images/09_3-Diamond_Cut.png")
 ```
-:::
+
+```{r, fig.align='center'}
+knitr::include_graphics("libs/Images/09_3-Diamond_Clarity.jpg")
+```
 
 ::: notes
 Alright, let's see what everybody made!
@@ -84,14 +80,51 @@ Alright, let's see what everybody made!
 
 <br>
 
-**REVEAL**: Here's my stab
+**SLIDE**: Here's my stab
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=8, cache=TRUE}
+ggplot(diamonds, aes(x = clarity, fill = forcats::fct_rev(cut))) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_brewer(type = "seq", palette = 4) +
+  labs(x = "Diamond Clarity", fill = "Cut Type",
+       caption = "Source: The Loose Diamonds Search Engine",
+       title = "Jewelers appear to use greater care when shaping higher quality diamonds")
+```
+
+
+
+## How did you visualize the relationship between `cut` and `price`? {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("libs/Images/09_3-Diamond_Cut2.webp")
+```
+
+::: notes
+Alright, let's see what everybody made!
+
+- *Encourage everyone to walk around and see all the plots*
+
+<br>
+
+**What are we seeing? What do we like?**
+
+<br>
+
+**SLIDE**: Here's my stab
 :::
 
 
 
 ## Diamonds: 'cut' and 'price' {background-image="libs/Images/background-slate_v2.png" .center}
 
-::::: {.fragment}
 :::: {.columns}
 ::: {.column width="45%"}
 
@@ -116,31 +149,78 @@ ggplot(diamonds, aes(x = price)) +
 ```
 :::
 ::::
-:::::
 
 ::: notes
 The distributions overlap considerably.
 
 - Doesn't look like cut and price are highly correlated!
+
+<br>
+
+**Any guesses why cut and price appear uncorrelated here?**
+
+- (Size, e.g. carats, matters in diamonds a ton!)
+
+<br>
+
+**SLIDE**: Last one focuses on size!
 :::
 
 
 
-## Diamonds: 'carat' and 'price' {background-image="libs/Images/background-slate_v2.png" .center}
+## How did you visualize the relationship between `carat` and `price`? {background-image="libs/Images/background-slate_v2.png" .center}
 
-::: {.fragment}
-```{r, fig.align='center', fig.width=9, fig.asp=.65, cache=TRUE}
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("libs/Images/09_3-Diamond_Carats.jpg")
+```
+
+::: notes
+Alright, let's see what everybody made!
+
+- *Encourage everyone to walk around and see all the plots*
+
+<br>
+
+**What are we seeing? What do we like?**
+
+<br>
+
+**SLIDE**: Here's my stab
+:::
+
+
+
+## Diamonds: 'carat' and 'price' {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+```{r, echo=TRUE, fig.align='center', fig.width=9, fig.asp=.7, cache=TRUE}
 ggplot(diamonds, aes(x = carat, y = price)) +
-  geom_point(alpha = .1) +
+  geom_point(alpha = .05) +
   theme_bw() +
   labs(x = "Size of the Diamond (carats)", y = "Prices",
        title = "The larger the diamond the more expensive!") +
   scale_y_continuous(labels = scales::dollar_format())
 ```
-:::
 
 ::: notes
+The alpha argument in geom_point is new for our class pictures
 
+- Given the 50k diamonds in the dataset it can be VERY hard to see through the cloud of points
+
+- The alpha changes the opacity of the points, e.g. how dark each one is
+
+- I've set the alpha SUPER low so we can try to see somewhat through the cloud
+
+<br>
+
+**Does anything interesting stand out in this plot thanks to the very low alpha setting?**
+
+- The dark vertical bands at round-ish numbers of carats (1, 1.25, 1.5, 1.75, 2) implies jewelers are actively making cuts in order to create tiers in the market
+
+- If they cut what they got in order to preserve the original size everytime we'd see much more variation
+
+- The diamond market is ten layers of nonsense and marketing
 :::
 
 
@@ -157,6 +237,10 @@ ggplot(diamonds, aes(x = carat, y = price)) +
 
 ::: notes
 **Any questions on our bivariate analyses tools?**
+
+<br>
+
+My expectation from here on out is that you can use all of these tools in R
 :::
 
 
@@ -165,6 +249,8 @@ ggplot(diamonds, aes(x = carat, y = price)) +
 
 :::: {.columns}
 ::: {.column width="20%"}
+CoW NMC Dataset
+
 - `cinc`
 - `milex`
 - `milper`
@@ -198,19 +284,100 @@ ggplot(data = d1, aes(x = x, y = y)) +
 :::
 
 ::: {.column width="20%"}
-- `FSI_Total`
+Fund for Peace Dataset
+
 - `P3_Human_Rts`
 :::
 ::::
 
+::: notes
+Here's where I believe we are currently in developing our research project.
+
+- It's now time for us to start testing the mechanism
+
+- Is there evidence of an association in the data between state material capabilities and a respect for human rights / the rule of law?
+:::
 
 
 
 
+## Make a scatterplot and calculate the correlation for each pairing {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
+:::: {.columns}
+::: {.column width="20%"}
+CoW NMC Dataset
 
+- `cinc`
+- `milex`
+- `milper`
+- `irst`
+- `pec`
+- `tpop`
+- `upop`
+:::
 
+::: {.column width="60%"}
 
+<br>
+
+<br>
+
+```{r, fig.width = 9, fig.height=2}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Military\nPower\n(CoW NMC)", "Human rights\nand\nthe rule of law\n(FFP)")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 1.85, y = 1, yend = 1, arrow = arrow())
+```
+:::
+
+::: {.column width="20%"}
+Fund for Peace Dataset
+
+- `P3_Human_Rts`
+:::
+::::
+
+::: notes
+
+Your assignment is to pair each of these predictors from the NMC database one time with the P3 measure from the FFP to describe the association you see between them
+
+- In other words, I want you to make seven scatterplots AND calculate the correlation for each NMC predictor paired with P3 human rights as the outcome
+
+<br>
+
+Notes to keep in mind:
+
+1. Run these tests on all the available years, NOT just 2016
+
+2. Your outcome variable ALWAYS goes on the y-axis in a scatterplot
+    - e.g. P3 Human Rights is the outcome variation we are trying to explain
+
+<br>
+
+**Questions on the assignment?**
+
+- Get to it!
+
+<br>
+
+<br>
+
+NOTES FOR YOU: Not all of these will be required for the report.
+
+- This exercise helps them practice their skills, test a bunch of hypotheses and will guide us in future steps (regression and confounders)
+
+- for the report require 2 scatters (cinc and milper), plus... annotate a country?
+
+:::
 
 
 

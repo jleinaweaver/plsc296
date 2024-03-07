@@ -1,100 +1,69 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
 library(readxl)
-library(stargazer)
 library(kableExtra)
 library(modelsummary)
 library(ggeffects)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
+<br>
 
 <br>
 
-.size65[.center[
-Evaluating the fit of OLS regressions
-]]
+**Evaluating the fit of OLS regressions**
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+<br>
 
-???
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-## Prep for Class
-1. 
+::: notes
+Prep for Class
 
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size60[**For today, fit, interpret and make predictions using OLS:**]
-
-.size50[
-1. Regress city fuel economy ('cty') on engine displacement ('displ') in the 'mpg' datatset
-
-2. Regress percent college educated ('percollege') on the percent of people below the  poverty line ('percbelowpoverty') in the 'midwest' datatset
-]
-
-???
-
-### How did this go?
+1. ...
+:::
 
 
 
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**City Fuel Economy and Engine Size**]]
-
-.pull-left[
+## For next class, fit, interpret and make predictions using OLS: {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size30[
+1. Regress city fuel economy (`cty`) on engine displacement (`displ`) in the `mpg` datatset
+
+2. Regress percent college educated (`percollege`) on the percent of people below the  poverty line (`percbelowpoverty`) in the `midwest` datatset
+
+::: notes
+**How did this go?**
+
+<br>
+
+```{r}
+lm(data = mpg, cty ~ displ) |> summary()
+
+lm(data = midwest, percollege ~ percbelowpoverty) |> summary()
+```
+:::
+
+
+
+
+## City Fuel Economy and Engine Size {.center .smaller}
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 model1 <- lm(data = mpg, cty ~ displ)
 predictions1 <- ggpredict(model1, terms = "displ")
@@ -104,23 +73,22 @@ modelsummary(list("Fuel Economy (City)" = model1), fmt = 2, stars = c('*' = .05)
   column_spec(1, width = "9em") |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '75%', fig.width=5, cache=TRUE}
 plot(predictions1) +
   labs(x = "Engine Displacement", y = "City Fuel Economy",
        title = "OLS Predicted Values")
 ```
 
-.center[
-.code70[
 ```{r}
 predictions1
 ```
-]]]
+:::
+::::
 
-???
+::: notes
 
 As you think about including OLS tables in reports, think about polishing them!
 
@@ -131,24 +99,16 @@ As you think about including OLS tables in reports, think about polishing them!
 This table makes clear that this regression focuses on engine size as a predictor of fuel economy.
 
 ### Make sense?
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**College Education and Poverty**]]
-
-.pull-left[
+## College Education and Poverty {.center .smaller}
 
 <br>
 
-.size30[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 model2 <- lm(data = midwest, percollege ~ percbelowpoverty)
 predictions2 <- ggpredict(model2, terms = "percbelowpoverty")
@@ -158,34 +118,27 @@ modelsummary(list("College (%)" = model2), fmt = 2, stars = c('*' = .05), gof_om
   column_spec(1, width = "10em") |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '75%', fig.width=5, cache=TRUE}
 plot(predictions2) +
   labs(x = "Below Poverty Line (%)", y = "College Education (%)",
        title = "OLS Predicted Values")
 ```
 
-.center[
-.code70[
 ```{r}
 predictions2
 ```
-]]]
+:::
+::::
 
 
 
----
+## Evaluating the Fit of an OLS Regression {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[.size55[**Evaluating the Fit of an OLS Regression**]]
-
-.size50[
 1. Missing data problems?
 
 2. Are the coefficients significant?
@@ -193,9 +146,8 @@ class: middle
 3. What does the R<sup>2</sup> indicate? 
 
 4. Any problems in the residuals plot?
-]
 
-???
+::: notes
 
 Everybody TAKE NOTES on these as we go!
 
@@ -206,24 +158,17 @@ Everybody TAKE NOTES on these as we go!
 <br>
 
 Let's go back to our diamond size models from last class.
+:::
 
 
+## Evaluate the Fit: {.center .smaller}
 
----
+**1. Missing data problems?**
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[
-.size50[**Evaluate the Fit:**]
-
-.size40[**1. Missing data problems?**]
-]
-
-.pull-left[
-.size25[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 model3 <- lm(data = diamonds, price ~ carat)
 predictions3 <- ggpredict(model3, terms = "carat")
@@ -237,19 +182,17 @@ modelsummary(list("Diamond Value" = model3),
   column_spec(2, background = c(rep("white", 4), "orange", rep("white", 3))) |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
-.code130[
+::: {.column width="50%"}
 ```{r, echo = TRUE}
-# How many observations in 
-#     the dataset?
+# How many observations in the dataset?
 nrow(diamonds)
 ```
-]]
+:::
+::::
 
-???
-
+::: notes
 Important note: R will omit observations with missing data and it's up to YOU to check for problems!
 
 <br>
@@ -257,32 +200,27 @@ Important note: R will omit observations with missing data and it's up to YOU to
 If your regression is being fit on less than ALL the data in your sample it's up to you to investigate why and to look for patterns in the missing data.
 
 - **SLIDE**: Examples of things to look out for...
+:::
 
 
 
+## Missing Not At Random (MNAR) {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+Survey Data
 
-.center[.size40[**Missing Not At Random (MNAR)**]]
+- Social-Desirability Bias
+- Non-Response Bias
+- Language Barriers / Cultural Differences
 
-.size40[
-- Survey Data
-    - Social-Desirability Bias
-    - Non-Response Bias
-    - Language Barriers / Cultural Differences
+Observational Data
 
-- Observational Data
-    - Lack of infrastructure
-    - Inaccessibility
-    - Governmental Interference
-]
+- Lack of infrastructure
+- Inaccessibility
+- Governmental Interference
 
-???
+::: notes
 
 Collecting representative samples using surveys faces this problem in a big way.
 
@@ -313,26 +251,15 @@ Collecting observational data faces it's own serious challenges
 - This will be very relevant for us as we work on our project.
 
 - **Ultimately, it is your job to make an argument that the missing data isn't a problem for the conclusions you are drawing from the regression results.**
+:::
 
 
+## Evaluate the Fit: {.center}
 
+**2. Are the coefficients significant?**
 
+<br>
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[
-.size50[**Evaluate the Fit:**]
-
-.size40[**2. Are the coefficients significant?**]
-]
-
-.size30[
 ```{r}
 modelsummary(models = list("Diamond Value" = model3), 
              fmt = 2, 
@@ -342,9 +269,8 @@ modelsummary(models = list("Diamond Value" = model3),
   column_spec(1, width = "10em") |>
   kable_styling(font_size = 24)
 ```
-]
 
-???
+::: notes
 
 Statistical significance aka does the coefficient have a '*'?
 
@@ -355,29 +281,25 @@ Statistical significance aka does the coefficient have a '*'?
 <br>
 
 **SLIDE**: Let's take a brief detour to talk more deeply about statistical significance.
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**What is Statistical Significance?**]]
+## What is Statistical Significance? {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size40[H<sub>A</sub> = Larger diamonds are more expensive than smaller ones]
+H<sub>A</sub> = Larger diamonds are more expensive than smaller ones
 
 ```{r, echo = FALSE, fig.align = 'center', out.width = '75%'}
 knitr::include_graphics("libs/Images/11_1-Diamonds_2.jpg")
 ```
 
-???
+<br>
 
+H<sub>0</sub> = Diamond size has no impact on price
+
+::: notes
 Conventional statistical significance testing is based on the idea of a null hypothesis.
 
 <br>
@@ -385,14 +307,6 @@ Conventional statistical significance testing is based on the idea of a null hyp
 In essence, we can frame our model as a competition between two hypotheses.
 
 - The alternative hypothesis is what we suspect is true, that larger diamonds are associated with higher prices.
-
---
-
-<br>
-
-.size40[H<sub>0</sub> = Diamond size has no impact on price]
-
-???
 
 <br>
 
@@ -405,20 +319,14 @@ For every alternative hypothesis we can also describe the null hypothesis as the
 We can do this with any hypothesis.
 
 ### Does that make sense so far?
+:::
 
 
+## What is Statistical Significance? {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**What is Statistical Significance?**]]
-
-.pull-left[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', fig.width=6, cache=TRUE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=6, cache=TRUE}
 diamonds |>
   slice_sample(prop = .1) |>
   ggplot(aes(x = carat, y = price)) +
@@ -431,10 +339,10 @@ diamonds |>
   coord_cartesian(ylim = c(0, 18000), xlim = c(0,4)) +
   scale_y_continuous(labels = scales::dollar_format())
 ```
-]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, , fig.align = 'center', out.width = '100%', fig.width=6, cache=TRUE}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=6, cache=TRUE}
 model0 <- lm(data = diamonds, price ~ 1)
 
 diamonds |>
@@ -449,9 +357,10 @@ diamonds |>
   coord_cartesian(ylim = c(0, 18000), xlim = c(0,4)) +
   scale_y_continuous(labels = scales::dollar_format())
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Here you can see I've visualized the two hypotheses for us.
 
@@ -462,21 +371,17 @@ Here you can see I've visualized the two hypotheses for us.
 <br>
 
 ### Is everybody clear on how we draw these two different lines?
+:::
 
 
 
+## What is Statistical Significance? {.center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**What is Statistical Significance?**]]
-
-.pull-left[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', fig.width=6, cache=TRUE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=6, cache=TRUE}
 diamonds |>
   slice_sample(prop = .1) |>
   ggplot(aes(x = carat, y = price)) +
@@ -488,13 +393,9 @@ diamonds |>
   coord_cartesian(ylim = c(0, 18000), xlim = c(0,4)) +
   scale_y_continuous(labels = scales::dollar_format())
 ```
-]
+:::
 
-.pull-right[
-
-<br>
-
-.size25[
+::: {.column width="50%"}
 ```{r}
 modelsummary(list("Diamond Value" = model3), 
              fmt = 2, 
@@ -505,9 +406,10 @@ modelsummary(list("Diamond Value" = model3),
   column_spec(2, background = c("orange", "white", "orange", rep("white", 5))) |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
+::::
 
-???
+::: notes
 
 The significance test, as represented by the p-value, essentially tells us if the data better matches the red or the blue line.
 
@@ -526,20 +428,14 @@ Lots of problems with this, not least of which is, the null hypothesis is never 
 <br>
 
 **SLIDE**: Let me show you an insignificant relationship.
+:::
 
 
+## Are deeper diamonds more expensive? {.center}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Are deeper diamonds more expensive?**]]
-
-.pull-left[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', fig.width=6, cache=TRUE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=6, cache=TRUE}
 # Diamonds dataset is so huge result is significant
 # shrink sample
 set.seed(234)
@@ -555,13 +451,9 @@ diamonds2 |>
        title = "Alternative vs Null Hypothesis") +
   scale_y_continuous(labels = scales::dollar_format())
 ```
-]
+:::
 
-.pull-right[
-
-<br>
-
-.size25[
+::: {.column width="50%"}
 ```{r}
 model4 <- lm(data = diamonds2, price ~ depth)
 
@@ -574,9 +466,10 @@ modelsummary(list("Diamond Value" = model4),
   column_spec(2, background = c("orange", "white", "orange", rep("white", 5))) |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
+::::
 
-???
+::: notes
 
 Here I'm fitting an OLS model to only 10% of the diamonds data.
 
@@ -591,24 +484,17 @@ Here I'm fitting an OLS model to only 10% of the diamonds data.
 Ultimately, statistical significance is one piece of evidence, among many, that implies your model "fits" the data better than the null argument.
 
 - None of these are the end-all, be-all, you need all of them!
+:::
 
 
 
+## Evaluate the Fit: {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+**3. What does the R<sup>2</sup> indicate?**
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[
-.size50[**Evaluate the Fit:**]
-
-.size40[**3. What does the R<sup>2</sup> indicate?**]
-]
-
-```{r, fig.retina=3, fig.align = 'center', fig.asp = 0.618, fig.width = 8, out.width='70%', eval=TRUE, cache=TRUE}
+```{r, fig.align = 'center', fig.asp = 0.618, fig.width = 8, cache=TRUE}
 set.seed(50)
 d1 <- tibble(
     x = rnorm(50, 12, 3),
@@ -636,31 +522,24 @@ ggplot(data = d2, aes(x = x, y = Values)) +
   labs(x = "", y = "")
 ```
 
-???
+::: notes
 
 R^2 represents the proportion of the variance of an outcome variable that's explained by a predictor variable (or set of predictor variables)
 
 - Larger the R^2, the more of the outcome explained by your model.
+:::
 
 
 
 
+## Evaluate the Fit: {.center}
 
----
+**3. What does the R<sup>2</sup> indicate?**
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[
-.size50[**Evaluate the Fit:**]
-
-.size40[**3. What does the R<sup>2</sup> indicate?**]
-]
-
-.pull-left[
-.size25[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 modelsummary(list("Diamond Value" = model3), 
              fmt = 2, 
@@ -670,10 +549,9 @@ modelsummary(list("Diamond Value" = model3),
   column_spec(1, width = "10em") |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
-.size25[
+::: {.column width="50%"}
 ```{r}
 modelsummary(list("Diamond Value" = model4), 
              fmt = 2, 
@@ -683,9 +561,10 @@ modelsummary(list("Diamond Value" = model4),
   column_spec(1, width = "10em") |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
+::::
 
-???
+::: notes
 
 Here we see the OLS results from the regressions we were just examining to discuss statistical significance.
 
@@ -694,39 +573,29 @@ Here we see the OLS results from the regressions we were just examining to discu
 <br>
 
 **SLIDE**: HUGE CAVEAT THOUGH, "bigger" doesn't always mean "better"
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+## Be Careful Interpreting the R<sup>2</sup> {background-image="libs/Images/background-slate_v2.png" .center}
 
-.center[
-.size65[**Be Careful Interpreting the R<sup>2</sup>**]
-]
-
-.pull-left[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/11_2-Fire_with_Match.jpg")
 ```
-]
+:::
 
-???
-
-Easy model example: Striking a match explains creation of fire
-- We would expect this model to have a very high R2
-
---
-
-.pull-right[
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/11_2-voting.jpg")
 ```
-]
+:::
+::::
 
-???
+::: notes
+Easy model example: Striking a match explains creation of fire
+- We would expect this model to have a very high R2
 
 <br>
 
@@ -747,23 +616,15 @@ So, a model focused on just one of those will certainly have a small R^2 BUT mig
 <br>
 
 ### Make sense?
+:::
 
 
+## Evaluate the Fit: {background-image="libs/Images/background-slate_v2.png" .center}
+**4. Evaluate the Residuals**
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[
-.size50[**Evaluate the Fit:**]
-
-.size40[**4. Evaluate the Residuals**]
-]
-
-```{r, fig.retina=3, fig.align = 'center', fig.asp = 0.618, fig.width = 8, out.width='60%', eval=TRUE, cache=TRUE}
+```{r, fig.align = 'center', fig.asp = 0.75, fig.width = 9, cache=TRUE}
 # Create fake data
 set.seed(111)
 x1 <- rnorm(n = 250, mean = 5, sd = 5)
@@ -781,7 +642,7 @@ model4 <- lm(data = d1, y1 ~ x1)
 plot(model4, which = 1)
 ```
 
-???
+::: notes
 
 A residuals plot for fake data.
 
@@ -800,24 +661,18 @@ The red line is an effort to show you if your errors tend to be positive or nega
 <br>
 
 **SLIDE**: What does a bad residual plot look like?
+:::
 
 
+## Evaluate the Fit: {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+**4. Evaluate the Residuals**
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[
-.size50[**Evaluate the Fit:**]
-
-.size40[**4. Evaluate the Residuals**]
-]
-
-.pull-left[
-```{r, fig.retina=3, fig.align = 'center', fig.asp = 0.95, out.width='95%', eval=TRUE}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align = 'center', fig.asp = 0.95, fig.width=6}
 d1 |>
   modelr::add_residuals(model4) |>
   modelr::add_predictions(model4) |>
@@ -828,11 +683,10 @@ d1 |>
   labs(x = "Regression Fitted Values", y = "Residuals",
        title = "Homoskedastic Errors are Good!")
 ```
+:::
 
-]
-
-.pull-right[
-```{r, fig.retina=3, fig.align = 'center', fig.asp = 0.95, out.width='95%', eval=TRUE}
+::: {.column width="50%"}
+```{r, fig.align = 'center', fig.asp = 0.95, fig.width=6}
 # Create fake data with heteroskedastic errors
 n <- rep(1:100,2)
 a <- 0
@@ -861,60 +715,44 @@ d2 |>
        title = "Heteroskedastic Errors are Bad!") +
   geom_abline(slope = .6, intercept = 4, linetype = "dashed", color = "red") +
   geom_abline(slope = -.2, intercept = -16, linetype = "dashed", color = "red") 
-
 ```
+:::
+::::
 
-]
-
-
-???
+::: notes
 
 Heteroskedastic Errors are Bad
 
 - Heteroskedasticity means that the variance of the errors is not constant across observations.
 
 - In other words, when the scatter of the errors is different, varying depending on the value of one or more of the independent variables, the error terms are heteroskedastic.
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+## Evaluate the Fit: {background-image="libs/Images/background-slate_v2.png" .center}
+**4. Evaluate the Residuals**
 
-.center[
-.size50[**Evaluate the Fit:**]
+<br>
 
-.size40[**4. Evaluate the Residuals**]
-]
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '75%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/09_1-nonlinear_errors.png")
 ```
 
-???
+::: notes
 
 Non-Linear Errors are Bad
 
 - OLS assumes the residuals have constant variance (homoskedasticity) AND that there is no pattern in them 
+:::
 
 
+## Evaluate the Fit: {background-image="libs/Images/background-slate_v2.png" .center}
+**4. Evaluate the Residuals**
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[
-.size50[**Evaluate the Fit:**]
-
-.size40[**4. Evaluate the Residuals**]
-]
-
-```{r, fig.retina=3, fig.align = 'center', fig.asp = 0.618, fig.width = 8, out.width='60%', eval=TRUE, cache=TRUE}
+```{r, fig.align = 'center', fig.asp = 0.75, fig.width = 9, cache=TRUE}
 # Create fake data
 x1 <- rnorm(n = 100, mean = 5, sd = 5)
 y1 <- x1 + 8 + rnorm(n = 100, mean = 2, sd = .5)
@@ -923,8 +761,7 @@ model4 <- lm(y1 ~ x1)
 plot(model4, which = 1)
 ```
 
-???
-
+::: notes
 This is what you want a residuals plot to look like
 
 1. Homoskedastic errors 
@@ -936,19 +773,13 @@ This is what you want a residuals plot to look like
 ### Make sense?
 
 - **SLIDE**: How to do it in R
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-
-```{r, fig.retina=3, fig.align = 'center', fig.asp = 0.618, fig.width = 8, out.width='68%', echo=TRUE, eval=TRUE, cache=TRUE}
+```{r, echo=TRUE, fig.align = 'center', fig.asp = 0.618, fig.width = 10, cache=TRUE}
 # Fit the OLS
 model3 <- lm(data = diamonds, price ~ carat)
 
@@ -956,7 +787,7 @@ model3 <- lm(data = diamonds, price ~ carat)
 plot(model3, which = 1)
 ```
 
-???
+::: notes
 
 Here's the code you need to check the residuals plot.
 
@@ -981,20 +812,14 @@ Here's the code you need to check the residuals plot.
 ### Questions?
 
 - Fixing this requires some more advanced tools for a future class!
+:::
 
 
 
+## Evaluating the Fit of an OLS Regression {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size60[**Evaluating the Fit of an OLS Regression**]
-
-.size50[
 1. Missing data problems?
 
 2. Are the coefficients significant?
@@ -1002,25 +827,17 @@ class: middle
 3. What does the R<sup>2</sup> indicate? 
 
 4. Any problems in the residuals plot?
-]
 
-???
+::: notes
+
+:::
 
 
 
----
+## Do more expensive movies make more money? {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Do more expensive movies make more money?**]]]
-
-.pull-left[
-<br>
-
-.size30[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 library(fivethirtyeight)
 
@@ -1039,19 +856,20 @@ modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .0
   column_spec(1, width = "10em") |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', fig.width=8, cache=TRUE}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=8, cache=TRUE}
 ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
   geom_point(alpha = .2) +
   geom_smooth(method = "lm") +
   theme_bw() +
   labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Let's go back to our regression analysis of movie box office from last class so we can practice evaluating an OLS estimate.
 
@@ -1062,18 +880,13 @@ Let's go back to our regression analysis of movie box office from last class so 
 <br>
 
 **SLIDE**: Let's evaluate the fit.
+:::
 
 
+## {.center .smaller}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
-.size30[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
              coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
@@ -1081,47 +894,35 @@ modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .0
   column_spec(2, background = c("white", rep("white", 3), "orange", "white", "white", "white")) |>
   kable_styling(font_size = 24)
 ```
-]
 
 <br>
 
-.code90[
 ```{r, echo=TRUE}
 nrow(bechdel)
 ```
-]]
+:::
 
-.pull-right[
-.size15[
+::: {.column width="50%"}
 ```{r, echo=FALSE}
 bechdel2 |>
   filter(is.na(box_office)) |>
   select(year, title) |>
   arrange(year) |>
+  slice_head(n = 12) |>
   kbl(col.names = c("Year", "Title"))
 ```
-]]
+:::
+::::
 
-???
+::: notes
+**1. Missing data problems?**
+:::
 
-### 1. Missing data problems?
 
+## Do more expensive movies make more money? {.center}
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Do more expensive movies make more money?**]]
-
-.pull-left[
-
-<br>
-
-.size30[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
              coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
@@ -1129,42 +930,32 @@ modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .0
   column_spec(2, background = c("orange", "white", "orange", "white", "white", "white", "white", "white")) |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', fig.width=8, cache=TRUE}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=8, cache=TRUE}
 ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
   geom_point(alpha = .2) +
   geom_smooth(method = "lm") +
   theme_bw() +
   labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
 ```
-]
+:::
+::::
 
-???
+::: notes
+**2. Are the coefficients significant?**
 
-### 2. Are the coefficients significant?
+- What is the alternative hypothesis?
 
-### - What is the alternative hypothesis?
-
-### - What is the null hypothesis?
-
+- What is the null hypothesis?
+:::
 
 
----
+## Do more expensive movies make more money? {.center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Do more expensive movies make more money?**]]
-
-.pull-left[
-
-<br>
-
-.size30[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
              coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
@@ -1172,38 +963,28 @@ modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .0
   column_spec(2, background = c("white", rep("white", 3), "white", "orange", "white", "white")) |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', fig.width=8, cache=TRUE}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=8, cache=TRUE}
 ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
   geom_point(alpha = .2) +
   geom_smooth(method = "lm") +
   theme_bw() +
   labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
 ```
-]
+:::
+::::
 
-???
+::: notes
+**3. What does the R<sup>2</sup> indicate?**
+:::
 
-### 3. What does the R<sup>2</sup> indicate?
 
+## Do more expensive movies make more money? {.center}
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Do more expensive movies make more money?**]]
-
-.pull-left[
-
-<br>
-
-.size30[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
              coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
@@ -1211,38 +992,31 @@ modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .0
   #column_spec(2, background = c("white", rep("white", 3), "white", "orange", "white", "white")) |>
   kable_styling(font_size = 24)
 ```
-]]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.9, fig.align = 'center', out.width = '100%', fig.width=8, cache=TRUE}
+::: {.column width="50%"}
+```{r, fig.asp=0.9, fig.align = 'center', fig.width=8, cache=TRUE}
 # Check residuals
 plot(model3, which = 1)
 ```
-]
+:::
+::::
 
-???
+::: notes
+**4. Any problems in the residuals plot?**
+:::
 
-### 4. Any problems in the residuals plot?
 
+## For next class, evaluate the fit of both regressions (all four steps): {background-image="libs/Images/background-slate_v2.png" .center}
 
+<br>
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size60[**For next class, evaluate the fit of both regressions (all four steps):**]
-
-.size50[
 1. Regress city fuel economy on engine displacement ('mpg' datatset)
 
 2. Regress percent college educated on the percent of people below the  poverty line ('midwest' datatset)
-]
 
-???
-
+::: notes
 
 
+:::
 
