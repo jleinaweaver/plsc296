@@ -1,0 +1,655 @@
+---
+output:
+  xaringan::moon_reader:
+    css: ["default", "extra.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+##xaringan::inf_mr()
+## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
+## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+
+library(tidyverse)
+library(readxl)
+
+knitr::opts_chunk$set(echo = FALSE,
+                      eval = TRUE,
+                      error = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      comment = NA)
+
+# Data for today
+data1 <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
+
+data2021 <- filter(data1, year == 2021)
+```
+
+background-image: url('libs/Images/background-data_blue_v3.png')
+background-size: 100%
+background-position: center
+class: middle, inverse
+
+.size70[**Today's Agenda**]
+
+<br>
+
+.size40[
+Practicing univariate analyses in R
+
+- Review: Practice exercises
+
+- New: Tools for modeling across time data
+
+- Canvas: "WDI-Tidy_Data_Extract-2024-02-06.xlsx"
+]
+
+<br>
+
+.center[.size40[
+  Justin Leinaweaver (Spring 2024)
+]]
+
+???
+
+## Prep for Class
+1. Review Canvas submissions
+
+
+
+---
+
+background-image: url('libs/Images/06_1-WDI_Front.png')
+background-size: 75%
+background-position: center
+class: middle
+
+???
+
+Last class, we began exploring data from the World Bank's WDI database.
+
+- A very useful repository of national statistics from something around 217 "economies" around the world.
+
+<br>
+
+Today we'll start by reviewing your practice exercises, and then use our tools to expand our analyses across time
+
+<br>
+
+**SLIDE**: Quick aside...
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '78%'}
+knitr::include_graphics("libs/Images/06_1-bad_plot.png")
+```
+
+???
+
+My hope is that as we work with data and grapple with the importance of uncertainty for our knowledge you will begin to see just how AWFUL many visualizations are.
+
+<br>
+
+### Why is this an abomination of data?
+
+<br>
+
+This visualization gives me nightmares
+
+- Don't use 3-d if the 3-d provides ZERO new information
+
+- Make the axis scales logical!
+
+- I don't think these are continents...
+
+- Where does this data come from?
+
+- What do these bars actually show?
+
+- Why are there drop shadows?!?!?
+
+<br>
+
+### Is everybody clear on this is an abomination?
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-class: center
+class: middle
+
+.center[.size50[.content-box-blue[**Polishing your Visualizations**]]]
+
+.size45[
+1. Include an informative title
+
+2. Add a figure label and caption
+
+3. Identify the source(s)
+
+4. Ensure the axis labels are clear and readable
+
+5. Maximize the data-to-ink ratio
+]
+
+???
+
+As we began to discuss last class, I expect you to produce high quality data visualizations
+
+- This means producing visualizations that would look good in any presentation, report, book, web post, poster, etc.
+
+<br>
+
+1. Include an informative title
+    - EVERY visualization should have a title that tells the viewer the main point of the analysis
+    - Don't force them to guess or to struggle to decipher the point, just tell them.
+
+2. Add a label to the figure (with a figure number)
+    - e.g. Figure 1, Figure 2, Figure 3
+    - Otherwise it's impossible to refer to it in the text
+    - Plus a caption to explain what is being shown in the visualization
+
+3. Identify the source(s)
+    - Somewhere on the Figure or in the label you MUST make clear where the data came from
+
+4. Ensure the axis labels are clear and readable
+
+5. Maximize the data-to-ink ratio
+    - As much as possible, the "ink" should be tied directly to data
+    - e.g. No extra 3-d nonsense!
+    - e.g. No big empty spaces
+    - e.g. No chart junk!
+
+<br>
+
+### Questions on these?
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size50[.content-box-blue[**For Today**]]
+
+.size45[
+.center[**What is the state of global development in 2021?**]
+- WB Income
+- gdp_per_capita
+- measles_herd_immunity
+- measles_immunizations_pct
+- birth_rate
+- death_rate
+]
+
+???
+
+### Ok, how did your assignment for today go?
+
+### - Any trouble copying images into Canvas? Or polishing the visualizations?
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code120[
+```{r, echo=TRUE}
+summary(data2021$gdp_per_capita)
+summary(data2021$measles_immunizations_pct)
+summary(data2021$birth_rate)
+summary(data2021$death_rate)
+```
+]
+
+???
+
+Taking all of this on board, where do we end up?
+
+### Based on this data and these analyses, what would you argue is the current state of global development?
+
+- *Encourage this discussion*
+
+<br>
+
+**SLIDE**: One way I tried to help your analyses was by giving you two ways of thinking about health and wealth
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Analysis Option 1: Benchmark the Data**]]]
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+data2021$measles1 <- if_else(data2021$measles_immunizations_pct < 96, "risk", "immune")
+
+data2021 |>
+  ggplot(aes(x = measles_immunizations_pct, fill = measles1)) +
+  geom_histogram(bins = 15, color = "white") +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "The level of vulnerability in some countries is\n staggeringly high") +
+  guides(fill = "none") +
+  scale_fill_manual(values = c("blue", "red"))
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+data2021 |>
+  ggplot(aes(x = measles_herd_immunity)) +
+  geom_bar(fill = c("red", "blue", "blue")) +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Too many countries remain vulnerable \n to measles outbreaks (< 95% vaccinated)")
+```
+]
+
+???
+
+Without the context of the herd immunity threshold it would be much harder for us to interpret and explain the substantive importance of these visualizations
+
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Analysis Option 1: Benchmark the Data**]]]
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+data2021 |>
+  ggplot(aes(x = gdp_per_capita)) +
+  geom_histogram(bins = 15, fill = "green3", color = "white") +
+  labs(x = "GDP per Capita", y = "Countries", title = "Global Wealth (2021)") +
+  scale_x_continuous(labels = scales::dollar_format(scale = 1/1000, suffix = "k"))
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+data2021 |>
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = "green3") +
+  labs(x = "World bank Income Categories", y = "Countries", title = "Global Wealth (2021)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
+```
+]
+
+???
+
+### What do we learn from comparing and contrasting these two methods for measuring the wealth of a country?
+
+<br>
+
+### Which is the more "accurate" takeaway? Is most of the world "rich" or "poor"?
+
+<br>
+
+What I hope is clear from this is that while a univariate visualization is useful for describing variation, it is VERY limited for helping us understand what that variation means on the ground
+
+- One option is to include external benchmarks (like these) or alternative ways of measuring the same problem
+
+- The handy thing here is that this just requires you to pair two visualizations together, no new code required!
+
+<br>
+
+#### Notes
+
+WB categories
+- Low: up to 1,045
+- Low-mid: up to 4,095
+- Upper-mid: up to 12,695
+- High: 12,695+
+
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, out.width='70%', fig.width=5}
+# Use scale_x_discrete to reorder bars in bar plot
+ggplot(data2021, aes(x = wb_income)) +
+  geom_bar(fill = "green3") +
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
+```
+
+
+???
+
+
+Add slide giving the code for rearranging x axis order of categorical levels
+
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size40[**Analysis Option 2: Flag an Observation**]]]
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.6, out.width='90%'}
+d_us <- data2021 |> filter(country == "United States")
+
+data2021 |>
+  ggplot(aes(x = gdp_per_capita)) +
+  geom_histogram(bins = 15, fill = "green3", color = "white") +
+  labs(x = "GDP per Capita", y = "Countries", title = "Global Wealth (2021)") +
+  annotate("segment", x = 67000, xend = 67000, y = 35, yend = 13, arrow = arrow(length = unit(0.5, "cm"))) +
+  annotate("text", x = 67000, y = 39, label = "US") +
+  scale_x_continuous(labels = scales::dollar_format(scale = 1/1000, suffix = "k"))
+
+data2021 |>
+  ggplot(aes(x = birth_rate)) +
+  geom_histogram(bins = 15, fill = "red3", color = "white") +
+  labs(x = "Birth Rate (per 1,000)", y = "Countries", title = "Global Opportunity (2021)") +
+  ylim(0, 60) +
+  annotate("segment", x = 11.5, xend = 11.5, y = 58, yend = 50, arrow = arrow(length = unit(0.5, "cm"))) +
+  annotate("text", x = 11.5, y = 60, label = "US")
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.6, out.width='90%'}
+data2021 |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white") +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2021)") +
+  ylim(0, 55) +
+  annotate("segment", x = 92.5, xend = 92.5, y = 52, yend = 45, arrow = arrow(length = unit(0.5, "cm"))) +
+  annotate("text", x = 92.5, y = 54, label = "US")
+
+data2021 |>
+  ggplot(aes(x = death_rate)) +
+  geom_histogram(bins = 15, fill = "red3", color = "white") +
+  labs(x = "Death Rate (per 1,000)", y = "Countries", title = "Global Opportunity (2021)") +
+  ylim(0, 65) +
+  annotate("segment", x = 10.2, xend = 10.2, y = 35, yend = 25, arrow = arrow(length = unit(0.5, "cm"))) +
+  annotate("text", x = 10.2, y = 38, label = "US")
+```
+]
+
+???
+
+Another option might be to flag where in a given distribution example countries might appear.
+
+- For an American audience I can imagine this helping us think about the world relative to our own experiences.
+
+<br>
+
+### Other than just the host country, any other things you think we could flag on these plots to help the reader understand them better?
+
+<br>
+
+**SLIDE**: Code for adding an arrow to a plot
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.code100[
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, out.width='65%'}
+ggplot(data2021, aes(x = gdp_per_capita)) +
+  geom_histogram(bins = 15) +
+  annotate("text", x = 67000, y = 39, label = "US") +
+  annotate("segment", x = 67000, y = 35, xend = 67000, yend = 13, arrow = arrow())
+```
+]
+
+???
+
+Here is the code you need to:
+
+1. Add text to any plot, AND
+
+2. Add an arrow
+
+<br>
+
+*Walk them through the code arguments for each*
+
+<br>
+
+Test it out.
+
+- Try adding random text somewhere on the plot, and
+
+- an arrow
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size40[**Analysis Option 3: Snapshots Across Time**]]]
+
+.code120[
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, out.width='50%'}
+# Subset the data by one year
+data1985 <- filter(data1, year == 1985)
+
+ggplot(data1985, aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white")
+```
+]
+
+???
+
+The third way we can add context to our analyses is with across time data
+
+- Can we compare observations to themselves at different points in time?
+
+<br>
+
+The WDI dataset I provided you has country-year data going back to 1985
+
+- So let's use that data to see how measles vaccinations have changed over time!
+
+<br>
+
+### Everybody clear on how to extract subsets of the data using the filter?
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Analysis Option 3: Snapshots Across Time**]]]
+
+.pull-left[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.85, out.width='100%'}
+data1 |>
+  filter(year == 1985) |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white") +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (1985)")
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.85, out.width='100%'}
+data1 |>
+  filter(year == 2021) |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white") +
+  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2021)")
+```
+]
+
+???
+
+### Why does having both of these visualizations make our analyses so much more useful?
+
+- (Allows us to track a distribution across time)
+
+- (The world has made incredible progress in fighting measles but there is much left to do!)
+
+<br>
+
+**SLIDE**: We can do better than two snapshots though, right?
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Analysis Option 3: Snapshots Across Time**]]]
+
+.code120[
+```{r, echo=TRUE, eval=FALSE}
+# Install the animation packages (one time)
+install.packages("gifski")
+install.packages("gganimate")
+
+# Load the packages
+library(gifski)
+library(gganimate)
+
+# Histogram across time
+ggplot(data1, aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 30) +
+  transition_time(year) +
+  labs(title = "Measles Immunizations ({as.integer(frame_time)})")
+```
+]
+
+???
+
+The key here is the "transition_time" function
+
+- THAT's the piece that creates the animation as a gif
+
+<br>
+
+**SLIDE**: Results!
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.center[.content-box-blue[.size50[**Analysis Option 3: Snapshots Across Time**]]]
+
+```{r, cache=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=0.618, fig.width=8, out.width='80%'}
+# Load the package
+library(gganimate)
+
+# Histogram across time
+data1 |>
+  ggplot(aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 30, fill = "blue", color = "white") +
+  transition_time(year) +
+  labs(title = "Measles Immunizations ({as.integer(frame_time)})",
+       x = "Measles Immunizations (% under 2 years)", y = "Countries",
+       caption = "Source: WDI (2024)")
+```
+
+???
+
+### What does this help us see in the data?
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+.size70[.content-box-blue[**For Next Class**]]
+
+<br>
+
+.size55[
+1. Freedom House. (2022). *Freedom in the World: Methodology*.
+
+2. Practice Exercises
+]
+
+???
+
+Next class we'll start working with Freedom House data
+
+- You should review the methodology they share on their website so we can quickly discuss how they produce their measures
+
+<br>
+
+So, do that reading and the following practice exercises!
+
+
+
+---
+
+background-image: url('libs/Images/background-slate_v2.png')
+background-size: 100%
+background-position: center
+class: middle
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("libs/Images/05_2-Assignment.png")
+```
+
+???
+
+### Questions on the assignment?

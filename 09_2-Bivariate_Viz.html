@@ -1,369 +1,594 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
-  <head>
-    <title>09_2-Bivariate_Viz.knit</title>
-    <meta charset="utf-8" />
-    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link rel="stylesheet" href="extra.css" type="text/css" />
-  </head>
-  <body>
-    <textarea id="source">
-
-
-
-
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
-
-&lt;br&gt;
-
-.size50[
-Bivariate Analyses
-
-- Visualizations
-
-- "Bivariate_Analyses_Notes.R"
-]
-
-&lt;br&gt;
-
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
-
-???
-
-## Prep for Class
-1. ?
-
-
-
----
-
-background-image: url('libs/Images/00-Pizza_Politics1.png')
-background-size: 100%
-background-position: center
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size50[**Assignment for Today:**]
-
-.size50[
-1. 'cut' and 'clarity'
-
-2. 'cut' and 'price'
-
-3. 'carat' and 'price' (convert 'carat' using cut)
-
-4. 'carat' and 'price' (correlation)
-
-.right[**Source:** 'diamonds' dataset in tidyverse]
-]
-
-???
-
-### Did everybody complete all four of these?
-
-&lt;br&gt;
-
-### Did any of these trip you up? Is there anything we need to discuss?
-
-&lt;br&gt;
-
-(SLIDES x 5 if necessary **BUT try to blow past these and get to the new tools!**)
-
-
-
-
-
-
----
-
-class: middle, center
-
-.content-box-blue[.size35[**Categorical x Categorical: Frequency Tables**]]
-
-
-```r
-# Counts
-table(diamonds$cut, diamonds$clarity)
-```
-
-```
-           
-              I1  SI2  SI1  VS2  VS1 VVS2 VVS1   IF
-  Fair       210  466  408  261  170   69   17    9
-  Good        96 1081 1560  978  648  286  186   71
-  Very Good   84 2100 3240 2591 1775 1235  789  268
-  Premium    205 2949 3575 3357 1989  870  616  230
-  Ideal      146 2598 4282 5071 3589 2606 2047 1212
-```
-
-
-```r
-# Proportions
-prop.table(table(diamonds$cut, diamonds$clarity))
-```
-
-
-```
-           
-               I1   SI2   SI1   VS2   VS1  VVS2  VVS1    IF
-  Fair      0.004 0.009 0.008 0.005 0.003 0.001 0.000 0.000
-  Good      0.002 0.020 0.029 0.018 0.012 0.005 0.003 0.001
-  Very Good 0.002 0.039 0.060 0.048 0.033 0.023 0.015 0.005
-  Premium   0.004 0.055 0.066 0.062 0.037 0.016 0.011 0.004
-  Ideal     0.003 0.048 0.079 0.094 0.067 0.048 0.038 0.022
-```
-
-???
-
-Cut: "quality of the cut (Fair, Good, Very Good, Premium, Ideal)"
-
-Clarity: "a measurement of how clear the diamond is (I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best))"
-
-&lt;br&gt;
-
-### How do we change the proportion table to compare the distributions of cut quality across each level of clarity?
-
-### In other words, do we see evidence that jewelers are more careful when cutting an internally flawless (IF) diamond vs a diamond with "inclusions" (I1)?
-
-- (**SLIDE**)
-
-
-
----
-
-class: middle, center
-
-.content-box-blue[.size35[**Categorical x Categorical: Frequency Tables**]]
-
-&lt;br&gt;
-
-
-```r
-# Proportions
-prop.table(table(diamonds$cut, diamonds$clarity), margin = 2)
-```
-
-.code120[
-
-```
-           
-               I1   SI2   SI1   VS2   VS1  VVS2  VVS1    IF
-  Fair      0.283 0.051 0.031 0.021 0.021 0.014 0.005 0.005
-  Good      0.130 0.118 0.119 0.080 0.079 0.056 0.051 0.040
-  Very Good 0.113 0.228 0.248 0.211 0.217 0.244 0.216 0.150
-  Premium   0.277 0.321 0.274 0.274 0.243 0.172 0.169 0.128
-  Ideal     0.197 0.283 0.328 0.414 0.439 0.514 0.560 0.677
-```
-]
-
-???
-
-(Certainly looks like it!)
-
-&lt;br&gt;
-
-### Everybody comfortable using tables to analyze the relationship between two categorical variables?
-
-&lt;br&gt;
-
-What I hope you're very quickly seeing here is that interpreting the relationships in tables is hard!
-
-- That's why we build pictures!
-
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Categorical x Numeric: Descriptive Statistics per Level**]]]
-
-.pull-left[
-.code90[
-
-```r
-# Mean
-aggregate(data = diamonds, price ~ cut, 
-          FUN = mean)
-```
-
-```
-        cut    price
-1      Fair 4358.758
-2      Good 3928.864
-3 Very Good 3981.760
-4   Premium 4584.258
-5     Ideal 3457.542
-```
-
-```r
-# Median
-aggregate(data = diamonds, price ~ cut, 
-          FUN = median)
-```
-
-```
-        cut  price
-1      Fair 3282.0
-2      Good 3050.5
-3 Very Good 2648.0
-4   Premium 3185.0
-5     Ideal 1810.0
-```
-]]
-
-.pull-right[
-.code90[
-
-```r
-# Range
-aggregate(data = diamonds, price ~ cut, 
-          FUN = range)
-```
-
-```
-        cut price.1 price.2
-1      Fair     337   18574
-2      Good     327   18788
-3 Very Good     336   18818
-4   Premium     326   18823
-5     Ideal     326   18806
-```
-]
-
-.code70[
-
-```r
-# Percentiles
-aggregate(data = diamonds, price ~ cut, 
-          FUN = quantile)
-```
-
-```
-        cut price.0% price.25% price.50% price.75% price.100%
-1      Fair   337.00   2050.25   3282.00   5205.50   18574.00
-2      Good   327.00   1145.00   3050.50   5028.00   18788.00
-3 Very Good   336.00    912.00   2648.00   5372.75   18818.00
-4   Premium   326.00   1046.00   3185.00   6296.00   18823.00
-5     Ideal   326.00    878.00   1810.00   4678.50   18806.00
-```
-]]
-
-???
-
-Your next job was to analyze the relationship between the price and cut quality of the diamonds.
-
-### What did you find?
-
-&lt;br&gt;
-
-### - Why the big differences between mean and medians?
-
-### - What specifically can we infer based on the fact that the ranges overlap so much?
-- (More factors to diamond price! Especially the size of the diamond!)
-
-&lt;br&gt;
-
-### Everybody comfortable using aggregate and descriptive statistics functions to analyze the relationship between a numeric and a categorical variable?
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Numeric x Numeric: Convert One (cut)**]]]
-
-&lt;br&gt;
-
-
-```r
-# Transform Numeric Variable to Categorical
-diamonds$carat2 &lt;- cut(diamonds$carat, breaks = c(0, .8, 6), 
-                       labels = c("Smaller than Avg", "Larger than Avg"))
-```
-
-.center[
-
-```r
-# Mean price by level of new variable
-aggregate(data = diamonds, price ~ carat2, FUN = mean)
-```
-
-```
-            carat2    price
-1 Smaller than Avg 1393.774
-2  Larger than Avg 7472.830
-```
-
-```r
-# Median price by level of new variable
-aggregate(data = diamonds, price ~ carat2, FUN = median)
-```
-
-```
-            carat2 price
-1 Smaller than Avg  1061
-2  Larger than Avg  6111
-```
-]
-
-???
-
-Your next job was to analyze the relationship between the price and cut quality of the diamonds.
-
-### What did you find?
-
-- (Pretty clear that diamond size is a BIG determinant of price!)
-
-&lt;br&gt;
-
-### Everybody comfortable using cut to convert a numeric variable into a categorical variable?
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Numeric x Numeric: Correlation**]]]
-
-&lt;br&gt;
-
-
-```r
-# Correlation
-cor(diamonds$carat, diamonds$price)
-```
-
-```
-[1] 0.9215913
-```
-
-```r
-# Statistical Test
-cor.test(diamonds$carat, diamonds$price)
-```
-
-```
-
-	Pearson's product-moment correlation
+<html lang="en"><head>
+<script src="09_2-Bivariate_Viz_files/libs/clipboard/clipboard.min.js"></script>
+<script src="09_2-Bivariate_Viz_files/libs/quarto-html/tabby.min.js"></script>
+<script src="09_2-Bivariate_Viz_files/libs/quarto-html/popper.min.js"></script>
+<script src="09_2-Bivariate_Viz_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="09_2-Bivariate_Viz_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="09_2-Bivariate_Viz_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="09_2-Bivariate_Viz_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="09_2-Bivariate_Viz_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.3.433">
+
+  <title>bivariate_viz</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="09_2-Bivariate_Viz_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="09_2-Bivariate_Viz_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="09_2-Bivariate_Viz_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="09_2-Bivariate_Viz_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="09_2-Bivariate_Viz_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="09_2-Bivariate_Viz_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="09_2-Bivariate_Viz_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    margin-bottom: 0.5rem;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+
+<section>
+<section id="todays-agenda" class="title-slide slide level1 center" data-background-image="libs/Images/background-data_blue_v3.png">
+<h1>Today’s Agenda</h1>
+<p><br></p>
+<p><br></p>
+<p><strong>Bivariate Analyses</strong></p>
+<ul>
+<li>Visualizations</li>
+</ul>
+<p><br></p>
+<p><br></p>
+<div class="r-stack">
+<p>Justin Leinaweaver (Spring 2024)</p>
+</div>
+<aside class="notes">
+<p>Prep for Class</p>
+<ol type="1">
+<li>?</li>
+</ol>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="practice-for-today" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Practice for Today</h2>
+<p><br></p>
+<ol type="1">
+<li><p><code>cut</code> and <code>clarity</code></p></li>
+<li><p><code>cut</code> and <code>price</code></p></li>
+<li><p><code>carat</code> and <code>price</code> (convert <code>carat</code> to a categorical variable)</p></li>
+<li><p><code>carat</code> and <code>price</code> (correlation)</p></li>
+</ol>
+<p><strong>Source:</strong> <code>diamonds</code> dataset in tidyverse</p>
+<aside class="notes">
+<p><strong>Did everybody complete all four of these exercises?</strong></p>
+<p><br></p>
+<p><strong>Did any of these trip you up? Is there anything we need to discuss?</strong></p>
+<p><br></p>
+<p>SLIDES x 5 if necessary <strong>BUT try to blow past these and get to the new tools!</strong></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="practice-for-today-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Practice for Today</h2>
+<p><strong>Categorical x Categorical</strong></p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">proportions</span>(<span class="fu">table</span>(diamonds<span class="sc">$</span>clarity, diamonds<span class="sc">$</span>cut), <span class="at">margin =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      
+              Fair        Good   Very Good     Premium       Ideal
+  I1   0.283400810 0.129554656 0.113360324 0.276653171 0.197031039
+  SI2  0.050685229 0.117576680 0.228409832 0.320752665 0.282575593
+  SI1  0.031228473 0.119402985 0.247990815 0.273631841 0.327745886
+  VS2  0.021292217 0.079784630 0.211372165 0.273861968 0.413689019
+  VS1  0.020805287 0.079304859 0.217231673 0.243421858 0.439236324
+  VVS2 0.013620213 0.056454797 0.243782077 0.171733123 0.514409791
+  VVS1 0.004651163 0.050889193 0.215868673 0.168536252 0.560054720
+  IF   0.005027933 0.039664804 0.149720670 0.128491620 0.677094972</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>When you have 50k+ observations across this many levels of each variable it can be VERY hard to find clear takeaways</p>
+<ul>
+<li><p>BUT that is the utility of the margin argument</p></li>
+<li><p>Margin lets you examine the relationship in a directional sense, rather than just overall</p></li>
+</ul>
+<p><br></p>
+<p>Assuming jewelers can control cut, but not clarity I think this version of the table makes the most sense (e.g.&nbsp;row margins)</p>
+<ul>
+<li><p>When jewelers have an internally flawless diamond (IF) or close to it, they clearly try to give it their highest quality cut (maximize price)</p></li>
+<li><p>At the opposite end, when you see a “fair” cut diamond it is safe to assume it is not very clear at all.</p></li>
+</ul>
+<p><br></p>
+<p><strong>Make sense?</strong></p>
+<p><br></p>
+<p>What I hope you’re very quickly seeing here is that interpreting the relationships in tables is hard!</p>
+<ul>
+<li>That’s why we build pictures!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="practice-for-today-2" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Practice for Today</h2>
+<p><strong>Categorical x Numeric</strong></p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> cut, <span class="at">FUN =</span> summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        cut price.Min. price.1st Qu. price.Median price.Mean price.3rd Qu. price.Max.
+1      Fair    337.000      2050.250     3282.000   4358.758      5205.500  18574.000
+2      Good    327.000      1145.000     3050.500   3928.864      5028.000  18788.000
+3 Very Good    336.000       912.000     2648.000   3981.760      5372.750  18818.000
+4   Premium    326.000      1046.000     3185.000   4584.258      6296.000  18823.000
+5     Ideal    326.000       878.000     1810.000   3457.542      4678.500  18806.000</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>Your next job was to analyze the relationship between the price and cut quality of the diamonds.</p>
+<p><strong>What did you find?</strong></p>
+<p><br></p>
+<p><strong>Why the big differences between mean and medians?</strong></p>
+<p><br></p>
+<p><strong>What specifically can we infer based on the fact that the ranges overlap so much?</strong></p>
+<ul>
+<li>(More factors to diamond price! Especially the size of the diamond!)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="practice-for-today-3" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Practice for Today</h2>
+<p><strong>Numeric x Numeric: Convert one into a categorical variable</strong></p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Transform Numeric Variable to Categorical</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>diamonds<span class="sc">$</span>carat2 <span class="ot">&lt;-</span> <span class="fu">cut</span>(diamonds<span class="sc">$</span>carat, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">8</span>, <span class="dv">6</span>), </span>
+<span id="cb5-3"><a href="#cb5-3"></a>                       <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Smaller than Avg"</span>, <span class="st">"Larger than Avg"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> carat2, <span class="at">FUN =</span> summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            carat2 price.Min. price.1st Qu. price.Median price.Mean price.3rd Qu. price.Max.
+1 Smaller than Avg    326.000       730.000     1061.000   1393.774      1918.000   6834.000
+2  Larger than Avg   1250.000      4490.000     6111.000   7472.830      9581.000  18823.000</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>Your next job was to analyze the relationship between the price and weight of the diamonds.</p>
+<ul>
+<li><p><strong>What did you find?</strong></p></li>
+<li><p>(Pretty clear that diamond size is a BIG determinant of price!)</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="practice-for-today-4" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Practice for Today</h2>
+<p><strong>Numeric x Numeric: Correlation</strong></p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Correlation</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">cor</span>(diamonds<span class="sc">$</span>carat, diamonds<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9215913</code></pre>
+</div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Statistical Test</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">cor.test</span>(diamonds<span class="sc">$</span>carat, diamonds<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's product-moment correlation
 
 data:  diamonds$carat and diamonds$price
 t = 551.41, df = 53938, p-value &lt; 2.2e-16
@@ -372,406 +597,632 @@ alternative hypothesis: true correlation is not equal to 0
  0.9203098 0.9228530
 sample estimates:
       cor 
-0.9215913 
-```
-
-???
-
-Your next job was to analyze the relationship between the price and cut quality of the diamonds.
-
-### What did you find?
-
-- (A STRONG linear relationship implied by this VERY high correlation score)
-
-&lt;br&gt;
-
-### Everybody comfortable using the correlation functions on two numeric variables?
-
-&lt;br&gt;
-
-This is another approach that REALLY benefits from visualization!
-
-- So, let's get to work visualizing bivariate relationships!
-
-
-
-
----
-
-background-image: url('libs/Images/background-teal3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Bivariate Analyses**]]
-
-.size40[
-1. Descriptive Statistics by Group
-    - Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations
-
-2. Visualizations
-    - Bar plots (stacked, side-by-side, proportions), box plots and scatter plots
-]
-
-???
-
-On Monday, we worked on the Descriptive Statistics by Group.
-
-&lt;br&gt;
-
-Today we dive into bivariate visualizations as a tool for analyzing a relationship.
-
-- We'll go back to using the 'mpg' dataset built into the tidyverse
-
-
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size45[**Univariate Analysis: A Categorical Variable**]]]
-
-.pull-left[
-
-```r
-ggplot(mpg, aes(x = class)) +
-  geom_bar()
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-13-1.png" width="95%" style="display: block; margin: auto;" /&gt;
-]
-
-.pull-right[
-
-```r
-ggplot(mpg, aes(x = drv)) +
-  geom_bar()
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-14-1.png" width="95%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Variable type determines tool so let's start with two categorical variables!
-
-&lt;br&gt;
-
-Here's what we've already done: univariate analyses of individual categorical variables.
-
-- On the left is the distribution of cars by "class"
-
-- On the right is the distribution of drive trains
-
-&lt;br&gt;
-
-**SLIDE**: The question is what is the breakdown of drive trains in each class of cars?
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Bivariate Analysis: Two Categorical Variables**]]]
-
-
-```r
-# Side-by-side bar plots
-*ggplot(mpg, aes(x = class, fill = drv)) +
-* geom_bar(position = "dodge")
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-15-1.png" width="65%" style="display: block; margin: auto;" /&gt;
-
-???
-
-*Make sure they can interpret these results*
-
-- For bivariate case geom_bar needs an x and a fill argument inside the aes function.
-
-&lt;br&gt;
-
-By default geom_bar adjusts the width of the bars so each x label takes up the same space.
-
-- I really don't love this default choice.
-
-- **SLIDE**: Let's fix it.
-
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Bivariate Analysis: Two Categorical Variables**]]]
-
-
-```r
-# Side-by-side bar plots
-ggplot(mpg, aes(x = class, fill = drv)) +
-* geom_bar(position = position_dodge(preserve = "single"))
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-16-1.png" width="65%" style="display: block; margin: auto;" /&gt;
-
-???
-
-### What do we learn from this? What does the relationship appear to be between class and drive train?
-
-&lt;br&gt;
-
-Now swap the 'x' and 'fill' variables in this plot.
-
-- I want you to get a sense of what happens when you change which variable goes on the x axis and which is the fill.
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Bivariate Analysis: Two Categorical Variables**]]]
-
-.pull-left[
-.code70[
-
-```r
-# Side-by-side bar plots
-*ggplot(mpg, aes(x = class, fill = drv)) +
-  geom_bar(position = position_dodge(preserve = "single"))
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-.pull-right[
-.code70[
-
-```r
-# Side-by-side bar plots
-*ggplot(mpg, aes(x = drv, fill = class)) +
-  geom_bar(position = position_dodge(preserve = "single"))
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-???
-
-### What question does this plot on the right help us answer? How is it different from the other one?
-- (What types of car class are most associated with each type of drive train)
-
-&lt;br&gt;
-
-Same data, same tool, very different questions answered!
-
-&lt;br&gt;
-
-### Questions on making a side-by-side bar plot two categorical variables?
-
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Bivariate Analysis: Two Categorical Variables**]]]
-
-.pull-left[
-.code70[
-
-```r
-# Side-by-side bar plots
-ggplot(mpg, aes(x = class, fill = drv)) +
-* geom_bar(position = position_dodge(preserve = "single"))
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-19-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-.pull-right[
-.code70[
-
-```r
-# Stacked bar plots
-ggplot(mpg, aes(x = class, fill = drv)) +
-* geom_bar(position = "stack")
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-20-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-.center[.size30[(See Chang Recipes 3.7, and 10 for controlling the colors and legend layout)]]
-
-???
-
-Here we see the second style of bivariate bar plot: A Stacked Bar Plot
-
-### Why is the stacked bar plot better for analyzing this relationship?
-
-- (These plots are meant to tell us how each class of car uses the various drive trains and stacked bars help you see the proportions specific to each car)
-
-&lt;br&gt;
-
-### Make sense?
-
-
-
-
-&lt;br&gt;
-
-### Any questions on a stacked bar plot?
-
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Bivariate Analysis: Two Categorical Variables**]]]
-
-.pull-left[
-.code70[
-
-```r
-# Stacked bar plots
-ggplot(mpg, aes(x = class, fill = drv)) +
-* geom_bar(position = "stack")
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-21-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-.pull-right[
-.code70[
-
-```r
-# Proportional bar plots
-ggplot(mpg, aes(x = class, fill = drv)) +
-* geom_bar(position = "fill")
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-22-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-???
-
-Last style of common bar plot is a proportional stacked bar plot.
-
-- Super cool approach transforms each bar to a proportion of 100% per x variable level.
-
-- So, the y-axis marks off the proportion of the total represented by each level of the fill variable.
-
-&lt;br&gt;
-
-Clearly makes comparisons and summary easier, BUT...
-
-### Why are these super dangerous?
-
-- Look on the left plot, very FEW 2seaters and minivans so the proportions are much less stable
-
-- Only takes adding one of this class with a different drive train to dramatically change the %'s
-
-&lt;br&gt;
-
-### Any questions on our three versions of the bar plot?
-
-- Remember, need to specify both an 'x' and a 'fill' variable PLUS a 'position' argument in the geom_bar
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Bivariate Analysis: Categorical x Numeric Variable**]]]
-
-.pull-left[
-.code70[
-
-```r
-# Box Plot (Horizontal)
-ggplot(mpg, aes(x = drv, y = cty)) +
-  geom_boxplot()
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-.pull-right[
-.code70[
-
-```r
-# Box Plot (Vertical)
-ggplot(mpg, aes(x = cty, y = drv)) +
-  geom_boxplot()
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-???
-
-Here is where we see the real utility of box plots.
-
-- For comparing the distribution of numeric variables across the levels of a categorical variable.
-
-&lt;br&gt;
-
-### Remind me, what are the main components of a box plot?
-- (Median is the black line)
-- (IQR is the box)
-- (Whiskers extend 1.5x the IQR)
-- (Outliers identified)
-
-&lt;br&gt;
-
-### And what do we learn from these boxes about this relationship?
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Bivariate Analysis: Numeric x Numeric Variable**]]]
-
-
-```r
-# Scatter Plot
-ggplot(mpg, aes(x = displ, y = cty)) +
-  geom_point()
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-25-1.png" width="65%" style="display: block; margin: auto;" /&gt;
-
-???
-
-Our final new tool: Scatter Plots
-
-### Any questions on how to read this plot?
-
-&lt;br&gt;
-
-### What do we learn from this?
-
-&lt;br&gt;
-
-### What statistic could we calculate to help us explain the relationship?
-- (Correlation!)
-
-Go for it!
-
-
-```
-
-	Pearson's product-moment correlation
+0.9215913 </code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>Your final job was to analyze the relationship between the price and cut quality of the diamonds using correlation.</p>
+<ul>
+<li><p><strong>What did you find?</strong></p></li>
+<li><p>(A STRONG linear relationship implied by this VERY high correlation score)</p></li>
+</ul>
+<p><br></p>
+<p>This is another approach that would REALLY benefit from visualization!</p>
+<ul>
+<li><strong>Any questions on the practice exercises or the tools/concepts from last class?</strong></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-analyses" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Analyses</h2>
+<p><br></p>
+<ol type="1">
+<li>Descriptive Statistics by Group
+<ul>
+<li>Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations</li>
+</ul></li>
+<li>Visualizations
+<ul>
+<li>Bar plots (stacked, side-by-side, proportions), box plots and scatter plots</li>
+</ul></li>
+</ol>
+<aside class="notes">
+<p>On Monday, we worked on the Descriptive Statistics by Group.</p>
+<ul>
+<li>Essentially you can calculate all of these using the table, summary and aggregate functions</li>
+</ul>
+<p><br></p>
+<p>Today we dive into bivariate visualizations as a tool for analyzing a relationship.</p>
+<ul>
+<li>The descriptive statistics help us discuss our analyses in text, but the pictures enable the reader to MUCH better understand what the world looks like.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="variable-type-determines-the-tool" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>3. Variable type determines the tool</h2>
+
+<img data-src="libs/Images/01_2-levels_measurement.png" style="width:90.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Just as we did previously, we will be guided in learning our new tools by this rule of data science!</p>
+<ul>
+<li>If you know the variable types you are analyzing, choosing the right tool is done for you!</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s start with a univariate analysis of a single categorical variable</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-analyses-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Analyses</h2>
+<p><strong>Categorical x Categorical</strong></p>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-10_b6a2d0dc3e2fedf9415a26d6049fadb4">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> class)) <span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-10-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-11_88176ad66e4b9b5ac5483c734bbcf653">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> drv)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-11-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Ah yes, our old friend the bar plot!</p>
+<ul>
+<li><p>On the left is the distribution of cars by “class”</p></li>
+<li><p>On the right is the distribution of drive trains</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s now put these two figures together!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-analyses-2" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Analyses</h2>
+<p><strong>Categorical x Categorical</strong></p>
+<p><br></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.6" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-12_b975e64436ac0bcca77b138f4c098dc4">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Side-by-side bar plots</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> class, <span class="at">fill =</span> drv)) <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-12-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
+<p><em>Make sure they can interpret these results</em></p>
+<ul>
+<li>For the bivariate case geom_bar needs an x and a fill argument inside the aes function.</li>
+</ul>
+<p><br></p>
+<p>By default geom_bar adjusts the width of the bars so each x label takes up the same space.</p>
+<ul>
+<li><p>I really don’t love this default choice.</p></li>
+<li><p><strong>SLIDE</strong>: Let’s fix it.</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-analyses-3" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Analyses</h2>
+<p><strong>Categorical x Categorical</strong></p>
+<p><br></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.6" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-13_9d630eaf8d57fe7154ad1b08fb04b004">
+<div class="sourceCode cell-code" id="cb15" data-code-line-numbers="1,3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Side-by-side bar plots</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> class, <span class="at">fill =</span> drv)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">preserve =</span> <span class="st">"single"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-13-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
+<p><strong>What do we learn from this? What does the relationship appear to be between class and drive train?</strong></p>
+<p><br></p>
+<p>Now swap the ‘x’ and ‘fill’ variables in this plot.</p>
+<ul>
+<li>I want you to get a sense of what happens when you change which variable goes on the x axis and which is the fill.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-analyses-4" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Analyses</h2>
+<p><strong>Categorical x Categorical</strong></p>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-14_3ff5ed534beba08f0292125ed6866061">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-14-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-15_dc024592c4845b7dc14ff4df7a404872">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-15-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p><strong>What question does this plot on the right help us answer? How is it different from the other one?</strong></p>
+<ul>
+<li>(What types of car class are most associated with each type of drive train)</li>
+</ul>
+<p><br></p>
+<p>Same data, same tool, very different questions answered!</p>
+<p><br></p>
+<p><strong>Questions on making a side-by-side bar plot two categorical variables?</strong></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-analyses-5" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Analyses</h2>
+<p><strong>Categorical x Categorical</strong></p>
+<p><br></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-16_e264692dd437d567b13c6cb9da1d2522">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Stacked bar plots</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> class, <span class="at">fill =</span> drv)) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"stack"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-16-1.png" width="576" class="r-stretch quarto-figure-center"><p><br></p>
+<p>(See Chang Recipes 3.7, and 10 for controlling the colors and legend layout)</p>
+<aside class="notes">
+<p>Here we see the second style of bivariate bar plot: A Stacked Bar Plot</p>
+<p><br></p>
+<p><strong>Why is the stacked bar plot better for analyzing this relationship?</strong></p>
+<ul>
+<li>(These plots are meant to tell us how each class of car uses the various drive trains and stacked bars help you see the proportions specific to each car)</li>
+</ul>
+<p><br></p>
+<p><strong>Make sense?</strong></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-analyses-6" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Analyses</h2>
+<p><strong>Categorical x Categorical</strong></p>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-17_5859bfb7a4c43e0c0af5ff1d12dba902">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> class, <span class="at">fill =</span> drv)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"stack"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-17-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-18_cb487058ec90da0a4e64fe623241b4af">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> class, <span class="at">fill =</span> drv)) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-18-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Last style of common bar plot is a proportional stacked bar plot.</p>
+<ul>
+<li><p>Super cool approach transforms each bar to a proportion of 100% per x variable level.</p></li>
+<li><p>So, the y-axis marks off the proportion of the total represented by each level of the fill variable.</p></li>
+</ul>
+<p><br></p>
+<p>Clearly makes comparisons and summary easier, BUT…</p>
+<p><br></p>
+<p><strong>Why are these super dangerous?</strong></p>
+<ul>
+<li><p>Look on the left plot, very FEW 2seaters and minivans so the proportions are much less stable</p></li>
+<li><p>Only takes adding one of this class with a different drive train to dramatically change the %’s</p></li>
+</ul>
+<p><br></p>
+<p><strong>Any questions on our three versions of the bar plot?</strong></p>
+<ul>
+<li>Remember, need to specify both an ‘x’ and a ‘fill’ variable PLUS a ‘position’ argument in the geom_bar</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s tweak a couple of key elements of the proportionate stacked bar plot</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-19_a107e90ebf6eff565a42cda39958cf43">
+<div class="sourceCode cell-code" id="cb19" data-code-line-numbers="3,4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> class, <span class="at">fill =</span> drv)) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-19-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Since the Y-axis is now proportions we can label the values as percentages with scale_y_continuous.</p>
+<ul>
+<li><p>scale_y_continuous lets you tweak the y-axis</p></li>
+<li><p>In this case I’ve kept all the defaults but asked it to change the labeling of each tick mark</p></li>
+</ul>
+<p><br></p>
+<p>I’ve also removed the y axis label because these are proportions and not counts</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-1" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-20_4d6277b0921a9a8d25324e9be43b7515">
+<div class="sourceCode cell-code" id="cb20" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> class, <span class="at">fill =</span> drv)) <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"tan"</span>, <span class="st">"slategray3"</span>, <span class="st">"sandybrown"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-20-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>And since we have added color to the bars using the “fill” argument, we can adjust those colors using the scale_fill_manual function</p>
+<p><br></p>
+<p><strong>Make sense?</strong></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-categorical-variables" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Categorical Variables</h2>
+<p><strong>Categorical x Numeric Variable</strong></p>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.85" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-21_7d806915ac9214e53bbf7d7e8ae0ce7f">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> cty)) <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.85" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-22_a6c28eedf141b8b7ed43968e193c0493">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> drv)) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">geom_bar</span>(<span class="at">fill =</span> <span class="st">"darkblue"</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-22-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Next visualization challenge!</p>
+<p><br></p>
+<p>We have a numeric variable, city fuel economy, and a categorical variable, car drive trains.</p>
+<ul>
+<li>Last class we calculated summary statistics of the numeric variable for each level of the categorical variable using the aggregate function</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Our first option is simply to make separate histograms for each drive train</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-categorical-variables-1" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Categorical Variables</h2>
+<p><strong>Categorical x Numeric Variable</strong></p>
+<p><br></p>
+<div class="cell" data-layout-align="center" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-23_18a14a094cc0da6b3d7d6a7670c0ec7f">
+<div class="sourceCode cell-code" id="cb23" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> cty)) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> drv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-23-1.png" width="960" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>One option is to use a facet_wrap</p>
+<ul>
+<li><p>Use a tilde and then the categorical variable</p></li>
+<li><p>This produces separate histograms for each level of the categorical variable</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Not the easiest thing to compare in this way</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<div class="cell" data-layout-align="center" data-fig.asp="1.3" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-24_f2f8653c398165178fe189f046e4857a">
+<div class="sourceCode cell-code" id="cb24" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> cty)) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> drv, <span class="at">ncol =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-24-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Use the “ncol” argument to specify you want a single column of plots</p>
+<ul>
+<li>Much easier to compare across the distributions this way</li>
+</ul>
+<p><br></p>
+<p><strong>What does this suggest about the relationship between fuel economy and car drive trains?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Facet wraps are handy, but this is a problem box plots were designed to solve!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-categorical-variables-2" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Categorical Variables</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="co"># Box Plot</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> cty, <span class="at">y =</span> drv)) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-26_adc6158a157705de6d7def1e7a5f81c1">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-26-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="1.2" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-27_e8caf97233b5e0c398715a42e654ac23">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-27-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Here is where we see the real utility of box plots.</p>
+<ul>
+<li>For comparing the distribution of numeric variables across the levels of a categorical variable.</li>
+</ul>
+<p><br></p>
+<p><strong>Remind me, what are the main components of a box plot?</strong></p>
+<ul>
+<li>(Median is the black line)</li>
+<li>(IQR is the box)</li>
+<li>(Whiskers extend 1.5x the IQR)</li>
+<li>(Outliers identified)</li>
+</ul>
+<p><br></p>
+<p><strong>Does everybody see how both of these visualizations represent the same data?</strong></p>
+<p><br></p>
+<p><strong>When would you prefer to use the boxes and when the histograms?</strong></p>
+<ul>
+<li><strong>What are the benefits of each approach?</strong></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-categorical-variables-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Categorical Variables</h2>
+<p><strong>Numeric x Numeric Variable</strong></p>
+<p><br></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-28_e20cf97a78b1a7e60f9ec70d7f0c139c">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="co"># Scatter Plot</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="fu">ggplot</span>(mpg, <span class="fu">aes</span>(<span class="at">x =</span> displ, <span class="at">y =</span> cty)) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-28-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Our final new tool: Scatter Plots</p>
+<p><strong>Any questions on how to read this plot?</strong></p>
+<p><br></p>
+<p><strong>What do we learn from this?</strong></p>
+<p><br></p>
+<p><strong>What statistic could we calculate to help us explain the relationship?</strong> - (Correlation!)</p>
+<p><br></p>
+<p>Go for it!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-categorical-variables-4" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Categorical Variables</h2>
+<p><strong>Numeric x Numeric Variable</strong></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="09_2-Bivariate_Viz_cache/revealjs/unnamed-chunk-29_12df4daa78e31142c5e16502e567b082">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="09_2-Bivariate_Viz_files/figure-revealjs/unnamed-chunk-29-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p><br></p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">cor.test</span>(mpg<span class="sc">$</span>displ, mpg<span class="sc">$</span>cty)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's product-moment correlation
 
 data:  mpg$displ and mpg$cty
 t = -20.205, df = 232, p-value &lt; 2.2e-16
@@ -780,317 +1231,466 @@ alternative hypothesis: true correlation is not equal to 0
  -0.8406782 -0.7467508
 sample estimates:
       cor 
--0.798524 
-```
+-0.798524 </code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="bivariate-analyses-7" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Bivariate Analyses</h2>
+<p><br></p>
+<ol type="1">
+<li>Descriptive Statistics by Group
+<ul>
+<li>Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations</li>
+</ul></li>
+<li>Visualizations
+<ul>
+<li><strong>Bar plots (stacked, side-by-side, proportions), box plots and scatter plots</strong></li>
+</ul></li>
+</ol>
+<aside class="notes">
+<p><strong>Any questions on the tools we learned today?</strong></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="for-next-class-be-ready-to-present-your-best-visualizations" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>For next class be ready to present your “best” visualizations</h2>
+<p><br></p>
+<ol type="1">
+<li><p>‘cut’ and ‘clarity’</p></li>
+<li><p>‘cut’ and ‘price’</p></li>
+<li><p>‘carat’ and ‘price’</p></li>
+</ol>
+<p><br></p>
+<p><strong>Source:</strong> ‘diamonds’ dataset in tidyverse</p>
+<aside class="notes">
+<p>Your job is to come up with the best version of each that you can.</p>
+<ul>
+<li>By “best” I mean completely polished!</li>
+</ul>
+<p><br></p>
+<p><strong>Any questions on the assignment?</strong></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<div class="footer footer-default">
+
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="09_2-Bivariate_Viz_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'smaller': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
 
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
 
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
 
----
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
 
-background-image: url('libs/Images/background-teal3.png')
-background-size: 100%
-background-position: center
-class: middle
+        // Display a presentation progress bar
+        progress: true,
 
-.center[.size60[**Bivariate Analyses**]]
+        // Display the page number of the current slide
+        slideNumber: false,
 
-.size40[
-1. Descriptive Statistics by Group
-    - Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
 
-2. Visualizations
-    - **Bar plots (stacked, side-by-side, proportions), box plots and scatter plots**
-]
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
 
-???
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
 
-### Any questions on the tools we learned today?
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
 
+        // Push each slide change to the browser history
+        history: true,
 
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
 
----
+        // Enable the slide overview mode
+        overview: true,
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
 
-.size50[**For next class analyze the relationship between:**]
+        // Vertical centering of slides
+        center: false,
 
-.size50[
-1. 'cut' and 'clarity' (x3: side-by-side bars, stacked bars, AND proportion bars)
+        // Enables touch navigation on devices with touch input
+        touch: true,
 
-2. 'cut' and 'price' (box plots)
+        // Loop the presentation
+        loop: false,
 
-3. 'carat' and 'price' (scatter plot)
+        // Change the presentation direction to be RTL
+        rtl: false,
 
-.right[**Source:** 'diamonds' dataset in tidyverse]
-]
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
 
-???
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
 
+        // Turns fragments on and off globally
+        fragments: true,
 
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
 
----
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
 
-.size50[**For Today:**]
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
 
-.size50[
-1. 'cut' and 'clarity' (x3: side-by-side bars, stacked bars, AND proportion bars)
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
 
-2. 'cut' and 'price' (box plots)
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
 
-3. 'carat' and 'price' (scatter plot)
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
 
-.right[**Source:** 'diamonds' dataset in tidyverse]
-]
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
 
-???
-
-### How did this go?
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size35[**Diamonds: 'cut' and 'clarity'**]]]
-
-.pull-left[
-.code60[
-
-```r
-# Side-by-side bar plots
-ggplot(diamonds, aes(x = cut, fill = clarity)) +
-  geom_bar(position = position_dodge(preserve = "single")) +
-  labs(x = "Quality of the Cut", y = "", fill = "Clarity") +
-  theme_bw()
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-27-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-.pull-right[
-.code60[
-
-```r
-# Proportional stacked bar plots
-ggplot(diamonds, aes(x = cut, fill = clarity)) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(x = "Quality of the Cut", y = "", fill = "Clarity") +
-  theme_bw()
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-28-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-]]
-
-???
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size30[**Diamonds: 'cut' and 'price'**]]]
-
-
-```r
-ggplot(diamonds, aes(x = price, y = cut)) +
-  geom_boxplot(fill = "seagreen2") +
-  theme_bw() +
-  labs(x = "Prices", y = "Quality of the Cut") +
-  scale_x_continuous(labels = scales::dollar_format())
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-29-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-
-
-
----
-
-class: middle
-
-.center[.content-box-blue[.size30[**Diamonds: 'carat' and 'price'**]]]
-
-
-```r
-ggplot(diamonds, aes(x = carat, y = price)) +
-  geom_point(alpha = .1) +
-  theme_bw() +
-  labs(x = "Size of the Diamond (carats)", y = "Prices") +
-  scale_y_continuous(labels = scales::dollar_format())
-```
-
-&lt;img src="09_2-Bivariate_Viz_files/figure-html/unnamed-chunk-30-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </textarea>
-<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
-<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-<script>var slideshow = remark.create({
-"highlightStyle": "github",
-"highlightLines": true,
-"countIncrementalSlides": false,
-"ratio": "16:9"
-});
-if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
-  window.dispatchEvent(new Event('resize'));
-});
-(function(d) {
-  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
-  if (!r) return;
-  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
-  d.head.appendChild(s);
-})(document);
-
-(function(d) {
-  var el = d.getElementsByClassName("remark-slides-area");
-  if (!el) return;
-  var slide, slides = slideshow.getSlides(), els = el[0].children;
-  for (var i = 1; i < slides.length; i++) {
-    slide = slides[i];
-    if (slide.properties.continued === "true" || slide.properties.count === "false") {
-      els[i - 1].className += ' has-continuation';
-    }
-  }
-  var s = d.createElement("style");
-  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
-  d.head.appendChild(s);
-})(document);
-// delete the temporary CSS (for displaying all slides initially) when the user
-// starts to view slides
-(function() {
-  var deleted = false;
-  slideshow.on('beforeShowSlide', function(slide) {
-    if (deleted) return;
-    var sheets = document.styleSheets, node;
-    for (var i = 0; i < sheets.length; i++) {
-      node = sheets[i].ownerNode;
-      if (node.dataset["target"] !== "print-only") continue;
-      node.parentNode.removeChild(node);
-    }
-    deleted = true;
-  });
-})();
-// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
-// screen reader (see PR #262)
-(function(d) {
-  let res = {};
-  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
-    const t = tr.querySelector('td:nth-child(2)').innerText;
-    tr.querySelectorAll('td:first-child .key').forEach(key => {
-      const k = key.innerText;
-      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
-    });
-  });
-  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
-})(document);
-(function() {
-  "use strict"
-  // Replace <script> tags in slides area to make them executable
-  var scripts = document.querySelectorAll(
-    '.remark-slides-area .remark-slide-container script'
-  );
-  if (!scripts.length) return;
-  for (var i = 0; i < scripts.length; i++) {
-    var s = document.createElement('script');
-    var code = document.createTextNode(scripts[i].textContent);
-    s.appendChild(code);
-    var scriptAttrs = scripts[i].attributes;
-    for (var j = 0; j < scriptAttrs.length; j++) {
-      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
-    }
-    scripts[i].parentElement.replaceChild(s, scripts[i]);
-  }
-})();
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-// adds .remark-code-has-line-highlighted class to <pre> parent elements
-// of code chunks containing highlighted lines with class .remark-code-line-highlighted
-(function(d) {
-  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
-  const preParents = [];
-  const findPreParent = function(line, p = 0) {
-    if (p > 1) return null; // traverse up no further than grandparent
-    const el = line.parentElement;
-    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
-  };
-
-  for (let line of hlines) {
-    let pre = findPreParent(line);
-    if (pre && !preParents.includes(pre)) preParents.push(pre);
-  }
-  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
-})(document);</script>
-
-<script>
-slideshow._releaseMath = function(el) {
-  var i, text, code, codes = el.getElementsByTagName('code');
-  for (i = 0; i < codes.length;) {
-    code = codes[i];
-    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
-      text = code.textContent;
-      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
-          /^\$\$(.|\s)+\$\$$/.test(text) ||
-          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
-        code.outerHTML = code.innerHTML;  // remove <code></code>
-        continue;
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
       }
-    }
-    i++;
-  }
-};
-slideshow._releaseMath(document);
-</script>
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-(function () {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
-  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
-    script.src  = script.src.replace(/^https?:/, '');
-  document.getElementsByTagName('head')[0].appendChild(script);
-})();
-</script>
-  </body>
-</html>
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+      function tippyHover(el, contentFn) {
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        };
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          return note.innerHTML;
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
