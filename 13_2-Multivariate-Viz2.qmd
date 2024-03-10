@@ -1,1124 +1,46 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
 library(readxl)
-#library(stargazer)
 library(kableExtra)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(modelsummary)
 ```
-
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
 
 <br>
 
-.size40[
+<br>
+
 **Multivariate Analyses**
 
-1. Descriptive statistics by groups
-
-2. Using facets to extend any visualization
-
-3. Mapping 3rd variables with colors or shapes
-]
+- Using animations
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-???
-
-## Prep for Class
-1. ???
+::: notes
+Prep for Class
 
 
+NEED TO ADD PRACTICE after each animation technique
+
+- They tweak the code to answer a new question
+
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+## Multivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.pull-left[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
-knitr::include_graphics("libs/Images/13_1-classroom.jpg")
-```
-]
-
-.pull-right[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
-knitr::include_graphics("libs/Images/13_1-student_success2.png")
-```
-]
-
-```{r, fig.retina = 3, fig.align = 'center', fig.width = 7, fig.height=1, out.width='80%'}
-## Manual DAG
-d1 <- tibble(
-  x = c(-3, 3),
-  y = c(1, 1),
-  labels = c("Class\n Size", "Student\n Success")
-)
-
-ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = -2.15, xend = 2, y = 1, yend = 1, arrow = arrow())
-```
-
-???
-
-Last week we started exploring the concepts and approaches we can use to make causal arguments
-
-- e.g. arguments that changes in X cause a change in Y
-
-<br>
-
-We discussed:
-
-- the Data Generating Process (DGP), 
-
-- identification strategies, 
-
-- the use of Directed Acyclic Graphs (DAGs), and 
-
-- the need to adjust our analyses for confounders.
-
-<br>
-
-### Any questions on those big ideas?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size65[**DAGs for our Project**]]]
-
-.size55[
-- Education Spending ---> GII
-
-- Military Spending ---> GII
-
-- Healthcare Spending ---> GII
-]
-
-???
-
-In class on Friday we worked to:
-
-1. Draw DAGs for each of our three hypotheses, and
-
-2. Gather data that operationalizes the concepts we identified as important confounders in these relatonships.
-
-<br>
-
-### Any questions on those DAGs or the variables we selected?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-<br>
-
-.size55[
-1. Descriptive statistics by groups
-  
-2. Using facets to extend any visualization
-    
-3. Mapping 3rd variables with colors or shapes
-]
-
-???
-
-Today I will introduce you to a series of statistical tools that will allow you to perform simple multivariate analyses.
-
-- e.g. analyses on more than two variables simultaneously
-
-<br>
-
-These approaches can be used for descriptive analyses
-
-- e.g. to summarize data across multiple variables
-
-<br>
-
-These approaches can also be used for causal analyses
-
-- e.g. to quantify the relationship between a predictor and the outcome while adjusting the result for confounders
-
-<br>
-
-I'll introduce these concepts using built-in data and then we'll apply them in class on Friday.
-
-- **SLIDE**: Let's dive in with the first one, descriptive statistics by groups
-
-
-
-
-
-
----
-
-class: middle, center, slideblue
-
-.content-box-blue[.size60[**1. Descriptive Statistics by Group**]]
-
-<br>
-
-<br>
-
-<br>
-
-.code120[
-```{r, echo = TRUE, eval = TRUE}
-# Univariate Statistics: Numerical Variable
-summary(diamonds$price)
-```
-]
-
-<br>
-
-<br>
-
-<br>
-
-.size30[.right[*Note: 'diamonds' is loaded as part of the tidyverse package*]]
-
-???
-
-As we've done many times this semester, summary is the function we use to describe a single numeric variable.
-
-- Summary is very easy to use as it just requires you to specify the data source and the numeric variable using the '$' format.
-
-<br>
-
-Imagine our hypothetical bag of diamonds is back.
-
-- Someone reaches into the bag and pulls out a diamond at random.
-
-<br>
-
-### In the absence of any other information about that diamond, what is our best guess at its price?
-
-- A specific point prediction: Mean vs median?
-
-- A range of possible values: IQR? the Range?
-
-
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**1. Descriptive Statistics by Group**]]]
-
-.pull-left[
-.code110[
-```{r, echo = TRUE, eval = TRUE}
-# Bivariate Statistics:
-# Numerical x Categorical 
-aggregate(data = diamonds, 
-          price ~ cut, 
-          FUN = mean)
-```
-]]
-
-.pull-right[
-.code110[
-```{r, echo = TRUE, eval = TRUE}
-# Bivariate Statistics:
-# Numerical x Categorical 
-aggregate(data = diamonds, 
-          price ~ color, 
-          FUN = mean)
-```
-]]
-
-???
-
-As we also covered some weeks back, we can use the aggregate function to extend our descriptive statistics into the world of bivariate analyses.
-
-- e.g. relationships between two variables.
-
-- Key here is separately specifying the source of the data, the relationship you are interested in using tilde and the function you wan't calculated.
-
-<br>
-
-Back to our hypothetical bag of diamonds!
-
-- Imagine someone reaches into the bag and randomly selects a single diamond.
-
-### If they want your best estimate of the price of that diamond would you rather know its cut or color? Why?
-
-<br>
-
-Funnily enough, this is an excellent illustration of the dangers of statistical analysis when you can't tell the difference between correlation and causation.
-
-- As I understand it, colorless diamonds (e.g. 'D', 'E' and 'F') are considered the most valuable
-
-- Our group means show the opposite!
-
-<br>
-
-
-Either my understanding of diamond value is incorrect (always possible!) OR there is a confounder in this relationship!
-
-- **SLIDE**: The good news is that the aggregate function can be used on three variables
-
-
-
-
----
-
-class: middle, slideblue
-
-```{r, echo = TRUE, eval = FALSE}
-# 1. Descriptive Statistics by Group
-# Numerical x Categorical x Categorical
-aggregate(data = diamonds, price ~ color + cut, FUN = mean)
-```
-
-.pull-left[
-```{r, echo = FALSE, eval = TRUE}
-x1 <- aggregate(data = diamonds, price ~ color + cut, FUN = mean)
-
-x1[1:18,]
-```
-]
-
-.pull-right[
-```{r, echo = FALSE, eval = TRUE}
-x1 <- aggregate(data = diamonds, price ~ color + cut, FUN = mean)
-
-x1[19:35,]
-```
-]
-
-???
-
-Adding a third variable that is categorical to the aggregate function is very simple.
-
-- Modify the formula argument to add a second predictor variable just like adding two numbers together with the plus sign.
-
-- Here I'm trying to explain price using both color and cut
-
-- You can add as many CATEGORICAL variables to the right side of the formula as you want.
-
-<br>
-
-### Does the code make sense?
-
-<br>
-
-### Has this multivariate analysis given us average prices that show colorless diamonds are more valuable?
-
-- (Not yet!)
-
-- It doesn't look like cut is the confounder here.
-
-<br>
-
-As we've seen from our other work with this dataset, diamond prices are STRONGLY correlated with their size
-
-- **SLIDE**: The good news is that we can add numeric third variables to aggregate
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**1. Descriptive Statistics by Group**]]]
-
-.pull-left[
-.code110[
-```{r, echo = TRUE, eval = TRUE}
-# Multivariate Statistics:
-# Num x Cat x Num
-aggregate(data = diamonds, 
-          price ~ color, 
-          FUN = mean, 
-          subset = carat < 1) #<<
-```
-]]
-
-.pull-right[
-.code110[
-```{r, echo = TRUE, eval = TRUE}
-# Multivariate Statistics:
-# Num x Cat x Num
-aggregate(data = diamonds, 
-          price ~ color, 
-          FUN = mean, 
-          subset = carat >= 2) #<<
-```
-]]
-
-???
-
-You can also use the subset argument in aggregate to split your sample by a numeric variable.
-
-- The key here is to use evaluation functions like less than, greater than, less than or equal to and greater than or equal to.
-
-<br>
-
-Calculating group means by color while controlling for the size of the diamonds now identifes the price-color relationship we expect to see!
-
-- On the left we're examining the average prices by diamond color while focusing only on the smallest diamonds in the dataset (< 1 carat)
-
-- On the right we're focused only on the largest diamonds (>= 2 carats)
-
-<br>
-
-### Questions on using subset in the aggregate function to adjust your results for a numeric variable?
-
-<br>
-
-This is a three variable multivariate analysis.
-
-- Let's now try combining these last two techniques to make a four variable analysis
-
-<br>
-
-Everybody calculate the average diamond prices by cut and color BUT control for diamond sizes above 2 carats only.
-
-
-
-
----
-
-class: middle, slideblue
-
-```{r, echo = TRUE, eval = FALSE}
-# 1. Descriptive Statistics by Group
-# Numerical x Categorical x Categorical
-aggregate(data = diamonds, price ~ color + cut, FUN = mean, subset = carat > 2)
-```
-
-.pull-left[
-```{r, echo = FALSE, eval = TRUE}
-x1 <- aggregate(data = diamonds, price ~ color + cut, FUN = mean, subset = carat > 2)
-
-x1[1:18,]
-```
-]
-
-.pull-right[
-```{r, echo = FALSE, eval = TRUE}
-x1[19:35,]
-```
-]
-
-???
-
-### What do we learn from this four variable analysis of diamond prices?
-
-- (It appears that color is a UCH bigger influence on price than cut!)
-
-<br>
-
-I hope everyone can see now how powerful the aggregate function can be.
-
-- Add multiple categorical variables to the formula, OR
-
-- Use subset to add numeric variables.
-
-<br>
-
-### Any questions on these two methods for performing a multivariate analysis?
-
-<br>
-
-**SLIDE**: Let's practice!
-
-
-
-
----
-
-class: middle, center, slideblue
-
-.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
-
-.size30[
-```{r}
-mpg |>
-  slice_head(n = 6) |>
-  kbl(digits = 2, align = 'c') |>
-  column_spec(column = 8, background = "gold")
-```
-]
-
-<br>
-
-.size40[**Practice**: Which auto manufacturers improved their average city fuel economy when moving from 1999 to 2008 models?]
-
-???
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size45[**1. Descriptive Statistics by Group**]]]
-
-.pull-left[
-.code100[
-```{r, echo = TRUE, eval = TRUE}
-aggregate(data = mpg, 
-          cty ~ manufacturer, 
-          FUN = mean, 
-          subset = year == 1999)
-```
-]]
-
-.pull-right[
-.code100[
-```{r, echo = TRUE, eval = TRUE}
-aggregate(data = mpg, 
-          cty ~ manufacturer, 
-          FUN = mean, 
-          subset = year == 2008)
-```
-]]
-
-???
-
-Because there are only two levels in year you could also just have added it like a categorical variable
-
-- I did it this way to make comparing the two lists easier side-by-side.
-
-<br>
-
-### So, what do we learn from this?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-<br>
-
-.size55[
-1. .greytext[Descriptive statistics by groups]
-  
-2. **Using facets to extend any visualization**
-    
-3. .greytext[Mapping 3rd variables with colors or shapes]
-]
-
-???
-
-Let's shift to our second multivariate analysis technique.
-
-- Using facets to extend any visualization
-
-<br>
-
-In short, facets let you take any visualization and break it into separate plots across levels of another variable.
-
-- Think of this like the visual version of what we just did using aggregate
-
-
-
-
----
-
-class: middle, slideblue
-
-.code125[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='70%', fig.width=7, cache=TRUE}
-# 1) Start with ANY univariate visualization
-ggplot(data = mpg, aes(x = cty)) +
-  geom_histogram(bins = 10, color = "white") 
-```
-]
-
-???
-
-1) Start with ANY univariate visualization
-
-- Here we see a histogram of city fuel economy averages in the mpg dataset
-
-
-
----
-
-class: middle, slideblue
-
-.code125[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.5, out.width='80%', fig.width=7, cache=TRUE}
-# 2) Use facet_wrap to subset the data
-ggplot(data = mpg, aes(x = cty)) +
-  geom_histogram(bins = 10, color = "white") +
-  facet_wrap(~ drv) #<<
-```
-]
-
-???
-
-2) Use facet_wrap to subset the data
-
-- In other words, you tell R to remake the histogram of city fuel economy three times, once for each level of drive train in the dataset.
-
-<br>
-
-facet_wrap notes
-
-1. This works for any CATEGORICAL variable also in the dataset.
-
-2. By default it constrains all of the plots to the same x and y ranges
-
-<br>
-
-### What do we learn from these three histograms?
-
-<br>
-
-### What would happen if you tried to facet wrap by a numeric variable?
-
-- (TONS of plots! One per number in that variable!)
-
-
-
-
----
-
-class: middle, slideblue
-
-.code125[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.3, out.width='100%', fig.width=10, cache=TRUE}
-# 3) You can specify the number of columns with ncol
-ggplot(data = mpg, aes(x = cty)) +
-  geom_histogram(bins = 10, color = "white") +
-  facet_wrap(~ class, ncol = 8) #<<
-```
-]
-
-???
-
-When the categorical variable has many levels you will get one plot per level.
-
-- This can make the ncol argument useful for controlling the output.
-
-- Here I've set it to 8 so all plots are side-by-side
-
-<br>
-
-### Everybody try a few different numbers in the ncol argument and see how it changes.
-
-### - What would you use if you wanted to fit this on a page in your report?
-
-<br>
-
-Ideally, if you can fit it, a single column is best so you can compare each distribution against the others on the same x-axis
-
-- BUT tough to fit on a single page with 8 boxes!
-
-<br>
-
-**SLIDE**: The facet approach can be applied to basically any type of baseline plot.
-
-
-
----
-
-class: middle, slideblue
-
-.code125[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='70%', fig.width=7, cache=TRUE}
-# Let's facet wrap a scatter plot!
-ggplot(data = mpg, aes(x = displ, y = cty)) +
-    geom_point()
-```
-]
-
-???
-
-### Everybody add a facet wrap of this plot by car drive train (drv)
-
-
-
----
-
-class: middle, slideblue
-
-.code125[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='80%', fig.width=7, cache=FALSE}
-# Facet by third categorical variable
-ggplot(data = mpg, aes(x = displ, y = cty)) +
-  geom_point() +
-  facet_wrap(~ drv) #<<
-```
-]
-
-???
-
-### What do we learn from these?
-
-<br>
-
-### Everybody now add a smoothing line to the scatter plots so we can compare the slopes
-
-
-
-
----
-
-class: middle, slideblue
-
-.code125[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='80%', fig.width=7, cache=FALSE}
-# Facet by third categorical variable
-ggplot(data = mpg, aes(x = displ, y = cty)) +
-  geom_point() +
-  facet_wrap(~ drv) +
-  geom_smooth(method = "lm") #<<
-```
-]
-
-???
-
-### What do we learn from these?
-
-<br>
-
-
-
-### Any questions on facet wrapping?
-
-
-
-
----
-
-class: middle, center, slideblue
-
-.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
-
-.size30[
-```{r}
-mpg |>
-  slice_head(n = 6) |>
-  kbl(digits = 2, align = 'c') |>
-  column_spec(column = c(1,3,8), background = "gold")
-```
-]
-
-<br>
-
-.size40[**Practice**: Visualize the relationship between city fuel economy and engine size separately for each manufacturer.]
-
-???
-
-
-
----
-
-class: middle, slideblue
-
-```{r, eval=TRUE, echo=TRUE, fig.asp=.65, fig.align='center', out.width='70%', fig.width=9, fig.retina=3}
-ggplot(data = mpg, aes(x = displ, y = cty)) +
-  geom_point() +
-  facet_wrap(~ manufacturer, ncol = 5) +
-  geom_smooth(method = "lm")
-```
-
-???
-
-### Any takeaways from these?
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-<br>
-
-.size50[
-1. .greytext[Descriptive statistics by groups]
-  
-2. .greytext[Using facets to extend any visualization]
-    
-3. **Mapping 3rd variables with colors or shapes**
-]
-
-???
-
-Last multivariate approach for today!
-
-- Mapping 3rd variables with colors or shapes
-
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size40[**Mapping 3rd variables with colors or shapes**]]]
-
-.code125[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='60%', fig.width=7, cache=FALSE}
-## Baseline
-ggplot(data = mpg, aes(x = displ, y = cty)) +
-    geom_point(size = 2)
-```
-]
-
-???
-
-Back to our standby baseline plot.
-
-- My advice is to increase point size when using shapes and colors to help with differentiating the point levels
-
-- This only really works if you don't have too many points.
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size40[**Mapping 3rd variables with colors or shapes**]]]
-
-.code125[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.65, out.width='60%', fig.width=7, cache=FALSE}
-ggplot(data = mpg, aes(x = displ, y = cty, color = drv)) + #<<
-    geom_point(size = 2) 
-```
-]
-
-???
-
-Rather than facet wrap, we can tell R to assign colors to the levels of a categorical variable.
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size40[**Mapping 3rd variables with colors or shapes**]]]
-
-.code125[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.65, out.width='60%', fig.width=7, cache=FALSE}
-ggplot(data = mpg, aes(x = displ, y = cty, shape = drv)) + #<<
-    geom_point(size = 2) 
-```
-]
-
-???
-
-Printing in black and white?
-
-- Use shapes instead of colors!
-
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size40[**Mapping 3rd variables with colors or shapes**]]]
-
-.code120[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.65, out.width='60%', fig.width=7, cache=FALSE}
-ggplot(data = mpg, aes(x = displ, y = cty, shape = drv, color = drv)) + #<<
-    geom_point(size = 2) 
-```
-]
-
-???
-
-Best approach? Do both!
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size40[**Mapping 3rd variables with colors or shapes**]]]
-
-.code120[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='80%', fig.width=8, cache=TRUE}
-ggplot(data = mpg, aes(x = displ, y = cty, shape = drv, color = drv)) +
-  geom_point(size = 2) +
-  facet_wrap(~ drv) #<<
-```
-]
-
-???
-
-If your dots overlap too much then also add a facet wrap!
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size40[**Mapping 3rd variables with colors or shapes**]]]
-
-.code120[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='80%', fig.width=8, cache=TRUE}
-ggplot(data = mpg, aes(x = displ, y = cty, shape = drv, color = drv)) +
-  geom_point(size = 2) +
-  facet_wrap(~ drv) +
-  guides(color = FALSE, shape = FALSE) #<<
-```
-]
-
-???
-
-If doing both then omit the legend as it is redundant (each facet is labeled).
-
-- Because the plot adds a color and a shape you have to remove both of their legends hence the two arguments here
-
-
-
-
----
-
-class: middle, slideblue
-
-.code120[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='80%', fig.width=8, cache=TRUE}
-ggplot(data = mpg, aes(x = displ, y = cty, shape = drv, color = drv)) +
-  geom_point(size = 2) +
-  facet_wrap(~ drv) +
-  guides(color = FALSE, shape = FALSE) +
-  scale_color_manual(values = c("orange", "red", "blue")) #<<
-```
-]
-
-???
-
-You can also pick the colors manually
-
-
-
----
-
-class: middle, slideblue
-
-.code120[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.45, out.width='80%', fig.width=8, cache=TRUE}
-ggplot(data = mpg, aes(x = displ, y = cty, shape = drv, color = drv)) +
-  geom_point(size = 2) +
-  facet_wrap(~ drv) +
-  guides(color = FALSE, shape = FALSE) +
-  scale_color_manual(values = c("orange", "red", "blue"))  +
-  geom_smooth(method = "lm", se = FALSE) #<<
-```
-]
-
-???
-
-Finally, let's put our OLS lines back on!
-
-<br>
-
-### Any questions on this approach?
-
-
-
-
----
-
-class: middle, center, slideblue
-
-.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
-
-.size30[
-```{r}
-mpg |>
-  slice_head(n = 6) |>
-  kbl(digits = 2, align = 'c') |>
-  column_spec(column = c(1,3,5,8), background = "gold")
-```
-]
-
-<br>
-
-.size40[**Practice**: How do various manufacturers design their fleets to meet the EPA requirements for corporate average fuel economy (CAFE)?]
-
-???
-
-EPA requires manufacturers to meet a certain level of fuel economy across their entire fleet.
-
-- So, some models can have big, less efficient engines but only if they offset those sales with sales of cleaner cars.
-
-<br>
-
-Let's try developing a visualization to let us see this dynamic in practice!
-
-### How could we visualize these four variables?
-
-- (**SLIDE**)
-
-
----
-
-class: middle, slideblue
-
-.center[
-.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
-
-.size30[
-```{r}
-mpg |>
-  slice_head(n = 3) |>
-  kbl(digits = 2, align = 'c') |>
-  column_spec(column = c(1,3,5,8), background = "gold")
-```
-]
-]
-
-<br>
-
-.size35[
-Make a scatter plot of city fuel economy x engine size
-
-- Add colors and shapes for drive train
-
-- Add facet wrapping for the manufacturers
-]
-
-???
-
-
-
----
-
-class: middle, slideblue
-
-```{r, eval=TRUE, echo=TRUE, fig.asp=.65, fig.align='center', out.width='70%', fig.width=9, fig.retina=3}
-ggplot(data = mpg, aes(x = displ, y = cty, color = drv, shape = drv)) +
-  geom_point() +
-  facet_wrap(~ manufacturer, ncol = 5)
-```
-
-???
-
-### Lessons from this?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-<br>
-
-.size50[
-1. Descriptive statistics by groups
-  
-2. Using facets to extend any visualization
-    
-3. Mapping 3rd variables with colors or shapes
-]
-
-???
-
-### Any questions on our multivariate tools from today?
-
-<br>
-
-**SLIDE**: Only if time remains...
-
-NOT COMPLETED, MAYBE ADD FOR NEXT YEAR
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-<br>
-
-.size40[
 1. Descriptive statistics by groups
   
 2. Using facets to extend any visualization
@@ -1126,26 +48,13 @@ class: middle
 3. Mapping 3rd variables with colors or shapes
 
 4. **Bonus: Animate the 3rd/4th variable!**
-]
 
 
 
----
-
-Repeat mpg plot but animate moving between each level of drv
-
-
-
-
----
-
-class: middle
-
-.size40[.center[**Install the needed packages and load gganimate**]]
+## Install the needed packages and load gganimate {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.code150[
 ```{r, echo=TRUE, eval=FALSE}
 install.packages("gifski")
 
@@ -1155,7 +64,6 @@ install.packages("gganimate")
 
 library(gganimate)
 ```
-]
 
 ```{r}
 ## Load it for you
@@ -1164,221 +72,179 @@ library(gganimate)
 
 
 
----
+## Transitions Across Subsets {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-.center[**Transitions between different subsets of the data**]
-
-.code120[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='60%', fig.width=5, cache=TRUE, eval=FALSE}
+```{r, echo=TRUE, fig.align='center', fig.asp=0.7, fig.width=6, cache=TRUE}
 ggplot(data = mpg, aes(x = displ, y = cty)) +
-  geom_point() +
-  transition_states(cyl) + #<<
-  labs(title = "Number of Cylinders: {closest_state}") #<<
+  geom_point(size = 1.5, color = "red") +
+  transition_states(cyl) + 
+  shadow_mark(past = T, future=F, alpha=0.25, color = "darkgrey") +
+  labs(title = "Number of Cylinders: {closest_state}") 
 ```
-]
 
-???
-
+::: notes
 transition_states is for moving across levels of a categorical variable
 
+- The shadow_mark function is cool in that it lets you keep the prior points visible for comparison
+:::
 
 
 
 
----
+## Transitions Across Time {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-.center[**Transitions across time use a different function**]
-
-.code120[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='60%', fig.width=5, cache=TRUE, eval=FALSE}
+```{r, echo=TRUE, fig.align='center', fig.asp=0.7, fig.width=7, cache=TRUE}
 ggplot(data = mpg, aes(x = class, y = cty)) +
   geom_boxplot() +
-  transition_time(year) + #<<
-  labs(title = 'Year: {frame_time}') #<<
+  transition_time(year) + 
+  labs(title = 'Year: {frame_time}') 
 ```
-]
 
 
----
 
-.center[**Transitions can also leave the prior data in place**]
+## Animating a Line Plot {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-.code120[
-```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.618, out.width='60%', fig.width=5, cache=TRUE, eval=FALSE}
+```{r, echo=TRUE, fig.align='center', fig.asp=0.7, fig.width=7, cache=TRUE}
 ggplot(data = economics, aes(x = date, y = pop)) +
-  geom_line(color = "darkblue", size = 1.4) +
-  transition_reveal(date) + #<<
-  coord_cartesian(ylim = c(150000, 350000)) +
+  geom_line(color = "darkblue", linewidth = 1.4) +
+  transition_reveal(date) + 
   labs(title = "US Population (thousands)")
 ```
-]
 
 
 
----
+## Last one... {background-image="libs/Images/background-slate_v2.png" .center}
 
-class: middle
-
-.size50[.center[**Last one, so let's make something awesome**]]
-
-.code135[
 ```{r, echo=TRUE, eval=FALSE}
 ## New package needed for the data (install before loading)
 install.packages("gapminder")
 
 library(gapminder)
 ```
-]
+
+<br>
 
 ```{r}
 library(gapminder)
 
 gapminder |>
-  slice(1:6) |>
-  knitr::kable(format = "html")
+  slice_sample(n = 8) |>
+  knitr::kable(format = "html") |>
+  kableExtra::kable_styling(font_size = 22)
 ```
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-class: middle
-
-.code115[
-```{r, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='65%', fig.width=6, cache=TRUE, echo=TRUE, eval=FALSE}
+```{r, fig.align='center', fig.asp=0.7, fig.width=9, cache=TRUE, echo=TRUE}
 gapminder |>
   ggplot(aes(x = gdpPercap, y = lifeExp)) +
-  geom_point(alpha = 0.7, show.legend = FALSE)
+  geom_point(alpha = 0.7)
 ```
-]
+
+::: notes
+Nice and easy
+
+- Just plot countries by their wealth and life expectancy
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-class: middle
-
-.code115[
-```{r, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='65%', fig.width=6, cache=TRUE, echo=TRUE, eval=FALSE}
+```{r, fig.align='center', fig.asp=0.7, fig.width=9, cache=TRUE, echo=TRUE}
 gapminder |>
-  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) + #<<
+  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) + 
   geom_point(alpha = 0.7, show.legend = FALSE)
 ```
-]
+
+::: notes
+Resize the points to approximate the size of the country's population and color by country
+
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-class: middle
-
-.code115[
-```{r, fig.retina=3, fig.align='center', fig.asp=0.7, out.width='65%', fig.width=6, cache=TRUE, echo=TRUE, eval=FALSE}
+```{r, fig.align='center', fig.asp=0.7, fig.width=9, `code-line-numbers`="4", cache=TRUE, echo=TRUE}
 gapminder |>
   ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
   geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() #<<
+  scale_x_log10(labels = scales::label_comma())
 ```
-]
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-class: middle
-
-.code115[
-```{r, fig.retina=3, fig.align='center', fig.asp=0.45, out.width='85%', fig.width=8, cache=TRUE, echo=TRUE, eval=FALSE}
+```{r, `code-line-numbers`="2,6", fig.align='center', fig.asp=0.5, fig.width=11, cache=TRUE, echo=TRUE}
 gapminder |>
-  filter(continent != "Oceania") |> #<<
+  filter(continent != "Oceania") |> 
   ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
   geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() +
-  facet_wrap(~ continent, ncol = 4) #<<
+  scale_x_log10(labels = scales::label_comma()) +
+  facet_wrap(~ continent, ncol = 4) 
 ```
-]
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-class: middle
-
-.code115[
-```{r, fig.retina=3, fig.align='center', fig.asp=0.45, out.width='85%', fig.width=8, cache=TRUE, echo=TRUE, eval=FALSE}
+```{r, `code-line-numbers`="7", fig.align='center', fig.asp=0.5, fig.width=11, cache=TRUE, echo=TRUE}
 gapminder |>
   filter(continent != "Oceania") |>
   ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
   geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() +
+  scale_x_log10(labels = scales::label_comma()) +
   facet_wrap(~ continent, ncol = 4) +
-  scale_colour_manual(values = country_colors) #<<
+  scale_colour_manual(values = country_colors) 
 ```
-]
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-class: middle
-
-.code115[
-```{r, fig.retina=3, fig.align='center', fig.asp=0.45, out.width='80%', fig.width=8, cache=TRUE, echo=TRUE, eval=FALSE}
+```{r, `code-line-numbers`="8", fig.align='center', fig.asp=0.5, fig.width=11, cache=TRUE, echo=TRUE}
 gapminder |>
   filter(continent != "Oceania") |>
   ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
   geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() +
+  scale_x_log10(labels = scales::label_comma()) +
   facet_wrap(~ continent, ncol = 4) +
   scale_colour_manual(values = country_colors) +
-  scale_size(range = c(3, 13)) #<<
+  scale_size(range = c(3, 13)) 
 ```
-]
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-class: middle
-
-.code115[
-```{r, fig.retina=3, fig.align='center', fig.asp=0.45, out.width='80%', fig.width=8, cache=TRUE, echo=TRUE, eval=FALSE}
+```{r, `code-line-numbers`="9,10", fig.align='center', fig.asp=0.5, fig.width=11, cache=TRUE, echo=TRUE}
 gapminder |>
   filter(continent != "Oceania") |>
   ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
   geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() +
+  scale_x_log10(labels = scales::label_comma()) +
   facet_wrap(~ continent, ncol = 4) +
   scale_colour_manual(values = country_colors) +
   scale_size(range = c(3, 13)) +
-  transition_time(year) + #<<
-  labs(title = 'Year: {frame_time}') #<<
-```
-]
-
-
-
----
-
-class: middle
-
-```{r, fig.retina=3, fig.align='center', fig.asp=0.4, out.width='100%', fig.width=8, cache=TRUE, echo=FALSE, eval=FALSE}
-gapminder |>
-  filter(continent != "Oceania") |>
-  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
-  geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() +
-  facet_wrap(~ continent, ncol = 4) +
-  scale_colour_manual(values = country_colors) +
-  scale_size(range = c(3, 13)) +
-  transition_time(year) + #<<
+  transition_time(year) + 
   labs(title = 'Year: {frame_time}', x = "GDP per capita (log 10)", y = "Life Expectancy") 
 ```
 
 
 
+## For Next Class {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+1. ...
+
+::: notes
+
+:::
 
 
 
@@ -1390,27 +256,4 @@ gapminder |>
 
 
 
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size55[**For Friday**]
-
-.size40[
-1. *Linear Regression in R*, "Multiple OLS" section only
-
-2. Wheelan ch 12 "Common Regression Mistakes"
-]
-
-???
-
-Friday I want to introduce you to multiple regression (e.g. OLS regression with more than one predictor variable)
 

@@ -1,103 +1,52 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
 library(readxl)
-#library(stargazer)
 library(kableExtra)
 library(modelsummary)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
+<br>
 
 <br>
 
-.center[.size65[
-Apply multivariate analyses to our research project
-]]
+**Apply multivariate analyses to our research project**
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+<br>
 
-???
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-## Prep for Class
-1. Multiple regressions at bottom
+::: notes
+Prep for Class
+
+1. ???
 
 <br>
 
 Let's work today to add our confounders to our project analyses.
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+What do we learn from our bivariate analysis of the first hypothesis?
 
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Hypothesis 1**]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.618, out.width='70%', fig.width=7}
-d <- read_excel("../../Course_History/2023-Spring/Project-SP23/Project_Merged_Data_with_Confounders-2019.xlsx", na = "NA")
-
-# GII x education
-d |>
-  select(gii, education) |>
-  ggplot(aes(x = education, y = gii)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  theme_bw() +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "Education Spending (% GDP)", y = "Gender Inequality Index")
-```
-
-???
-
-### What do we learn from our bivariate analysis of the first hypothesis?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+Research project DAG with a confounder
 
 ```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.5, fig.width=10}
 ## Manual DAG
@@ -117,53 +66,26 @@ ggplot(data = d1, aes(x = x, y = y)) +
   annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.2, arrow = arrow())
 ```
 
-.size35[
 - Scatter plot: GII x Education Spending
 
 - `fh_status`: Add color, shape, OLS line and facets
-]
 
-???
+::: notes
 
 Let's examine our first hypothesis using our tools from Monday.
 
 - Remake the scatter plot but adjust it for Freedom House classifications
 
 - Does our result hold?
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+Let's build tests of these confounded relationships
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Adjusting for a Confounder: FH Status**]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.45, out.width='100%', fig.width=12}
-d <- read_excel("../../Course_History/2023-Spring/Project-SP23/Project_Merged_Data_with_Confounders-2019.xlsx", na = "NA")
-
-# GII x education
-d |>
-  select(gii, education, fh_status) |>
-  na.omit() |>
-  mutate(
-    fh_status = factor(fh_status, levels = c("Not Free", "Partly Free", "Free"))
-  ) |>
-  ggplot(aes(x = education, y = gii, shape = fh_status, color = fh_status)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  theme_bw() +
-  facet_wrap(~ fh_status) +
-  guides(color = "none", shape = "none") +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "Education Spending (% GDP)", y = "Gender Inequality Index")
-```
-
-???
+::: notes
 
 Analyze these results for me.
 
@@ -179,365 +101,20 @@ Analyze these results for me.
 <br>
 
 **SLIDE**: Let's check the other confounder
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.5, fig.width=10}
-## Manual DAG
-d1 <- tibble(
-  x = c(1, 2, 3),
-  y = c(1, 2, 1),
-  labels = c("Education", "GDP per capita", "GII")
-)
-
-ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = 1.5, xend = 2.7, y = 1, yend = 1, arrow = arrow()) +
-  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.2, arrow = arrow()) +
-  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.2, arrow = arrow())
-```
-
-.size35[
-- Scatter plot: GII x Education Spending
-
-- `gdp_pc_groups`: Add color, shape, OLS line and facets
-]
-
-???
-
-Let's examine our first hypothesis using our tools from Monday.
-
-- Remake the scatter plot but adjust it for state wealth
-
-- Does our result hold?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Adjusting for a Confounder: State Wealth**]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.45, out.width='100%', fig.width=12}
-# GII x education
-d |>
-  select(gii, education, gdp_pc_groups) |>
-  na.omit() |>
-  mutate(
-    gdp_pc_groups = factor(gdp_pc_groups, levels = c("Bottom Quartile", "Middle 50%", "Top Quartile"))
-  ) |>
-  ggplot(aes(x = education, y = gii, shape = gdp_pc_groups, color = gdp_pc_groups)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  theme_bw() +
-  facet_wrap(~ gdp_pc_groups) +
-  guides(color = "none", shape = "none") +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "Education Spending (% GDP)", y = "Gender Inequality Index")
-```
-
-???
-
-Analyze these results for me.
-
-### What do we learn from these visualizations about our first hypothesis?
-
-### - Does our confidence from the bivariate plot hold that increasing education spending improves gender inequality?
+## For Next Class {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-### So, assuming these are the right confounders does our multivariate analysis give you more or less confidence in the effects of education on gender inequality?
+1. *Linear Regression in R*, "Multiple OLS" section only
 
-<br>
+2. Wheelan ch 12 "Common Regression Mistakes"
 
-### Does everybody appreciate how adjusting for a confounder can help us build a causal argument?
-
-<br>
-
-**SLIDE**: Let's do it again but now on the second hypothesis!
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Hypothesis 2**]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.618, out.width='70%', fig.width=7}
-# GII x health
-d |>
-  select(gii, health) |>
-  ggplot(aes(x = health, y = gii)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  theme_bw() +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "Health Spending (% GDP)", y = "Gender Inequality Index")
-```
-
-???
-
-### What do we learn from our bivariate analysis of the second hypothesis?
-
-<br>
-
-Ok, everybody now remake this scatter plot one time controlling for FH status and one time for state wealth.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Adjusting for a Confounder: FH Status**]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.45, out.width='100%', fig.width=12}
-# GII x health
-d |>
-  select(gii, health, fh_status) |>
-  na.omit() |>
-  mutate(
-    fh_status = factor(fh_status, levels = c("Not Free", "Partly Free", "Free"))
-  ) |>
-  ggplot(aes(x = health, y = gii, shape = fh_status, color = fh_status)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  theme_bw() +
-  facet_wrap(~ fh_status) +
-  guides(color = "none", shape = "none") +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "Health Spending (% GDP)", y = "Gender Inequality Index")
-```
-
-???
-
-Analyze these results for me.
-
-### What do we learn from these visualizations about our second hypothesis?
-
-### - Does our confidence from the bivariate plot hold that increasing health spending improves gender inequality?
-
-- Health spending matters more in freer states!
-    - MUCH tighter CIs in PF and F states
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Adjusting for a Confounder: State Wealth**]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.45, out.width='100%', fig.width=12}
-# GII x health
-d |>
-  select(gii, health, gdp_pc_groups) |>
-  na.omit() |>
-  mutate(
-    gdp_pc_groups = factor(gdp_pc_groups, levels = c("Bottom Quartile", "Middle 50%", "Top Quartile"))
-  ) |>
-  ggplot(aes(x = health, y = gii, shape = gdp_pc_groups, color = gdp_pc_groups)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  theme_bw() +
-  facet_wrap(~ gdp_pc_groups) +
-  guides(color = "none", shape = "none") +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "Health Spending (% GDP)", y = "Gender Inequality Index")
-```
-
-???
-
-Analyze these results for me.
-
-### What do we learn from these visualizations about our second hypothesis?
-
-### - Does our confidence from the bivariate plot hold that increasing health spending improves gender inequality?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Hypothesis 3**]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.618, out.width='70%', fig.width=7}
-# GII x health
-d |>
-  select(gii, military) |>
-  ggplot(aes(x = military, y = gii)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  theme_bw() +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "Military Spending (% GDP)", y = "Gender Inequality Index")
-```
-
-???
-
-### What do we learn from our bivariate analysis of the third hypothesis?
-
-<br>
-
-Ok, everybody now remake this scatter plot one time controlling for FH status and one time for state wealth.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Adjusting for a Confounder: FH Status**]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.45, out.width='100%', fig.width=12}
-# GII x military
-d |>
-  select(gii, military, fh_status) |>
-  na.omit() |>
-  mutate(
-    fh_status = factor(fh_status, levels = c("Not Free", "Partly Free", "Free"))
-  ) |>
-  ggplot(aes(x = military, y = gii, shape = fh_status, color = fh_status)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  theme_bw() +
-  facet_wrap(~ fh_status) +
-  guides(color = "none", shape = "none") +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "Military Spending (% GDP)", y = "Gender Inequality Index")
-```
-
-???
-
-Analyze these results for me.
-
-### What do we learn from these visualizations about our third hypothesis?
-
-### - Does this change our beliefs about the effects of military spending?
-
-- It just might!
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[**Adjusting for a Confounder: State Wealth**]]
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.45, out.width='100%', fig.width=12}
-# GII x military
-d |>
-  select(gii, military, gdp_pc_groups) |>
-  na.omit() |>
-  mutate(
-    gdp_pc_groups = factor(gdp_pc_groups, levels = c("Bottom Quartile", "Middle 50%", "Top Quartile"))
-  ) |>
-  ggplot(aes(x = military, y = gii, shape = gdp_pc_groups, color = gdp_pc_groups)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = TRUE) +
-  theme_bw() +
-  facet_wrap(~ gdp_pc_groups) +
-  guides(color = "none", shape = "none") +
-  scale_x_continuous(labels = scales::percent_format(scale = 1)) +
-  labs(x = "Military Spending (% GDP)", y = "Gender Inequality Index")
-```
-
-???
-
-Analyze these results for me.
-
-### What do we learn from these visualizations about our third hypothesis?
-
-### - Does this change our beliefs about the effects of military spending?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-<br>
-
-.size55[
-1. Descriptive statistics by groups
-  
-2. Using facets to extend any visualization
-    
-3. Mapping 3rd variables with colors or shapes
-]
-
-???
-
-
-```{r, eval=FALSE}
-##### Regressions
-res_ed1 <- lm(data = d, gii ~ education)
-res_ed2 <- lm(data = d, gii ~ education + fh_total)
-res_ed3 <- lm(data = d, gii ~ education + gdp_pc)
-res_ed4 <- lm(data = d, gii ~ education + fh_total + gdp_pc)
-
-modelsummary::modelsummary(models = list(res_ed1, res_ed2, res_ed3, res_ed4), fmt = 2, stars = c("*" = .05))
-
-res_m1 <- lm(data = d, gii ~ military)
-res_m2 <- lm(data = d, gii ~ military + fh_total)
-res_m3 <- lm(data = d, gii ~ military + gdp_pc)
-res_m4 <- lm(data = d, gii ~ military + fh_total + gdp_pc)
-
-modelsummary::modelsummary(models = list(res_m1, res_m2, res_m3, res_m4), fmt = 2, stars = c("*" = .05))
-
-res_h1 <- lm(data = d, gii ~ health)
-res_h2 <- lm(data = d, gii ~ health + fh_total)
-res_h3 <- lm(data = d, gii ~ health + gdp_pc)
-res_h4 <- lm(data = d, gii ~ health + fh_total + gdp_pc)
-
-modelsummary::modelsummary(models = list(res_h1, res_h2, res_h3, res_h4), fmt = 2, stars = c("*" = .05))
-
-```
-
+::: notes
+Next class I want to introduce you to multiple regression (e.g. OLS regression with more than one predictor variable)
+:::
 
 
 

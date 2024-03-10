@@ -1,550 +1,898 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
-  <head>
-    <title>13_1-Multivariate-Viz.knit</title>
-    <meta charset="utf-8" />
-    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
-    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
-    <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
-    <link rel="stylesheet" href="extra.css" type="text/css" />
-  </head>
-  <body>
-    <textarea id="source">
+<html lang="en"><head>
+<script src="13_1-Multivariate-Viz_files/libs/clipboard/clipboard.min.js"></script>
+<script src="13_1-Multivariate-Viz_files/libs/quarto-html/tabby.min.js"></script>
+<script src="13_1-Multivariate-Viz_files/libs/quarto-html/popper.min.js"></script>
+<script src="13_1-Multivariate-Viz_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="13_1-Multivariate-Viz_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="13_1-Multivariate-Viz_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="13_1-Multivariate-Viz_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="13_1-Multivariate-Viz_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.3.433">
 
+  <title>multivariate-viz</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="13_1-Multivariate-Viz_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="13_1-Multivariate-Viz_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="13_1-Multivariate-Viz_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="13_1-Multivariate-Viz_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="13_1-Multivariate-Viz_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="13_1-Multivariate-Viz_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="13_1-Multivariate-Viz_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
 
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
 
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
 
-.size80[**Today's Agenda**]
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
 
-&lt;br&gt;
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
 
-.size45[
-**Multivariate Analyses**
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
 
-1. Descriptive statistics by groups
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
 
-2. Using facets to extend any visualization
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
 
-3. Mapping 3rd variables with colors or shapes
-]
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
 
-&lt;br&gt;
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
-
-???
-
-## Prep for Class
-1. Upload WDI data for class to Canvas: WDI-Life_Expectancy-2015.csv
-
-2. ???
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
-
-&lt;br&gt;
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-2-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-
-???
-
-Last week we started exploring the concepts and approaches we can use to make causal arguments
-
-- e.g. arguments that changes in X cause a change in Y
-
-&lt;br&gt;
-
-We discussed:
-
-- the Data Generating Process (DGP), 
-
-- identification strategies, 
-
-- the use of Directed Acyclic Graphs (DAGs), and 
-
-- the need to adjust our analyses for confounders.
-
-&lt;br&gt;
-
-### Any questions on those big ideas?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
-
-&lt;br&gt;
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-3-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-
-???
-
-In class on Friday we worked to:
-
-1. Draw DAGs for each of our three hypotheses, and
-
-2. Gather data that operationalizes the concepts we identified as important confounders in these relatonships.
-
-&lt;br&gt;
-
-### Any questions on those DAGs or the variables we selected?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-&lt;br&gt;
-
-.size55[
-1. Descriptive statistics by groups
-  
-2. Using facets to extend any visualization
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
     
-3. Mapping 3rd variables with colors or shapes
-]
-
-???
-
-Today I will introduce you to a series of statistical tools that will allow you to adjust your analyses for a confounder variable.
-
-- These are what we call multivariate analyses
-
-- e.g. Analyses on three or more variables simultaneously
-
-&lt;br&gt;
-
-Note that you can also use these techniques to extend simple descriptive analyses to summarize data across multiple variables
-
-&lt;br&gt;
-
-I'll introduce these tools to you today and then we'll apply them in class on Friday on your research projects.
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size60[**Do countries with more hospital capacity have longer life expectancies?**]]]
-
-&lt;br&gt;
-
-&lt;br&gt;
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-4-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-
-???
-
-Let's say you were working on a research project exploring the impact of healthcare spending on key outcomes.
-
-- Specifically we are interested in estimating the effect of hospital capacity on life expectancies across the world.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size50[**Do countries with more hospital capacity have longer life expectancies?**]]]
-
-&lt;br&gt;
-
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; life_expectancy &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; hospital_beds_per_1k &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; hosp_beds_cats &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; gdp &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; gdp_cats &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 62.7 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 0.5 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; &amp;lt; 1 per 1k &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1.999816e+10 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; Middle 50% &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Algeria &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 75.6 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1.9 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; &amp;lt; 2 per 1k &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1.659793e+11 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; Middle 50% &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Antigua and Barbuda &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 77.9 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 3.6 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; &amp;gt; 2 per 1k &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1.336693e+09 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; Bottom 25% &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Argentina &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 76.8 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 5.0 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; &amp;gt; 2 per 1k &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 5.947493e+11 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; Top 25% &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Armenia &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 74.4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 4.2 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; &amp;gt; 2 per 1k &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1.055334e+10 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; Middle 50% &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Australia &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 82.4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 3.8 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; &amp;gt; 2 per 1k &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1.350616e+12 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; Top 25% &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-.center[.size45[
-Import 'WDI-Life_Expectancy-2015.csv' into R
-]]
-
-???
-
-I've pulled the 2015 data from the World Bank's WDI database for us to explore.
-
-- Everybody grab this dataset from Canvas and import it into RStudio.
-
-&lt;br&gt;
-
-Variables
-
-- Life expectancy is total in years
-
-- Hospital beds is per 1,000 people in the population
-
-- GDP is gross domestic product
-
-- I've also given you a categorical version of both hospital beds and GDP for us to explore
-
-&lt;br&gt;
-
-### Ok, what is the first step we need to do to answer this question?
-
-### - e.g. the first thing you need a good sense of before building your causal argument?
-
-- (You MUST first analyze the variation in the outcome variable!)
-
-1. If there is no variation there, then your project cannot proceed, and
-
-2. Your job is then to explain the distribution you find there
-
-&lt;br&gt;
-
-Let's get started!
-
-- Everybody make a histogram of life expectancy and calculate the descriptive statistics for it.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size40[**Do countries with more hospital capacity have longer life expectancies?**]]]
-
-.pull-left[
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
-
-.pull-right[
-
-&lt;br&gt;
-
-.size40[
-&lt;table&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Min &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 54.9 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; 1st Qu &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 72.9 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Median &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 76.4 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Mean &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 75.6 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; 3rd Qu &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 80.7 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Max &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 83.8 &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-]]
-
-???
-
-### Analyze these univariate analyses for me
-
-### - What do we learn from this about the outcome we are trying to explain?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.content-box-blue[.size50[**Do countries with more hospital capacity have longer life expectancies?**]]
-
-&lt;br&gt;
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-
-&lt;br&gt;
-
-.size45[Calculate the mean life expectancy ('life_expectancy') across the levels of hospital beds ('hosp_beds_cats')]
-
-???
-
-Let's now move from a univariate to a bivariate analysis.
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.content-box-blue[.size50[**Do countries with more hospital capacity have longer life expectancies?**]]
-
-&lt;br&gt;
-
-.code130[
-
-```r
-aggregate(data = d, life_expectancy ~ hosp_beds_cats, FUN = mean)
-```
-
-```
-  hosp_beds_cats life_expectancy
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    margin-bottom: 0.5rem;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  
+  <script src="13_1-Multivariate-Viz_files/libs/kePrint-0.0.1/kePrint.js"></script>
+  <link href="13_1-Multivariate-Viz_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+
+<section>
+<section id="todays-agenda" class="title-slide slide level1 center" data-background-image="libs/Images/background-data_blue_v3.png">
+<h1>Today’s Agenda</h1>
+<p><br></p>
+<p><br></p>
+<p><strong>Multivariate Analyses</strong></p>
+<ol type="1">
+<li><p>Descriptive statistics by groups</p></li>
+<li><p>Using facets to extend any visualization</p></li>
+<li><p>Mapping 3rd variables with colors or shapes</p></li>
+</ol>
+<p><br></p>
+<div class="r-stack">
+<p>Justin Leinaweaver (Spring 2024)</p>
+</div>
+<aside class="notes">
+<p>Prep for Class</p>
+<ol type="1">
+<li><p>Upload WDI data for class to Canvas: WDI-Life_Expectancy-2015.csv</p></li>
+<li><p>??</p></li>
+</ol>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="building-a-causal-argument" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Building a Causal Argument</h2>
+<p><br></p>
+
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-2-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Last week we started exploring the concepts and approaches we can use to make causal arguments</p>
+<ul>
+<li>e.g.&nbsp;arguments that changes in X cause a change in Y</li>
+</ul>
+<p><br></p>
+<p>We discussed:</p>
+<ul>
+<li><p>the Data Generating Process (DGP),</p></li>
+<li><p>identification strategies,</p></li>
+<li><p>the use of Directed Acyclic Graphs (DAGs), and</p></li>
+<li><p>the need to adjust our analyses for confounders.</p></li>
+</ul>
+<p><br></p>
+<h3 id="any-questions-on-those-big-ideas">Any questions on those big ideas?</h3>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="building-a-causal-argument-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Building a Causal Argument</h2>
+<p><br></p>
+
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-3-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>In class on Friday we worked to:</p>
+<ol type="1">
+<li><p>Draw DAGs for each of our three hypotheses, and</p></li>
+<li><p>Gather data that operationalizes the concepts we identified as important confounders in these relatonships.</p></li>
+</ol>
+<p><br></p>
+<h3 id="any-questions-on-those-dags-or-the-variables-we-selected">Any questions on those DAGs or the variables we selected?</h3>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses</h2>
+<p><br></p>
+<ol type="1">
+<li><p>Descriptive statistics by groups</p></li>
+<li><p>Using facets to extend any visualization</p></li>
+<li><p>Mapping 3rd variables with colors or shapes</p></li>
+</ol>
+<aside class="notes">
+<p>Today I will introduce you to a series of statistical tools that will allow you to adjust your analyses for a confounder variable.</p>
+<ul>
+<li><p>These are what we call multivariate analyses</p></li>
+<li><p>e.g.&nbsp;Analyses on three or more variables simultaneously</p></li>
+</ul>
+<p><br></p>
+<p>Note that you can also use these techniques to extend simple descriptive analyses to summarize data across multiple variables</p>
+<p><br></p>
+<p>I’ll introduce these tools to you today and then we’ll apply them in class on Friday on your research projects.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
+<p><br></p>
+
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-4-1.png" style="width:90.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Let’s say you were working on a research project exploring the impact of healthcare spending on key outcomes.</p>
+<ul>
+<li>Specifically we are interested in estimating the effect of hospital capacity on life expectancies across the world.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-1" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table" data-quarto-postprocess="true" style="font-size: 20px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">country</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">life_expectancy</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">hospital_beds_per_1k</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">hosp_beds_cats</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">gdp</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">gdp_cats</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Kiribati</td>
+<td style="text-align: center;">66.1</td>
+<td style="text-align: center;">1.9</td>
+<td style="text-align: center;">&lt; 2 per 1k</td>
+<td style="text-align: center;">1.702910e+08</td>
+<td style="text-align: center;">Bottom 25%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Italy</td>
+<td style="text-align: center;">82.5</td>
+<td style="text-align: center;">3.2</td>
+<td style="text-align: center;">&gt; 2 per 1k</td>
+<td style="text-align: center;">1.836638e+12</td>
+<td style="text-align: center;">Top 25%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">France</td>
+<td style="text-align: center;">82.3</td>
+<td style="text-align: center;">6.1</td>
+<td style="text-align: center;">&gt; 2 per 1k</td>
+<td style="text-align: center;">2.439189e+12</td>
+<td style="text-align: center;">Top 25%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Uruguay</td>
+<td style="text-align: center;">77.5</td>
+<td style="text-align: center;">2.4</td>
+<td style="text-align: center;">&gt; 2 per 1k</td>
+<td style="text-align: center;">5.327430e+10</td>
+<td style="text-align: center;">Middle 50%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Brunei Darussalam</td>
+<td style="text-align: center;">74.8</td>
+<td style="text-align: center;">2.8</td>
+<td style="text-align: center;">&gt; 2 per 1k</td>
+<td style="text-align: center;">1.293039e+10</td>
+<td style="text-align: center;">Middle 50%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Barbados</td>
+<td style="text-align: center;">76.7</td>
+<td style="text-align: center;">5.9</td>
+<td style="text-align: center;">&gt; 2 per 1k</td>
+<td style="text-align: center;">4.724691e+09</td>
+<td style="text-align: center;">Bottom 25%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Somalia</td>
+<td style="text-align: center;">54.9</td>
+<td style="text-align: center;">0.9</td>
+<td style="text-align: center;">&lt; 1 per 1k</td>
+<td style="text-align: center;">5.335000e+09</td>
+<td style="text-align: center;">Bottom 25%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ireland</td>
+<td style="text-align: center;">81.5</td>
+<td style="text-align: center;">2.9</td>
+<td style="text-align: center;">&gt; 2 per 1k</td>
+<td style="text-align: center;">2.917752e+11</td>
+<td style="text-align: center;">Top 25%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Iraq</td>
+<td style="text-align: center;">69.4</td>
+<td style="text-align: center;">1.4</td>
+<td style="text-align: center;">&lt; 2 per 1k</td>
+<td style="text-align: center;">1.667741e+11</td>
+<td style="text-align: center;">Top 25%</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<ul>
+<li>Import ‘WDI-Life_Expectancy-2015.csv’ into R</li>
+</ul>
+<aside class="notes">
+<p>I’ve pulled the 2015 data from the World Bank’s WDI database for us to explore.</p>
+<ul>
+<li>Everybody grab this dataset from Canvas and import it into RStudio.</li>
+</ul>
+<p><br></p>
+<p>Variables</p>
+<ul>
+<li><p>Life expectancy is total in years</p></li>
+<li><p>Hospital beds is per 1,000 people in the population</p></li>
+<li><p>GDP is gross domestic product</p></li>
+<li><p>I’ve also given you a categorical version of both hospital beds and GDP for us to explore</p></li>
+</ul>
+<p><br></p>
+<h3 id="ok-what-is-the-first-step-we-need-to-do-to-answer-this-question">Ok, what is the first step we need to do to answer this question?</h3>
+<h3 id="e.g.-the-first-thing-you-need-a-good-sense-of-before-building-your-causal-argument">- e.g.&nbsp;the first thing you need a good sense of before building your causal argument?</h3>
+<ul>
+<li>(You MUST first analyze the variation in the outcome variable!)</li>
+</ul>
+<ol type="1">
+<li><p>If there is no variation there, then your project cannot proceed, and</p></li>
+<li><p>Your job is then to explain the distribution you find there</p></li>
+</ol>
+<p><br></p>
+<p>Let’s get started!</p>
+<ul>
+<li>Everybody make a histogram of life expectancy and calculate the descriptive statistics for it.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-6_2111a60fc5658a873fe20e0d255a1326">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-6-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<table data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td style="text-align: left; background-color: white !important;">Min</td>
+<td style="text-align: center; background-color: white !important;">54.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; background-color: white !important;">1st Qu</td>
+<td style="text-align: center; background-color: white !important;">72.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; background-color: white !important;">Median</td>
+<td style="text-align: center; background-color: white !important;">76.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; background-color: white !important;">Mean</td>
+<td style="text-align: center; background-color: white !important;">75.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; background-color: white !important;">3rd Qu</td>
+<td style="text-align: center; background-color: white !important;">80.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; background-color: white !important;">Max</td>
+<td style="text-align: center; background-color: white !important;">83.8</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p><strong>Analyze these univariate analyses for me</strong></p>
+<ul>
+<li><strong>What do we learn from this about the outcome we are trying to explain?</strong></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
+<p><br></p>
+
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-8-1.png" style="width:90.0%" class="r-stretch quarto-figure-center"><p><br></p>
+<p>Calculate the mean life expectancy (‘life_expectancy’) across the levels of hospital beds (‘hosp_beds_cats’)</p>
+<aside class="notes">
+<p>Let’s now move from a univariate to a bivariate analysis.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy <span class="sc">~</span> hosp_beds_cats, <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hosp_beds_cats life_expectancy
 1     &lt; 1 per 1k        67.26267
 2     &lt; 2 per 1k        73.20436
-3     &gt; 2 per 1k        78.40434
-```
-]
+3     &gt; 2 per 1k        78.40434</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p><strong>Analyze these bivariate analyses for me</strong></p>
+<ul>
+<li><strong>What do we learn from this about the relationship we are trying to test?</strong></li>
+</ul>
+<p><br></p>
+<p>Key here is that we have established a correlation with this analysis, but not causation.</p>
+<h3 id="what-do-we-need-to-add-to-make-this-a-causal-argument">What do we need to add to make this a causal argument?</h3>
+<ul>
+<li>(<strong>SLIDE</strong>: An identification strategy that specifies the confounders!)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="building-a-causal-argument-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Building a Causal Argument</h2>
+<p><br></p>
 
-???
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-10-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>My DAG displays one identification strategy for this argument.</p>
+<h3 id="what-does-it-mean-to-say-that-gdp-is-presented-as-a-confounder">What does it mean to say that GDP is presented as a confounder?</h3>
+<ul>
+<li><p>Argument that the size of your economy influences your hospital capacity, and</p></li>
+<li><p>Argument that the size of your economy influences your average life expectancies</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Put another way…</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="building-a-causal-argument-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Building a Causal Argument</h2>
+<p><br></p>
 
-### Analyze these bivariate analyses for me
-
-### - What do we learn from this about the relationship we are trying to test?
-
-&lt;br&gt;
-
-Key here is that we have established a correlation with this analysis, but not causation.
-
-### What do we need to add to make this a causal argument?
-
-- (**SLIDE**: An identification strategy that specifies the confounders!)
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
-
-&lt;br&gt;
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-10-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-
-???
-
-My DAG displays one identification strategy for this argument.
-
-### What does it mean to say that GDP is presented as a confounder?
-
-- Argument that the size of your economy influences your hospital capacity, and
-
-- Argument that the size of your economy influences your average life expectancies
-
-&lt;br&gt;
-
-**SLIDE**: Put another way...
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
-
-&lt;br&gt;
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-11-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-
-???
-
-This diagram argues that we cannot get a causal estimate of the effect of changing the number of hospital beds on life expectancy without adjusting our analysis for the size of the economy.
-
-&lt;br&gt;
-
-**SLIDE**: This brings us to the tools we will need to adjust our analyses for the confounders.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-&lt;br&gt;
-
-.size55[
-1. **Descriptive statistics by groups**
-  
-2. .greytext[Using facets to extend any visualization]
-    
-3. .greytext[Mapping 3rd variables with colors or shapes]
-]
-
-???
-
-First approach extends our descriptive statistics across groups in the data.
-
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**1. Descriptive Statistics by Group**]]]
-
-&lt;br&gt;
-
-.code110[
-
-```r
-# Bivariate Analyses
-# Numerical x Categorical
-aggregate(data = d, life_expectancy ~ hosp_beds_cats, FUN = mean)
-```
-
-```
-  hosp_beds_cats life_expectancy
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-11-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>This diagram argues that we cannot get a causal estimate of the effect of changing the number of hospital beds on life expectancy without adjusting our analysis for the size of the economy.</p>
+<p><br></p>
+<p><strong>SLIDE</strong>: This brings us to the tools we will need to adjust our analyses for the confounders.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses</h2>
+<p><br></p>
+<ol type="1">
+<li><p><strong>Descriptive statistics by groups</strong></p></li>
+<li><p>Using facets to extend any visualization</p></li>
+<li><p>Mapping 3rd variables with colors or shapes</p></li>
+</ol>
+<aside class="notes">
+<p>First approach extends our descriptive statistics across groups in the data.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="descriptive-statistics-by-group" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>1. Descriptive Statistics by Group</h2>
+<p><strong>Bivariate Analyses: Numerical x Categorical</strong></p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy <span class="sc">~</span> hosp_beds_cats, <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hosp_beds_cats life_expectancy
 1     &lt; 1 per 1k        67.26267
 2     &lt; 2 per 1k        73.20436
-3     &gt; 2 per 1k        78.40434
-```
-]
-
-???
-
-Let's go back to the aggregate code you wrote earlier.
-
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**1. Descriptive Statistics by Group**]]]
-
-&lt;br&gt;
-
-.code110[
-
-```r
-# Multivariate Analyses
-# Numerical x Categorical x Categorical
-aggregate(data = d, life_expectancy ~ hosp_beds_cats + gdp_cats, FUN = mean)
-```
-
-```
-  hosp_beds_cats   gdp_cats life_expectancy
+3     &gt; 2 per 1k        78.40434</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>Let’s go back to the aggregate code you wrote earlier.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="descriptive-statistics-by-group-1" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>1. Descriptive Statistics by Group</h2>
+<p><strong>Multivariate Analyses: Numerical x Categorical x Categorical</strong></p>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy <span class="sc">~</span> hosp_beds_cats <span class="sc">+</span> gdp_cats, <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hosp_beds_cats   gdp_cats life_expectancy
 1     &lt; 1 per 1k Bottom 25%        54.85700
 2     &lt; 2 per 1k Bottom 25%        66.99950
 3     &gt; 2 per 1k Bottom 25%        75.36496
@@ -553,656 +901,621 @@ aggregate(data = d, life_expectancy ~ hosp_beds_cats + gdp_cats, FUN = mean)
 6     &gt; 2 per 1k Middle 50%        76.71923
 7     &lt; 1 per 1k    Top 25%        68.88075
 8     &lt; 2 per 1k    Top 25%        74.49050
-9     &gt; 2 per 1k    Top 25%        80.13991
-```
-]
-
-???
-
-Adding a third variable that is categorical to the aggregate function is very simple.
-
-- Modify the formula argument to add a second predictor variable just like adding two numbers together with the plus sign.
-
-- You can add as many CATEGORICAL variables to the right side of the formula as you want.
-
-&lt;br&gt;
-
-### Does the code make sense?
-
-&lt;br&gt;
-
-### So, when we calculate the averages while adjusting for GDP what happens to our estimate of the effect we are interested in?
-
-### - Does increasing hospital beds increase life expectancies when controlling for GDP?
-
-&lt;br&gt;
-
-**SLIDE**: You can also add a third variable to the aggregate function if it is a numeric variable.
-
-
-
-
----
-
-class: middle, slideblue
-
-.center[.content-box-blue[.size60[**1. Descriptive Statistics by Group**]]]
-
-&lt;br&gt;
-
-.pull-left[
-.code100[
-
-```r
-# Multivariate Statistics:
-# Num x Cat x Num
-aggregate(data = d, 
-          life_expectancy ~ hosp_beds_cats, 
-          FUN = mean,
-*         subset = gdp &lt; 8e10)
-```
-
-```
-  hosp_beds_cats life_expectancy
+9     &gt; 2 per 1k    Top 25%        80.13991</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>Adding a third variable that is categorical to the aggregate function is very simple.</p>
+<ul>
+<li><p>Modify the formula argument to add a second predictor variable just like adding two numbers together with the plus sign.</p></li>
+<li><p>You can add as many CATEGORICAL variables to the right side of the formula as you want.</p></li>
+</ul>
+<p><br></p>
+<h3 id="does-the-code-make-sense">Does the code make sense?</h3>
+<p><br></p>
+<h3 id="so-when-we-calculate-the-averages-while-adjusting-for-gdp-what-happens-to-our-estimate-of-the-effect-we-are-interested-in">So, when we calculate the averages while adjusting for GDP what happens to our estimate of the effect we are interested in?</h3>
+<h3 id="does-increasing-hospital-beds-increase-life-expectancies-when-controlling-for-gdp">- Does increasing hospital beds increase life expectancies when controlling for GDP?</h3>
+<p><br></p>
+<p><strong>SLIDE</strong>: You can also add a third variable to the aggregate function if it is a numeric variable.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="descriptive-statistics-by-group-2" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>1. Descriptive Statistics by Group</h2>
+<p><strong>Multivariate Analyses: Numerical x Categorical x Numerical</strong></p>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, </span>
+<span id="cb7-2"><a href="#cb7-2"></a>          life_expectancy <span class="sc">~</span> hosp_beds_cats, </span>
+<span id="cb7-3"><a href="#cb7-3"></a>          <span class="at">FUN =</span> mean,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>          <span class="at">subset =</span> gdp <span class="sc">&lt;</span> <span class="fl">8e10</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hosp_beds_cats life_expectancy
 1     &lt; 1 per 1k        66.87580
 2     &lt; 2 per 1k        71.44538
-3     &gt; 2 per 1k        76.37256
-```
-]]
-
-.pull-right[
-.code100[
-
-```r
-# Multivariate Statistics:
-# Num x Cat x Num
-aggregate(data = d, 
-          life_expectancy ~ hosp_beds_cats, 
-          FUN = mean,
-*         subset = gdp &gt; 8e10)
-```
-
-```
-  hosp_beds_cats life_expectancy
+3     &gt; 2 per 1k        76.37256</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, </span>
+<span id="cb9-2"><a href="#cb9-2"></a>          life_expectancy <span class="sc">~</span> hosp_beds_cats, </span>
+<span id="cb9-3"><a href="#cb9-3"></a>          <span class="at">FUN =</span> mean,</span>
+<span id="cb9-4"><a href="#cb9-4"></a>          <span class="at">subset =</span> gdp <span class="sc">&gt;</span> <span class="fl">8e10</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  hosp_beds_cats life_expectancy
 1     &lt; 1 per 1k        68.03640
 2     &lt; 2 per 1k        75.10992
-3     &gt; 2 per 1k        79.84797
-```
-]]
-
-???
-
-You can also use the subset argument in aggregate to split your sample by a numeric variable.
-
-- The key here is to use evaluation functions like less than, greater than, less than or equal to and greater than or equal to.
-
-&lt;br&gt;
-
-I hope everyone can see now how powerful the aggregate function can be.
-
-- Add multiple categorical variables to the formula, OR
-
-- Use subset to add numeric variables.
-
-&lt;br&gt;
-
-### Questions on using subset in the aggregate function to adjust your results for a numeric variable?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-&lt;br&gt;
-
-.size55[
-1. .greytext[Descriptive statistics by groups]
-  
-2. **Using facets to extend any visualization**
-    
-3. .greytext[Mapping 3rd variables with colors or shapes]
-]
-
-???
-
-Let's shift to our second multivariate analysis technique.
-
-- Using facets to extend any visualization
-
-&lt;br&gt;
-
-In short, facets let you take any visualization and break it into separate plots across levels of another variable.
-
-- Think of this like the visual version of what we just did using aggregate
-
-&lt;br&gt;
-
-**SLIDE**: Let's start with a bivariate visualization
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.content-box-blue[.size50[**Do countries with more hospital capacity have longer life expectancies?**]]
-
-&lt;br&gt;
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-
-&lt;br&gt;
-
-.size45[Visualize life expectancy ('life_expectancy') and hospital beds ('hospital_beds_per_1k') with a scatter plot]
-
-???
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-
-```r
-# 2. Using facets to extend any visualization
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy)) +
-  geom_point() +
-  geom_smooth(method = "lm")
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-17-1.png" width="70%" style="display: block; margin: auto;" /&gt;
-
-???
-
-### Analyze this bivariate analysis for me
-
-### - What do we learn from this about the relationship we are trying to test?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-
-```r
-# 2. Using facets to extend any visualization
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-* facet_wrap(~ gdp_cats)
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-18-1.png" width="95%" style="display: block; margin: auto;" /&gt;
-
-???
-
-Here we see the facet_wrap function.
-
-- The argument requires a tilde ('~') and then the name of a third categorical variable.
-
-&lt;br&gt;
-
-### Analyze these multivariate analyses for me
-
-### - What do we learn from this about the relationship we are trying to test?
-
-&lt;br&gt;
-
-The slope is positive across all three levels of GDP!
-
-- This means we have more confidence that increasing hospital beds increases life expectancy across all three levels of economy size.
-
-- This is how we build a causal argument by pairing our analyses to our identification strategy.
-
-&lt;br&gt;
-
-### Any questions on using the facet_wrap function to adjust an analysis for a confounder?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-&lt;br&gt;
-
-.size50[
-1. .greytext[Descriptive statistics by groups]
-  
-2. .greytext[Using facets to extend any visualization]
-    
-3. **Mapping 3rd variables with colors or shapes**
-]
-
-???
-
-Last multivariate approach for today!
-
-- Mapping 3rd variables with colors or shapes
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-
-```r
-# 3. Mapping 3rd variables with colors or shapes
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy)) +
-  geom_point()
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-19-1.png" width="65%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Back to our standby baseline plot.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-
-```r
-# 3. Mapping 3rd variables with colors or shapes
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
-*                    color = gdp_cats)) +
-  geom_point()
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-20-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Rather than facet wrap, we can tell R to assign colors to the levels of a categorical variable.
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-
-```r
-# 3. Mapping 3rd variables with colors or shapes
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
-*                    shape = gdp_cats)) +
-  geom_point()
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-21-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Printing in black and white?
-
-- Use shapes instead of colors!
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-
-```r
-# 3. Mapping 3rd variables with colors or shapes
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
-*                    color = gdp_cats, shape = gdp_cats)) +
-  geom_point()
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-22-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Best approach? Do both!
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-
-```r
-# 3. Mapping 3rd variables with colors or shapes
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
-                     color = gdp_cats, shape = gdp_cats)) +
-  geom_point() +
-* facet_wrap(~ gdp_cats)
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-23-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-If your dots overlap too much then also add a facet wrap!
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code120[
-
-```r
-# 3. Mapping 3rd variables with colors or shapes
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
-                     color = gdp_cats, shape = gdp_cats)) +
-  geom_point() +
-  facet_wrap(~ gdp_cats) +
-* guides(color = "none", shape = "none")
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-24-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-If doing both then omit the legend as it is redundant (each facet is labeled).
-
-- Because the plot adds a color and a shape you have to remove both of their legends hence the two arguments here
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
-
-```r
-# 3. Mapping 3rd variables with colors or shapes
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
-                     color = gdp_cats, shape = gdp_cats)) +
-  geom_point() +
-  facet_wrap(~ gdp_cats) +
-  guides(color = "none", shape = "none") +
-* scale_color_manual(values = c("orange", "red", "blue"))
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-25-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-You can also pick the colors manually
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
-
-```r
-# 3. Mapping 3rd variables with colors or shapes
-ggplot(data = d, aes(x = hospital_beds_per_1k, y = life_expectancy, 
-                     color = gdp_cats, shape = gdp_cats)) +
-  geom_point() +
-  facet_wrap(~ gdp_cats) +
-  guides(color = "none", shape = "none") +
-  scale_color_manual(values = c("orange", "red", "blue"))  +
-* geom_smooth(method = "lm")
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-26-1.png" width="80%" style="display: block; margin: auto;" /&gt;
-]
-
-???
-
-Finally, let's put our OLS lines back on!
-
-&lt;br&gt;
-
-### Any questions on this approach?
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-&lt;br&gt;
-
-.size50[
-1. Descriptive statistics by groups
-  
-2. Using facets to extend any visualization
-    
-3. Mapping 3rd variables with colors or shapes
-]
-
-???
-
-### Any questions on our multivariate tools from today?
-
-&lt;br&gt;
-
-**SLIDE**: Descriptive stats practice...
-
-
-
-
----
-
-class: middle, center, slideblue
-
-.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
-
-.size30[
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:center;"&gt; manufacturer &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; model &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1.8 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1.8 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2008 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; manual(m6) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 20 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 31 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 2.0 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2008 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; auto(av) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 2.8 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 16 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 2.8 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-]
-
-&lt;br&gt;
-
-.size40[**Practice**: Which auto manufacturers improved their average city fuel economy when moving from 1999 to 2008 models?]
-
-???
-
-
-
----
-
-class: middle, slideblue
-
-.pull-left[
-
-&lt;br&gt;
-
-.center[.size40[**Which auto manufacturers improved their average city fuel economy when moving from 1999 to 2008 models?**]]
-
-&lt;br&gt;
-
-.code100[
-
-```r
-# Save the group means
-x1 &lt;- aggregate(data = mpg, 
-          cty ~ manufacturer + year, 
-          FUN = mean)
-
-# Order the output
-arrange(x1, manufacturer)
-```
-]]
-
-.pull-right[
-.center[.code70[
-
-```
-   manufacturer year      cty
+3     &gt; 2 per 1k        79.84797</code></pre>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>You can also use the subset argument in aggregate to split your sample by a numeric variable.</p>
+<ul>
+<li>The key here is to use evaluation functions like less than, greater than, less than or equal to and greater than or equal to.</li>
+</ul>
+<p><br></p>
+<p>I hope everyone can see now how powerful the aggregate function can be.</p>
+<ul>
+<li><p>Add multiple categorical variables to the formula, OR</p></li>
+<li><p>Use subset to add numeric variables.</p></li>
+</ul>
+<p><br></p>
+<h3 id="questions-on-using-subset-in-the-aggregate-function-to-adjust-your-results-for-a-numeric-variable">Questions on using subset in the aggregate function to adjust your results for a numeric variable?</h3>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses</h2>
+<p><br></p>
+<ol type="1">
+<li><p>Descriptive statistics by groups</p></li>
+<li><p><strong>Using facets to extend any visualization</strong></p></li>
+<li><p>Mapping 3rd variables with colors or shapes</p></li>
+</ol>
+<aside class="notes">
+<p>Let’s shift to our second multivariate analysis technique.</p>
+<ul>
+<li>Using facets to extend any visualization</li>
+</ul>
+<p><br></p>
+<p>In short, facets let you take any visualization and break it into separate plots across levels of another variable.</p>
+<ul>
+<li>Think of this like the visual version of what we just did using aggregate</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s start with a bivariate visualization</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
+<p><br></p>
+
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-16-1.png" style="width:90.0%" class="r-stretch quarto-figure-center"><p><br></p>
+<p>Visualize life expectancy (‘life_expectancy’) and hospital beds (‘hospital_beds_per_1k’) with a scatter plot</p>
+<aside class="notes">
+<p>???</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>2. Using facets to extend a visualization</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.618" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-17_a5bcb21427752e893a0cb308605805d8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy)) <span class="sc">+</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-17-1.png" style="width:70.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p><strong>Analyze this bivariate analysis for me</strong></p>
+<ul>
+<li><strong>What do we learn from this about the relationship we are trying to test?</strong></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>2. Using facets to extend a visualization</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.4" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-18_4ceae41817bd050329e3c3e8af50bb04">
+<div class="sourceCode cell-code" id="cb12" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy)) <span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Here we see the facet_wrap function.</p>
+<ul>
+<li>The argument requires a tilde (‘~’) and then the name of a third categorical variable.</li>
+</ul>
+<p><br></p>
+<h3 id="analyze-these-multivariate-analyses-for-me">Analyze these multivariate analyses for me</h3>
+<h3 id="what-do-we-learn-from-this-about-the-relationship-we-are-trying-to-test">- What do we learn from this about the relationship we are trying to test?</h3>
+<p><br></p>
+<p>The slope is positive across all three levels of GDP!</p>
+<ul>
+<li><p>This means we have more confidence that increasing hospital beds increases life expectancy across all three levels of economy size.</p></li>
+<li><p>This is how we build a causal argument by pairing our analyses to our identification strategy.</p></li>
+</ul>
+<p><br></p>
+<h3 id="any-questions-on-using-the-facet_wrap-function-to-adjust-an-analysis-for-a-confounder">Any questions on using the facet_wrap function to adjust an analysis for a confounder?</h3>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses</h2>
+<p><br></p>
+<ol type="1">
+<li><p>Descriptive statistics by groups</p></li>
+<li><p>Using facets to extend any visualization</p></li>
+<li><p><strong>Mapping 3rd variables with colors or shapes</strong></p></li>
+</ol>
+<aside class="notes">
+<p>Last multivariate approach for today!</p>
+<ul>
+<li>Mapping 3rd variables with colors or shapes</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.65" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-19_1cc98ee2d3b326fa5277627c1a2df1ef">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-19-1.png" style="width:65.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Back to our standby baseline plot.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-3" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.65" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-20_65a1980f46accc4cd733d1766bc98fa5">
+<div class="sourceCode cell-code" id="cb14" data-code-line-numbers="1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, <span class="at">color =</span> gdp_cats)) <span class="sc">+</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-20-1.png" style="width:60.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Rather than facet wrap, we can tell R to assign colors to the levels of a categorical variable.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-4" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.65" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-21_84bfb1864a1845e58dc2b0cf25dc73f0">
+<div class="sourceCode cell-code" id="cb15" data-code-line-numbers="1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-21-1.png" style="width:60.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Printing in black and white?</p>
+<ul>
+<li>Use shapes instead of colors!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-5" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.65" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-22_af3bd4fbdbd297cd7ddce5a8e8a2143f">
+<div class="sourceCode cell-code" id="cb16" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
+<span id="cb16-2"><a href="#cb16-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span> </span>
+<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-22-1.png" style="width:60.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Best approach? Do both!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-6" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.45" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-23_72d709b348a92e10c0706b4653a73cf4">
+<div class="sourceCode cell-code" id="cb17" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
+<span id="cb17-2"><a href="#cb17-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-23-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>If your dots overlap too much then also add a facet wrap!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-7" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.45" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-24_bb69e3cb1adb3ddaf3cc2924739c22ae">
+<div class="sourceCode cell-code" id="cb18" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
+<span id="cb18-2"><a href="#cb18-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>, <span class="at">shape =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-24-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>If doing both then omit the legend as it is redundant (each facet is labeled).</p>
+<ul>
+<li>Because the plot adds a color and a shape you have to remove both of their legends hence the two arguments here</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-8" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.4" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-25_fe38cf928b84f58aaf1a8fca449f098e">
+<div class="sourceCode cell-code" id="cb19" data-code-line-numbers="6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
+<span id="cb19-2"><a href="#cb19-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>, <span class="at">shape =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-25-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>You can also pick the colors manually</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-9" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.4" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-26_be4e034eab37d31e943ee42a9846da4d">
+<div class="sourceCode cell-code" id="cb20" data-code-line-numbers="7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
+<span id="cb20-2"><a href="#cb20-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats) <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>, <span class="at">shape =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>))  <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-26-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Finally, let’s put our OLS lines back on!</p>
+<p><br></p>
+<h3 id="any-questions-on-this-approach">Any questions on this approach?</h3>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses</h2>
+<p><br></p>
+<ol type="1">
+<li><p>Descriptive statistics by groups</p></li>
+<li><p>Using facets to extend any visualization</p></li>
+<li><p>Mapping 3rd variables with colors or shapes</p></li>
+</ol>
+<aside class="notes">
+<p><strong>Any questions on our multivariate tools from today?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Descriptive stats practice…</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ggplot2-dataset-mpg" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>ggplot2 Dataset: mpg</h2>
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table" data-quarto-postprocess="true" style="font-size: 22px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">manufacturer</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">model</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">displ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">year</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">cyl</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">trans</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">drv</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">cty</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">hwy</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">fl</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">class</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">ford</td>
+<td style="text-align: center;">explorer 4wd</td>
+<td style="text-align: center;">4.6</td>
+<td style="text-align: center; background-color: gold !important;">2008</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">auto(l6)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">13</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">suv</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; background-color: gold !important;">ford</td>
+<td style="text-align: center;">explorer 4wd</td>
+<td style="text-align: center;">4.0</td>
+<td style="text-align: center; background-color: gold !important;">1999</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">auto(l5)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">14</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">suv</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">toyota</td>
+<td style="text-align: center;">4runner 4wd</td>
+<td style="text-align: center;">4.7</td>
+<td style="text-align: center; background-color: gold !important;">2008</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">auto(l5)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">14</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">suv</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; background-color: gold !important;">pontiac</td>
+<td style="text-align: center;">grand prix</td>
+<td style="text-align: center;">3.1</td>
+<td style="text-align: center; background-color: gold !important;">1999</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">auto(l4)</td>
+<td style="text-align: center;">f</td>
+<td style="text-align: center; background-color: gold !important;">18</td>
+<td style="text-align: center;">26</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">midsize</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">toyota</td>
+<td style="text-align: center;">toyota tacoma 4wd</td>
+<td style="text-align: center;">2.7</td>
+<td style="text-align: center; background-color: gold !important;">1999</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">auto(l4)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">16</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">pickup</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; background-color: gold !important;">ford</td>
+<td style="text-align: center;">f150 pickup 4wd</td>
+<td style="text-align: center;">5.4</td>
+<td style="text-align: center; background-color: gold !important;">1999</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">auto(l4)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">11</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">pickup</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">audi</td>
+<td style="text-align: center;">a4 quattro</td>
+<td style="text-align: center;">3.1</td>
+<td style="text-align: center; background-color: gold !important;">2008</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">auto(s6)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">17</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">p</td>
+<td style="text-align: center;">compact</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; background-color: gold !important;">audi</td>
+<td style="text-align: center;">a4 quattro</td>
+<td style="text-align: center;">2.0</td>
+<td style="text-align: center; background-color: gold !important;">2008</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">manual(m6)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">20</td>
+<td style="text-align: center;">28</td>
+<td style="text-align: center;">p</td>
+<td style="text-align: center;">compact</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p><br></p>
+<p><strong>Practice</strong>: Which auto manufacturers improved their average city fuel economy when moving from 1999 to 2008 models?</p>
+<aside class="notes">
+
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="which-auto-manufacturers-improved-their-average-city-fuel-economy-when-moving-from-1999-to-2008-models" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Which auto manufacturers improved their average city fuel economy when moving from 1999 to 2008 models?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># Save the group means</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>x1 <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="at">data =</span> mpg, </span>
+<span id="cb21-3"><a href="#cb21-3"></a>          cty <span class="sc">~</span> manufacturer <span class="sc">+</span> year, </span>
+<span id="cb21-4"><a href="#cb21-4"></a>          <span class="at">FUN =</span> mean)</span>
+<span id="cb21-5"><a href="#cb21-5"></a></span>
+<span id="cb21-6"><a href="#cb21-6"></a><span class="co"># Order the output</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a><span class="fu">arrange</span>(x1, manufacturer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   manufacturer year      cty
 1          audi 1999 17.11111
 2          audi 2008 18.11111
 3     chevrolet 1999 15.14286
@@ -1232,780 +1545,723 @@ arrange(x1, manufacturer)
 27       toyota 1999 18.15000
 28       toyota 2008 19.07143
 29   volkswagen 1999 21.25000
-30   volkswagen 2008 20.45455
-```
-]]]
-
-???
-
-Because there are only two levels in year I treated it here as a categorical variable
-
-&lt;br&gt;
-
-### So, what do we learn from this?
-
-&lt;br&gt;
-
-**SLIDE**: Visualization practice...
-
-
-
-
----
-
-class: middle, center, slideblue
-
-.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
-
-.size30[
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:center;"&gt; manufacturer &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; model &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1.8 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1.8 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.0 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; manual(m6) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 20 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 31 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.0 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; auto(av) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.8 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 6 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 16 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.8 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 6 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 26 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-]
-
-&lt;br&gt;
-
-.size40[**Practice**: How do various manufacturers design their fleets to meet the EPA requirements for corporate average fuel economy (CAFE)?]
-
-???
-
-EPA requires manufacturers to meet a certain level of fuel economy across their entire fleet.
-
-- So, some models can have big, less efficient engines but only if they offset those sales with sales of cleaner cars.
-
-&lt;br&gt;
-
-Let's try developing a visualization to let us see this dynamic in practice!
-
-### How could we visualize these four variables?
-
-- (**SLIDE**)
+30   volkswagen 2008 20.45455</code></pre>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Because there are only two levels in year I treated it here as a categorical variable</p>
+<p><br></p>
+<h3 id="so-what-do-we-learn-from-this">So, what do we learn from this?</h3>
+<p><br></p>
+<p><strong>SLIDE</strong>: Visualization practice…</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ggplot2-dataset-mpg-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>ggplot2 Dataset: mpg</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table" data-quarto-postprocess="true" style="font-size: 22px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">manufacturer</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">model</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">displ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">year</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">cyl</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">trans</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">drv</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">cty</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">hwy</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">fl</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">class</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">hyundai</td>
+<td style="text-align: center;">tiburon</td>
+<td style="text-align: center; background-color: gold !important;">2.0</td>
+<td style="text-align: center;">2008</td>
+<td style="text-align: center; background-color: gold !important;">4</td>
+<td style="text-align: center;">manual(m5)</td>
+<td style="text-align: center;">f</td>
+<td style="text-align: center; background-color: gold !important;">20</td>
+<td style="text-align: center;">28</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">subcompact</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; background-color: gold !important;">dodge</td>
+<td style="text-align: center;">ram 1500 pickup 4wd</td>
+<td style="text-align: center; background-color: gold !important;">4.7</td>
+<td style="text-align: center;">2008</td>
+<td style="text-align: center; background-color: gold !important;">8</td>
+<td style="text-align: center;">manual(m6)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">9</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">e</td>
+<td style="text-align: center;">pickup</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">land rover</td>
+<td style="text-align: center;">range rover</td>
+<td style="text-align: center; background-color: gold !important;">4.0</td>
+<td style="text-align: center;">1999</td>
+<td style="text-align: center; background-color: gold !important;">8</td>
+<td style="text-align: center;">auto(l4)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">11</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">p</td>
+<td style="text-align: center;">suv</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; background-color: gold !important;">nissan</td>
+<td style="text-align: center;">altima</td>
+<td style="text-align: center; background-color: gold !important;">3.5</td>
+<td style="text-align: center;">2008</td>
+<td style="text-align: center; background-color: gold !important;">6</td>
+<td style="text-align: center;">auto(av)</td>
+<td style="text-align: center;">f</td>
+<td style="text-align: center; background-color: gold !important;">19</td>
+<td style="text-align: center;">26</td>
+<td style="text-align: center;">p</td>
+<td style="text-align: center;">midsize</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">toyota</td>
+<td style="text-align: center;">toyota tacoma 4wd</td>
+<td style="text-align: center; background-color: gold !important;">4.0</td>
+<td style="text-align: center;">2008</td>
+<td style="text-align: center; background-color: gold !important;">6</td>
+<td style="text-align: center;">auto(l5)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">16</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">pickup</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; background-color: gold !important;">dodge</td>
+<td style="text-align: center;">durango 4wd</td>
+<td style="text-align: center; background-color: gold !important;">5.9</td>
+<td style="text-align: center;">1999</td>
+<td style="text-align: center; background-color: gold !important;">8</td>
+<td style="text-align: center;">auto(l4)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">11</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">suv</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">dodge</td>
+<td style="text-align: center;">caravan 2wd</td>
+<td style="text-align: center; background-color: gold !important;">3.3</td>
+<td style="text-align: center;">1999</td>
+<td style="text-align: center; background-color: gold !important;">6</td>
+<td style="text-align: center;">auto(l4)</td>
+<td style="text-align: center;">f</td>
+<td style="text-align: center; background-color: gold !important;">16</td>
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">minivan</td>
+</tr>
+</tbody>
+</table>
 
 
----
-
-class: middle, slideblue
-
-.center[
-.content-box-blue[.size50[**ggplot2 Dataset: mpg**]]
-
-.size30[
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:center;"&gt; manufacturer &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; model &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; displ &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; year &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; cyl &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; trans &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; drv &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; cty &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; hwy &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; fl &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; class &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1.8 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; auto(l5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 18 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 1.8 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 1999 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; manual(m5) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 21 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 29 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; audi &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; a4 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 2.0 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 2008 &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; manual(m6) &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; f &lt;/td&gt;
-   &lt;td style="text-align:center;background-color: gold !important;"&gt; 20 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; 31 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; p &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; compact &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-]
-]
-
-&lt;br&gt;
-
-.size35[
-Make a scatter plot of city fuel economy x engine size
-
-- Add colors and shapes for drive train
-
-- Add facet wrapping for the manufacturers
-]
-
-???
-
-
-
----
-
-class: middle, slideblue
-
-
-```r
-ggplot(data = mpg, aes(x = displ, y = cty, color = drv, shape = drv)) +
-  geom_point() +
-  facet_wrap(~ manufacturer, ncol = 5)
-```
-
-&lt;img src="13_1-Multivariate-Viz_files/figure-html/unnamed-chunk-32-1.png" width="70%" style="display: block; margin: auto;" /&gt;
-
-???
-
-### Lessons from this?
+</div>
+</div>
+<p><br></p>
+<p><strong>Practice</strong>: How do various manufacturers design their fleets to meet the EPA requirements for corporate average fuel economy (CAFE)?</p>
+<aside class="notes">
+<p>EPA requires manufacturers to meet a certain level of fuel economy across their entire fleet.</p>
+<ul>
+<li>So, some models can have big, less efficient engines but only if they offset those sales with sales of cleaner cars.</li>
+</ul>
+<p><br></p>
+<p>Let’s try developing a visualization to let us see this dynamic in practice!</p>
+<h3 id="how-could-we-visualize-these-four-variables">How could we visualize these four variables?</h3>
+<ul>
+<li>(<strong>SLIDE</strong>)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ggplot2-dataset-mpg-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>ggplot2 Dataset: mpg</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table" data-quarto-postprocess="true" style="font-size: 22px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">manufacturer</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">model</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">displ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">year</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">cyl</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">trans</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">drv</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">cty</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">hwy</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">fl</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">class</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">audi</td>
+<td style="text-align: center;">a4 quattro</td>
+<td style="text-align: center; background-color: gold !important;">2.0</td>
+<td style="text-align: center;">2008</td>
+<td style="text-align: center; background-color: gold !important;">4</td>
+<td style="text-align: center;">auto(s6)</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center; background-color: gold !important;">19</td>
+<td style="text-align: center;">27</td>
+<td style="text-align: center;">p</td>
+<td style="text-align: center;">compact</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; background-color: gold !important;">chevrolet</td>
+<td style="text-align: center;">malibu</td>
+<td style="text-align: center; background-color: gold !important;">2.4</td>
+<td style="text-align: center;">1999</td>
+<td style="text-align: center; background-color: gold !important;">4</td>
+<td style="text-align: center;">auto(l4)</td>
+<td style="text-align: center;">f</td>
+<td style="text-align: center; background-color: gold !important;">19</td>
+<td style="text-align: center;">27</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">midsize</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; background-color: gold !important;">chevrolet</td>
+<td style="text-align: center;">c1500 suburban 2wd</td>
+<td style="text-align: center; background-color: gold !important;">5.3</td>
+<td style="text-align: center;">2008</td>
+<td style="text-align: center; background-color: gold !important;">8</td>
+<td style="text-align: center;">auto(l4)</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center; background-color: gold !important;">14</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">r</td>
+<td style="text-align: center;">suv</td>
+</tr>
+</tbody>
+</table>
 
 
+</div>
+</div>
+<p><br></p>
+<p>Make a scatter plot of city fuel economy x engine size</p>
+<ul>
+<li><p>Add colors and shapes for drive train</p></li>
+<li><p>Add facet wrapping for the manufacturers</p></li>
+</ul>
+<aside class="notes">
 
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-10" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<div class="cell" data-layout-align="center" data-fig.asp="0.65">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mpg, <span class="fu">aes</span>(<span class="at">x =</span> displ, <span class="at">y =</span> cty, <span class="at">color =</span> drv, <span class="at">shape =</span> drv)) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> manufacturer, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
----
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-32-1.png" style="width:70.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p><strong>Lessons from this?</strong></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses</h2>
+<p><br></p>
+<ol type="1">
+<li><p>Descriptive statistics by groups</p></li>
+<li><p>Using facets to extend any visualization</p></li>
+<li><p>Mapping 3rd variables with colors or shapes</p></li>
+</ol>
+<aside class="notes">
+<p><strong>Any questions on our multivariate tools from today?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Add assignment for next class</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="for-next-class" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>For Next Class</h2>
+<p><br></p>
+<ol type="1">
+<li><p>…</p></li>
+<li><p>…</p></li>
+</ol>
+<aside class="notes">
+<p>Practice multivariate…</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<div class="footer footer-default">
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+</div>
+</section></section>
+    </div>
+  </div>
 
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-&lt;br&gt;
-
-.size50[
-1. Descriptive statistics by groups
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
-2. Using facets to extend any visualization
+
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="13_1-Multivariate-Viz_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'smaller': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
     
-3. Mapping 3rd variables with colors or shapes
-]
-
-???
-
-### Any questions on our multivariate tools from today?
-
-&lt;br&gt;
-
-**SLIDE**: Only if time remains...
-
-NOT COMPLETED, MAYBE ADD FOR NEXT YEAR
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.content-box-blue[.size70[**Multivariate Analyses**]]]
-
-&lt;br&gt;
-
-.size40[
-1. Descriptive statistics by groups
-  
-2. Using facets to extend any visualization
-    
-3. Mapping 3rd variables with colors or shapes
-
-4. **Bonus: Animate the 3rd/4th variable!**
-]
-
-
-
----
-
-Repeat mpg plot but animate moving between each level of drv
-
-
-
-
----
-
-class: middle
-
-.size40[.center[**Install the needed packages and load gganimate**]]
-
-&lt;br&gt;
-
-.code150[
-
-```r
-install.packages("gifski")
-
-install.packages("png")
-
-install.packages("gganimate")
-
-library(gganimate)
-```
-]
-
-
-
-
-
----
-
-.center[**Transitions between different subsets of the data**]
-
-.code120[
-
-```r
-ggplot(data = mpg, aes(x = displ, y = cty)) +
-  geom_point() +
-* transition_states(cyl) +
-* labs(title = "Number of Cylinders: {closest_state}")
-```
-]
-
-???
-
-transition_states is for moving across levels of a categorical variable
-
-
-
-
-
----
-
-.center[**Transitions across time use a different function**]
-
-.code120[
-
-```r
-ggplot(data = mpg, aes(x = class, y = cty)) +
-  geom_boxplot() +
-* transition_time(year) +
-* labs(title = 'Year: {frame_time}')
-```
-]
-
-
----
-
-.center[**Transitions can also leave the prior data in place**]
-
-.code120[
-
-```r
-ggplot(data = economics, aes(x = date, y = pop)) +
-  geom_line(color = "darkblue", size = 1.4) +
-* transition_reveal(date) +
-  coord_cartesian(ylim = c(150000, 350000)) +
-  labs(title = "US Population (thousands)")
-```
-]
-
-
-
----
-
-class: middle
-
-.size50[.center[**Last one, so let's make something awesome**]]
-
-.code135[
-
-```r
-## New package needed for the data (install before loading)
-install.packages("gapminder")
-
-library(gapminder)
-```
-]
-
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; country &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; continent &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; year &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; lifeExp &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; pop &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; gdpPercap &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1952 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 28.801 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8425333 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 779.4453 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1957 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 30.332 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 9240934 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 820.8530 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1962 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 31.997 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10267083 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 853.1007 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1967 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 34.020 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 11537966 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 836.1971 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1972 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 36.088 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 13079460 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 739.9811 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Afghanistan &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Asia &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1977 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 38.438 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 14880372 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 786.1134 &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-
-
----
-
-class: middle
-
-.code115[
-
-```r
-gapminder |&gt;
-  ggplot(aes(x = gdpPercap, y = lifeExp)) +
-  geom_point(alpha = 0.7, show.legend = FALSE)
-```
-]
-
-
-
-
----
-
-class: middle
-
-.code115[
-
-```r
-gapminder |&gt;
-* ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
-  geom_point(alpha = 0.7, show.legend = FALSE)
-```
-]
-
-
-
-
----
-
-class: middle
-
-.code115[
-
-```r
-gapminder |&gt;
-  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
-  geom_point(alpha = 0.7, show.legend = FALSE) +
-* scale_x_log10()
-```
-]
-
-
-
----
-
-class: middle
-
-.code115[
-
-```r
-gapminder |&gt;
-* filter(continent != "Oceania") |&gt;
-  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
-  geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() +
-* facet_wrap(~ continent, ncol = 4)
-```
-]
-
-
-
----
-
-class: middle
-
-.code115[
-
-```r
-gapminder |&gt;
-  filter(continent != "Oceania") |&gt;
-  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
-  geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() +
-  facet_wrap(~ continent, ncol = 4) +
-* scale_colour_manual(values = country_colors)
-```
-]
-
-
-
----
-
-class: middle
-
-.code115[
-
-```r
-gapminder |&gt;
-  filter(continent != "Oceania") |&gt;
-  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
-  geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() +
-  facet_wrap(~ continent, ncol = 4) +
-  scale_colour_manual(values = country_colors) +
-* scale_size(range = c(3, 13))
-```
-]
-
-
-
----
-
-class: middle
-
-.code115[
-
-```r
-gapminder |&gt;
-  filter(continent != "Oceania") |&gt;
-  ggplot(aes(x = gdpPercap, y = lifeExp, size = pop, color = country)) +
-  geom_point(alpha = 0.7, show.legend = FALSE) +
-  scale_x_log10() +
-  facet_wrap(~ continent, ncol = 4) +
-  scale_colour_manual(values = country_colors) +
-  scale_size(range = c(3, 13)) +
-* transition_time(year) +
-* labs(title = 'Year: {frame_time}')
-```
-]
-
-
-
----
-
-class: middle
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size55[**For Friday**]
-
-.size40[
-1. *Linear Regression in R*, "Multiple OLS" section only
-
-2. Wheelan ch 12 "Common Regression Mistakes"
-]
-
-???
-
-Friday I want to introduce you to multiple regression (e.g. OLS regression with more than one predictor variable)
-
-    </textarea>
-<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
-<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-<script>var slideshow = remark.create({
-"highlightStyle": "github",
-"highlightLines": true,
-"countIncrementalSlides": false,
-"ratio": "16:9"
-});
-if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
-  window.dispatchEvent(new Event('resize'));
-});
-(function(d) {
-  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
-  if (!r) return;
-  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
-  d.head.appendChild(s);
-})(document);
-
-(function(d) {
-  var el = d.getElementsByClassName("remark-slides-area");
-  if (!el) return;
-  var slide, slides = slideshow.getSlides(), els = el[0].children;
-  for (var i = 1; i < slides.length; i++) {
-    slide = slides[i];
-    if (slide.properties.continued === "true" || slide.properties.count === "false") {
-      els[i - 1].className += ' has-continuation';
-    }
-  }
-  var s = d.createElement("style");
-  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
-  d.head.appendChild(s);
-})(document);
-// delete the temporary CSS (for displaying all slides initially) when the user
-// starts to view slides
-(function() {
-  var deleted = false;
-  slideshow.on('beforeShowSlide', function(slide) {
-    if (deleted) return;
-    var sheets = document.styleSheets, node;
-    for (var i = 0; i < sheets.length; i++) {
-      node = sheets[i].ownerNode;
-      if (node.dataset["target"] !== "print-only") continue;
-      node.parentNode.removeChild(node);
-    }
-    deleted = true;
-  });
-})();
-// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
-// screen reader (see PR #262)
-(function(d) {
-  let res = {};
-  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
-    const t = tr.querySelector('td:nth-child(2)').innerText;
-    tr.querySelectorAll('td:first-child .key').forEach(key => {
-      const k = key.innerText;
-      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
-    });
-  });
-  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
-})(document);
-(function() {
-  "use strict"
-  // Replace <script> tags in slides area to make them executable
-  var scripts = document.querySelectorAll(
-    '.remark-slides-area .remark-slide-container script'
-  );
-  if (!scripts.length) return;
-  for (var i = 0; i < scripts.length; i++) {
-    var s = document.createElement('script');
-    var code = document.createTextNode(scripts[i].textContent);
-    s.appendChild(code);
-    var scriptAttrs = scripts[i].attributes;
-    for (var j = 0; j < scriptAttrs.length; j++) {
-      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
-    }
-    scripts[i].parentElement.replaceChild(s, scripts[i]);
-  }
-})();
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-// adds .remark-code-has-line-highlighted class to <pre> parent elements
-// of code chunks containing highlighted lines with class .remark-code-line-highlighted
-(function(d) {
-  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
-  const preParents = [];
-  const findPreParent = function(line, p = 0) {
-    if (p > 1) return null; // traverse up no further than grandparent
-    const el = line.parentElement;
-    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
-  };
-
-  for (let line of hlines) {
-    let pre = findPreParent(line);
-    if (pre && !preParents.includes(pre)) preParents.push(pre);
-  }
-  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
-})(document);</script>
-
-<script>
-slideshow._releaseMath = function(el) {
-  var i, text, code, codes = el.getElementsByTagName('code');
-  for (i = 0; i < codes.length;) {
-    code = codes[i];
-    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
-      text = code.textContent;
-      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
-          /^\$\$(.|\s)+\$\$$/.test(text) ||
-          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
-        code.outerHTML = code.innerHTML;  // remove <code></code>
-        continue;
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
       }
-    }
-    i++;
-  }
-};
-slideshow._releaseMath(document);
-</script>
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-(function () {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
-  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
-    script.src  = script.src.replace(/^https?:/, '');
-  document.getElementsByTagName('head')[0].appendChild(script);
-})();
-</script>
-  </body>
-</html>
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+      function tippyHover(el, contentFn) {
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        };
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          return note.innerHTML;
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>

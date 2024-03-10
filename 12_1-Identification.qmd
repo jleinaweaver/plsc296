@@ -1,61 +1,37 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
 library(readxl)
-library(stargazer)
 library(kableExtra)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(modelsummary)
 ```
-
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
 
 <br>
 
-.size50[
-Thinking Carefully About Causal Inference
+<br>
+
+**Thinking Carefully About Causal Inference**
 
 - The Data Generating Process (DGP)
 
 - An Identification Strategy
-]
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+<br>
 
-???
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-## Prep for Class
+::: notes
+Prep for Class
+
 1. Save brainstormed lists in this Rmd file AND next class
 
 <br>
@@ -69,17 +45,10 @@ This week I want us to explore causal inference.
 - What does it mean to establish causality with an argument and data?
 
 - How do we start to build this argument in our project this semester?
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: center, middle
-  
-.size50[**Correlation Does Not Imply Causation (???)**]
+## Correlation Does Not Imply Causation {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
@@ -87,7 +56,7 @@ class: center, middle
 knitr::include_graphics("libs/Images/08_2-xkcd_correlation.png")
 ```
 
-???
+::: notes
 
 You've all probably heard the old saw, "correlation does not imply causation."
 
@@ -100,35 +69,22 @@ You've all probably heard the old saw, "correlation does not imply causation."
 To do this I want us to take a proverbial step back from the work we've been doing all semester.
 
 - We need to start our exploration of causal inference by talking about where data comes from.
+:::
 
 
 
+## Exploratory Data Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Exploratory (aka Descriptive) Data Analyses**]]]
-
-<br>
-
-.size25[
 ```{r}
-# GII Data
-d <- read_excel("../../Course_History/2023-Spring/Project-SP23/OUTCOME-GII/GII-2021-Tidy.xlsx", na = "NA")
+d <- read_excel("../Data_in_Class-SP24/Merged_Dataset-2006-2016.xlsx", na = "NA")
 
 d |>
-  select(country, year, gii:lfpr_m) |>
-  slice_head(n = 9) |>
-  kbl(digits = 2)
+  select(Country, Year, FSI_Total, P3_Human_Rts) |>
+  slice_sample(n = 10) |>
+  kbl(digits = 2, align = c("l", "c", "c", "c"))
 ```
-]
 
-???
+::: notes
 
 So far this semester we have been engaged in what might be called an exploratory or descriptive analysis process
 
@@ -137,22 +93,16 @@ So far this semester we have been engaged in what might be called an exploratory
 <br>
 
 **SLIDE**: Our approach to this task followed three general steps
+:::
 
 
-
----
-
-class: middle
-
-.center[.size55[.content-box-blue[**1. Analyzed the Methodology**]]]
+## 1. Analyzed the Methodology {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
-knitr::include_graphics("libs/Images/03_2-GII_diagram2.png")
-```
+TBD
 
-???
+::: notes
 
 First we analyzed the research design that produced these measures.
 
@@ -171,31 +121,25 @@ We evaluated:
 <br>
 
 I hope everyone now better understands how THESE choices are far more impactful on the data than anything we might do using "statistics."
+:::
 
 
-
----
-
-class: middle
-
-.center[.size55[.content-box-blue[**2. Univariate Analyses of the  Distribution**]]]
+## 2. Univariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.pull-left[
-.size25[
-```{r}
-d <- read_excel("../../Course_History/2023-Spring/Project-SP23/OUTCOME-GII/GII-2021-Tidy.xlsx", na = "NA")
-
+:::: {.columns}
+::: {.column width="50%"}
+```{r, eval=FALSE}
 d |>
-  select(country, year, gii) |>
-  slice_head(n = 10) |>
-  kbl(digits = 2)
+  select(Country, Year, FSI_Total, P3_Human_Rts) |>
+  slice_sample(n = 10) |>
+  kbl(digits = 2, align = c("l", "c", "c", "c"))
 ```
-]]
+:::
 
-.pull-right[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, ,out.width='90%'}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6, eval=FALSE}
 d |>
   ggplot(aes(x = gii)) +
   geom_histogram(bins = 25, color = "white", fill = "thistle") +
@@ -205,9 +149,10 @@ d |>
        title = "Economic growth is being dramatically harmed by gender\n  discrimination across the world") +
   scale_x_continuous(limits = c(0,1))
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Our second step was to use univariate analysis tools to describe the distribution of the data.
 
@@ -223,75 +168,32 @@ As I hope was clear from the reading today, THIS step is vital for learning abou
 - THIS is the variation you want your model to explain!
 
 - The whole ballgame of statistical modeling!
+:::
 
 
 
-
----
-
-class: middle
-
-.center[.size55[.content-box-blue[**3. Bivariate Analyses of the  Association**]]]
+## 3. Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.pull-left[
-.size25[
-```{r}
-d <- read_excel("../../Course_History/2023-Spring/Project-SP23/Project_Merged_Data-2019.xlsx", na = "NA")
-
-d |>
-  select(country, year, gii, military) |>
-  slice_head(n = 10) |>
-  kbl(digits = 2, align = c("l", "c", "c", "c"))
-```
-]]
-
-.pull-right[
-```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=7, ,out.width='90%'}
-# Merged data
-
-
-#cor(d$gii, d$military, use = "complete.obs")
-#cor.test(d$gii, d$military, use = "complete.obs")
-# cor(d$gii, d$education, use = "complete.obs")
-# cor(d$gii, d$health, use = "complete.obs")
-
-d |>
-  ggplot(aes(x = military, y = gii)) +
-  geom_point() +
-  theme_bw() +
-  geom_smooth(method = "lm") +
-  labs(x = "Government Spending on the Military (% GDP)", y = "Gender Inequality Index",
-       caption = "Source: United Nations Development Programme and the Stockholm International Peace Research Institute",
-       title = "There is not a clear linear association between gender discrimination and\n  military spending",
-       subtitle = str_c("(Pearson's Product-Moment Correlation: ", round(cor(d$gii, d$military, use = "complete.obs"), 2), ")")) +
-  scale_y_continuous(limits = c(0, 1))
-```
-]
-
-???
+::: notes
 
 Our third step was to use bivariate analysis tools to describe the relationships between our predictors and the outcome variables.
 
 - Bivariate tables, visualizations and simple OLS regressions
 
 - HOWEVER, these are associations, not evidence of causation!
+:::
 
 
 
+## Building a Causal Argument {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-class: center, middle, slideblue
-
-.size50[.content-box-blue[**Building a Causal Argument**]]
-
-.size40[
 "Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e. intervention) was the 'cause' of the effect (or outcome) that was observed" (Frey 2018). 
-]
 
-```{r, fig.retina = 3, fig.align = 'center', fig.width = 6, fig.height=1.25, out.width='95%'}
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 6, fig.height=1.25}
 ## Manual DAG
 d1 <- tibble(
   x = c(-3, 3),
@@ -307,7 +209,7 @@ ggplot(data = d1, aes(x = x, y = y)) +
   annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
 ```
 
-???
+::: notes
 
 Our final job this semester is to try and push beyond demonstrating associations or correlations.
 
@@ -327,33 +229,28 @@ To be clear, a "causal relationship" refers to a cause-and-effect connection bet
     - Think new medicines and curing a disease
   
 - For our purposes think of treatment to effect as synonymous with predictor to outcome.
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+## Building a Causal Argument {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.pull-left[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/13_1-classroom.jpg")
 ```
-]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/13_1-student_success2.png")
 ```
-]
+:::
+::::
 
-```{r, fig.retina = 3, fig.align = 'center', fig.width = 7, fig.height=1, out.width='80%'}
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 7, fig.height=1}
 ## Manual DAG
 d1 <- tibble(
   x = c(-3, 3),
@@ -369,7 +266,7 @@ ggplot(data = d1, aes(x = x, y = y)) +
   annotate("segment", x = -2.15, xend = 2, y = 1, yend = 1, arrow = arrow())
 ```
 
-???
+::: notes
 
 Let's step through a toy example to think about how we build a causal argument.
 
@@ -382,38 +279,29 @@ Example: Student class size (predictor) -> Student success (outcome)
 <br>
 
 Let's talk about how to test this theory in a way that will CONCLUSIVELY demonstrate a causal relationship.
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+## Building a Causal Argument {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.pull-left[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/13_1-Student.png")
 ```
-]
+:::
 
-.pull-right[
-
-<br>
-
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/13_1-small_class.webp")
 ```
-]
+:::
+::::
 
-???
-
+::: notes
 Step 1:
 
 - Take a specific student, say, Bob here who is a hypothetical 3rd grader.
@@ -425,17 +313,10 @@ Step 1:
 <br>
 
 Easy peasy.
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+## Building a Causal Argument {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
@@ -443,75 +324,60 @@ class: middle
 knitr::include_graphics("libs/Images/13_1-delorean-time-travel.gif")
 ```
 
-???
-
+::: notes
 Step 2
 
 In May of 2024, AFTER RECORDING BOB's TEST SCORES, you use a time machine to return to August 2023
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+## Building a Causal Argument {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.pull-left[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/13_1-Student.png")
 ```
-]
+:::
 
-.pull-right[
-
-<br>
-
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/13_1-large_class_size.png")
 ```
-]
+:::
+::::
 
-???
-
+::: notes
 Step 3
 
 - August (2023) place Bob in a large class and ensure he attends all year
 
 - Next May (2024) we record his test scores
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Building a Causal Argument**]]]
+## Building a Causal Argument {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.pull-left[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/13_1-small_class.webp")
 ```
-]
+:::
 
-.pull-right[
-
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/13_1-large_class_size.png")
 ```
-]
+:::
+::::
 
-???
-
+::: notes
 Step 4: Calculate the difference between Bob's two outcomes and there you go.
 
 - You have a firm estimate of the causal effect of class size on Bob's individual success.
@@ -519,26 +385,17 @@ Step 4: Calculate the difference between Bob's two outcomes and there you go.
 <br>
 
 Now all you have to do is repeat this process for a few hundred randomly selected students and you will be able to conclusively demonstrate a causal effect.
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.center[.size50[.content-box-blue[**The Fundamental Problem of Causal Inference**]]]
+## The Fundamental Problem of Causal Inference {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size50[
 "To measure causal effects, we need to compare the factual outcome with the counter-factual outcome, but we can never observe the counter-factual outcome" (Llaudet and Imai 2023).
-]
 
-???
+::: notes
 
 This is what we call the fundamental problem of causal inference
 
@@ -553,22 +410,15 @@ NOTE: This is a problem for ALL science, not just the social sciences.
 <br>
 
 **SLIDE**: So, how do we solve this problem?
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[.content-box-blue[**Randomized Controlled Trials (RCTs)**]]]
+## Randomized Controlled Trials (RCTs) {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, fig.retina=3, fig.align='center', out.width='77%', fig.asp=.6, fig.width=10}
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
 ## Manual DAG
 d2 <- tibble(
   x = c(2.5, 2, 3, 2, 3),
@@ -601,7 +451,7 @@ ggplot(data = d2, aes(x = x, y = y)) +
 #   annotate("text", x = 2.5, y = 2.6, label = "Random Allocation", color = "red", size = 12)
 ```
 
-???
+::: notes
 
 The "Gold" Standard Solution: Randomized Controlled Trials (RCTs)
 
@@ -638,18 +488,13 @@ Ultimately, even this "gold standard" approach is somewhat flawed
 <br>
 
 ### Make sense?
+:::
 
 
 
----
+## {background-image="libs/Images/13_1-armed-forces-personnel.svg" .center}
 
-background-image: url('libs/Images/13_1-armed-forces-personnel.svg')
-background-size: 80%
-background-position: center
-class: middle
-
-???
-
+::: notes
 Our Challenge: Estimating causal effects using observational data
 
 - Much of what we do in the social sciences is dependent on observational, NOT experimental, data
@@ -663,43 +508,27 @@ The countries of the world simply aren't going to let us randomly assign the siz
 <br>
 
 So, the question becomes, how do you identify a causal effect in the absence of a time machine or random assignment.
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
+:::: {.columns}
+::: {.column width="50%"}
+**Our Challenge:**
 
+**Estimating Causal Effects Using Observational Data**
+:::
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
-
-<br>
-
-<br>
-
-.center[.size45[**Our Challenge:**]]
-
-<br>
-
-<br>
-
-.center[.size45[**Estimating Causal Effects Using Observational Data**]]
-]
-
-.pull-right[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/13_1-SPS_Map.png")
 ```
-]
+:::
+::::
 
-???
-
+::: notes
 Let's keep going with our student success research, but shift to using observational data.
 
 <br>
@@ -707,23 +536,16 @@ Let's keep going with our student success research, but shift to using observati
 Let's say the local school board has agreed to give us last year's anonymized data on all of the third grade students in Springfield
 
 - e.g. The size of their classes and their end of year test scores
+:::
 
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[.content-box-blue[**The Challenge of Observational Data**]]]
+## The Challenge of Observational Data {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, fig.retina=3, fig.align='center', out.width='77%', fig.asp=.6, fig.width=10}
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
 ## Manual DAG
 d2 <- tibble(
   x = c(2.5, 2, 3),
@@ -736,14 +558,13 @@ ggplot(data = d2, aes(x = x, y = y)) +
   theme_void() +
   coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.75, 3.25)) +
   geom_label(aes(label = labels), size = 10) +
-  #annotate("text", x = 2.5, y = 2.6, label = "????????????", color = "red", size = 10) +
+  #annotate("text", x = 2.5, y = 2.6, label = "::: notes?????????", color = "red", size = 10) +
   #annotate("segment", x = 2.5, xend = 2.5, y = 2.9, yend = 2.7, arrow = arrow()) +
   annotate("segment", x = 2.5, xend = 2.15, y = 2.9, yend = 2.2, arrow = arrow()) +
   annotate("segment", x = 2.5, xend = 2.85, y = 2.9, yend = 2.2, arrow = arrow())
 ```
 
-???
-
+::: notes
 This means we have students in different class sizes but we didn't get to assign them to those classes.
 
 - THEREFORE, the first thing we have to think about is what explains the variation in how students end up in different sized classes?
@@ -779,37 +600,26 @@ So, unlike in the RCT example we can see that we have a number of reasons to sus
 <br>
 
 ### Make sense?
+:::
 
 
+## Part 1 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '75%'}
 knitr::include_graphics("libs/Images/13_1-HK_ch5.png")
 ```
-]
+:::
 
-.pull-right[
-
-<br>
-
-<br>
-
-<br>
-
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/13_1-HK_ch5_TOC.png")
 ```
-]
+:::
+::::
 
-???
-
+::: notes
 Reading: Huntington-Klein 2022 chapter 5 "The Challenge of Identification" [LINK](https://theeffectbook.net/ch-Identification.html)
 
 <br>
@@ -833,25 +643,14 @@ I'm always on the lookout for better and more accessible readings on this materi
 <br>
 
 **SLIDE**: Let's build up to the first big idea: 
+:::
 
 
-
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.center[.size50[.content-box-blue[**Describing the Data Generating Process (DGP)**]]]
+## Describing the Data Generating Process (DGP) {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-<br>
-
-```{r, fig.retina = 3, fig.align = 'center', fig.width = 8, fig.height=1.75, out.width='100%'}
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 8, fig.height=1.75}
 ## Manual DAG
 d1 <- tibble(
   x = c(-3, 0, 3),
@@ -868,8 +667,7 @@ ggplot(data = d1, aes(x = x, y = y)) +
   annotate("segment", x = 1.2, xend = 2.5, y = 1, yend = 1, arrow = arrow())
 ```
 
-???
-
+::: notes
 In order to make an argument that we have identified a causal mechanism using observational data we must first describe the Data Generating Process (DGP)
 
 <br>
@@ -895,21 +693,14 @@ This way of thinking about science reminds us that the data we see depends BOTH 
 <br>
 
 **SLIDE**: In a slightly more applied way of thinking...
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Describing the Data Generating Process (DGP)**]]]
+## Describing the Data Generating Process (DGP) {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, fig.retina = 3, fig.align = 'center', fig.width = 8, fig.height=1.25, out.width='100%'}
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 8, fig.height=1.25}
 d1a <- tibble(
   x = c(-3, 0, 3),
   y = c(1, 1, 1),
@@ -925,16 +716,13 @@ ggplot(data = d1a, aes(x = x, y = y)) +
   annotate("segment", x = 1.2, xend = 2.5, y = 1, yend = 1, arrow = arrow())
 ```
 
-.size40[
 1. Model produces data
 
 2. Model has unknown parameters
 
 3. Data reduces the uncertainty in the parameters
-]
 
-???
-
+::: notes
 We try to represent the laws of nature with a model so we'll switch to that language here.
 
 <br>
@@ -972,21 +760,14 @@ And all of that brings us to the data generating process (DGP)
 ### How have we already started to do this in our student success research?
 
 - (**SLIDE**)
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[.content-box-blue[**The Data Generating Process (DGP)**]]]
+## The Data Generating Process (DGP) {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, fig.retina=3, fig.align='center', out.width='77%', fig.asp=.6, fig.width=10}
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
 ## Manual DAG
 d2 <- tibble(
   x = c(2.5, 2, 3),
@@ -1005,30 +786,22 @@ ggplot(data = d2, aes(x = x, y = y)) +
   annotate("segment", x = 2.5, xend = 2.85, y = 2.9, yend = 2.2, arrow = arrow())
 ```
 
-???
-
+::: notes
 Our work to describe how students in SGF end up in large vs small classrooms was us trying to describe the parts of the DGP that "we know"
 - Or think we do...
 
 <br>
 
 **SLIDE**: BUT, THIS work is only HALF of the DGP!
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[.content-box-blue[**The Data Generating Process (DGP)**]]]
+## The Data Generating Process (DGP) {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, fig.retina=3, fig.align='center', out.width='77%', fig.asp=.6, fig.width=10}
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
 ## Manual DAG
 d3 <- tibble(
   x = c(2.5, 2, 3),
@@ -1048,8 +821,7 @@ ggplot(data = d3, aes(x = x, y = y)) +
 
 ```
 
-???
-
+::: notes
 We also need to describe the DGP for our outcome variable!
 
 *BRAINSTORM ON BOARD*
@@ -1082,20 +854,13 @@ Now we have two lists that together represent "the parts we know" of our DGP.
 <br>
 
 ### Make sense?
+:::
 
 
 
+## Identification {background-image="libs/Images/13_1-cartoon-dog.jpg"}
 
----
-
-background-image: url('libs/Images/13_1-cartoon-dog.jpg')
-background-size: 100%
-background-position: center
-class: top
-
-.center[.size55[.content-box-blue[**Identification**]]]
-
-???
+::: notes
 
 The second big step in making a causal argument using observational data is to move from the DGP to an identification strategy.
 
@@ -1112,45 +877,31 @@ The second big step in making a causal argument using observational data is to m
 <br>
 
 **SLIDE**: Let's wrap up our work for today with the suggested plan of attack from the reading
+:::
 
 
+## Identification and the DGP {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size55[.content-box-blue[**Identification and the DGP**]]]
-
-.size45[
 1. Using theory, paint the most accurate picture possible of what the data generating process looks like
 
 2. Use that data generating process to figure out the reasons our data might look the way it does that don’t answer our research question
 
 3. Find ways to block out those alternate reasons and so dig out the variation we need
-]
 
-???
-
+::: notes
 Our work today has primarily focused on this first step.
 
 - Our work on Wednesday will be much more focused on steps two and three.
+:::
 
 
 
+## For next class: {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size50[**For next class:**]
-
-.size45[
 1. Read HK (2022) ch 6 and 7
 
 2. Brainstorm the DGP for our project (e.g. **SUBMIT** four separate lists of reasons why states would vary in):
@@ -1158,20 +909,11 @@ class: middle
     - Education Spending
     - Military Spending
     - Healthcare Spending
-]
 
-???
-
+::: notes
 Submit your lists to Canvas before class!
 
 - Remember, your list for GII should NOT include these three predictors! They are what we are hoping to test!
 
 ### Questions on the assignment?
-
-
-
-
-
-
-
-
+:::
