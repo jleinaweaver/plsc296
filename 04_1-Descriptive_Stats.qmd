@@ -4,17 +4,28 @@ format: revealjs
 
 # Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
-```{r, echo=FALSE}
+```{r}
 library(tidyverse)
-
-options(width = 75)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
 ```
+
+<br>
 
 <br>
 
 **Univariate Analyses**
 
 -   Calculating and analyzing descriptive statistics
+
+<br>
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
 ::: notes
 Prep for Class
@@ -235,9 +246,11 @@ knitr::include_graphics("libs/Images/04_1-mpg_dataset.png")
 
 ```{r}
 mpg |>
-  slice(1:5) |>
+  slice_sample(n = 6) |>
   select(manufacturer:trans) |>
-  kableExtra::kbl(align = 'c')
+  kableExtra::kbl(align = 'c') |>
+  kableExtra::kable_styling(font_size = 25) |>
+  kableExtra::column_spec(1:6, background = "white")
 ```
 
 ::: notes

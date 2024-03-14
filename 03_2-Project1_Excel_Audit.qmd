@@ -1,61 +1,37 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+## Today's Agenda {background-image="libs/Images/background-data_blue_v3.png" .center}
 
+```{r}
 library(tidyverse)
 library(readxl)
-library(stargazer)
-##library(kableExtra)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(kableExtra)
+library(modelsummary)
 ```
-
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size70[**Today's Agenda**]
 
 <br>
 
-.size50[
+<br>
+
 1. Four Principles of Data Analysis
 
 2. Report on your early findings
 
 3. Audit the data
-]
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+<br>
 
-???
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-## Prep for Class
+::: notes
+Prep for Class
+
 1. Review assignment submissions
 
 2. Publish next discussion
@@ -63,32 +39,24 @@ class: middle, inverse
 3. ADD spreadsheet snapshot of chosen data to slides: line 447-ish
 
 4. Note for you: I removed the "audit the data" exercise from the end of class. I think this new version's emphasis on codebook connections, then findings and process works much better
+:::
 
 
 
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.center[.size50[.content-box-blue[**Report 1: Analyzing our Outcome Variable(s)**]]]
+## Report 1 {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
-.size45[
-1. **Why is this project important?**
+1) Why is this project important?
 
-2. **How confident should we be in the methodology?**
+2) How confident should we be in the methodology?
 
-3. What do the measures currently show us?
+3) What do the measures currently show us?
 
-4. How are these measures changing across time?
-]
+4) How are these measures changing across time?
 
-???
+::: notes
 
 This week we have begun working on your first report.
 
@@ -108,19 +76,12 @@ As ever, be sure to **TAKE NOTES** as we work and **save them**!
 
 - You should ABSOLUTELY be writing this report as we go!
 
+:::
 
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_triangles_flipped.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size55[.content-box-blue[**For Today**]]
+## For Today {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
@@ -128,7 +89,8 @@ class: middle
 knitr::include_graphics("libs/Images/03_1-Assignment.png")
 ```
 
-???
+
+::: notes
 
 Today's work is the logical extension of our codebook analyses.
 
@@ -149,53 +111,40 @@ Today's work is the logical extension of our codebook analyses.
 <br>
 
 **SLIDE**: We'll dig into what you did and what you found in a moment, but first let's set the stage with four important lessons for data analysis!
+:::
 
 
+## The Key Principles of Data Analysis {background-image="libs/Images/background-blue_triangles2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+1. Data analysis is **not** a linear process
 
-.size55[.content-box-blue[**The Key Principles of Data Analysis**]]
+2. Always **tidy** your data before exploring it
 
-.size55[
-1. Data analysis is .textred[**not**] a linear process
+3. Variable **type** determines the **tool**
 
-2. Always .textblue[**tidy**] your data before exploring it
+4. **Validity** and **reliability** come first!
 
-3. Variable .textblue[**type**] determines the .textblue[**tool**]
-
-4. .textblue[**Validity**] and .textblue[**reliability**] come first!
-]
-
-???
+::: notes
 
 Think of these like guiding rules to get you off on the right foot.
 
 - Let's step through each one.
 
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size50[.content-box-blue[**1. Data analysis is .textred[not] a linear process**]]
+## 1. Data analysis is not a linear process {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
-```{r, fig.align='center', out.width='100%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/01_2-Analysis_Process.png")
 ```
 
-???
+::: notes
 
 The first principle of data analysis is to recognize that it is NOT a linear process.
 - The day-to-day work of a data scientist almost never looks like a straightforward path through a puzzle.
@@ -229,24 +178,19 @@ This means, don't freeze-up or get discouraged when looking at new data
 
 ### Make sense?
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size50[.content-box-blue[**2. .textblue[Tidy] your data before exploring it**]]
+## 2. Tidy your data before exploring it {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
-```{r, fig.align='center', out.width='100%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/01_2-tidy.png")
 ```
 
-???
+::: notes
 
 The second principle of data analysis is that you MUST tidy your data BEFORE you can do anything useful with it.
 
@@ -275,25 +219,20 @@ This is our goal. Take messy data and get it into this format.
 
 - **SLIDE**: Let's look at some examples.
 
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle, center
-
-.size50[.content-box-blue[**Freedom House: "Freedom in the World"**]]
+## "Freedom in the World" {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_2-FH_Untidy1.png")
 ```
 
-???
+(Source: Freedom House)
+
+::: notes
 
 Freedom House produces measures of "freedom" around the world.
 
@@ -316,32 +255,22 @@ Freedom House produces measures of "freedom" around the world.
 
 **SLIDE**: This is a SUPER easy clean-up job.
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle, center
+## "Freedom in the World" {background-image="libs/Images/background-blue_triangles2.png" .center}
 
-.size40[.content-box-blue[**Freedom House: "Freedom in the World"**]]
-
-<br>
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '78%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/01_2-tidy_fh1.png")
 ```
 
-.center[.size55[&#x2193;]]
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '78%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/01_2-tidy_fh2.png")
 ```
 
-???
-
-### Make sense?
+::: notes
+**Make sense?**
 
 1. Each column is now a separate variable
 
@@ -349,25 +278,16 @@ knitr::include_graphics("libs/Images/01_2-tidy_fh2.png")
 
 3. Each cell is a distinct data point
 
+:::
 
 
+## "Freedom in the World" {background-image="libs/Images/background-blue_triangles2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle, center
-
-.size40[.content-box-blue[**Freedom House: "Freedom in the World"**]]
-
-<br>
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '90%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_2-FH_Untidy.png")
 ```
 
-???
+::: notes
 
 Now, if what you want is historical Freedom House data you get this.
 
@@ -398,27 +318,21 @@ Now, if what you want is historical Freedom House data you get this.
 
 **SLIDE**: Let's fix it!
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle, center
+## {background-image="libs/Images/background-blue_triangles2.png" .center}
 
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '78%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_2-FH_Untidy_Small.png")
 ```
 
-.center[.size55[&#x2193;]]
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '78%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_2-FH_Tidy2.png")
 ```
 
-???
+::: notes
 
 1. Columns are variables
 
@@ -431,25 +345,19 @@ knitr::include_graphics("libs/Images/03_2-FH_Tidy2.png")
 ### Make sense?
 
 ### - Questions on what tidy data looks like?
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size50[.content-box-blue[**2. .textblue[Tidy] your data before exploring it**]]
+## 2. Tidy your data before exploring it {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
-```{r, fig.align='center', out.width='80%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/03_2-FSI_2023_Sheet.png")
 ```
 
-???
+::: notes
 
 One of your jobs for Friday will be to take our current dataset and tidy it!
 
@@ -467,25 +375,19 @@ One of your jobs for Friday will be to take our current dataset and tidy it!
 
 *optional: Let the class brainstorm how to do this*
 
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size45[.content-box-blue[**3. Variable .textblue[type] determines the .textblue[tool]**]]
+## 3. Variable type determines the tool {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
-```{r, fig.align='center', out.width='95%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/01_2-levels_measurement.png")
 ```
 
-???
+::: notes
 
 The third principle of data analysis is that variable type determines the tool to use on it.
 
@@ -518,21 +420,17 @@ Each type can then be broken down further
 
 **SLIDE**: The handy thing is that once you can identify variables by type, you know exactly what kinds of analyses to perform!
 
+:::
 
 
 
----
+## 3. Variable type determines the tool {background-image="libs/Images/background-blue_triangles2.png" .center}
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-```{r, fig.align='center', out.width='70%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/03_2-Chart_Type_Data_Viz-1.png")
 ```
 
-???
+::: notes
 
 Don't let this picture overwhelm you!
 - The logic here is what matters, not these specific recommendations.
@@ -559,26 +457,19 @@ A big part of your job early this semester will be organizing your notes around 
 Once you learn to think this way, data analysis starts to look like cooking with recipes.
 - You learn to describe what you want to make and our texts and notes will tell you how to do it!
 
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size50[.content-box-blue[**4. Evaluate Validity & Reliability**]]
+## 4. Evaluate Validity & Reliability {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '90%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_1-Reliability-and-Validity.png")
 ```
 
-???
+::: notes
 
 The fourth principle of data analysis is one that we've already had some experience with this semester
 
@@ -606,46 +497,36 @@ Remember, all data includes uncertainty.
 
 ### Questions on this?
 
+:::
 
 
+## The Key Principles of Data Analysis {background-image="libs/Images/background-blue_triangles2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+1. Data analysis is **not** a linear process
 
-.size55[.content-box-blue[**The Key Principles of Data Analysis**]]
+2. Always **tidy** your data before exploring it
 
-.size55[
-1. Data analysis is .textred[**not**] a linear process
+3. Variable **type** determines the **tool**
 
-2. Always .textblue[**tidy**] your data before exploring it
+4. **Validity** and **reliability** come first!
 
-3. Variable .textblue[**type**] determines the .textblue[**tool**]
-
-4. .textblue[**Validity**] and .textblue[**reliability**] come first!
-]
-
-???
-
-### Any questions on the four principles underpinning our work as data scientists?
+::: notes
+**Any questions on the four principles underpinning our work as data scientists?**
 
 <br>
 
 **SLIDE**: One more brief detour before we talk about what you found in the dataset!
 
+:::
 
 
 
----
 
-background-image: url('libs/Images/01_1-excel_dangerous.png')
-background-size: 100%
-background-position: center
+## {background-image="libs/Images/01_1-excel_dangerous.png" .center background-size='92%'}
 
-???
+::: notes
 
 Important word of caution!
 
@@ -661,31 +542,26 @@ Excel is a VERY dangerous tool because it wants to help you
 
 **SLIDE**: For example...
 
+:::
 
 
----
 
-background-image: url('libs/Images/01_1-excel_danger2.png')
-background-size: 100%
-background-position: center
+## {background-image="libs/Images/01_1-excel_danger2.png" .center background-size='92%'}
 
-???
+::: notes
 
 Excel is Dangerous #1: Beware Excel's auto-formatting features!
 
 <br>
 
 Like a drunk puppy, Excel is desperate to help but has no idea what you're trying to do or how to actually help.
+:::
 
 
----
 
-background-image: url('libs/Images/03_2-Excel_Finger_Slip.png')
-background-size: 95%
-background-position: center
-class: slideblue
+## {background-image="libs/Images/03_2-Excel_Finger_Slip.png" .center background-size='87%'}
 
-???
+::: notes
 
 Excel is Dangerous #2: Screwing up your data by accident is stupid easy 
 
@@ -693,30 +569,29 @@ Excel is Dangerous #2: Screwing up your data by accident is stupid easy
 
 There are so many examples...
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+## {background-image="libs/Images/background-blue_triangles2.png" .center}
 
-.pull-left[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_2-FT_Excel_Error_Norway1.png")
 ```
-]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+::: {.column width="50%"}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_2-FT_Excel_Error_Norway2.png")
 
 knitr::include_graphics("libs/Images/03_2-FT_Excel_Error_Norway3.png")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 [FT Article on Excel error in Norway costing $92 million! ](https://www.ft.com/content/db864323-5b68-402b-8aa5-5c53a309acf1)
 
@@ -734,22 +609,16 @@ knitr::include_graphics("libs/Images/03_2-FT_Excel_Error_Norway3.png")
 Bottom line, doing "science" requires being transparent in your choices and creating a record of them for others to review.
 
 - Excel is a total failure at this and that is why it is completely inappropriate for doing science.
+:::
 
 
 
+## Report 1: Section 2 {background-image="libs/Images/background-blue_triangles2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+**How confident should we be in the methodology?**
 
-.center[.size35[
-.content-box-blue[**Section 2: How confident should we be in the methodology?**]
-]]
-
-.size45[
 - **Source:** Where does the raw data come from?
 
 - **Operationalization:** Defining the concepts
@@ -759,9 +628,8 @@ class: middle
 - **Measurement Process:** Using the tool
 
 - **Validation:** Checking the data
-]
 
-???
+::: notes
 
 For the rest of today I want to discuss what you found in the data and how you found it.
 
@@ -810,17 +678,11 @@ Big Picture Questions:
 ### How do these actual observations help us think critically about the codebook?
 
 ### - In other words, what can we take from this review that would be useful in Section 2 of your reports?
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-blue_triangles_flipped.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size55[.content-box-blue[**For Today**]]
+## For Today {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
@@ -828,7 +690,7 @@ class: middle
 knitr::include_graphics("libs/Images/03_1-Assignment.png")
 ```
 
-???
+::: notes
 
 Ok, let's discuss what you found in your pre-class explorations?
 
@@ -850,20 +712,14 @@ As each person presents, your job in the audience is to follow the steps they su
 
 Go!
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_triangles_flipped.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size55[.content-box-blue[**For Next Class**]]
+## For Next Class {background-image="libs/Images/background-blue_triangles2.png" .center}
 
 <br>
 
-.size50[
 1. Tidy our new dataset
 
 2. Long and Teetor (2019) Sections 1.1 and 1.2
@@ -871,9 +727,8 @@ class: middle
 3. Healy (2019) Sections 2.1 - 2.4
 
 4. (optional) Install R and RStudio on your computer
-]
 
-???
+::: notes
 
 If you would like to be able to work on your personal computer this semester, bring it to our next class and we'll save time if you need help getting set-up!
 
@@ -884,3 +739,4 @@ Even if you'll be working on the lab computers we will spend class time configur
 <br>
 
 ### Questions on the assignment?
+:::

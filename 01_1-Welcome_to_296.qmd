@@ -1,69 +1,43 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+## Data Analysis in Political Science {background-image="libs/Images/background-data_blue_v3.png" .center}
 
+```{r}
 library(tidyverse)
 library(readxl)
-library(stargazer)
-##library(kableExtra)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(kableExtra)
+library(modelsummary)
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: center, middle, inverse
-
-.size80[**Data Analysis in Political Science**]
-
-.size50[(Spring 2024)]
-
-.size70[
 <br>
-]
 
-.size40[Justin Leinaweaver, PhD]
+<br>
 
-???
+**(Spring 2024)**
 
-### Prep for Class
+<br>
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
+
+::: notes
+Prep for Class
+
 1. *Bring rulers to class*
+:::
+
+
+
+
+## Introductions {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size60[.content-box-white[**Introductions**]]
-
-.size50[
 1. Name
 
 2. Year in School
@@ -71,9 +45,8 @@ class: middle
 3. Major(s)
 
 4. How much do you love statistics? (1 to 10 scale)
-]
 
-???
+::: notes
 
 Let's go around the room for introductions.
 
@@ -94,18 +67,13 @@ I'll go first.
 ### Your turn!
 
 - *ON BOARD*: Stats scores!
+:::
 
 
----
+## Read the Syllabus! {background-image="libs/Images/background-slate_v2.png"}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[.size70[.content-box-white[**Read the Syllabus!**]]]
-
-.size50[
 - Components of the grade,
 - Assignment requirements,
 - Attendance policy,
@@ -113,9 +81,8 @@ class: middle
 - Daily plan / readings,
 - Buy the Wheelan book,
 - etc.
-]
 
-???
+::: notes
 
 Please make sure to read the syllabus **before class** on Friday.
 
@@ -130,17 +97,13 @@ We'll kick off class with a chance to discuss the syllabus
 <br>
 
 ### Deal?
+:::
 
 
 
----
+## {background-image="libs/Images/01_1-monkey_darts_politics.jpg" background-size='90%'}
 
-background-image: url('libs/Images/01_1-monkey_darts_politics.jpg')
-background-size: 83%
-background-position: center
-class: slideblue
-
-???
+::: notes
 
 Welcome to Data Analysis in Political Science!
 
@@ -158,22 +121,29 @@ Over the last year (or more) you've taken some political science classes.
 
 ### - If those are the work of a political scientist, then what do political scientists do?
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+## Read the Syllabus! {background-image="libs/Images/background-slate_v2.png" .center}
 
-.size65[
-Our .textblue[**goal**] as political scientists:
+<br>
 
-- To better .textblue[**understand**] the social world
-]
+Our **goal** as political scientists:
 
-???
+::: {.incremental}
+- To better **understand** the social world
+
+<br>
+
+- The method is **"science"**
+
+<br>
+
+- The key is **"measurement"**
+:::
+
+::: notes
 
 The big goal of political science is to understand how the social world works,
 
@@ -187,31 +157,15 @@ The big goal of political science is to understand how the social world works,
 
 - What happens when our obligations to different communities conflict?
 
---
-
-.size65[
-- The method is .textblue[**"science"**]
-]
-
-???
-
 <br>
 
-Science is empirical, verifiable, replicatable
+**REVEAL**: Science is empirical, verifiable, replicatable
 
 - And since empirical means rooted in real-world observation...
 
---
-
-.size65[
-- The key is .textblue[**"measurement"**]
-]
-
-???
-
 <br>
 
-Using "real world observations" means EVERYTHING is a measurement problem
+**REVEAL**: Using "real world observations" means EVERYTHING is a measurement problem
 
 <br>
 
@@ -228,25 +182,19 @@ And let me be super clear, measurement doesn't require numbers!
 Given this focus, let's kick off our first class today with a simple measurement warm-up!
 
 - **SLIDE**: I would like you to describe the heights of the class
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size90[.content-box-white[**Warm-up Exercise**]]
+## Warm-up Exercise {background-image="libs/Images/background-teal4.png" .center}
 
 <br>
 
-.size70[
-Aim: Describe the distribution of student heights in our class
-]
+**The Big Aim**
 
-???
+- Describe the distribution of student heights in our class
+
+::: notes
 
 What I would like you to do is describe for me the distribution of heights in this class.
 
@@ -257,28 +205,19 @@ Ideally, you will be able to provide me with descriptive summaries of our class 
 <br>
 
 **SLIDE**: Let's begin with a fairly simple method...
+:::
 
 
 
+## Warm-up Exercise {background-image="libs/Images/background-teal4.png" .center}
 
----
-
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size40[.content-box-white[**Aim of the Exercise:**]]
-
-.size40[.content-box-white[**Describe the distribution of student heights in our class**]]
+**Describe the distribution of student heights in our class**
 
 <br>
 
-.size70[
 Order the students in our class by height (shortest to tallest)?
-]
 
-???
+::: notes
 
 To answer this question I will ask you to stand up and organize yourselves into a line by height (from the shortest to the tallest)
 
@@ -307,27 +246,18 @@ Ok, let me see your answer
 <br>
 
 **SLIDE**: Let's tweak our exercise and try it again...
+:::
 
 
+## Warm-up Exercise {background-image="libs/Images/background-teal4.png" .center}
 
----
-
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size40[.content-box-white[**Aim of the Exercise:**]]
-
-.size40[.content-box-white[**Describe the distribution of student heights in our class**]]
+**Describe the distribution of student heights in our class**
 
 <br>
 
-.size70[
 What is the specific range of heights of the students in our class (minimum to maximum in inches)?
-]
 
-???
+::: notes
 
 Work together and get ready to report back to me!
 
@@ -368,27 +298,18 @@ Depends on the purpose of the measurement!
 <br>
 
 **SLIDE**: One more time!
+:::
 
 
+## Warm-up Exercise {background-image="libs/Images/background-teal4.png" .center}
 
----
-
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size40[.content-box-white[**Aim of the Exercise:**]]
-
-.size40[.content-box-white[**Describe the distribution of student heights in our class**]]
+**Describe the distribution of student heights in our class**
 
 <br>
 
-.size70[
 What is the average height of the students in our class (to the nearest millimeter)?
-]
 
-???
+::: notes
 
 *Let them work on this on their own*
 
@@ -413,34 +334,23 @@ Ok, let me see your answer
 Again, depends entirely on the question being asked!
 
 - Although in this case, beware false precision!
+:::
 
 
 
 
+## What do we learn about "height" from our warm-up exercises? {background-image="libs/Images/background-teal4.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle, center
+- Order by height
 
-.content-box-white[
-.size60[
-**What do we learn about "height" from our warm-up exercises?**
-]]
+- Range in inches
 
-.size40[
-Order by height
+- Average in millimeter
 
-Range in inches
-
-Average in millimeter
-]
-
-???
-
-### Ok, what do we learn about "height" from our warm-up measurement exercises?
+::: notes
+**Ok, what do we learn about "height" from our warm-up measurement exercises?**
 
 <br>
 
@@ -478,58 +388,56 @@ A big part of being a social scientist is figuring out which method is the "righ
 <br>
 
 **SLIDE**: Now, what about measurement...
+:::
 
 
 
----
+## What do we learn about "measurement" from our warm-up exercises? {background-image="libs/Images/background-teal4.png" .center}
 
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle, center
+<br>
 
-.content-box-white[
-.size60[
-**What do we learn about "measurement" from our warm-up exercises?**
-]]
+- Order by height
 
+- Range in inches
 
-.size40[
-Order by height
+- Average in millimeter
 
-Range in inches
-
-Average in millimeter
-]
-
-???
-
-### What do we learn about measurement from our warm-up exercises?
+::: notes
+**What do we learn about measurement from our warm-up exercises?**
 
 <br>
 
 - **SLIDES** x 4: Measurement uncertainty depends on subject, technique, tool and validation
+:::
 
 
----
 
-background-image: url('libs/Images/01_1-Height_subject.jpg')
-background-size: 60%
-background-position: right
-class: slideblue
+## Science as Measurement {background-image="libs/Images/background-slate_v2.png" .center}
 
-.left[.size60[
+<br>
+
+:::: {.columns}
+::: {.column width="35%"}
+
+<br>
 
 + **Subject**
 
-+ .textgrey[Tool]
++ Tool
 
-+ .textgrey[Process]
++ Process
 
-+ .textgrey[Validation]
-]]
++ Validation
+:::
 
-???
+::: {.column width="65%"}
+```{r, fig.align='right'}
+knitr::include_graphics('libs/Images/01_1-Height_subject.jpg')
+```
+:::
+::::
+
+::: notes
 
 I) Useful measurements require clear definitions of the subject you are studying
 
@@ -559,28 +467,36 @@ Bottom line, you cannot measure something until you carefully define the subject
 
 - There's a lot of data out there and people make the mistake of interpreting it without first understanding WHAT it actually focuses on
 
+:::
 
 
 
----
+## Science as Measurement {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/01_1-Height_rulers.jpg')
-background-size: 60%
-background-position: right
-class: slideblue
+<br>
 
-.left[.size60[
+:::: {.columns}
+::: {.column width="35%"}
 
-+ .textgrey[Subject]
+<br>
+
++ Subject
 
 + **Tool**
 
-+ .textgrey[Process]
++ Process
 
-+ .textgrey[Validation]
-]]
++ Validation
+:::
 
-???
+::: {.column width="65%"}
+```{r, fig.align='right'}
+knitr::include_graphics('libs/Images/01_1-Height_rulers.jpg')
+```
+:::
+::::
+
+::: notes
 
 II) Useful measurements require the use of valid tools
 
@@ -597,29 +513,36 @@ In our height example:
 - Do the markings line up with the ends of the ruler well?
 
 - Are the rulers long enough for the job at hand?
+:::
 
 
 
+## Science as Measurement {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+:::: {.columns}
+::: {.column width="45%"}
 
-background-image: url('libs/Images/01_1-Height_technique.jpg')
-background-size: 50%
-background-position: right
-class: slideblue
+<br>
 
-.left[.size60[
+<br>
 
-+ .textgrey[Subject]
++ Subject
 
-+ .textgrey[Tool]
++ Tool
 
 + **Process**
 
-+ .textgrey[Validation]
-]]
++ Validation
+:::
 
-???
+::: {.column width="55%"}
+```{r, fig.align='right'}
+knitr::include_graphics('libs/Images/01_1-Height_technique_v1.png')
+```
+:::
+::::
+
+::: notes
 
 III) Useful measurements require reliable processes
 
@@ -634,28 +557,36 @@ In terms of our height measurements:
 - Did everyone follow it perfectly?
 
 - Are the rulers sufficiently well made that they will not warp through use?
+:::
 
 
 
----
+## Science as Measurement {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/01_1-Height_calibration.jpg')
-background-size: 60%
-background-position: right
-class: slideblue
+<br>
 
-.left[.size60[
+:::: {.columns}
+::: {.column width="35%"}
 
-+ .textgrey[Subject]
+<br>
 
-+ .textgrey[Tool]
++ Subject
 
-+ .textgrey[Process]
++ Tool
+
++ Process
 
 + **Validation**
-]]
+:::
 
-???
+::: {.column width="65%"}
+```{r, fig.align='right'}
+knitr::include_graphics('libs/Images/01_1-Height_calibration.jpg')
+```
+:::
+::::
+
+::: notes
 
 IV) Useful measurements require external validation
 
@@ -668,21 +599,21 @@ Again, for the height exercise:
 - Did the manufacturer of the ruler tie their work to an official or external authoritative source? Have the ruler length's been checked?
 
 - Did you check each others' work when measuring?
+:::
 
 
 
----
+## Science as Measurement {background-image="libs/Images/background-teal4.png" .center}
 
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle, center
+<br>
 
-.content-box-white[
-.size80[**Every Measure is Uncertain**]
-]
+<br>
 
-???
+::: {.r-fit-text}
+**Every Measure is Uncertain**
+:::
+
+::: notes
 
 Bottom line time!
 
@@ -703,19 +634,14 @@ You clearly have a good enough sense of your height to navigate most parts of yo
 HOWEVER, a precise class average to a small degree of error will require WAY more effort to produce.
 
 - Key if you're trying to launch a space ship, create fusion or argue that raising the minimum wage will raise or lower unemployment!
+:::
 
 
 
----
+## Useful measurements must: {background-image="libs/Images/background-teal4.png" .center}
 
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.size70[.content-box-white[**Useful measurements must:**]]
-
-.size50[
 1. Define the Concept
 
 2. Specify the Tool
@@ -723,10 +649,8 @@ class: middle
 3. Specify the Process
 
 4. Test for Robustness
-]
 
-
-???
+::: notes
 
 Let's write down some guidelines!
 
@@ -749,27 +673,21 @@ Useful measurements must always:
 <br>
 
 Good, let's try to measure something harder!
+:::
 
 
 
----
+## Assignment for Next Class {background-image="libs/Images/background-teal4.png" .center}
 
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[.size65[.content-box-white[**Assignment for Friday**]]]
-
-.size50[
 1. What was the population of the United States of America in 2020?
 
 2. How many countries are there in the world today?
 
 3. How many wars are currently ongoing in the world?
-]
 
-???
+::: notes
 
 Here's your first assignment for the class.
 
@@ -785,29 +703,29 @@ Here's your first assignment for the class.
 
 ### Are the questions clear? Do you understand what I'm asking?
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle
 
-.center[.size55[.content-box-white[**Assignment for Friday**]]]
+## Assignment for Next Class {background-image="libs/Images/background-teal4.png" .center}
 
-.size45[
+<br>
+
 1. Population of the USA in 2020?
 
 2. Number of countries in the world today?
 
 3. Number of wars in the world today?
 
-.center[**Measurement Elements:**] 
-.center[Definitions, Tools, Process and Validation]
+<br>
+
+**Measurement Elements:**
+
+- Definitions, Tools, Process and Validation
 ]
 
-???
+::: notes
 
 To clarify: I'm not asking you to find and adopt someone else's answer.
 
@@ -826,29 +744,23 @@ Your job is to think critically about how each of these questions is a significa
 <br>
 
 - **SLIDE**: A complete answer requires...
+:::
 
 
 
+## Assignment for Next Class {background-image="libs/Images/background-teal4.png" .center}
 
----
-
-background-image: url('libs/Images/background-teal4.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size45[
 1. Population of the USA in 2020?
 2. Number of countries in the world today?
 3. Number of wars in the world today?
 
 **The Assignment Requires:**
+
 - A specific answer, 
 - the source(s) used (APA), and 
 - an argument, focused on measurement, that your answer is useful (3+ sentences).
-]
 
-???
+::: notes
 
 For each question you must provide:
 
@@ -870,5 +782,5 @@ The discussion board on canvas will stop accepting entries when class starts on 
 This means the point depends on submitting in time!
 
 Let's get to it!
-
+:::
 

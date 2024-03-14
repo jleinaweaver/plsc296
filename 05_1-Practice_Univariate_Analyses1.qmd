@@ -1,30 +1,14 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+## Today's Agenda {background-image="libs/Images/background-data_blue_v3.png" .center}
 
+```{r}
 library(tidyverse)
 library(readxl)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(kableExtra)
+library(modelsummary)
 
 # Data for today
 library(carData)
@@ -32,34 +16,25 @@ library(carData)
 wdi <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size65[**Today's Agenda**]
-
 <br>
 
-.size40[
-Practicing univariate analyses in R
+**Practicing univariate analyses in R**
 
 - Review: Practice exercises
 
 - New: Inputting Excel data & polishing visualizations
 
 - Canvas: "WDI-Tidy_Data_Extract-2024-02-06.xlsx"
-]
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-???
+::: notes
+Prep for Class
 
-## Prep for Class
 1. Pull WDI data and post on Canvas
     - Both the original and the tidy version
 
@@ -72,17 +47,13 @@ Practicing univariate analyses in R
 <br>
 
 **SLIDE**: Lots to do so let's dive in with your practice exercises for today!
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.75, out.width='55%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=.75, fig.width=6}
 # 1. What is the regional breakdown of UN member states? 
 library(carData)
 
@@ -90,7 +61,7 @@ ggplot(data = UN, aes(y = region)) +
   geom_bar(fill = "mediumpurple")
 ```
 
-???
+::: notes
 
 Don't forget that accessing this dataset requires installing AND loading carData
 
@@ -108,40 +79,42 @@ Don't forget that accessing this dataset requires installing AND loading carData
 <br>
 
 **SLIDE**: Time to talk about polishing a visualization for a professional audience
+:::
 
 
 
+## Visualizations MUST include {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
-```{r, cache=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=1.1, out.width='100%'}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, cache=TRUE, fig.align='center', fig.asp=1.1, fig.width=6}
 # The labs() function
 ggplot(data = UN, aes(y = region)) +
   geom_bar() +
   labs(x = "x Axis Label", y = "y Axis Label", caption = "Source: Where did the data come from?", 
        title = "A title like a thesis statement for the visualization")
 ```
-]
+:::
 
-.pull-right[
-.center[.size45[
-.content-box-white[
-**Visualizations MUST include:**]
+::: {.column width="50%"}
 
+<br>
+
+<br>
+
+::: {.r-fit-text}
 1. Informative titles,
 
 2. Clear axis labels, and
 
 3. Data sources
-]]]
+:::
+:::
+::::
 
-???
+::: notes
 
 From this point forward, anytime you submit a visualization it must be polished enough that you could present it to a professional audience.
 
@@ -163,26 +136,20 @@ We can get even fancier, but this represents my minimum expectations from you th
 <br>
 
 **SLIDE**: Let's add each piece one at a time
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='55%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=.8, fig.width=6}
 # The labs() function
 ggplot(data = UN, aes(y = region)) +
   geom_bar() +
   labs(x = "Count", y = "United Nations Regions")
 ```
-]
 
-???
+::: notes
 
 The labs function has a bunch of possible arguments, e.g. labels you can add to your plot
 
@@ -193,49 +160,36 @@ The labs function has a bunch of possible arguments, e.g. labels you can add to 
 <br>
 
 **SLIDE**: Add a caption
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='55%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=.8, fig.width=6}
 # The labs() function
 ggplot(data = UN, aes(y = region)) +
   geom_bar() +
   labs(x = "Count", y = "United Nations Regions", caption = "Source: UNSD (2012)")
 ```
-]
 
-???
+::: notes
 
 The caption argument adds a small note on the bottom right of the plot
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='55%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=.8, fig.width=7}
 # The labs() function
 ggplot(data = UN, aes(y = region)) +
   geom_bar() +
   labs(x = "Count", y = "United Nations Regions", caption = "Source: UNSD (2012)",
        title = "The UN tracks data for a large number of non-member states")
 ```
-]
 
-???
+::: notes
 
 Finally we add a thesis statement for our visualization
 
@@ -260,18 +214,12 @@ This represents the absolute baseline for a visualization in this class.
 - However, as you add skills I will hopefully see you making your visualizations even more compelling.
 
 - **SLIDE**: For example
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='55%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=.8, fig.width=7}
 # The labs() function
 ggplot(data = UN, aes(y = region)) +
   geom_bar(fill = c(rep("darkblue", 8), "red")) +
@@ -279,9 +227,8 @@ ggplot(data = UN, aes(y = region)) +
        caption = "Source: UNSD (2012)", 
        title = "The UN tracks data for a large number of non-member states")
 ```
-]
 
-???
+::: notes
 
 We should continuously look for ways to draw the reader's eye to the key aspects of the visualization
 
@@ -296,35 +243,35 @@ We should continuously look for ways to draw the reader's eye to the key aspects
 <br>
 
 **SLIDE**: Practice question number 2, life expectancy in the world
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
+::: {.r-fit-text}
+**How much variation is there in life expectancy rates around the world?**
+:::
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[.size30[.content-box-blue[**How much variation is there in life expectancy rates around the world?**]]]
-
-.pull-left[
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='100%'}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=.8, fig.width=6}
 ggplot(data = UN, aes(x = lifeExpF)) + 
   geom_histogram()
 ```
-]
+:::
 
-.pull-right[
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.8, out.width='100%'}
+::: {.column width="50%"}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=.8, fig.width=6}
 ggplot(data = UN, aes(x = lifeExpF)) + 
   geom_boxplot()
 ```
-]
+:::
+::::
 
-???
-
-### Everybody get these two plots?
+::: notes
+**Everybody get these two plots?**
 
 <br>
 
@@ -337,18 +284,12 @@ Let's practice our polishing!
 - Everybody add a title, caption and labels to the histogram!
 
 - (**SLIDE**)
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
-```{r, cache=TRUE, echo=TRUE, eval=FALSE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='70%'}
+```{r, cache=TRUE, echo=TRUE, eval=FALSE, fig.align='center', fig.asp=.618, fig.width=6}
 ggplot(data = UN, aes(x = lifeExpF)) +
   geom_histogram() +
   labs(x = "Life Expectancy (years)", y = "Count", 
@@ -356,7 +297,7 @@ ggplot(data = UN, aes(x = lifeExpF)) +
        title = "Almost 1/3 of the states have a life expectancy below 70")
 ```
 
-```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='70%'}
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Color bars below 70
 UN$life_color <- if_else(UN$lifeExpF <= 71, "TRUE", "FALSE")
 
@@ -369,9 +310,8 @@ ggplot(data = UN, aes(x = lifeExpF, fill = life_color)) +
   scale_fill_manual(values = c("grey26", "red3"))
 
 ```
-]
 
-???
+::: notes
 
 Coloring bars in a histogram is a little more complicated, but we'll get there.
 
@@ -382,16 +322,13 @@ Coloring bars in a histogram is a little more complicated, but we'll get there.
 <br>
 
 **SLIDE**: Last practice exercise - US population since 1790
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, out.width='60%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=7}
 # 3. Visualize the growth in the US population since 1790
 ggplot(data = USPop, aes(x = year, y = population)) +
   geom_line() +
@@ -400,9 +337,8 @@ ggplot(data = USPop, aes(x = year, y = population)) +
        title = "The US has rapidly added population since 1780")
 ```
 
-???
-
-### Everybody get this?
+::: notes
+**Everybody get this?**
 
 <br>
 
@@ -411,17 +347,14 @@ ggplot(data = USPop, aes(x = year, y = population)) +
 <br>
 
 We'll keep tweaking our plots, but this represents the basics you must include.
+:::
 
 
 
----
 
-background-image: url('libs/Images/06_1-WDI_Front.png')
-background-size: 75%
-background-position: center
-class: middle
+## {background-image="libs/Images/06_1-WDI_Front.png"}
 
-???
+::: notes
 
 Today we:
 
@@ -442,21 +375,17 @@ As you hopefully got from the reading for today, the WDI is a very useful reposi
 <br>
 
 **SLIDE**: Let's talk about importing Excel data into R
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.align='center', out.width='85%'}
 knitr::include_graphics("libs/Images/05_1-RStudio_Import2.png")
 ```
 
-???
+::: notes
 
 You can import data purely with code, HOWEVER, in my experience new users have a MUCH easier time using the menus for this.
 
@@ -465,61 +394,48 @@ You can import data purely with code, HOWEVER, in my experience new users have a
 <br>
 
 Step 1 is to open the import window
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, fig.align='center', out.width='95%'}
+```{r, fig.align='center', out.width='85%'}
 knitr::include_graphics("libs/Images/05_1-RStudio_Import3.png")
 ```
 
-???
+::: notes
 
 Here you see the excel input window 
 
 - Note that all the choices you make here get written into code in the bottom-right corner.
 
 - Useful for learning the code approach
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.align='center', out.width='95%'}
 knitr::include_graphics("libs/Images/05_1-RStudio_Import3-SP24-Browse.png")
 ```
 
-???
+::: notes
 
 Step 2: "Browse" to the data you saved on your hard drive
 
 - It should then populate all the fields below with its best guesses
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, fig.align='center', out.width='100%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/05_1-RStudio_Import3-SP24-NAs.png")
 ```
 
-???
+::: notes
 
 Step 3, use the preview code to make sure R "sees" the data as you expect it to
 
@@ -538,20 +454,17 @@ In this example you can see that R thinks all of our numeric variables are actua
 In the NA field put in 'NA' and after you click out of that box you should see the preview refresh to show numeric variables are now "double" which is a type of numeric variable
 
 - **SLIDE**
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, fig.align='center', out.width='100%'}
 knitr::include_graphics("libs/Images/05_1-RStudio_Import4-SP24.png")
 ```
 
-???
+::: notes
 
 Last step, name the dataset object
 
@@ -562,29 +475,24 @@ Last step, name the dataset object
 ### Make sense? Any questions on importing tidy Excel data using the menu?
 
 - FYI: Code preview shows that importing data in code uses the read_excel() function.
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo=TRUE, eval=FALSE}
 View(wdi)
 ```
 
-.size18[
 ```{r}
 wdi |>
-  slice_head(n = 11) |>
-  kableExtra::kbl(digits = 1, align = "c")
+  slice_head(n = 8) |>
+  kableExtra::kbl(digits = 1, align = "c") |>
+  kableExtra::kable_styling(font_size = 24) |>
+  kableExtra::column_spec(1:8, background = "white")
 ```
-]
 
-???
+::: notes
 
 Let's talk through the data I've pulled for you from WDI
 
@@ -609,15 +517,11 @@ Let's talk through the data I've pulled for you from WDI
 <br>
 
 **SLIDE**: Filter to current year
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo=TRUE, eval=FALSE}
 # Extract some observations from the dataset
@@ -626,17 +530,17 @@ wdi2021 <- filter(wdi, year == 2021)
 View(wdi2021)
 ```
 
-.size18[
 ```{r}
 wdi2021 <- filter(wdi, year == 2021)
 
 wdi2021 |>
-  slice_head(n = 9) |>
-  kableExtra::kbl(digits = 1, align = "c")
+  slice_head(n = 7) |>
+  kableExtra::kbl(digits = 1, align = "c") |>
+  kableExtra::kable_styling(font_size = 24) |>
+  kableExtra::column_spec(1:8, background = "white")
 ```
-]
 
-???
+::: notes
 
 While I've given you data across time, I'd like us to work today focused on only the most recent year with complete data in the WDI: 2021.
 
@@ -651,38 +555,33 @@ Everybody create a new object called "data2021" and use the filter function to e
 <br>
 
 ### Everybody got that?
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size60[.center[.content-box-blue[**Filter() is Very Useful**]]]
+## Filter() is Very Useful {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.code160[
 ```{r, echo=TRUE, eval=FALSE}
 # Filter for one variable
 filter(wdi, wb_income == "Low")
 ```
+
+<br>
 
 ```{r, echo=TRUE, eval=FALSE}
 # Filter by relative values
 filter(wdi, death_rate > 20)
 ```
 
+<br>
+
 ```{r, echo=TRUE, eval=FALSE}
 # Filter by two variables
 filter(wdi, country == "Ireland", year == 2008)
 ```
-]
 
-???
+::: notes
 
 Filter is an INCREDIBLY useful function
 
@@ -695,29 +594,23 @@ Filter is an INCREDIBLY useful function
 <br>
 
 **SLIDE**: Let's practice!
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size40[.content-box-blue[**Univariate Analyses of Global Child Protection in 2021**]]
+**Univariate Analyses of Global Child Protection in 2021**
 
 <br>
 
-.size40[
 1. Visualize: How many countries have reached herd immunity for measles?
 
 2. Visualize: What is the distribution of countries by the percent of 2 year olds immunized against measles?
 
 3. Calculate: What are the descriptive statistics that describe the proportion of 2 year olds immunized against measles?
-]
 
-???
+::: notes
 
 Focus only on 2021 as our most recent complete year of data
 
@@ -740,27 +633,21 @@ I would like you to analyze those two variables in these three ways so we can le
 <br>
 
 **SLIDE**: Q1
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, out.width='60%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=7}
 # How many countries have reached herd immunity for measles?
 ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
   geom_bar(fill = c("red1", "blue3", "blue3")) +
   labs(x = "", y = "Count", caption = "Source: WDI (2021)",
        title = "The great majority of countries are at risk of measles outbreaks")
 ```
-]
 
-???
+::: notes
 
 ### Everybody get something like this for the first question?
 
@@ -777,37 +664,33 @@ ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
 <br>
 
 **SLIDE**: the missing data problem
+:::
 
 
 
----
+## The Missing Data Problem {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size55[.content-box-blue[**The Missing Data Problem**]]]
-
-.pull-left[
-```{r, cache=TRUE, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, cache=TRUE, echo=FALSE, fig.align='center', fig.asp=1, fig.width=5}
 # How many countries have reached herd immunity for measles?
 ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
   geom_bar(fill = c("red1", "blue3", "blue3")) +
   labs(x = "", y = "Count", caption = "Source: WDI (2021)")
 ```
-]
+:::
 
-.pull-right[
-```{r, cache=TRUE, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+::: {.column width="50%"}
+```{r, cache=TRUE, echo=FALSE, fig.align='center', fig.asp=1, fig.width=5}
 ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
   geom_bar(fill = c("red1", "blue3")) +
   labs(x = "", y = "Count", caption = "Source: WDI (2021)") +
   scale_x_discrete(limits = c("At Risk", "Herd Immunity"))
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 A constant challenge for you as a data researchers is deciding what to do about missing data.
 
@@ -846,18 +729,13 @@ For now I'm not going to give you the code to remove the missing data.
 <br>
 
 **SLIDE**: Histogram time!
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
-```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, out.width='60%'}
+```{r, echo=TRUE, fig.align='center', fig.asp=.618}
 # Histogram
 ggplot(data = wdi2021, aes(x = measles_immunizations_pct)) +
   geom_histogram(bins = 20, fill = "slateblue3") +
@@ -865,9 +743,8 @@ ggplot(data = wdi2021, aes(x = measles_immunizations_pct)) +
        caption = "Source: WDI (2021)",
        title = "??")
 ```
-]
 
-???
+::: notes
 
 I tweaked the number of bins here to smooth out the distribution a bit.
 
@@ -888,47 +765,39 @@ I tweaked the number of bins here to smooth out the distribution a bit.
 ```{r}
 prop.table(table(wdi2021$measles_immunizations_pct < 75))
 ```
+:::
 
 
+## Analyzing Child Protection in 2021 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Analyzing Child Protection in 2021**]]]
-
-.pull-left[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.7, out.width='100%'}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.align='center', fig.asp=.7, fig.width=6}
 ggplot(data = wdi2021, aes(x = measles_herd_immunity)) +
   geom_bar(width = .5, fill = c("red1", "blue3", "pink")) +
   labs(x = "", y = "Count", caption = "Source: WDI (2021)",
        title = "The great majority of countries are at risk of measles outbreaks")
 ```
-]
+:::
 
-.pull-right[
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.7, out.width='100%'}
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.align='center', fig.asp=.7, fig.width=6}
 ggplot(data = wdi2021, aes(x = measles_immunizations_pct)) +
   geom_histogram(bins = 20, fill = "slateblue3") +
   labs(x = "Measles Immunizations (%)", y = "Count",
        caption = "Source: WDI (2021)",
        title = "The world is making progress on measles vaccinations, \n but considerable work remains to reach herd immunity")
 ```
-]
+:::
+::::
 
-<br>
-
-.center[
-.code120[
 ```{r}
 summary(wdi2021$measles_immunizations_pct)
 ```
-]]
 
-???
+::: notes
 
 Alright, let's talk about what we've made.
 
@@ -949,29 +818,23 @@ Alright, let's talk about what we've made.
 THIS is the power of univariate analyses!
 
 - I can't emphasize this enough, these simple tools add SO, SO much to a written argument.
+:::
 
 
+## For Next Class {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+<br>
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+**What is the state of global development in 2021?**
 
-.size50[.content-box-blue[**For Next Class**]]
-
-.size45[
-.center[**What is the state of global development in 2021?**]
 - WB Income
 - gdp_per_capita
 - measles_herd_immunity
 - measles_immunizations_pct
 - birth_rate
 - death_rate
-]
 
-???
+::: notes
 
 For next class I want you to:
 
@@ -992,6 +855,6 @@ SECOND, I want you to submit a short argument to Canvas before class that answer
 ### Questions on the assignment?
 
 - Get to it!
-
+:::
 
 

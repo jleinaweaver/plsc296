@@ -1,136 +1,98 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+## Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
-# library(readxl)
-# library(stargazer)
+library(readxl)
 library(kableExtra)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(modelsummary)
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
+<br>
 
 <br>
 
-.size60[
-Building univariate visualizations
-]
+**Univariate Analyses**
+
+- Building univariate visualizations
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+<br>
 
-???
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-## Prep for Class
+::: notes
+Prep for Class
+
 1. Bring paper and rulers to class.
 
 <br>
 
 **SLIDE**: Let's talk about your practice exercises!
+:::
 
 
+## Practice Exercises {background-image="libs/Images/background-slate_v2.png"}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size35[
 1. What proportion of US presidents since 1953 have been Republicans? (Built-in Data: presidential, Variable: party)
-    
-2. Why are the mean and median total populations in the midwest so different from each other? (Built-in Data: midwest, Variable: poptotal)
 
-3. How many hours per day do you have to sleep to sleep longer than 75% of studied mammals? (Built-in Data: msleep, Variable: sleep_total)
-    
-4. Which mammal sleeps the least and which the most? (Built-in Data: msleep, Variable: sleep_total)
-]
+2.  Why are the mean and median total populations in the midwest so different from each other? (Built-in Data: midwest, Variable: poptotal)
 
-???
+3.  How many hours per day do you have to sleep to sleep longer than 75% of studied mammals? (Built-in Data: msleep, Variable: sleep_total)
+
+4.  Which mammal sleeps the least and which the most? (Built-in Data: msleep, Variable: sleep_total)
+
+::: notes
 
 For today I asked you to practice our coding skills and descriptive stats from last class.
 
 <br>
 
 ### Did everybody finish the assignment? 
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**What proportion of US presidents since 1953 have been Republicans?**]]
+## Practice Exercises {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.code170[
+**What proportion of US presidents since 1953 have been Republicans?**
+
 ```{r, echo=TRUE}
-prop.table(table(presidential$party))
+proportions(table(presidential$party))
 ```
-]
 
-???
+::: notes
+**Everybody get this?**
+:::
 
-### Everybody get this?
 
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**Why are the mean and median total populations in the midwest so different from each other?**]]
+## Practice Exercises {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.code170[
+**Why are the mean and median total populations in the midwest so different from each other?**
+
 ```{r, echo=TRUE}
 summary(midwest$poptotal)
+```
 
+<br>
+
+```{r, echo=TRUE, eval=TRUE}
 sd(midwest$poptotal)
 ```
-]
 
-???
-
-### So, what's your answer to this question?
+::: notes
+**So, what's your answer to this question?**
 
 <br>
 
@@ -139,29 +101,26 @@ On average, the cities in the midwest differ from the mean by nearly 300k!
 - Huge variance in city sizes
 
 - Some VERY small (sub-2k) and some MASSIVE (5+ million)
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[**How many hours per day do you have to sleep to sleep longer than 75% of studied mammals?**]]
+## Practice Exercises {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.code170[
+**How many hours per day do you have to sleep to sleep longer than 75% of studied mammals?**
+
 ```{r, echo=TRUE, eval=TRUE}
 summary(msleep$sleep_total)
+```
 
+<br>
+
+```{r, echo=TRUE, eval=TRUE}
 quantile(msleep$sleep_total, probs = .75)
 ```
-]
 
-???
+::: notes
 
 The third quartile IS the 75th percentile
 
@@ -172,84 +131,89 @@ The third quartile IS the 75th percentile
 Interpret this result for me
 
 ### What does this 13.75 mean?
+:::
 
 
 
----
+## Practice Exercises {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[.size55[**Which mammal sleeps the least and which the most?**]]
+**Which mammal sleeps the least and which the most?**
 
-.pull-left[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r, echo=FALSE, eval=TRUE}
 # Identify the range and view the data
 msleep |>
   select(name, sleep_total) |>
   arrange(sleep_total) |>
   slice_head(n = 10) |>
-  kbl(align = c('l', 'c'))
+  kbl(align = c('l', 'c')) |>
+  kableExtra::kable_styling(font_size = 22)
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 ```{r, echo=FALSE, eval=TRUE}
 # Identify the range and view the data
 msleep |>
   select(name, sleep_total) |>
   arrange(desc(sleep_total)) |>
   slice_head(n = 10) |>
-  kbl(align = c('l', 'c'))
+  kbl(align = c('l', 'c')) |>
+  kableExtra::kable_styling(font_size = 22)
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 The most direct approach is probably to use the View() function and click the arrow next to sleep_total to sort the data
 
 <br>
 
 **SLIDE**: Alright let's move to our new work for today!
+:::
 
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## Practice Exercises {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo = FALSE, fig.align = 'center', out.width = '50%'}
 knitr::include_graphics("libs/Images/03_1-data_viz.jpg")
 ```
 
-.size45[
+<br>
+
 A method for summarizing data in more compelling, easier to understand and more informative methods than descriptive statistics.
-]
 
 
 
----
+## Why draw visualizations by hand? {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[.size50[.content-box-blue[**Why draw visualizations by hand?**]]]
-
-.pull-left[
+::::: {.columns}
+:::: {.column width="40%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/03_1-By_hand.jpg")
 ```
-]
+::::
 
-???
+:::: {.column width="60%"}
+::: {.incremental}
+1. Principle 3 in action
 
+2. Learn to think like a programmer
+
+3. Learn to "see" descriptive statistics
+:::
+::::
+:::::
+
+::: notes
 Today we practice making data visualizations working entirely by hand!
 
 - I've brought paper and rulers!
@@ -262,130 +226,33 @@ Please don't aim for making art today.
 
 <br>
 
-Why do this?
+**REVEAL**: Why do this?
 
-
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Why draw visualizations by hand?**]]]
-
-.pull-left[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
-knitr::include_graphics("libs/Images/03_1-By_hand.jpg")
-```
-]
-
-.pull-right[
-.size45[
-1. Principle 3 in action
-]]
-
-???
-
-Learning these intutions by hand will help drive home the lesson of connnecting variable types to visualization tools.
+- Learning these intutions by hand will help drive home the lesson of connnecting variable types to visualization tools.
 
 - Certain types of variables tie to specific tools
 
 - e.g. Tables of categorical variables often look better as a bar plot
 
+<br>
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Why draw visualizations by hand?**]]]
-
-.pull-left[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
-knitr::include_graphics("libs/Images/03_1-By_hand.jpg")
-```
-]
-
-.pull-right[
-.size45[
-1. Principle 3 in action
-
-2. Learn to think like a programmer
-]]
-
-???
-
-Being a programmer, e.g. writing code, is a means of solving problems in small steps.
+**REVEAL**: Being a programmer, e.g. writing code, is a means of solving problems in small steps.
 
 - Drawing a visualization by hand works the same way
 
+<br>
+
+**REVEAL**: The better you learn how specific descriptive stats connect to specific viz, the sooner you will learn to "see" the visualization in a table of descriptive statistics.
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## Principle 3 {background-image="libs/Images/background-slate_v2.png" .center}
 
-.center[.size50[.content-box-blue[**Why draw visualizations by hand?**]]]
-
-.pull-left[
+**Variable Type Determines Tool**
 
 <br>
 
-<br>
-
-<br>
-
-.size30[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
-mpg |>
-  select(cty, hwy) |>
-  pivot_longer(cols = cty:hwy, names_to = "Type", values_to = "Fuel_Economy") |>
-  group_by(Type) |>
-  summarize(
-    N = n(),
-    Mean = mean(Fuel_Economy),
-    StdDev = sd(Fuel_Economy),
-    Min = min(Fuel_Economy),
-    Max = max(Fuel_Economy)
-  ) |>
-  kableExtra::kbl(digits = 2)
-```
-]]
-
-.pull-right[
-.size45[
-1. Principle 3 in action
-
-2. Learn to think like a programmer
-
-3. Learn to "see" descriptive statistics
-]]
-
-???
-
-The better you learn how specific descriptive stats connect to specific viz, the sooner you will learn to "see" the visualization in a table of descriptive statistics.
-
-
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[.content-box-blue[**Principle 3: Variable Type Determines Tool**]]]
-
-<br>
-
-.size40[
 **Univariate Visualizations**
 
 + If a **categorical** variable, make a **bar plot**
@@ -393,9 +260,8 @@ class: middle
 + If a **numeric** variable, make a **box plot** or **histogram**
 
 + If a **numeric variable across time**, make a **line plot**
-]
 
-???
+::: notes
 
 Here is our plan of attack for today.
 
@@ -408,35 +274,39 @@ Here is our plan of attack for today.
 <br>
 
 ### Everybody have this written down?
+:::
 
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+:::
 
-.center[.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]]
+:::: {.columns}
+::: {.column width="45%"}
 
-.pull-left[
-.size55[
+<br>
+
+::: {.r-fit-text}
 **Bar Plots**
 
 1. Counts
 
 2. Proportions
-]]
+:::
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+::: {.column width="55%"}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_1-Johnson-Bar_plot.png")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Bar plots, as the Johnson reading explains, represent the number (or proportion) of observations in each level using the height of a bar.
 
@@ -455,30 +325,24 @@ Drawing a bar plot is super easy:
 <br>
 
 ### Make sense?
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+:::
 
 <br>
 
 **By hand**, draw a bar plot of drive train levels (drv) for the 234 cars in the mpg dataset.
-]
-
-.size35[
 
 <br>
 
-Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars]
+Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars
 
-???
+::: notes
 
 Everybody make us this bar plot
 
@@ -493,20 +357,20 @@ Everybody make us this bar plot
 *After 2 minutes, you make it on the board*
 
 - *Have the class walk you through what to do*
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+:::
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+<br>
 
-.center[.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]]
-
-.pull-left[
-```{r, echo=FALSE, fig.retina=3, fig.width=4, fig.asp=1, out.width='100%'}
+:::: {.columns}
+::: {.column width="55%"}
+```{r, fig.width=4, fig.asp=1, fig.align='center'}
 mpg |>
   ggplot(aes(x = drv)) +
   geom_bar(width = .5, fill = c("blue1", "skyblue3", "lightblue")) +
@@ -516,23 +380,22 @@ mpg |>
   scale_x_discrete(limits = c("r", "4", "f"), labels = c("Rear Wheel\n Drive", "4 Wheel\n Drive", "Front Wheel\n Drive")) +
   geom_hline(yintercept = seq(25, 100, 25), color = "white")
 ```
-]
+:::
 
-.pull-right[
-
-<br>
+::: {.column width="45%"}
 
 <br>
 
-.code150[
-```{r, echo=TRUE, fig.retina=3}
+<br>
+
+```{r, echo=TRUE}
 table(mpg$drv)
 ```
-]]
+:::
+::::
 
-???
-
-### How did we do?
+::: notes
+**How did we do?**
 
 I ordered my bars from least to most to help aid ease of interpretation.
 
@@ -540,25 +403,25 @@ I ordered my bars from least to most to help aid ease of interpretation.
 
 Let's practice this one more time!
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+:::
 
 <br>
 
-.size50[**By hand**, draw a bar plot of **the proportion** of parties that have controlled the presidency since 1953 in the presidential data set.
-]
+**By hand**, draw a bar plot of **the proportion** of parties that have controlled the presidency since 1953 in the presidential data set.
 
-.size35[Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars]
+<br>
 
-???
+Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars
+
+::: notes
 
 Everybody make us this bar plot
 
@@ -574,20 +437,21 @@ Everybody make us this bar plot
 
 - *Have the class walk you through what to do*
 
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+:::
 
-.center[.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]]
+<br>
 
-.pull-left[
-```{r, echo=FALSE, fig.retina=3, fig.width=4, fig.asp=1, out.width='100%'}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.width=5, fig.asp=1}
 presidential |>
   count(party) |>
   mutate(
@@ -601,74 +465,63 @@ presidential |>
   scale_y_continuous(labels = scales::percent_format()) +
   geom_hline(yintercept = seq(.2, .6, .2), color = "white")
 ```
-]
+:::
 
-.pull-right[
-
-<br>
+::: {.column width="50%"}
 
 <br>
 
-.code100[
+<br>
+
 ```{r, echo=TRUE, fig.retina=3}
-prop.table(table(presidential$party))
+proportions(table(presidential$party))
 ```
-]]
+:::
+::::
 
-???
-
-### How did we do?
+::: notes
+**How did we do?**
 
 <br>
 
 ### Everybody comfortable with what bar plots are used for, how you make them and how we interpret them?
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Numerical Variable: Make a Bar Plot?**]]
+::: {.r-fit-text}
+**Numerical Variable: Make a Bar Plot?**
+:::
 
 <br>
 
-.size50[
 Why can't we simply make a bar plot for total population (`poptotal`) in the `midwest` data set?
-]
 
-???
+::: notes
 
 Everybody try it!
 
 - Use the table function to count the levels in midwestern populations
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-.size50[.content-box-blue[**Numerical Variable: Make a Bar Plot?**]]
+::: {.r-fit-text}
+**Numerical Variable: Make a Bar Plot?**
+:::
 
 <br>
 
-.code40[
-```{r, echo=FALSE}
-options(width = 200)
-
-# Count levels in the poptotal variable
+```{r, echo=TRUE}
 table(midwest$poptotal)
 ```
-]
 
-???
+::: notes
 
 In the realm of numerical data there may not be any overlap in numbers in the data set!
 
@@ -684,27 +537,24 @@ In the realm of numerical data there may not be any overlap in numbers in the da
 <br>
 
 ### So, what do we do?
-
+:::
     
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]]
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '65%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_1-Johnson-Histogram.png")
 ```
 
-???
+::: notes
 
 In a bar plot for a categorical variable, each bar represents the count of each level.
 
@@ -727,21 +577,17 @@ This example from the book chapter shows a histogram of women's ages.
 <br>
 
 Let's practice building a histogram to see if that helps drive the intuition home for you.
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]]
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
 
 <br>
 
-.size35[
 1. Make a binned table of city fuel economy (mpg data set)
     - Bin 1: 0 - 10
     - Bin 2: 11 - 20
@@ -749,9 +595,8 @@ class: middle
     - Bin 4: 31 - 40
 
 2. Make a bar plot of these bins
-]
 
-???
+::: notes
 
 1. Run the table function on the cty fuel economy variable
     - The add together the totals in each bin
@@ -771,22 +616,20 @@ Everybody make us this histogram (e.g. a bar plot of bins)
 *After 2 minutes, you make it on the board*
 
 - *Have the class walk you through what to do*
+:::
 
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]
-
-.pull-left[
-```{r, echo=FALSE, fig.retina=3, fig.width=4, fig.asp=1, out.width='100%'}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.width=4, fig.asp=1}
 mpg |>
   mutate(
     cty2 = case_when(
@@ -801,13 +644,12 @@ mpg |>
   labs(x = "Fuel Economy (City)", y = "Proportion of Observations") +
   geom_hline(yintercept = seq(50, 150, 50), color = "white")
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 
 <br>
 
-.size40[
 ```{r, echo=FALSE}
 mpg |>
   mutate(
@@ -818,28 +660,29 @@ mpg |>
       cty <= 40 ~ "31 - 40")
   ) |>
   count(cty2) |>
-  kableExtra::kbl(col.names = c("City Fuel Economy", "Count"), align = "c")
+  kableExtra::kbl(col.names = c("City Fuel Economy", "Count"), align = "c") |>
+  kableExtra::kable_styling(font_size = 30) |>
+  kableExtra::column_spec(1:2, background = "white")
 ```
-]]
+:::
+::::
 
-???
+::: notes
+**Everybody have a bar plot that looks like this?**
 
-### Everybody have a bar plot that looks like this?
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]
-
-.pull-left[
-```{r, echo=FALSE, fig.retina=3, fig.width=4, fig.asp=1, out.width='100%'}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.width=5, fig.asp=1}
 mpg |>
   ggplot(aes(x = cty)) +
   geom_histogram(fill = "orange3", color = "white", bins = 5) +
@@ -847,10 +690,10 @@ mpg |>
   labs(x = "Fuel Economy (City)", y = "",
        title = "5 Bins")
 ```
-]
+:::
 
-.pull-right[
-```{r, echo=FALSE, fig.retina=3, fig.width=4, fig.asp=1, out.width='100%'}
+::: {.column width="50%"}
+```{r, fig.width=5, fig.asp=1}
 mpg |>
   ggplot(aes(x = cty)) +
   geom_histogram(fill = "orange3", color = "white", bins = 25) +
@@ -858,9 +701,10 @@ mpg |>
   labs(x = "Fuel Economy (City)", y = "",
        title = "25 Bins")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 Using software you can easily adjust the size of the bins in order to find a version of the histogram that you feel best conveys the shape of the distribution.
 
@@ -878,21 +722,22 @@ So, a histogram is a binned bar plot and it attempts to show us the shape of the
 
 - BUT, as you see here, the size of the bins has a BIG effect on what the histogram looks like!
 
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+:::: {.columns}
+::: {.column width="50%"}
 
-.center[.size50[.content-box-blue[**Numerical Variable: Make a Box Plot**]]]
+<br>
 
-.pull-left[
-.size40[
 **Box Plots**
+
 - 25th percentile
 
 - Median (50th)
@@ -900,15 +745,16 @@ class: middle
 - 75th percentile
 
 - IQR x 1.5
-]]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_1-Johnson-Box_plot.png")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 An alternative to the histogram is the box plot.
 
@@ -929,36 +775,38 @@ Let's practice!
 By hand, everybody draw me a box plot of city fuel economy in the mpg data set.
 
 - Remember, the summary() function gets you everything you need.
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
 
-.center[.size45[.content-box-blue[**Numerical Variable: Make a Box Plot**]]]
-
-.pull-left[
-<br>
-
+:::: {.columns}
+::: {.column width="60%"}
 ```{r, echo=TRUE}
 # Summary stats
 summary(mpg$cty)
 ```
 
-.code80[
+<br>
+
 ```{r, echo=TRUE}
 # Calculate the tails
 quantile(mpg$cty, probs = .25) - IQR(mpg$cty)*1.5
+```
+
+<br>
+
+```{r, echo=TRUE}
 quantile(mpg$cty, probs = .75) + IQR(mpg$cty)*1.5
 ```
-]
-]
+:::
 
-.pull-right[
+::: {.column width="40%"}
 ```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=1, out.width='100%', fig.align='center'}
 mpg |>
   ggplot(aes(y = 1, x = cty)) +
@@ -968,26 +816,25 @@ mpg |>
   scale_y_continuous(limits = c(0.25, 1.75), breaks = c(0, .5, 1, 1.5, 2), labels = rep("", 5)) +
   scale_x_continuous(limits = c(0, 40))
 ```
-]
+:::
+::::
 
-???
+::: notes
+**How did we do?**
 
-### How did we do?
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size35[.content-box-blue[**Numerical Variable: Histograms and Box Plots**]]]
+::: {.r-fit-text}
+**Numerical Variable: Histograms and Box Plots**
+:::
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '62%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/04_2-Fuel_Economy.gif")
 ```
 
@@ -1050,9 +897,8 @@ knitr::include_graphics("libs/Images/04_2-Fuel_Economy.gif")
 #gifski(png_files1, gif_file = "libs/Images/04_2-Fuel_Economy.gif", delay = 2)
 ```
 
-???
-
-### Does everybody see how these figures attempt to represent the same thing?
+::: notes
+**Does everybody see how these figures attempt to represent the same thing?**
 
 <br>
 
@@ -1063,25 +909,23 @@ knitr::include_graphics("libs/Images/04_2-Fuel_Economy.gif")
 We'll find that the value of a box plot increases DRAMATICALLY when comparing multiple distributions
 
 - Put a pin in that for now...
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size40[.content-box-blue[**Numeric Variables Across Time: Line Plots**]]]
+::: {.r-fit-text}
+**Numeric Variables Across Time: Line Plots**
+:::
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '70%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_1-Johnson-Line_plot.png")
 ```
 
-???
+::: notes
 
 Last visualization tool is a line plot
 
@@ -1097,45 +941,41 @@ Technically this is our first BIVARIATE visualization because it depends on two 
 
 **SLIDE**: Let's practice!
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-.center[.size40[.content-box-blue[**Numeric Variables Across Time: Line Plots**]]]
+::: {.r-fit-text}
+**Numeric Variables Across Time: Line Plots**
+:::
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '50%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_1-Johnson-Line_plot.png")
 ```
 
 <br>
 
-.center[.size40[Draw a line plot of US unemployment (`unemploy`) for the most recent 12 months in the `economics` data set.]]
+Draw a line plot of US unemployment (`unemploy`) for the most recent 12 months in the `economics` data set.
 
-???
+::: notes
+
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size40[.content-box-blue[**Numeric Variables Across Time: Line Plots**]]]
+::: {.r-fit-text}
+**Numeric Variables Across Time: Line Plots**
+:::
 
 <br>
 
-```{r, echo=FALSE, fig.retina=3, fig.width=7, fig.asp=0.618, out.width='70%', fig.align='center'}
+```{r, fig.width=7, fig.asp=0.618, fig.align='center'}
 economics |>
   slice_tail(n = 12) |>
   ggplot(aes(x = date, y = unemploy)) +
@@ -1146,27 +986,20 @@ economics |>
        caption = "Source: St Louis Federal Reserve")
 ```
 
-???
-
-### Everybody make this?
+::: notes
+**Everybody make this?**
 
 Line plots super easy, no?
 
+:::
 
 
+## Principle 3 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[.content-box-blue[**Principle 3: Variable Type Determines Tool**]]]
+**Variable Type Determines Tool**
 
 <br>
 
-.size40[
 **Univariate Visualizations**
 
 + If a **categorical** variable, make a **bar plot**
@@ -1174,33 +1007,22 @@ class: middle
 + If a **numeric** variable, make a **box plot** or **histogram**
 
 + If a **numeric variable across time**, make a **line plot**
-]
 
-???
+::: notes
+**Any questions on the univarate analyses we've explored today?**
 
-### Any questions on the univarate analyses we've explored today?
-
-
+:::
 
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size70[.content-box-blue[**For Next Class**]]
+## For Next Class {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size60[
 1. Review ALL notes and code from today
 
 2. Healy (2019) [Sections 3.1 - 3.4](https://socviz.co/makeplot.html)
-]
 
-???
+::: notes
 
 From this point forward, a big part of your job in this class is to spend time after EVERY CLASS making sure you understand what we did today.
 
@@ -1217,3 +1039,4 @@ That means reviewing your notes to make sure you understand
 <br>
 
 ### Questions on the assignment?
+:::

@@ -1,31 +1,16 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+## Today's Agenda {background-image="libs/Images/background-data_blue_v3.png" .center}
 
+```{r}
 library(tidyverse)
 library(readxl)
-library(gganimate)
+library(kableExtra)
+library(modelsummary)
 
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(gganimate)
 
 # Data for today
 data1 <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
@@ -39,60 +24,45 @@ fh1972 <- filter(fh, year == 1972)
 fh2023 <- filter(fh, year == 2023)
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size70[**Today's Agenda**]
-
 <br>
 
-.size40[
-Practicing univariate analyses in R
+**Practicing univariate analyses in R**
 
 - Review: Practice exercises
 
 - New: Freedom House Data
 
 - Canvas: "FreedomHouse-Tidy-1972-2023.xlsx"
-]
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-???
+::: notes
+Prep for Class
 
-## Prep for Class
-1. Review submissions on Canvas
+1. Review Canvas submissions
 
 <br>
 
 Today we continue practicing our univariate analyses tools in R
 
 - **SLIDE**: Let's kick things off with your practice work for today.
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## For Today {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
 knitr::include_graphics("libs/Images/05_2-Assignment.png")
 ```
 
-???
+::: notes
+**In broad strokes, how did this go?**
 
-### In broad strokes, how did this go?
-
-### - Were you able to make all the visualizations?
+- **Were you able to make all the visualizations?**
 
 <br>
 
@@ -107,20 +77,16 @@ Everybody open up Canvas and review the submissions.
 <br>
 
 **SLIDE**: Let's now shift to the visualizations you made
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+**Is the world getting richer or more unequal?**
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size30[.content-box-blue[**Is the world getting richer or more unequal?**]]]
-
-.pull-left[
-```{r, cache=TRUE, fig.retina=3, out.width='86%', fig.asp=0.618}
+:::: {.columns}
+::: {.column width="45%"}
+```{r, cache=TRUE, fig.asp=0.618, fig.width=6}
 # Snapshot bar plots
 data1 |>
   filter(year == 1985) |>
@@ -136,15 +102,13 @@ data1 |>
   labs(x = "", y = "Countries", title = "World Bank Income Categories (2021)", caption = "Source: WDI (2024)") + 
   scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="55%"}
 
-.size20[
 <br>
-]
 
-```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.9}
+```{r, cache=TRUE, fig.asp=0.8, fig.width=6}
 ggplot(data1, aes(x = wb_income)) +
   geom_bar(fill = "green3") +
   scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High")) +
@@ -154,33 +118,30 @@ ggplot(data1, aes(x = wb_income)) +
   labs(title = "World Bank Income Categories ({as.integer(frame_time)})",
        x = "", y = "Countries", caption = "Source: WDI (2024)")
 ```
-]
+:::
+::::
 
-???
-
-### How did we do making these visualizations?
+::: notes
+**How did we do making these visualizations?**
 
 <br>
 
-### Which approach, in this case, is a better choice for supporting an argument about global change over time?
+**Which approach, in this case, is a better choice for supporting an argument about global change over time?**
 
 <br>
 
 **SLIDE**: Are birth rates rising or falling around the world?
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+**Are birth rates changing across time?**
 
-.center[.size30[.content-box-blue[**Are birth rates changing across time?**]]]
-
-.pull-left[
-```{r, cache=TRUE, fig.retina=3, out.width='86%', fig.asp=0.618}
+:::: {.columns}
+::: {.column width="45%"}
+```{r, cache=TRUE, fig.asp=0.618, fig.width=6}
 # Snapshot bar plots
 data1 <- data1 |>
   mutate(
@@ -211,15 +172,13 @@ data1 |>
   scale_fill_brewer(type = "div", palette = 4, direction = -1) +
   guides(fill = "none")
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="55%"}
 
-.size20[
 <br>
-]
 
-```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.9}
+```{r, cache=TRUE, fig.asp=0.8, fig.width=6}
 ggplot(data1, aes(x = birth_rate)) +
   geom_histogram(bins = 20, color = "white", fill = "darkgoldenrod3") +
   transition_time(year) +
@@ -228,15 +187,15 @@ ggplot(data1, aes(x = birth_rate)) +
        caption = "Source: WDI (2024)") +
   xlim(5, 50)
 ```
-]
+:::
+::::
 
-???
-
-### How did we do making these visualizations?
+::: notes
+**How did we do making these visualizations?**
 
 <br>
 
-### Which approach, in this case, is a better choice for supporting an argument about global change over time?
+**Which approach, in this case, is a better choice for supporting an argument about global change over time?**
 
 <br>
 
@@ -254,17 +213,13 @@ ALSO, the utility of an animation depends on the clarity of the trend over time!
 <br>
 
 **SLIDE**: Alright, let's analyze some new data!
+:::
 
 
 
----
+## {background-image="libs/Images/05_2-Freedom_House1.png" .center}
 
-background-image: url('libs/Images/05_2-Freedom_House1.png')
-background-size: 100%
-background-class: center
-class: middle
-
-???
+::: notes
 
 Today we practice our univariate analysis tools by examining some of the data produced by Freedom House.
 
@@ -300,28 +255,25 @@ If we had chosen Freedom House as our data set we would need to spend quite a bi
 <br>
 
 Our focus today is to practice our univariate analyses so we'll set methodology aside for the moment.
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size70[.content-box-blue[**Exercise 1**]]
+## Exercise 1 {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size60[How is global freedom changing across time?]
+::: {.r-fit-text}
+How is global freedom changing across time?
+:::
 
 <br>
 
-.size60[Visualize FH `status` in 1972 and 2023]
+::: {.r-fit-text}
+Visualize FH `status` in 1972 and 2023
+:::
 
-???
+::: notes
 
 Alright, let's crunch some data!
 
@@ -334,21 +286,17 @@ Alright, let's crunch some data!
 ### - How did you get to that answer?
 
 - (**SLIDE**)
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size50[.content-box-blue[**How is global freedom changing across time?**]]
+**How is global freedom changing across time?**
 
 <br>
 
-.pull-left[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.85, fig.width=5}
 fh |>
   filter(year == 1972) |>
@@ -359,9 +307,9 @@ fh |>
   scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
   ylim(0, 85)
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 ```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.85, fig.width=5}
 fh |>
   filter(year == 2023) |>
@@ -372,9 +320,10 @@ fh |>
   scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
   ylim(0, 85)
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 A big problem for us in interpreting these counts is that the number of countries being studied increased DRAMATICALLY between the two ends of our dataset
 
@@ -407,28 +356,20 @@ Let's try some alternative analyses to see if we can unpack what is happening he
 <br>
 
 (**SLIDE**)
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
 # Observations counted across time
 ggplot(fh, aes(x = year)) +
   geom_bar()
 ```
-]
 
-???
-
-### What do we learn from this about the world and about Freedom House?
+::: notes
+**What do we learn from this about the world and about Freedom House?**
 
 - (Spike in 1991 as USSR collapses so maybe some new countries were more free?)
 
@@ -437,25 +378,19 @@ ggplot(fh, aes(x = year)) +
 <br>
 
 **SLIDE**: Now, we can also take this one step further by tracking the count of each type of country in this plot.
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
 # Counts of one variable across time
 ggplot(fh, aes(x = year, fill = status)) +
   geom_bar()
 ```
-]
 
-???
+::: notes
 
 Kind of cool, right?
 
@@ -474,26 +409,21 @@ One problem here is that the levels in our status variable are not in a logical 
 - Should probably go NF, PF to F on top
 
 - **SLIDE**
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-.code110[
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
 # Create a new variable using factor()
 fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"))
 
 ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar()
 ```
-]
 
-???
+::: notes
 
 *Talk them through creating a new variable*
 
@@ -510,27 +440,20 @@ ggplot(fh, aes(x = year, fill = status_f)) +
 <br>
 
 **SLIDE**: Before we analyze, let's fix the colors
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
 # Add colors
 ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar() +
   scale_fill_manual(values = c("cornflowerblue", "pink", "red3"))
 ```
-]
 
-???
+::: notes
 
 This function draws on the R Color Brewer which is a package full of built in color palettes
 
@@ -549,27 +472,20 @@ This function draws on the R Color Brewer which is a package full of built in co
 <br>
 
 **SLIDE**: One more tweak possible here...
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code110[
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618, out.width='70%'}
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
 # Convert the counts to proportions
 ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar(position = "fill") +
   scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
   scale_y_continuous(labels = scales::percent_format())
 ```
-]
 
-???
+::: notes
 
 Position = 'fill' asks the bar plot to convert itself into proportions on the y axis
 
@@ -590,27 +506,25 @@ Position = 'fill' asks the bar plot to convert itself into proportions on the y 
 <br>
 
 **SLIDE**: Let's look at one more option for analyzing change across time before we practice
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size70[.content-box-blue[**Exercise 2**]]
+## Exercise 2 {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size60[How are political rights changing across time?]
+::: {.r-fit-text}
+How are political rights changing across time?
+:::
 
 <br>
 
-.size60[Visualize `pr` across time for the United States only] 
+::: {.r-fit-text}
+Visualize `pr` across time for the United States only
+:::
 
-???
+::: notes
 
 A second option for tracking change across time is to focus on a single observation
 
@@ -619,17 +533,12 @@ A second option for tracking change across time is to focus on a single observat
 - Filter the dataset to only include the US
 
 - geom_line()
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, echo=TRUE, cache=TRUE, fig.align='center', fig.retina=3, out.width='60%', fig.asp=0.618, fig.width=7}
+```{r, echo=TRUE, cache=TRUE, fig.align='center', fig.asp=0.618, fig.width=7}
 fh_US <- filter(fh, fh_country == "United States")
 
 ggplot(fh_US, aes(x = year, y = pr)) +
@@ -640,7 +549,7 @@ ggplot(fh_US, aes(x = year, y = pr)) +
        title = "Political Rights in the United States have been remarkably stable over time")
 ```
 
-???
+::: notes
 
 A fairly stable story over time, right?
 
@@ -653,44 +562,30 @@ Everybody try this again but find us a country with tons of yearly variation!
 <br>
 
 ### Report back, what countries are basket cases per this measure?
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size55[.content-box-blue[**Practice Exercises**]]
+## Practice Exercises {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size55[
 1. Are countries getting richer over time? Make a stacked bar plot of `wb_income` across time
 
 2. Track the `gdp_per_capita` across time for the country you found with big variation in FH Political Rights
 
-]
-
-???
+::: notes
 
 Let's practice applying today's tools using the WDI data we've been exploring all week.
 
 - Make and polish me two plots!
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, echo=TRUE, cache=TRUE, fig.align='center', fig.retina=3, out.width='60%', fig.asp=0.7, fig.width=7}
+```{r, echo=TRUE, cache=TRUE, fig.align='center', fig.asp=0.7, fig.width=7}
 data1$wb_income_f <- factor(data1$wb_income, 
                             levels = c(NA, "High", "Upper-middle", "Lower-middle", "Low"))
 
@@ -699,25 +594,20 @@ ggplot(data1, aes(x = year, fill = wb_income_f)) +
   scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", "pink", "red3"))
 ```
 
-???
+::: notes
 
 An alternative to brewer for color palettes is viridis.
 
 - Viridis is designed to be friendly to the color blind
 
 - They don't always look as good, but let's not forget we should be inclusive in our visualizations!
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, cache=TRUE, fig.align='center', fig.retina=3, out.width='90%', fig.asp=0.618, fig.width=9}
+```{r, cache=TRUE, fig.align='center', fig.asp=0.618, fig.width=9}
 # Identify biggest Std Devs in FH 'pr'
 # fh |>
 #   group_by(fh_country) |>
@@ -734,7 +624,7 @@ data1 |>
   scale_color_brewer(type = "qual", palette = 3)
 ```
 
-???
+::: notes
 
 As a programming process I first calculated the SD for each state across time
 
@@ -753,9 +643,4 @@ Super fascinating divide here between:
 - Mostly African countries where rights are unstable and growth is non-existent, and
 
 - European / C. American countries with erratice rights BUT economic growth!
-
-
-
-
-
-
+:::

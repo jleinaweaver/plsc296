@@ -1,393 +1,201 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
-# library(readxl)
-# library(stargazer)
-##library(kableExtra)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
+<br>
 
 <br>
 
-.size50[
-Installing and configuring R and RStudio
-]
+**Installing and configuring R and RStudio**
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
-
-???
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.pull-left[
-.center[.size50[.content-box-blue[**R**]]]
-
 <br>
 
-```{r, fig.align='center', out.width='80%'}
-knitr::include_graphics("libs/Images/03_3-R_Icon.png")
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
+
+::: notes
+Prep for Class
+
+1. ...
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+:::: {.columns}
+::: {.column width="45%"}
+**R**
+
+```{r, fig.align='left'}
+knitr::include_graphics("libs/Images/03_3-R_Icon2.png")
 ```
-]
+:::
 
-.pull-right[
-.center[.size50[.content-box-blue[**RStudio**]]]
+::: {.column width="10%"}
 
-```{r, fig.align='center', out.width='100%'}
+:::
+
+::: {.column width="45%"}
+**RStudio**
+
+```{r, fig.align='right'}
 knitr::include_graphics("libs/Images/03_3-RStudio_Icon.png")
 ```
-]
-
-???
-
-Enough preamble, let's get into R!
-
-- To begin today I'd like everyone to work with R on the lab computers
-
-<br>
-
-Confusingly, there are two pieces of software on these computers (and maybe three if multiple versions of R are installed).
-
-- I want everyone to open RStudio, not R.
-
-<br>
-
-**SLIDE**: Why are there two pieces of software?
+:::
+::::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-```{r, fig.align='center', out.width='100%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/03_3-R_Engine.png")
 ```
 
-???
 
-Key analogy: R is the engine and RStudio is the fancy dashboard we use to drive the car
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-- When you open RStudio, you are opening R!
-
-- RStudio just makes it much, much easier to work with R to get things done.
-
-<br>
-
-You can absolutely do everything in R without RStudio.
-
-- You cannot use RStudio without having R.
-
-<br>
-
-So, this semester you are learning to code in R but we'll be working in RStudio.
-
-### Make sense?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-```{r, fig.align='center', out.width='92%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/03_3-rstudio_blank.png")
 ```
 
-???
-
-### Does everybody have RStudio open? 
-- It should look something like this.
-
-<br>
-
-By default, RStudio uses a four pane layout but we'll spend most of our time using two of them.
-
-<br>
-
-To start I want us to make a bunch of configuration changes that I think will make your life easier.
-
-- I will post today's slides on Canvas for future reference
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.pull-left[
-.size50[
-
+:::: {.columns}
+::: {.column width="50%"}
 1. Open RStudio
+
+<br>
 
 2. "Tools" &rarr; "Global Options"
 
+<br>
+
 3. Uncheck all boxes in "General"
+:::
 
-]]
-
-.pull-right[
-
-```{r, fig.align='center', out.width='100%'}
+::: {.column width="50%"}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/02_1-global_options1.png")
 ```
+:::
+::::
 
-]
 
-???
 
-Let's go into the options!
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+1. "Code" page
 
 <br>
 
-Unchecking all the boxes here tells RStudio we want to start from scratch whenever we open the program
-
-- Good practice for doing science
-    - You need to keep yourself rooted in good file organization practices, no shortcuts!
-
-- Even better practice when working in a computer lab!
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.pull-left[
-
-.size50[
-1. "Code" page
-
 2. &#10004; soft-wrap R source files
+:::
 
-]]
-
-.pull-right[
-
-```{r, fig.align='center', out.width='100%'}
+::: {.column width="50%"}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/02_1-global_options2.png")
 ```
-
-]
-
-???
-
-Wraps the text in your code to make it easier to read.
-
-- Trust me.
+:::
+::::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.pull-left[
-.size50[
-
+:::: {.columns}
+::: {.column width="50%"}
 1. "Pane Layout" page
 
+<br>
+
 2. Move the "Console" to the top-right box
+:::
 
-]]
-
-.pull-right[
-
-```{r, fig.align='center', out.width='100%'}
+::: {.column width="50%"}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/02_1-global_options3.png")
 ```
-
-]
-
-???
-
-Using the four drop-down windows you can reorganize the layout of the windows.
-
-- I'd like you to start with this change so we can keep our notes side-by-side with the R Console.
+:::
+::::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.pull-left[
-.size50[
+:::: {.columns}
+::: {.column width="50%"}
 1. "Rmarkdown" page
 
+<br>
+
 2. Uncheck "Show output inline..."
+:::
 
-]]
-
-.pull-right[
-
-```{r, fig.align='center', out.width='100%'}
+::: {.column width="50%"}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/02_1-global_options4.png")
 ```
-
-]
-
-???
-
-Another option RStudio is doing to try and help you that I think is annoying.
-
-- Keep the code output in the console, not mixed into your notes.
-
-- Again, trust me for now, feel free to change it later when you get comfortable
+:::
+::::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-```{r, fig.align='center', out.width='82%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/02_1-RStudio_setup.png")
 ```
 
 
 
+## Organize your Semester {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+**Data and Notes**
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
+<br>
 
-.size50[.content-box-blue[**Organize your Semester: Data and Notes**]]
-
-.pull-left[
-.size35[
+:::: {.columns}
+::: {.column width="50%"}
 Include:
+
 - A top-level folder for the class,
 
 - A folder for the data, and 
 
 - A folder for each report
-]]
+:::
 
-.pull-right[
-```{r, fig.align='center', out.width='90%'}
+::: {.column width="50%"}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/02_1-Folders.png")
 ```
+:::
+::::
 
-]
 
-???
 
-I'm going to ask everyone to adopt this file organization structure for the semester.
-
-- ALL code we write will assume this is where your files and data live.
-
-### Questions on this?
+## Create a script file: Getting_Started.R {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-These notes and data CANNOT live on the lab computer.
-
-- These computers get wiped and refreshed from time-to-time to keep them running well.
-
-- DON'T lose your data because of this!
-
-<br>
-
-My advice, if you're going to work on the lab computers.
-
-- Set up this folder structure on a usb key, AND
-
-- At the end of every class upload the changes to your cloud account (OneDrive)
-
-<br>
-
-REMEMBER, lost data/notes/reports due to poor data practices are on you!
-
-<br>
-
-### Any questions on the set-up / configuration stuff we've covered so far?
-
-Ok, let's make some stuff!
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size40[.center[.content-box-blue[**Create a script file: Getting_Started.R**]]]
-
-.pull-left[
-.center[.size30[
+:::: {.columns}
+::: {.column width="50%"}
 **Option 1**
 
 "File" 
@@ -399,120 +207,39 @@ class: middle
 &#8595;
 
 "R Script"
-]]]
+:::
 
-.pull-right[
-.center[.size30[**Option 2**]]
+::: {.column width="50%"}
+**Option 2**
 
-```{r, fig.align='center', out.width='38%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/03_3-New_Script.png")
 ```
-
-]
-
-???
-
-A "script" file is a handy method for creating notes or building a data project in R.
-
-<br>
-
-Two options shown here.
-
-- Create the new script and then save it with the filename "Getting_Started."
-
-- It will add the ".R" automatically.
-
-<br>
-
-In future, anytime you double-click to open a .R file it should open it directly in RStudio.
+:::
+::::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/03_3-RStudio_Practice1.png')
-background-size: 90%
-background-class: center
-class: slideblue
+```{r, fig.align='center'}
+knitr::include_graphics("libs/Images/03_3-RStudio_Practice1.png")
+```
 
-???
 
-Hopefully, everybody is now looking at an RStudio screen like this.
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-- My apologies that on the slide the file is labeled "Practice.R" instead of the "Getting Started.R"
+```{r, fig.align='center'}
+knitr::include_graphics("libs/Images/03_3-RStudio_Practice2.png")
+```
+
+
+## Using R as a Calculator {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-And remember, you write your notes on the left and the R console produces stuff on the right
-
-<br>
-
-My request is that you create a new script file for each day of class and use that to take notes and practice code.
-
-- Don't just keep adding onto the same one, it can get unwieldy.
-
-
-
-
----
-
-background-image: url('libs/Images/03_3-RStudio_Practice2.png')
-background-size: 90%
-background-class: center
-class: slideblue
-
-???
-
-You can take notes in an R script (and you SHOULD!) using the hash symbol.
-
-- Each line you want to write that is NOT R code must start with a hash.
-
-<br>
-
-Get in the habit of annotating your code!
-
-- Every time you write a line of code to do something add a note above it telling you what it does
-
-- This is an invaluable habit!
-
-<br>
-
-Remember, each day's notes (e.g. script file) are a resource for you going forward.
-
-- Your work in class is designed to help you create a record of all the skills we will learn that you may want to use in Senior Seminar!
-
-- So, label your script files so you know where to go in future when you need something specific
-
-<br>
-
-For example, next week we will use code to calculate descriptive statistics.
-
-- e.g. mean, median, percentiles, IQRs, SD, etc
-
-- I will suggest you label your notes file for that class as "Descriptive statistics"!
-
-<br>
-
-### Make sense?
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size50[.center[.content-box-blue[**Using R as a Calculator**]]]
-
-<br>
-
-.pull-left[
-
-<br>
-
-.size40[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 tribble(
   ~Function, ~Description,
@@ -524,10 +251,9 @@ tribble(
 ) |>
   kableExtra::kbl(align = c("c", "l"))
 ```
-]]
+:::
 
-.pull-right[
-.code140[
+::: {.column width="50%"}
 ```{r, echo=TRUE, eval=FALSE}
 # Addition & subtraction
 151 + 13 - 224
@@ -542,74 +268,26 @@ tribble(
 # division and parentheses
 312 * (23/154)
 ```
-]
-]
+:::
+::::
 
-???
 
-R is an insanely overpowered calculator.
-
-<br>
-
-Everybody copy down these notes.
-- Feel free to swap in whatever numbers you want.
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-Notice the color difference between lines that are code and lines with a hash that are comments or notes
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-```{r, fig.align='center', out.width='100%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/03_3-Run_Selected_Lines.png")
 ```
 
-???
 
-Let's get our answers!
 
-- Each of these lines IS programming code! Congrats!
+## Using R for simple relationships {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-We need to send your code to the console so R can "run" it.
-
-<br>
-
-Option 1: Put your mouse cursor on the line you want to run and press Ctrl-Enter
-
-<br>
-
-Option 2: Click the first line on the 'Run' menu.
-
-<br>
-
-Everybody take a minute to practice running the code you've written
-
-
-
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size50[.center[.content-box-blue[**Using R for simple relationships**]]]
-
-<br>
-
-.pull-left[
-.size40[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r}
 tribble(
   ~Function, ~Description,
@@ -622,10 +300,9 @@ tribble(
   ) |>
   kableExtra::kbl(align = c("c", "l"))
 ```
-]]
+:::
 
-.pull-right[
-.code140[
+::: {.column width="50%"}
 ```{r, echo=TRUE, eval=FALSE}
 # Less than
 22 < 234
@@ -639,50 +316,12 @@ tribble(
 # Not equal to
 7 != 32
 ```
-]
-]
-
-???
-
-You'll also find R is very good at comparing values.
-
-- I understand this looks abstract, but I assure you this is a very important element in statistics AND programming.
-
-<br>
-
-Everybody copy these down and take a minute to practice running these comparisons.
-
-- Feel free to change the numbers to anything you want.
-
-- The results should all be TRUE or FALSE
-
-<br>
-
-Important for your notes, checking if two values are EQUAL requires TWO equals signs.
-
-- One equals sign works like the arrow we use to save a value
-
-- Two equals signs ask the question "are these two values the same"?
-
-<br>
-
-### Everybody doing ok?
+:::
+::::
 
 
+## Using R for Vectors of Data {background-image="libs/Images/background-slate_v2.png" .center}
 
-
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.center[.size50[.content-box-blue[**Using R for Vectors of Data**]]]
-
-<br>
-
-.code150[
 ```{r, echo=TRUE, eval=FALSE}
 # Save a list of numbers as the object 'x1'
 x1 <- c(64, 57, 52, 58, 67)
@@ -697,41 +336,11 @@ x1 * 3
 # Check relationships on the vector
 x1 > 56
 ```
-]
-
-???
-
-One of the remarkably powerful uses of R is that it will let you save lists of numbers (e.g. data) using a named object.
-
-<br>
-
-Imagine 'x1' here is a single variable describing the heights in inches for five people.
-
-- Once you save the heights as an object you can now do calculations on all of the heights at once!
-
-<br>
-
-### Make sense?
-
-<br>
-
-Copy all this down and make sure you can run the code.
 
 
 
+## Installing Extra Packages {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.center[.size50[.content-box-blue[**Installing Extra Packages**]]]
-
-<br>
-
-.code170[
 ```{r, echo=TRUE, eval=FALSE}
 # Install packages with extra tools
 
@@ -740,96 +349,48 @@ install.packages("readxl")
 
 # Tidyverse makes tons of statistics work easier
 install.packages("tidyverse")
-
 ```
-]
-
-???
-
-One more configuration step, we need to install two packages.
-
-- Packages are collections of extra features that you can add to R when you need them.
-
-<br>
-
-After a new install of R, we need to do each of these one time. Unless you update R you won't have to install these again.
-
-- We'll start using these Friday.
-
-<br>
-
-Run each of these lines and let me know when they are done.
 
 
 
+## Let's Install R! {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size50[.content-box-blue[**Let's Install R!**]]
-
-<br>
-
-.size30[
 1. http://www.r-project.org/
 
 2. Click on “CRAN.”
 
-3. Select a site near you or “0-Cloud,”
-]
+3. Select a site near you or “0-Cloud”
 
-.pull-left[
-.size30[
+:::: {.columns}
+::: {.column width="50%"}
 **Windows**
 
 + "Download R for Windows"
 + "Download and Install R"
 + Select "base"
 + Download the .exe and run it
-]]
+:::
 
-.pull-right[
-.size30[
+::: {.column width="50%"}
 **macOS**
 
 + "Download R for (Mac) OS X"
 + Click .pkg under "Latest release"
 + Run the .pkg file
-]]
-
-???
-
-If you'd like to be able to work on your own computer then we need to install the software!
-
-First step is to install R, then you can install RStudio.
+:::
+::::
 
 
 
----
+## Let's Install RStudio! {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_triangles2.png')
-background-size: 100%
-background-class: center
-class: middle
-
-.size70[.content-box-blue[**Let's Install RStudio!**]]
+https://posit.co/download/rstudio-desktop/
 
 <br>
 
-.size50[https://posit.co/download/rstudio-desktop/]
+1) Scroll down to "All Installers"
 
 <br>
 
-.size50[1) Scroll down to "All Installers"]
+2) Download and run the file for your OS
 
-<br>
-
-.size50[2) Download and run the file for your OS]
-
-???
-
-After installing RStudio use the notes on the slides to configure your installation.

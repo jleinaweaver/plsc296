@@ -1,60 +1,35 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+## Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
 library(readxl)
-library(stargazer)
-##library(kableExtra)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(kableExtra)
+library(modelsummary)
 ```
-
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
 
 <br>
 
-.size50[
+<br>
 
 1. Review your puzzles
 
 2. Introduce our data options
-]
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+<br>
 
-???
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-## Prep for Class
+::: notes
+Prep for Class
+
 1. Review Canvas submissions
 
 2. Try to save time at end of class to explore the data options spreadsheet
@@ -64,26 +39,21 @@ class: middle, inverse
     - Wheelan chapter 7 "The Importance of Data"
     - [Link to Data Sets Spreadsheet](https://docs.google.com/spreadsheets/d/1qOBt2M_yoIkeeuw6x3MMBMjEQsPquGDDkWUYF-aNtBo/edit#gid=0)
     
-    
-    
----
+:::
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+    
 
-.size60[.content-box-white[**For Today**]]
+## For Today {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size55[
 1. Huntington-Klein (2022) Chapter 1 "Designing Research"
 
-2. Wheelan (2014) Chapter 7 "The Importance of Data"
-]
+<br>
 
-???
+2. Wheelan (2014) Chapter 7 "The Importance of Data"
+
+::: notes
 
 The readings I assigned you for today are designed to set the table for our semester.
 
@@ -105,24 +75,19 @@ We'll rely on the Huntington-Klein book, among others, for guidance on research 
 
 - **SLIDE**: But there is at least one super important idea for our semester so let's highlight it.
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-white[**"Required Courses" in Political Science**]]
+## "Required Courses" in Poli Sci {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '60%'}
+```{r, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_1-Major_Courses.png")
 ```
 
-???
+::: notes
 
 First, let's talk required courses!
 
@@ -164,41 +129,39 @@ However, playing with the data is only useful if we get the research design piec
 
 - **SLIDE**: And the thing about research design is...
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-.size70[.content-box-white[**"Research design is hard..."**]]
+::: {.r-fit-text}
+"Research design is hard..."
+:::
 
-???
+::: notes
 
 Ok, I know this doesn't strike you as a deep insight, but humor me!
 
 - Huntington-Klein makes this point really well in chapter 1 and we need to make sure we understand it
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-.size40[
 "Research design is hard, and just because you want to answer a question doesn’t mean there’s necessarily a straightforward way of doing it. 
+
+<br>
 
 But the worst that could happen is that we’d figure out that the answer will be difficult to get. Then, at least, we’ll know.
 
-The best that could happen is that we can answer our question. And we do. And then we win a Nobel prize" (Huntington-Klein Chapter 1).
-]
+<br>
 
-???
+The best that could happen is that we can answer our question. And we do. And then we win a Nobel prize" (Huntington-Klein Chapter 1).
+
+::: notes
 
 As I hope we started to see last week with our warm-up activities, using data to answer a question means having to grapple with measurement. 
 
@@ -222,37 +185,40 @@ Many people seem to think that you need fancy statistics knowledge to unpack qua
 
 - As I said, very much setting the table for the work to come.
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-.pull-left[
-```{r, echo = FALSE, fig.align = 'center', out.width = '80%'}
+:::: {.columns}
+::: {.column width="45%"}
+```{r, echo = FALSE, fig.align = 'left'}
 knitr::include_graphics("libs/Images/01_1-naked_stats.jpg")
 ```
-]
+:::
 
-.pull-right[
-.center[
-.size45[
+::: {.column width="55%"}
 
 <br>
 
-.content-box-white[**Chapter 7**]
+**Chapter 7**
+
+<br>
 
 "The Importance of Data"
 
+<br>
+
 aka
 
-"Garbage in, Garbage out"
-]]]
+<br>
 
-???
+"Garbage in, Garbage out"
+:::
+::::
+
+::: notes
 
 Let's now jump over to the Wheelan book.
 
@@ -264,25 +230,19 @@ Let's now jump over to the Wheelan book.
 
 - (**SLIDE**)
 
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size60[.content-box-white[**Wheelan (2014) Chapter 7**]]
+## Wheelan (2014) Chapter 7 {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_3-garbage-in-garbage-out.webp")
 ```
 
-???
+::: notes
 
 "Garbage in, garbage out" is a reminder that no amount of fancy stats, visualizations or verbal gymnastics can save a research project if the data is crap
 
@@ -306,22 +266,17 @@ So, let's step through these red flags so we can be on the lookout for them in o
 
 - **SLIDE**: Let's start with some of the risks of using survey data
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Some Data is Hot Garbage**]]
+## Some Data is Hot Garbage {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo = FALSE, fig.align = 'center', out.width = '80%'}
 knitr::include_graphics("libs/Images/02_3-Trump_Push_Poll.png")
 ```
 
-???
+::: notes
 
 Red Flag Number 1: Some Data is Hot Garbage
 
@@ -341,26 +296,22 @@ While this is clearly absurd, the "hot garbage" problem is often far subtler in 
 
 - **SLIDE**: Let me show you some more subtle examples that produce problematic data
 
+:::
 
 
----
+## Problems in Survey Design {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Problems in Survey Data: Leading Questions**]]]
+**Leading Questions**
 
 <br>
 
-.size50[
 - How worried are you about inflation?
 
-- How strongly do you want the Biden administration to support Israel in its fight against terrorism?
-]
+<br>
 
-???
+- How strongly do you want the Biden administration to support Israel in its fight against terrorism?
+
+::: notes
 
 Red Flag Number 2: Leading Questions Distort the Responses
 
@@ -374,25 +325,23 @@ Leading questions: "a question that prompts or encourages the desired answer."
 
 **SLIDE**: Better version
 
+:::
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
 
-.center[.size50[.content-box-blue[**Problems in Survey Data: Leading Questions**]]]
+## Problems in Survey Design {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Leading Questions**
 
 <br>
 
-.size50[
-- .textred[How strongly do you want the Biden administration to support Israel in its fight against terrorism?]
+- How strongly do you want the Biden administration to support Israel in its fight against terrorism?
+
+<br>
 
 - Do you support or oppose the Biden administration's policies towards Israeli actions in Gaza?
-]
 
-???
+::: notes
 
 You will be "shocked" to discover that these questions increase the proportion of respondents saying they "worry about inflation" and "support Israel" from non-leading versions
 
@@ -402,26 +351,23 @@ The problem is that the results get reported without mentioning the question wor
 
 - When was the last time you were told a survey result and asked to see the question for yourself?
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+## Problems in Survey Design {background-image="libs/Images/background-slate_v2.png" .center}
 
-.center[.size40[.content-box-blue[**Problems in Survey Data: Double-barreled Questions**]]]
+**Double-barreled Questions**
 
 <br>
 
-.size50[
 - Do you approve or disapprove of President Biden's handling of inflation and the economy?
 
-- How likely are you to buy or lease a new car this year?
-]
+<br>
 
-???
+- How likely are you to buy or lease a new car this year?
+
+::: notes
 
 Red Flag Number 3: Double-barreled Questions confuse the respondents
 
@@ -439,26 +385,23 @@ Again, the respondent is at a loss for which part of the question to answer, and
 
 Easy fix, split the questions!
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
+## Problems in Survey Design {background-image="libs/Images/background-slate_v2.png" .center}
 
-.center[.size50[.content-box-blue[**Problems in Survey Data: Problem Framing**]]]
+**Problem Framing**
 
 <br>
 
-.size50[
 - Do you support oil drilling in the Arctic Wildlife National Refuge?
 
-- Do you support oil exploration in the Arctic Wildlife National Refuge?
-]
+<br>
 
-???
+- Do you support oil exploration in the Arctic Wildlife National Refuge?
+
+::: notes
 
 Red Flag Number 4: Framing manipulates opinion
 
@@ -493,27 +436,33 @@ Let's now hit one of the data problems discussed in the Wheelan book
 
 ### Can anybody explain it more simply?
 
+:::
 
 
 
----
+## Selection Bias {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+:::: {.columns}
+::: {.column width="10%"}
 
-.size50[.content-box-blue[**Selection Bias**]]
+:::
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '80%'}
+::: {.column width="80%"}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_3-Billionaire_habits.png")
 ```
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '80%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_3-happy_kids.png")
 ```
+:::
 
-???
+::: {.column width="10%"}
+
+:::
+::::
+
+::: notes
 
 Red Flag Number 5: Make sure the sample represents the population!
 
@@ -551,24 +500,18 @@ The sample being studied here (e.g. billionaires or parents of successful kids) 
 
 **SLIDE**: Let's dig into this third one...
 
+:::
 
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Survivorship Bias**]]
+## Survivorship Bias {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '62%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_3-Survivorship-bias.png")
 ```
 
-???
+::: notes
 
 Out of chapter order, but since survivorship bias IS a form of selection bias let's discuss it now.
 
@@ -611,22 +554,19 @@ Survivorship Bias in action!
 
 - "In other words what their diagram of bullet holes actually showed was the areas their planes could sustain damage and still be able to fly and bring their pilots home" [LINK](https://mcdreeamiemusings.com/blog/2019/4/1/survivorship-bias-how-lessons-from-world-war-two-affect-clinical-research-today).
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
+## Selection / Survivorship Bias {background-image="libs/Images/background-slate_v2.png" .center}
 
-.size35[.content-box-blue[**Selection/Survivorship Bias**]]
+<br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '75%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_3-consumption-co2-emissions.svg")
 ```
 
-???
+::: notes
 
 Because this is a form of the selection bias problem we talked about before we still rely on the fixes we just talked about.
 
@@ -644,7 +584,7 @@ I have often heard people speak conclusively about which countries emit the most
 ### This is an incredibly important question but what is one of the biggest obstacles to answering it?
 - (We have almost ZERO data on the countries of Africa!)
 
-I'm not asking you to pretend Africa is the problem in this climate change problem, BUT how do we answer questions about pollution outsourcing if we lack an entire continent's worth of data???
+I'm not asking you to pretend Africa is the problem in this climate change problem, BUT how do we answer questions about pollution outsourcing if we lack an entire continent's worth of data::: notes
 
 <br>
 
@@ -664,24 +604,19 @@ You have to be careful when drawing out big conclusions using samples missing sp
 
 - (**SLIDE**)
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Publication Bias**]]
+## Publication Bias {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '90%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_3-publication_bias1.png")
 ```
 
-???
+::: notes
 
 Publication bias: Studies with crazy or unexpected findings more likely to get published.
 
@@ -703,25 +638,19 @@ This is where robustness and validation checks prove so important.
 
 - The more unexpected the result, the more important you can show that you are building using data that is consistent with other sources of the same things.
 
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Publication Bias**]]
+## Publication Bias {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '70%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_3-publication_bias.jpg")
 ```
 
-???
+::: notes
 
 A second form of the publication bias problem is also known as the file drawer problem.
 
@@ -741,25 +670,18 @@ The most nefarious version of this is the researcher who runs ten tests and only
 
 - (**SLIDE**)
 
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Recall Bias**]]
+## Recall Bias {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '55%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_3-recall_bias.png")
 ```
 
-???
+::: notes
 
 Recall Bias: A type of bias that occurs when participants in a research study or clinical trial do not accurately remember a past event or experience or leave out details when reporting about them.
 
@@ -783,25 +705,21 @@ Red Flag Number 8: Self-reported data is incredibly hard to rely upon.
 - Peoples' memories are fallible and malleable!
 
 - All the more important to reinforce these kinds of data with other research designs (controlled experiments) that allow external measurement in reliable ways.
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_3-garbage-in-garbage-out.webp")
 ```
 
 <br>
 
-.size45[Survey Design Biases, Selection Bias, Publication Bias, Recall Bias, Survivorship Bias, Healthy User Bias, and more]
+Survey Design Biases, Selection Bias, Publication Bias, Recall Bias, Survivorship Bias, Healthy User Bias, and more
 
-???
+::: notes
 
 These are just some of the most common red flags we need to be aware of when working with or analyzing data.
 
@@ -827,21 +745,17 @@ Go back to our discussion from week 1 when we measured your heights.
 
 **SLIDE**: All that said, let's start exploring some real world data!
 
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '95%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_1-Data_Options.png")
 ```
 
-???
+::: notes
 
 On our Canvas Modules page is a link to a Google Sheet I've made that includes 50+ data projects with interesting topics and accessible datasets.
 
@@ -862,22 +776,16 @@ Our big job this semester is to build a research project using these sources
 ### Any questions on the set-up of the sheet?
 
 
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-
----
-
-background-image: url('libs/Images/background-blue_cubes_lighter3.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/02_1-Assignment.png")
 ```
 
-???
+::: notes
 
 For next class you have a reading and an assignment.
 
@@ -893,3 +801,4 @@ Take some time to actually visit the web page for the data project you select an
 ### Questions on the assignment?
 
 - Excellent! Get to it!
+:::

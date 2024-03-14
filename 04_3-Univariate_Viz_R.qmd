@@ -1,57 +1,35 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["default", "extra.css"]
-    lib_dir: libs
-    seal: false
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      ratio: '16:9'
+format: revealjs
 ---
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-##xaringan::inf_mr()
-## For offline work: https://bookdown.org/yihui/rmarkdown/some-tips.html#working-offline
-## Images not appearing? Put images folder inside the libs folder as that is the main data directory
+## Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
 
+```{r}
 library(tidyverse)
-#library(readxl)
-#library(stargazer)
-##library(kableExtra)
-##library(modelr)
-
-knitr::opts_chunk$set(echo = FALSE,
-                      eval = TRUE,
-                      error = FALSE,
-                      message = FALSE,
-                      warning = FALSE,
-                      comment = NA)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
 ```
 
-background-image: url('libs/Images/background-data_blue_v3.png')
-background-size: 100%
-background-position: center
-class: middle, inverse
-
-.size80[**Today's Agenda**]
+<br>
 
 <br>
 
-.size60[
-Build univariate visualizations in R
-]
+**Univariate Analyses**
+
+- Build univariate visualizations in R
 
 <br>
 
-.center[.size40[
-  Justin Leinaweaver (Spring 2024)
-]]
+<br>
 
-???
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
 
-## Prep for Class
+::: notes
+Prep for Class
+
 1. ...
 
 <br>
@@ -69,20 +47,17 @@ Last class we built visualizations of data by hand in order to reinforce the int
 <br>
 
 Today we combine those two tasks and build visualizations in R!
+:::
 
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-class: center
-class: middle
+## Univariate_Visualizations.R {background-image="libs/Images/background-slate_v2.png" .center}
 
-.center[.size40[.content-box-blue[**New Script: Univariate_Visualizations.R**]]]
+<br>
 
-.pull-left[
-.center[.size30[
+:::: {.columns}
+::: {.column width="50%"}
 **Option 1**
 
 "File" 
@@ -94,90 +69,75 @@ class: middle
 &#8595;
 
 "R Script"
-]]]
+:::
 
-.pull-right[
-.center[.size30[**Option 2**]]
+::: {.column width="50%"}
+**Option 2**
 
-```{r, fig.align='center', out.width='38%'}
+```{r, fig.align='center'}
 knitr::include_graphics("libs/Images/03_3-New_Script.png")
 ```
+:::
+::::
 
-]
-
-???
+::: notes
 
 Let's get set-up!
 
 - Everybody create a new R script for notes and code on building univariate visualizations.
+:::
 
 
 
+## ggplot() for making visualizations {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size60[**ggplot() for making visualizations**]]
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '20%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/03_2-ggplot_logo.png")
 ```
 
-.center[.size50[**Note: You have to load the tidyverse to use ggplot**]]
+**Note: You have to load the tidyverse to use ggplot**
 
-.code160[
 ```{r, echo=TRUE}
 library(tidyverse)
 ```
-]
 
-???
-
-### Questions on the basics of ggplot as introduced in the Healy reading?
+::: notes
+**Questions on the basics of ggplot as introduced in the Healy reading?**
 
 <br>
 
 A very valuable reference, keep it close to hand!
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size55[.content-box-blue[**The GGplot Function: Two Basic Steps**]]]
+## The GGplot Function: Two Basic Steps {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.pull-left[
-.center[.size50[
+:::: {.columns}
+::: {.column width="50%"}
+
+<br>
+
 **Step 1**
 
 Map your tidy data
-]]
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align = 'center', out.width = '70%'}
 knitr::include_graphics("libs/Images/03_2-Axes.png")
 ```
-]
+:::
+::::
 
-.code130[
 ```{r, echo=TRUE, eval=FALSE}
 ## GGplot Step 1: Map the Data
 ggplot(data = ?, aes(x = ?, y = ?))
 ```
-]
 
-???
+::: notes
 
 For today, I will ask you to make visualizations in R in two discrete steps
 
@@ -198,43 +158,25 @@ As the Healy reading made clear, we can save anything in R as a named object usi
 - This object name becomes a shortcut to the code you already wrote
 
 - So, you will save this "map" of the data in a new object
+:::
 
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size55[.content-box-blue[**The GGplot Function: Two Basic Steps**]]]
+## The GGplot Function: Two Basic Steps {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.pull-left[
-.center[.size50[
-**Step 2**
+**Step 2: Add a geom**
 
-Add a geom
-]]
-]
-
-.pull-right[
-.code130[
 ```{r, echo=TRUE, eval=FALSE}
-# GGplot Step 2
-# Add a geom
+# GGplot Step 2: Add a geom
 ggplot(...) + geom_bar()
 ggplot(...) + geom_histogram()
 ggplot(...) + geom_boxplot()
 ggplot(...) + geom_line()
 ```
-]
-]
 
-???
+::: notes
 
 Step 2, tell ggplot what kind of picture to draw using this data.
 - Everybody write these down!
@@ -247,30 +189,21 @@ REMEMBER, data analysis principle 3 is "Variable type determines tool"
 <br>
 
 Let's practice doing these two steps to remake all the plots you drew by hand last class.
+:::
 
 
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle, center
-
-.size50[.content-box-blue[**Categorical Variable: Make a Bar Plot**]
+## Categorical Variable: Make a Bar Plot {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
 **By hand**, draw a bar plot of drive train levels (drv) for the 234 cars in the mpg dataset.
-]
-
-.size35[
 
 <br>
 
-Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars]
+Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars
 
-???
+::: notes
 
 Last class our first visualization was to make a bar plot of drive train levels by cars in the `mpg` dataset.
 
@@ -278,18 +211,12 @@ Last class our first visualization was to make a bar plot of drive train levels 
 
 **SLIDE**: Let's now have R do this for us.
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
 
-.center[
-.size50[
-.content-box-blue[**Categorical Variable: Make a Bar Plot**]
+## Categorical Variable: Make a Bar Plot {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
@@ -297,14 +224,12 @@ class: middle
 
 <br>
 
-.code150[
 ```{r, echo=TRUE, eval=FALSE}
 ## GGplot Step 1: Map the data
 ggplot(data = ?, aes(x = ?, y = ?))
 ```
-]]
 
-???
+::: notes
 
 Ok, let's map the data
 
@@ -314,19 +239,10 @@ Ok, let's map the data
 
 ### What is the dataset we are working with?
 - (**SLIDE**)
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[
-.size50[
-.content-box-blue[**Categorical Variable: Make a Bar Plot**]
+## Categorical Variable: Make a Bar Plot {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
@@ -334,14 +250,12 @@ class: middle
 
 <br>
 
-.code150[
 ```{r, echo=TRUE, eval=FALSE}
 ## GGplot Step 1: Map the data
 ggplot(data = mpg, aes(x = ?, y = ?))
 ```
-]]
 
-???
+::: notes
 
 Easy.
 
@@ -360,24 +274,17 @@ We're building a bar plot which is a univariate visualization so we only have to
 ### What is the variable we want to map to the x axis?
 
 - (**SLIDE**)
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code130[
 ```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.asp=.618, fig.retina=3, out.width='70%', fig.width=5}
 ## GGplot Step 1: Map the Data
 ggplot(data = mpg, aes(x = drv))
 ```
-]
 
-???
+::: notes
 
 After you finish your data mapping, run the line to save the object and then type the name of the object into your console
 
@@ -398,24 +305,17 @@ By sending the data mapping to the console we can see how ggplot has set up the 
 ### According to your notes which geom do we need for making a bar plot?
 
 - (**SLIDE**)
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code130[
 ```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
 ## Make a bar plot
 ggplot(data = mpg, aes(x = drv)) + geom_bar()
 ```
-]
 
-???
+::: notes
 
 Step 2 we add a tool (geom) to the plot.
 
@@ -439,46 +339,32 @@ Try it!
 
 - (**SLIDE**)
 
+:::
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code130[
 ```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
 ## Make a bar plot (on the y-axis)
 ggplot(data = mpg, aes(y = drv)) + geom_bar()
 ```
-]
 
-???
+::: notes
 
 The visualization features of R are immense and, once you learn the code, SUPER easy to implement.
 
 - **SLIDE**: For example...
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
 ```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
 ## Shrink the bars and fill them with color 
 ggplot(data = mpg, aes(y = drv)) +
   geom_bar(width = .5, fill = "blue")
 ```
-]
 
-???
+::: notes
 
 Using the width argument in geom_bar you can adjust the bars themselves
 - Basically any value is possible but from 0 to 1 is probably most useful
@@ -498,45 +384,31 @@ The "fill" argument allows us to color the bars
 <br>
 
 **SLIDE**: Let's practice
+:::
 
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size55[.content-box-blue[**Categorical Variable: Make a Bar Plot**]]
+## Categorical Variable: Make a Bar Plot {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-<br>
+**In R** make a bar plot of parties (`party`) that have controlled the presidency since 1953 in the `presidential` data set.
 
-.size50[**In R** make a bar plot of parties (`party`) that have controlled the presidency since 1953 in the `presidential` data set.]]
+::: notes
 
-???
-
-
+:::
 
 
----
+## Categorical Variable: Make a Bar Plot {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.asp=.8, fig.width=4}
 ## Use separate colors for each bar
 ggplot(data = presidential, aes(x = party)) +
   geom_bar(width = .5, fill = c("royalblue1", "firebrick3"))
 ```
-]
 
-???
+::: notes
 
 Kind of cool that you can easily specify different colors for different bars.
 
@@ -552,55 +424,47 @@ Now let's shift our focus to numeric variables.
 
 ### Think back to last class, what are the visualization tools we can use when summarizing a numeric variable?
 - (Histograms and box plots!)
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]]
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
 
 <br>
 
-.size35[
-1. Make a binned table of city (`cty`) fuel economy in the `mpg` data set
+1. Make a binned table of city fuel economy (mpg data set)
     - Bin 1: 0 - 10
     - Bin 2: 11 - 20
     - Bin 3: 21 - 30
     - Bin 4: 31 - 40
 
 2. Make a bar plot of these bins
-]
 
-???
+::: notes
 
 The first histogram we made last class required us to summarize a table with bins.
 
 - The good news is that R will do all of this for us.
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Numerical Variable: Make a Histogram**]]
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
 
 <br>
 
-.size50[**In R** make a histogram of city fuel economy (`cty`) in the `mpg` data set.
+**In R** make a histogram of city fuel economy (`cty`) in the `mpg` data set.
 
-Note: Use geom_histogram()
-]]
+- Note: Use geom_histogram()
 
-???
+::: notes
 
 Everybody use the basic logic from our bar plots but replace the geom_bar with geom_histogram
 
@@ -611,43 +475,29 @@ Everybody use the basic logic from our bar plots but replace the geom_bar with g
 <br>
 
 (**SLIDE**)
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
 ```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
 ## Make a histogram
 ggplot(data = mpg, aes(x = cty)) +
   geom_histogram()
 ```
-]
 
-???
-
-### Everybody get this?
-
+::: notes
+**Everybody get this?**
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
+:::: {.columns}
+::: {.column width="50%"}
+**By Hand**
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
-
-.center[.size40[.content-box-blue[**By Hand**]]]
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+```{r, echo=FALSE, fig.asp=1, out.width='100%', fig.width=5}
 mpg |>
   mutate(
     cty2 = case_when(
@@ -662,57 +512,53 @@ mpg |>
   labs(x = "Fuel Economy (City)", y = "Proportion of Observations") +
   geom_hline(yintercept = seq(50, 150, 50), color = "white")
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
+**R Defaults**
 
-.center[.size40[.content-box-blue[**R Defaults**]]]
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+```{r, echo=FALSE, fig.asp=1, fig.width=5}
 ## Make a histogram
 ggplot(data = mpg, aes(x = cty)) +
   geom_histogram()
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 On the left is what we made by hand with four bins and on the right is R's histogram which defaults to 30 bins
 
 <br>
 
 **SLIDE**: We can easily adjust the bins
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+:::: {.columns}
+::: {.column width="50%"}
+**geom_histogram(bins = 5)**
 
-.pull-left[
-
-.center[.size35[.content-box-blue[**geom_histogram(bins = 5)**]]]
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+```{r, echo=FALSE, fig.asp=1, fig.width=5}
 ggplot(data = mpg, aes(x = cty)) +
   geom_histogram(bins = 5, color = "white")
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
+**geom_histogram(bins = 20)**
 
-.center[.size35[.content-box-blue[**geom_histogram(bins = 20)**]]]
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
+```{r, echo=FALSE, fig.asp=1, fig.width=5}
 ggplot(data = mpg, aes(x = cty)) +
   geom_histogram(bins = 20, color = "white")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 R will let you adjust the number of bins using the 'bins' option.
 
@@ -728,156 +574,125 @@ Try it out!
 
 ### Questions on the histogram code?
 
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size50[.content-box-blue[**Numerical Variable: Make a Box Plot**]]
+::: {.r-fit-text}
+**Numerical Variable: Make a Box Plot**
+:::
 
 <br>
 
-.size50[**In R** make a box plot of city fuel economy (`cty`) in the `mpg` data set.
+**In R** make a box plot of city fuel economy (`cty`) in the `mpg` data set.
 
-<br>
+- Note: Use geom_boxplot()
 
-Note: Use geom_boxplot()
-]]
-
-???
+::: notes
 
 Last class we also visualized numeric variables using a box plot.
 
 - Super easy, everybody just replace histogram with boxplot
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code100[
-```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='55%', fig.asp=.8, fig.width=4}
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.asp=.8, fig.width=4}
 ## Step 1: Map the Data and Step 2: Add a geom
 ggplot(data = mpg, aes(x = cty)) +
   geom_boxplot()
 ```
-]
 
-???
-
-### Everybody get this?
+::: notes
+**Everybody get this?**
 
 <br>
 
 ### Any questions on the boxplot code?
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-.center[.size60[.content-box-blue[**Numerical Variable: Practice Both!**]]
-
-<br>
+::: {.r-fit-text}
+**Numerical Variable: Practice Both!**
+:::
 
 <br>
 
-.size55[**In R** make a **histogram AND a box plot** of the proportion of people that are college educated (`percollege`) in midwest cities (`midwest` data set).]]
+**In R** make a **histogram AND a box plot** of the proportion of people that are college educated (`percollege`) in midwest cities (`midwest` data set).
 
-???
+::: notes
+
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
-.code80[
+:::: {.columns}
+::: {.column width="50%"}
 ```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='100%', fig.asp=.8, fig.width=4}
 ggplot(data = midwest, aes(x = percollege)) +
   geom_histogram(bins = 25)
 ```
-]
-]
+:::
 
-.pull-right[
-.code80[
+::: {.column width="50%"}
 ```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='100%', fig.asp=.8, fig.width=4}
 ggplot(data = midwest, aes(x = percollege)) +
   geom_boxplot()
 ```
-]
-]
+:::
+::::
 
-???
-
-### Everybody get this?
+::: notes
+**Everybody get this?**
 
 <br>
 
 ### What do we learn from this data about the cities in the midwest?
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
 
-.center[.size45[.content-box-blue[**Numeric Variables Across Time: Line Plots**]]
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Numeric Variables Across Time: Line Plots**
+:::
 
 <br>
 
-.size45[**In R** make a line plot of the US unemployment (`unemploy`) across time (`date`) using the `economics` data set.]]
+**In R** make a line plot of the US unemployment (`unemploy`) across time (`date`) using the `economics` data set.
 
-.size45[
 - Use geom_line()
 
 - You must specify an X and a Y variable!
-]
 
-???
+::: notes
 
 Last one, let's make our line plots using R!
 
+:::
 
 
----
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-.code130[
-```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.retina=3, out.width='47%', fig.asp=.8, fig.width=4}
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.asp=.8, fig.width=4}
 # Make a line plot
 ggplot(data = economics, aes(x = date, y = unemploy)) +
   geom_line()
 ```
-]
 
-???
+::: notes
 
 When we did this by hand I had you do the most recent one year only to keep it feasible.
 
@@ -886,21 +701,15 @@ When we did this by hand I had you do the most recent one year only to keep it f
 <br>
 
 ### Any questions on the code?
+:::
 
 
+## Principle 3 {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.center[.size45[.content-box-blue[**Principle 3: Variable Type Determines Tool**]]]
+**Variable Type Determines Tool**
 
 <br>
 
-.size40[
 **Univariate Visualizations**
 
 + If a **categorical** variable, make a **bar plot**
@@ -908,51 +717,40 @@ class: middle
 + If a **numeric** variable, make a **box plot** or **histogram**
 
 + If a **numeric variable across time**, make a **line plot**
-]
 
-???
-
-### Questions on making these plots in R?
+::: notes
+**Questions on making these plots in R?**
 
 <br>
 
 **SLIDE**: Let's talk outputting the viz you make in R for copying into a Word Doc.
+:::
 
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '85%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/04_3-export_image1.png")
 ```
 
-???
+::: notes
 
 Three useful options through the export menu.
 
 - Comes down to your preference.
+:::
 
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-```{r, echo = FALSE, fig.align = 'center', out.width = '67%'}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/04_3-export_image2.png")
 ```
 
-???
+::: notes
 
 If saving as an image it defaults to png.
 
@@ -965,21 +763,19 @@ If saving as an image it defaults to png.
 <br>
 
 **SLIDE**: So, you're working from home and you get stuck, what should you do?
+:::
 
 
 
----
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.pull-left[
+:::: {.columns}
+::: {.column width="50%"}
 
 <br>
 
-.size40[
+<br>
+
 + Recipes 3.3 for bar plots
 
 + Recipe 6.1 for histograms
@@ -989,15 +785,16 @@ class: middle
 + Recipe 4.1 for line Plots
 
 + Recipe 10.26 for outputting visualizations
-]]
+:::
 
-.pull-right[
-```{r, echo = FALSE, fig.align = 'center', out.width = '90%'}
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("libs/Images/04_3-R_Graphics_Cookbook.jpg")
 ```
-]
+:::
+::::
 
-???
+::: notes
 
 SUPER useful reference book.
 
@@ -1016,27 +813,20 @@ Something not working? Notes incomplete?
 
 - Just copy the recipes into your notes, update the names of the data and variables and it should work!
 
+:::
 
 
-
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.size70[.content-box-blue[**For Next Class**]]
+## For Next Class {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-.size55[
 1. World Development Indicators: The Story (2018, Oct 5)
 
-2. Practice Exercises
-]
+<br>
 
-???
+2. Practice Exercises
+
+::: notes
 
 Next class we'll start working with some data collected by the World Bank.
 
@@ -1046,17 +836,11 @@ Next class we'll start working with some data collected by the World Bank.
 
 So, do that reading and the following practice exercises!
 
+:::
 
 
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
----
-
-background-image: url('libs/Images/background-slate_v2.png')
-background-size: 100%
-background-position: center
-class: middle
-
-.code130[
 ```{r, echo=TRUE, eval=FALSE}
 # Install new package (only 1 time)
 install.packages("carData")
@@ -1064,17 +848,17 @@ install.packages("carData")
 # Load the package to access the following datasets (each time)
 library(carData)
 ```
-]
 
-.size40[
+<br>
+
 1. What is the regional breakdown of UN member states? (`UN` dataset, `region` variable)
 
 2. How much variation is there in life expectancy rates around the world? (`UN` dataset, `lifeExpF` variable)
 
 3. Visualize the growth in the US population since 1790  (`USPop` dataset, `population` variable)
-]
 
-???
+
+::: notes
 
 The `carData` package gives us access to some useful datasets for practicing your univariate visualization skills
 
@@ -1088,3 +872,4 @@ The `carData` package gives us access to some useful datasets for practicing you
 
 - Get to work!
 
+:::
