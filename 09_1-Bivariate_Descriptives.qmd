@@ -91,7 +91,7 @@ set.seed(134)
 mpg |>
   slice_sample(n = 9) |>
   kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
-  kableExtra::kable_styling(font_size = 22)
+  kableExtra::kable_styling(font_size = 24)
 ```
 
 ::: notes
@@ -145,7 +145,7 @@ set.seed(134)
 mpg |>
   slice_sample(n = 9) |>
   kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
-  column_spec(6:7, background = "lightblue") |>
+  column_spec(6:7, background = "pink") |>
   kableExtra::kable_styling(font_size = 22)
 ```
 
@@ -164,60 +164,94 @@ Analysis of the relationship between two categorical variables
 
 
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Categorical x Categorical {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-**Categorical x Categorical**
+<br>
+
+:::: {.columns}
+::: {.column width="55%"}
+**Univariate Analyses**
+
+```{r}
+options(width = 60)
+```
+
+```{r, echo=TRUE}
+table(mpg$trans)
+```
+
+<br>
+
+```{r, echo=TRUE}
+table(mpg$drv)
+```
+:::
+
+::: {.column width="45%"}
+**Bivariate Analyses**
 
 ```{r, echo=TRUE}
 table(mpg$trans, mpg$drv)
 ```
-
-<br>
-
-```{r, echo=TRUE}
-table(mpg$drv, mpg$trans)
-```
+:::
+::::
 
 ::: notes
+Adding a second variable to the table function is quite simple
 
-Adding a second variable to the table function is quite simple.
+- On the left we see that 58 cars are manual transmission with five gears
 
-- I also want you to see that the order of the variables you input determines the rows and columns of the table
-
-<br>
-
-**Why is the first version easier to read and what visualization lesson does that suggest?**
-
-- Generally speaking, whichever variable has more levels should be your rows
+- On the right we see how that 58 cars is distributed across the different drive trains
 
 <br>
 
-Let's now analyze the results
+**Make sense?**
 
-- **Which combinations of transmission and drive train are the most common in this data set?**
+<br>
+
+**Which combinations of transmission and drive train are the most common in this data set?**
 
 <br>
 
 **Remind me again, how do we convert a table of counts into a table of proportions?**
 
 - (**SLIDE**: proportions())
+
 :::
 
 
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Categorical x Categorical {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-**Categorical x Categorical**
+<br>
+
+:::: {.columns}
+::: {.column width="55%"}
+**Univariate Analyses**
+
+```{r}
+options(width = 60)
+```
 
 ```{r, echo=TRUE}
-proportions(table(mpg$trans, mpg$drv))
+proportions(table(mpg$trans))
 ```
 
 <br>
 
 ```{r, echo=TRUE}
-proportions(table(mpg$drv, mpg$trans))
+proportions(table(mpg$drv))
 ```
+:::
+
+::: {.column width="45%"}
+**Bivariate Analyses**
+
+```{r, echo=TRUE}
+proportions(table(mpg$trans, mpg$drv))
+```
+:::
+::::
 
 ::: notes
 Note for SP23: I just discovered that prop.table() is being replaced by proportions() which makes way more intuitive sense!
@@ -234,6 +268,7 @@ proportions converted the counts to proportions of the entire data set.
 
 **SLIDE**: Practice
 :::
+
 
 
 
@@ -259,8 +294,6 @@ Alright, use these tools to answer this question!
 
 What proportion of SUVs (`class`) are four wheel drive (`drv`)?
 
-<br>
-
 ```{r, echo=TRUE}
 proportions(table(mpg$class, mpg$drv))
 ```
@@ -280,8 +313,6 @@ proportions(table(mpg$class, mpg$drv))
 
 
 ## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**Categorical x Categorical**
 
 <br>
 
@@ -321,6 +352,10 @@ Column margins means each drive train type is estimated separately
 
 **Any questions on using table and proportions to perform bivariate analyses on two categorical variables?**
 
+- Sometimes you want proportions overall and sometimes you'll want proportions across categories
+
+- Either case, the code is simple!
+
 <br>
 
 **SLIDE**: Let's tie this to the Wheelan chapter on probability you read for class today.
@@ -357,25 +392,14 @@ proportions(table(mpg$class, mpg$drv), margin = 1)
 ```
 
 ::: notes
-**How does this concept apply to the work we just did examining cars in the 'mpg' dataset?**
 
-- **In what ways is probability helpful for analyzing these tables?**
+**How confident should we be in using these proportions as estimates of the "true" probabilities?**
 
-<br>
-
-These results are proportions, not probabilities, however we often hope the former tells us something about the latter
-
-- A proportion summarizes how frequently some event actually happened in our sample
-
-- A probability represents the chances of some event happening in the future and is typically estimated using the proportion
+- **In other words, how confident are you that 83% of the SUVs on the roads today are 4wd?**
 
 <br>
 
-The key to this connection comes down to our confidence that the sample we are studying actually represents the full population
-
-- **Put your research design hats on and tell me how confident you are in treating our sample as representative of all cars on the road?**
-
-<br>
+`mpg` dataset...
 
 - Only includes a sample from two years: 1999 and 2008
 
@@ -385,9 +409,19 @@ The key to this connection comes down to our confidence that the sample we are s
 
 <br>
 
-Once again, and for always, without understanding the methodology of our measures we really can't say anything about the wider world with our data!
+I hope this is helping to reinforce a REALLY important idea for us
 
-- HOWEVER, once you know the method you can interpret the data, even if the data isn't perfect!
+- The tools of statistics are frequently used to help us estimate real-world probabilities using things like proportions in a dataset
+
+- HOWEVER, without understanding the measures in our data we really can't say anything about how they represent the probabilities
+
+- BUT, once we understand the measures we CAN say something useful about probability (with uncertainty attached)
+
+<br>
+
+In short, our datasets are a representation of the wider world (the population)
+
+- Only by analyzing where the data came from and pairing that with statistics can we say anything useful about the real world.
 
 <br>
 
@@ -408,7 +442,7 @@ mpg |>
   slice_sample(n = 7) |>
   kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
   column_spec(7:8, background = "pink") |>
-  kableExtra::kable_styling(font_size = 22)
+  kableExtra::kable_styling(font_size = 24)
 ```
 
 ::: notes
@@ -418,32 +452,20 @@ Now let's shift to bivariate analysis of the relationship between a single categ
 <br>
 
 Using our `mpg` dataset we might ask, do cars with different drive trains have different levels of fuel efficiency?
-
-<br>
-
-**Previously, what function did we use to calculate the descriptive statistics for a nueric variable like city fuel economy?**
-
-- (**SLIDE**: The summary function!)
 :::
 
 
 
-
-
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**Categorical x Numeric**
+## Categorical x Numeric {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 <br>
 
-```{r, echo=FALSE}
-set.seed(134)
+:::: {.columns}
+::: {.column width="45%"}
+**Univariate Analyses**
 
-mpg |>
-  slice_sample(n = 7) |>
-  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
-  column_spec(7:8, background = "pink") |>
-  kableExtra::kable_styling(font_size = 22)
+```{r, echo=TRUE}
+table(mpg$drv)
 ```
 
 <br>
@@ -451,37 +473,28 @@ mpg |>
 ```{r, echo=TRUE}
 summary(mpg$cty)
 ```
-
-::: notes
-**Refresh my memory, what do we learn from these descriptive statistics?**
-
-- **Summarize city fuel economy in this dataset for me**
-
-<br>
-
-**SLIDE**: We'll use the aggregate function to calculate the bivariate version of descriptive statistics
 :::
 
+::: {.column width="10%"}
 
+:::
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
-
-**Categorical x Numeric**
-
-<br>
+::: {.column width="45%"}
+::: {.r-fit-text}
+**Bivariate Analyses**
 
 The Aggregate Function
-```{r, echo=TRUE, eval=FALSE}
-aggregate(data, y ~ x, FUN)
-```
+
+- aggregate(data, y ~ x, FUN)
+:::
+:::
+::::
+
+::: notes
+We'll use the aggregate function to calculate the bivariate version of descriptive statistics
 
 <br>
 
-```{r, echo=TRUE}
-aggregate(data = mpg, cty ~ drv, FUN = summary)
-```
-
-::: notes
 The aggregate function looks a little different from what we've done so far
 
 - The "data" argument you've seen before
@@ -493,7 +506,36 @@ The aggregate function looks a little different from what we've done so far
 - FUN is the argument where you specify a function to apply to the Y variable
     - e.g. summary, sd, mean, median, min, max, etc
     
+<br>    
+
+**SLIDE**: Example
+:::
+
+
+
+## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Categorical x Numeric**
+
 <br>
+
+The Aggregate Function
+
+```{r}
+options(width = 80)
+```
+
+```{r, echo=TRUE}
+aggregate(data = mpg, cty ~ drv, FUN = summary)
+```
+
+<br>
+
+::: {.fragment}
+**Practice: Redo the above for highway fuel economy (`hwy`)**
+:::
+
+::: notes
 
 So, this code asks R to summarize city fuel economy separately for each type of drive train
 
@@ -578,7 +620,9 @@ aggregate(data = mpg, cty ~ displ, FUN = summary)
 ```
 
 ::: notes
-Clearly, aggregate will work with two numeric variables but the output won't tell you what you think it does
+**Why is using the aggregate function on two numeric variables a bad idea?**
+
+- **In other words, why should I be SUPER careful when interpreting these results?**
 
 <br>
 
@@ -626,13 +670,16 @@ This will make more sense when you start applying it
 
 
 
-## Cut: Convert Numeric to Factor {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Cut: Convert Numeric to Factor {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
+cut(x, breaks, labels)
+
 ```{r, echo=TRUE}
 # Use the cut function and save the new variable in mpg
-mpg$displ2 <- cut(x = mpg$displ, breaks = c(0, 4, 8), labels = c("Small", "Large"))
+mpg$displ2 <- cut(x = mpg$displ, breaks = c(0, 4, 8), 
+                  labels = c("Small", "Large"))
 ```
 
 <br>
@@ -678,25 +725,27 @@ Ok, everybody now use aggregate on our new displacement variable!
 :::
 
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
-
-**Numeric x Numeric**
+## Numeric x Numeric (cut) {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 <br>
 
+**Univariate Analysis**
+```{r, echo=TRUE}
+table(mpg$displ2)
+```
+
+<br>
+
+```{r, echo=TRUE}
+summary(mpg$cty)
+```
+
+<br>
+
+**Bivariate Analysis**
 ```{r, echo=TRUE}
 aggregate(data = mpg, cty ~ displ2, FUN = summary)
 ```
-
-<br>
-
-::: {.fragment}
-Redo our exercise using the quartiles of `displ`
-
-```{r, echo=TRUE}
-quantile(mpg$displ)
-```
-:::
 
 ::: notes
 
@@ -710,9 +759,28 @@ quantile(mpg$displ)
 
 <br>
 
-**REVEAL**: Let's practice this again.
+**SLIDE**: Let's practice!
+:::
 
-- Everybody redo this analysis but now let's transform engine size into a FOUR level categorical variable with one level per quartile
+
+
+## Numeric x Numeric (cut) {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+**Practice: Summarize city fuel economy using the four quartiles of `displ` (e.g. 25th, 50th, 75th and 100th percentile)**
+
+- cut(x, breaks, labels)
+
+- aggregate(data, y ~ x, FUN)
+
+```{r, echo=TRUE}
+quantile(mpg$displ)
+```
+
+::: notes
+
+Everybody redo this analysis but now let's transform engine size into a FOUR level categorical variable with one level per quartile
 
 - Remember to set your breaks below 1.6 and above 7 so you catch any observations with these exact scores
 :::
@@ -749,8 +817,28 @@ aggregate(data = mpg, cty ~ displ2, FUN = summary)
 So, your first option for calculating descriptive statistics using two numeric variables is to convert one of them into a categorical variable
 
 - **Make sense?**
+:::
+
+
+
+## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Numeric x Numeric**
 
 <br>
+
+```{r, echo=FALSE}
+set.seed(134)
+
+mpg |>
+  select(-displ2) |>
+  slice_sample(n = 8) |>
+  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
+  column_spec(c(3, 8), background = "pink") |>
+  kableExtra::kable_styling(font_size = 22)
+```
+
+::: notes
 
 Your second option is to calculate the correlation between the two numeric variables.
 
@@ -1019,8 +1107,6 @@ Two functions to calculate correlations.
 
 ## Practice using the `diamonds` dataset {background-image="libs/Images/background-slate_v2.png" .center}
 
-<br>
-
 ```{r}
 diamonds |>
   select(price, cut, clarity, carat) |>
@@ -1047,7 +1133,7 @@ The diamonds dataset is in the tidyverse package
 
 
 
-## For next class analyze the relationship between: {background-image="libs/Images/background-slate_v2.png" .center}
+## Analyze the relationship between: {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 

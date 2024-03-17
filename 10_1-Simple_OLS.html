@@ -406,8 +406,20 @@
 <aside class="notes">
 <p>Prep for Class</p>
 <ol type="1">
-<li>…</li>
+<li>Consider printing sheets for “best fit” line practice in class (one per student) AND rulers for all</li>
 </ol>
+<p><br></p>
+<p>Today we begin exploring regressions</p>
+<ul>
+<li>A powerful and incredibly common tool frequently used by scientists of all stripes for estimating relationships</li>
+</ul>
+<p><br></p>
+<p>My assumption: You have completed AND reflected on the readings for today</p>
+<ul>
+<li><p>This discussion should NOT be your intro to regression!</p></li>
+<li><p>As we move deeper into stats you will have to encounter concepts repeatedly for them to make sense!</p></li>
+<li><p>The more you put in, the more you’ll get out.</p></li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -420,30 +432,19 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="part-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Part 1</h2>
+<section id="section" class="slide level2" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Part 1 </strong></p>
 <p><br></p>
 <p><strong>Why do we need regressions?</strong></p>
+</div>
 <aside class="notes">
-<p>Both in terms of the approach to summarizing data and what do we mean by the word ‘regression’?</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-2-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
-<h3 id="what-conclusions-can-we-draw-based-on-the-visualization-and-the-correlation">What conclusions can we draw based on the visualization and the correlation?</h3>
-<h3 id="in-other-words-based-on-these-stats-what-is-the-specific-relationship-between-diamond-size-and-price">- In other words, based on these stats what is the specific relationship between diamond size and price?</h3>
+<p>Big picture:</p>
+<ul>
+<li><p>What is a “regression”?</p></li>
+<li><p>And why do we need it?</p></li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -459,14 +460,25 @@
 <section id="section-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2></h2>
 
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-3-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Let’s get more specific!</p>
-<h3 id="what-is-your-most-precise-estimate-of-the-price-difference-between-a-1.5-carat-and-a-2.5-carat-diamond">What is your most precise estimate of the price difference between a 1.5 carat and a 2.5 carat diamond?</h3>
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-2-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Let’s start by looking at some data you are now pretty familiar with from last week.</p>
 <ul>
-<li>My blue line segments show the range of prices at each size in the dataset.</li>
+<li>The diamonds dataset includes details on 53k+ diamondsin terms of their characteristics and estimated prices</li>
 </ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: Regression is an estimation tool that aims to answer this type of question.</p>
+<h3 id="what-conclusions-can-we-draw-based-on-the-visualization-and-the-correlation">What conclusions can we draw based on the visualization and the correlation?</h3>
+<ul>
+<li><p>(Bigger diamonds are typically more expensive)</p></li>
+<li><p>(There is a strong linear correlation between the two variables)</p></li>
+</ul>
+<p><br></p>
+<p>Excellent, now let’s get more specific!</p>
+<p><br></p>
+<p>It’s one thing to note an association between two variables (e.g.&nbsp;bigger diamonds are typically more expensive)</p>
+<ul>
+<li><p>What we need is a numerical estimate for the relationship</p></li>
+<li><p>In other words, as we move up in diamond weight, how big a jump in price should we expect to see?</p></li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -481,101 +493,17 @@
 </section>
 <section id="section-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2></h2>
+
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-3-1.png" width="576" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>For example, here I am showing you the range of prices at two sizes in the dataset: 1.5 and 2.5 carats</p>
 <p><br></p>
-<p>Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.</p>
-<p><br></p>
-<p>Y = <span class="math inline">\(\alpha\)</span> + <span class="math inline">\(\beta\)</span> X</p>
-<aside class="notes">
-<p><strong>What clarifications do you need from the readings?</strong></p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="why-regression" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Why ‘Regression’?</h2>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="libs/Images/11_1-diamonds_carats.gif"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="libs/Images/11_1-diamonds_prices.gif"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-<aside class="notes">
-<p>Imagine you are holding a bag of diamonds.</p>
+<p><strong>Based on your tools to this point in the class, what kind of answer could we provide to this question?</strong></p>
 <ul>
-<li><p>Each diamond in the bag has weight and a price</p></li>
-<li><p>We can visualize the distribution of each using these two histograms</p></li>
-<li><p>Any single diamond you pull out of the bag will have a specific weight that corresponds to a specific value.</p></li>
+<li><strong>What tools could you use to provide an answer to this question?</strong></li>
 </ul>
 <p><br></p>
-<h3 id="if-you-pull-a-single-diamond-from-this-collection-at-random-what-is-the-most-likely-price-and-size-it-will-be">If you pull a single diamond from this collection at random, what is the most likely price and size it will be?</h3>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="why-regression-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Why ‘Regression’?</h2>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-8_8e9bf5fcf64370085b828c96bf95a956">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-8-1.png" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-9_2dc92a2d14d02f37d3fafa7cdde371bb">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-9-1.png" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-<aside class="notes">
-<p><strong>Pros and cons of guessing the average?</strong></p>
 <ul>
-<li>Clearly the price of the diamonds isn’t normally distributed, so maybe you’re better off guessing lower.</li>
+<li>(<strong>SLIDE</strong>: Results)</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -589,37 +517,188 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="why-regression-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Why ‘Regression’?</h2>
+<section id="using-descriptive-statistics" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Using Descriptive Statistics</h2>
 <p><br></p>
 <div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-10_74d2911c393e16c04fc3465e848da50f">
+<div class="column" style="width:40%;">
+<div class="cell" data-layout-align="left" data-fig.asp="0.9" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-4_fb09c6299907ca145b9a144b735651e8">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-left">
 <figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-10-1.png" width="672"></p>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-4-1.png" width="576"></p>
 </figure>
 </div>
 </div>
 </div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-11_2121e620caf22ad9f9592f2689c7e3cc">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-11-1.png" width="672"></p>
-</figure>
+</div><div class="column" style="width:60%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Make subsets</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>diamonds1_5 <span class="ot">&lt;-</span> <span class="fu">filter</span>(diamonds, carat <span class="sc">==</span> <span class="fl">1.5</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>diamonds2_5 <span class="ot">&lt;-</span> <span class="fu">filter</span>(diamonds, carat <span class="sc">==</span> <span class="fl">2.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Summarize</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">summary</span>(diamonds1_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2964    8044    9817   10057   11863   18691 </code></pre>
+</div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">summary</span>(diamonds2_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   7854   13278   14652   14255   16955   18447 </code></pre>
 </div>
 </div>
 </div>
 </div>
 <aside class="notes">
-<p><strong>Does your guess change if the first diamond you pull out of the bag is massive?</strong></p>
+<p><strong>What answer could we give using these descriptive stats?</strong></p>
+<p><br></p>
+<p><strong>Is this a good answer? Why or why not?</strong></p>
 <ul>
-<li><strong>In other words, if you first pull a massive diamond from the collection, what is the most likely price and size of the next one you draw?</strong></li>
+<li><strong>In other words, why not just answer the question by comparing the prices of 1.5 and 2.5 carat diamonds in the dataset?</strong></li>
 </ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-limits-of-descriptive-statistics" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>The Limits of Descriptive Statistics</h2>
+<p><br></p>
+<p><strong>1. Choosing a statistic is somewhat arbitrary</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Summarize</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">summary</span>(diamonds1_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2964    8044    9817   10057   11863   18691 </code></pre>
+</div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">summary</span>(diamonds2_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   7854   13278   14652   14255   16955   18447 </code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>The FIRST big problem with this approach to answering our question is that it is somewhat arbitrary</p>
+<ul>
+<li><p>There isn’t really a robust way to defend our choice of which descriptive stats to compare</p></li>
+<li><p>e.g.&nbsp;compare means, medians, IQRs?</p></li>
+</ul>
+<p><br></p>
+<p>In this case comparing the means and medians shows an increase in price with weight, but comparing the maximums doesn’t</p>
+<ul>
+<li>Is one of these more “true” or “correct” than the others?</li>
+</ul>
+<p><br></p>
+<p>This is why descriptive stats are important for helping the reader see your data but not necessarily for supporting a strong argument on its own.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-limits-of-descriptive-statistics-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>The Limits of Descriptive Statistics</h2>
+<p><br></p>
+<p><strong>2. No measures of uncertainty (beyond the sd for the mean)</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">mean</span>(diamonds1_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10057.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">sd</span>(diamonds1_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2932.765</code></pre>
+</div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">mean</span>(diamonds2_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 14255.12</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">sd</span>(diamonds2_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3335.061</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p><strong>REVEAL</strong>: The SECOND big problem is that this approach doesn’t give us an easy way to describe our uncertainty in the comparisons</p>
+<ul>
+<li><p>These descriptive stats don’t include any caveats for sample size or precision</p></li>
+<li><p>In other words, how confident should we be in these estimates of the mean or median?</p></li>
+</ul>
+<p><br></p>
+<p>We have the standard deviation for the mean, but nothing exactly comparable for the other comparisons.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-limits-of-descriptive-statistics-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>The Limits of Descriptive Statistics</h2>
+<p><br></p>
+<p><strong>3. Sample size matters (and may be hidded)!</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Count the observations</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="fu">nrow</span>(diamonds1_5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 793</code></pre>
+</div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">nrow</span>(diamonds2_5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 17</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>THIRD big problem, the descriptive statistics approach can mislead you if the subsets of the data are small!</p>
+<ul>
+<li><p>Out of 53k diamonds in this dataset only 793 have exactly 1.5 carats (e.g.&nbsp;1%)</p></li>
+<li><p>Out of 53k diamonds in this dataset only 17 have exactly 2.5 carats (e.g.&nbsp;.03%)</p></li>
+<li><p>We probably shouldn’t be confident drawing conclusions about the relationship between diamond weight and value using 1% of the sample!</p></li>
+</ul>
+<p><br></p>
+<p>Regression can help us with all three issues!</p>
+<ul>
+<li><p>Simple OLS regression is not arbitrary as it assumes most natural processes exhibit a “regression to the mean”,</p></li>
+<li><p>It produces its estimates based on ALL of the data, AND</p></li>
+<li><p>Its estimates come with measures of uncertainty!</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: So, we need a tool like regression that has these characteristics, but why should “regression to the mean” be a good baseline assumption?</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -634,54 +713,9 @@
 </section>
 <section id="regression-to-the-mean" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>‘Regression to the mean’</h2>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-12_d06f9326c6f2e4695361f2b19366e5a3">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-13_dfbabe78e70c4715c60d12fda1a08333">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-13-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-<aside class="notes">
-<p>(A random draw of an outlier is more likely to be followed by an average value than another outlier.)</p>
-<p><br></p>
-<p>In statistical terms, we tend to see data trend toward its central tendency.</p>
-<ul>
-<li>e.g.&nbsp;“middle” values are more common than outliers.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="regression-to-the-mean-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>‘Regression to the mean’</h2>
 
 <img data-src="libs/Images/11_1-Galtons-rate_regression-diagram.png" style="width:66.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>We get the word “regression” from Sir Francis Galton - A statistician working in the late 19th century</p>
+<p>The answer to that question, and the word “regression” itself comes from the work of a 19th century statistician, Sir Francis Galton.</p>
 <p><br></p>
 <p>In 1886 he ran a now very famous experiment in which he gathered the heights of 930 children and their parents.</p>
 <ul>
@@ -690,14 +724,19 @@
 <li><p>The average parent heights are on one line and their kids on the other</p></li>
 </ul>
 <p><br></p>
-<p>“It appeared from these experiments that the offspring did not tend to resemble their parents in size, but always to be more mediocre than they – to be smaller than the parents, if the parents were large; to be larger than the parents, if the parents were small.”</p>
+<p>Generally, what Galton found was:</p>
+<ol type="1">
+<li><p>The children of tall parents tended to be taller than average, BUT were shorter than their parents</p></li>
+<li><p>The children of short parents were taller than their parents but still shorter than average</p></li>
+</ol>
+<p><br></p>
+<p>Galton described this as “regression to the mean”</p>
 <ul>
-<li><p>“regression to the mean”</p></li>
-<li><p>Per Galton, ‘regress’ means to go back or revert to an earlier or more primitive state.</p></li>
-<li><p>It means that, in general, relatively high (or low) observations are likely to be followed by less extreme ones nearer the subject’s true mean.</p></li>
+<li><p>In short, across tons of different processes in nature we typically see extreme observations followed by less extreme observations</p></li>
+<li><p>For example, a football player with a long career of being average may put up an all star year, but the odds are that next year they go back to their averages</p></li>
 </ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: Let me see if I can clarify this intuition using a simple simulated counting experiment.</p>
+<p><strong>SLIDE</strong>: Let me clarify this with a simulation</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -752,6 +791,13 @@
 <p>On the right I have a bar plot showing where on the field each person is now</p>
 <p><br></p>
 <h3 id="questions-on-the-set-up-here">Questions on the set-up here?</h3>
+<p><br></p>
+<p>Let’s collect some guesses about the outcome of this experiment</p>
+<p><br></p>
+<p><strong>After 10 flips of the coin, how many of our 100 subjects will still be on the 50 yard line?</strong></p>
+<ul>
+<li><em>ON BOARD</em></li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -791,7 +837,7 @@
 </div>
 </div>
 <aside class="notes">
-<p><strong>What happens after the first flip? Describe the outcome for me.</strong></p>
+<p>After the first flip EVERYONE has moved away from the 50 yard line by one randomly selected step!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -831,7 +877,7 @@
 </div>
 </div>
 <aside class="notes">
-<p><strong>What happens after the second flip? Describe the outcome for me.</strong></p>
+<p>After two random steps we have about half the sample two steps away from the 50 yard line and half back on it!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -871,97 +917,11 @@
 </div>
 </div>
 <aside class="notes">
-<p>Ok, third flip.</p>
-<p><strong>What do we see here?</strong></p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="coin-flip-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Coin Flip 4</h2>
+<p>Ok, third flip</p>
 <p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-23_de6854f854c4930f0a6ff8fe711ae999">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-23-1.png" width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-24_c4d9e09b434d0297714e8d1fa4e9bdf8">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-24-1.png" width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-<aside class="notes">
-<p>Flip 4!</p>
-<p>And then on to…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="coin-flip-10" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Coin Flip 10</h2>
+<p>Again, random flips have moved some further away from the 50 and a number have again returned closer!</p>
 <p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-25_16a3168cabf012e181c164dc75197206">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-25-1.png" width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-26_798d4f8d8bb5d95b37fb313cc52eaa5d">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-26-1.png" width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-<aside class="notes">
-<p>Ok, what are we seeing develop here?</p>
-<p><strong>Describe this distribution for me.</strong></p>
-<p><br></p>
-<h3 id="why-are-we-seeing-so-many-subjects-at-or-near-the-50-yard-line-after-10-flips">Why are we seeing so many subjects at or near the 50 yard line after 10 flips?</h3>
-<ul>
-<li>(A mix of heads and tails keeps you basically in place!)</li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s unpack this using counting!</p>
+<p><strong>SLIDE</strong>: Let’s unpack what were’ seeing here with simple counting</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -978,11 +938,11 @@
 <h2>Coin Flip 3: Possible Paths</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-27_60cdafeb52fd66031d520c60302a3196">
+<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-23_9dfd4d6d340c51c5642017df64999259">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-27-1.png" width="576"></p>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-23-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -1001,16 +961,13 @@
 </div>
 </div>
 <aside class="notes">
-<p>Go back to flip 3</p>
+<p>There are only eight possible outcomes from flipping a fair coin 3 times</p>
 <ul>
-<li>There are only eight possible paths for our coin flippers to flip a coin three times</li>
+<li><p>In six of these eight outcomes the flipper is only 1 step away from the starting point! (75%)</p></li>
+<li><p>In only two of the outcomes has a flipper moved three steps away</p></li>
 </ul>
-<h3 id="does-everybody-understand-how-to-read-these-entries">Does everybody understand how to read these entries?</h3>
 <p><br></p>
-<h3 id="how-does-this-list-explain-why-so-many-subjects-are-still-close-to-the-50-yard-line">How does this list explain why so many subjects are still close to the 50 yard line?</h3>
-<ul>
-<li>(Importantly, out of all eight paths six of them (75%) keep the flipper one away from the start!)</li>
-</ul>
+<p>So, apply these percentages to any group of subjects and our expectation is that after three flips most are very close to the starting place!</p>
 <p><br></p>
 <p><strong>SLIDE</strong>: Let’s check four flips!</p>
 <style type="text/css">
@@ -1030,48 +987,51 @@
 <p><br></p>
 <div class="columns">
 <div class="column" style="width:40%;">
-<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-28_75f2b7821377852c94ea45b433435f70">
+<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-24_5e702c780daa2408978c56a03dcb78e4">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-28-1.png" width="576"></p>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-24-1.png" width="576"></p>
 </figure>
 </div>
 </div>
 </div>
-</div><div class="column" style="width:30%;">
+</div><div class="column" style="width:20%;">
 <ul>
 <li>T, H, T, H = 0</li>
 <li>H, T, H, T = 0</li>
 <li>H, T, T, H = 0</li>
-<li>H, H, H, T = +2</li>
-<li>H, H, T, H = +2</li>
-<li>H, T, H, H = +2</li>
-<li>T, H, H, H = +2</li>
-<li>H, H, H, H = +4</li>
+<li>H, H, T, T = 0</li>
+<li>T, H, H, T = 0</li>
+<li>T, T, H, H = 0</li>
 </ul>
-</div><div class="column" style="width:30%;">
+</div><div class="column" style="width:20%;">
 <ul>
-<li>T, T, T, T = -4</li>
 <li>H, T, T, T = -2</li>
 <li>T, H, T, T = -2</li>
 <li>T, T, H, T = -2</li>
 <li>T, T, T, H = -2</li>
-<li>H, H, T, T = 0</li>
-<li>T, H, H, T = 0</li>
-<li>T, T, H, H = 0</li>
+<li>H, H, H, T = +2</li>
+<li>H, H, T, H = +2</li>
+<li>H, T, H, H = +2</li>
+<li>T, H, H, H = +2</li>
+</ul>
+</div><div class="column" style="width:20%;">
+<ul>
+<li>T, T, T, T = -4</li>
+<li>H, H, H, H = +4</li>
 </ul>
 </div>
 </div>
 <aside class="notes">
 <p>Here we see the 16 ways a person could flip a coin four times.</p>
-<p><br></p>
-<h3 id="how-does-this-list-explain-why-so-many-subjects-are-still-close-to-the-50-yard-line-1">How does this list explain why so many subjects are still close to the 50 yard line?</h3>
 <ul>
-<li><p>6/16 (38%) keep them directly on the mean</p></li>
-<li><p>14/16 (88%) are within 2!</p></li>
-<li><p>Only 2 paths reach the extremes!</p></li>
+<li><p>We expect 38% of our subjects (6/16) to end up back on the 50!</p></li>
+<li><p>All in that puts 88% of subjects (14/16) within 2 steps!</p></li>
+<li><p>Only 2 paths or 13% reach the extremes!</p></li>
 </ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: And check the bar plot!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1084,26 +1044,26 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="coin-flip-4-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<section id="coin-flip-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>Coin Flip 4</h2>
 <p><br></p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-29_fb40d3935aac2e43f8f1d89901f483ed">
+<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-25_a226b3f37b05dbf0f72c40f395b48da0">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-29-1.png" width="576"></p>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-25-1.png" width="576"></p>
 </figure>
 </div>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-30_ece007676dce3b255064c192f3585e94">
+<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-26_688b6025e1ca4923aada57e0cdbda695">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-30-1.png" width="576"></p>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-26-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -1113,27 +1073,10 @@
 <aside class="notes">
 <p>And here we see the results of our experiment after flip 4.</p>
 <ul>
-<li>We know from the counts WHY extreme values are unlikely and the bar plot shows us that those values WERE unlikely</li>
+<li>Adding together a bunch of small, randomly assigned changes means that extremes tend to counter each other</li>
 </ul>
 <p><br></p>
-<p>Expecting “regression to the mean” can be explained through a counting process</p>
-<ul>
-<li><p>The key observation: When you add a bunch of things together there are more ways for them to stay near the average than near one of the extremes.</p></li>
-<li><p>The output of most complex systems in the natural world are more likely to produce values close to the “normal” than at the extremes.</p></li>
-</ul>
-<p><br></p>
-<ol type="1">
-<li>Why are some people wealthier than others?
-<ul>
-<li>Family wealth + Education + Experience + Opportunities + etc</li>
-</ul></li>
-<li>Why are some people healthier than others?
-<ul>
-<li>Genetics + Access to food + Food quality + exercise + etc</li>
-</ul></li>
-</ol>
-<p><br></p>
-<h3 id="does-this-make-sense">Does this make sense?</h3>
+<p><strong>SLIDE</strong>: Let’s jump ahead to flip 10!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1146,7 +1089,56 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="regression-to-the-mean-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<section id="coin-flip-10" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Coin Flip 10</h2>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-27_4d2311561d769d99a9dc601b1c9ba3f8">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-27-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="1" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-28_810dd68516fda8e0002ea328f2dc81d9">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-28-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>The results will always be different given the random coin flips, but after ten flips we tend to see:</p>
+<ul>
+<li><p>25-30% of cases on the 50 yard line</p></li>
+<li><p>55% within 2 steps!</p></li>
+</ul>
+<p><br></p>
+<p>The key observation: When you add a bunch of small differences together there are more ways for them to stay near the average than near one of the extremes.</p>
+<ul>
+<li>The output of most complex systems in the natural world are more likely to produce values close to the “normal” than at the extremes.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="regression-to-the-mean-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>‘Regression to the mean’</h2>
 
 <img data-src="libs/Images/11_1-Galtons-rate_regression-diagram.png" style="width:66.0%" class="r-stretch quarto-figure-center"><aside class="notes">
@@ -1163,6 +1155,8 @@
 </ul>
 <p><br></p>
 <h3 id="any-questions-on-the-intuition-of-why-predicting-the-average-is-frequently-useful-for-us">Any questions on the intuition of why predicting the average is frequently useful for us?</h3>
+<p><br></p>
+<p><strong>SLIDE</strong>: Time to talk about what regression produces, how to interpret it and how to fit them in R</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1177,16 +1171,46 @@
 </section>
 <section id="section-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2></h2>
-
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-32-1.png" width="768" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Back to the diamonds!</p>
+<p>Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.</p>
 <p><br></p>
-<p>If data tends towards its ‘central tendency’ then let’s start building a model of this relationship from the sample means.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.8" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-30_13fb95392c06910e830d65365b084774">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-30-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p><br></p>
+<div class="r-fit-text">
+<p>Y = <span class="math inline">\(\alpha\)</span> + <span class="math inline">\(\beta\)</span> X</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>So, a simple regression estimates the relationship between two numeric variables with a straight line.</p>
 <ul>
-<li>Random draws from our hypothetical bag of diamonds should come closer to this dot rather than farther away.</li>
+<li>This means it generates an estimate of the relationship between weight and price based on ALL of the data and not just two subsets</li>
 </ul>
 <p><br></p>
-<h3 id="make-sense">Make sense?</h3>
+<p>And reaching back to your old math classes, and the readings for today, the formula for a line represents this relationship</p>
+<ul>
+<li><p>The ‘Y’ is the outcome of interest (e.g.&nbsp;diamond price)</p></li>
+<li><p>The ‘X’ is the predictor (e.g.&nbsp;diamond weight)</p></li>
+<li><p>The ‘alpha’ is the y-intercept (e.g.&nbsp;where the line crosses the y-axis)</p></li>
+<li><p>The ‘beta’ is the slope term and that represents the relationship between the two variables</p></li>
+</ul>
+<p><br></p>
+<p><strong>With me so far?</strong></p>
+<p><br></p>
+<p>So, we want to draw a line that represents the relationship between two numeric variables.</p>
+<ul>
+<li>The next question is, “how”?</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1202,13 +1226,13 @@
 <section id="section-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2></h2>
 
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-33-1.png" style="width:96.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>That gives us our first point in our model.</p>
-<ul>
-<li>However, we need two points to make a line.</li>
-</ul>
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-31-1.png" width="768" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Back to the diamonds!</p>
 <p><br></p>
-<h3 id="how-do-we-pick-the-second-point-we-need-to-identify-the-best-line">How do we pick the second point we need to identify the “best” line?</h3>
+<p>Let’s draw a line using the logic of regression to the mean</p>
+<ul>
+<li>And that means starting by identifying the mean of the sample</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1224,11 +1248,13 @@
 <section id="section-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2></h2>
 
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-34-1.png" style="width:96.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>The model line should follow the data, so let’s divide the plot into four quadrants split around the mean values.</p>
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-32-1.png" style="width:96.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>That gives us our first point in our model.</p>
 <ul>
-<li>Once we have our quadrants we can focus on the one with the most observations.</li>
+<li>However, we need two points to make a line.</li>
 </ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s keep following the logic of regression to the mean</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1244,7 +1270,26 @@
 <section id="section-6" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2></h2>
 
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-35-1.png" style="width:96.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-33-1.png" style="width:96.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>The model line should follow the data, so let’s divide the plot into four quadrants split around the mean values.</p>
+<p><br></p>
+<p>Once we have our quadrants we can focus on the one with the most observations.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-7" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-34-1.png" style="width:96.0%" class="r-stretch quarto-figure-center"><aside class="notes">
 <p>The mean values in quadrant three give us a second point!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1263,16 +1308,19 @@
 <p><strong>Price = -2,203 + 7,689 (Carats)</strong></p>
 <p><br></p>
 
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-36-1.png" style="width:82.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p><strong>How do we interpret this estimated formula for a line?</strong></p>
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-35-1.png" style="width:82.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Interpret this formula of the line for me.</p>
 <ul>
-<li><strong>In other words, what does the slope indicate?</strong></li>
+<li><strong>What does the slope indicate in terms of diamond weight and price?</strong></li>
 </ul>
 <p><br></p>
-<h3 id="what-are-the-strengths-and-weaknesses-of-this-two-point-estimator-of-the-general-tendency-line">What are the strengths and weaknesses of this two-point estimator of the ‘general tendency’ line?</h3>
+<p><strong>What is the big weakness of this estimate of the line?</strong></p>
+<ul>
+<li>(Big weakness is that this line fits only two estimates of the mean, NOT all the data!)</li>
+</ul>
 <p><br></p>
 <p>Crucial for us is that we can improve the fit of our model using Ordinary Least Squares (OLS).</p>
-<h3 id="per-the-readings-how-does-ols-fit-a-line-to-the-data">Per the readings, how does OLS fit a line to the data?</h3>
+<p><strong>Per the readings, how does OLS fit a line to the data using ALL of the data?</strong></p>
 <ul>
 <li>(<strong>SLIDE</strong>)</li>
 </ul>
@@ -1293,10 +1341,17 @@
 <p><strong>Price = -2,256 + 7,756 (Carats)</strong></p>
 <p><br></p>
 
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-37-1.png" style="width:82.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-36-1.png" style="width:82.0%" class="r-stretch quarto-figure-center"><aside class="notes">
 <p>OLS finds the line that minimizes the squared residuals of ALL THE POINTS.</p>
 <ul>
 <li>e.g.&nbsp;the line of “best fit”</li>
+</ul>
+<p><br></p>
+<p><strong>How do I interpret the slope of this line?</strong></p>
+<p><br></p>
+<p><strong>Using this formula, what is our predicted price for a diamond that weighs 1.5 carats?</strong></p>
+<ul>
+<li>(<strong>SLIDE</strong>)</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1310,16 +1365,13 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-is-the-predicted-price-of-a-1.5-carat-diamond" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>What is the predicted price of a 1.5 carat diamond?</h2>
+<section id="section-8" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>What is the predicted price of a 1.5 carat diamond?</strong></p>
+</div>
 
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-38-1.png" style="width:65.0%" class="r-stretch quarto-figure-center"><p><br></p>
-<p><strong>Price = -2,256.36 + 7,756.43 x Carats</strong></p>
-</section>
-<section id="what-is-the-predicted-price-of-a-1.5-carat-diamond-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>What is the predicted price of a 1.5 carat diamond?</h2>
-
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-39-1.png" style="width:50.0%" class="r-stretch quarto-figure-center"><p><strong>Price = -2,256.36 + 7,756.43 x 1.5</strong></p>
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-37-1.png" style="width:50.0%" class="r-stretch quarto-figure-center"><p><strong>Price = -2,256.36 + 7,756.43 x 1.5</strong></p>
 <ul>
 <li><p>Price = $9,378.29</p></li>
 <li><p>(95% confidence interval: $9,354 - $9,401)</p></li>
@@ -1327,7 +1379,12 @@
 <aside class="notes">
 <p><strong>Make sense?</strong></p>
 <p><br></p>
-<p>CLASS: Now you calculate the predicted price of a 2.5 carat diamond using this estimate of the model</p>
+<p>We’ll get to confidence intervals shortly, but I want you to see that this should always be provided when you make a prediction with an OLS regression.</p>
+<p><br></p>
+<p>Practice time!</p>
+<ul>
+<li>CLASS: Now you calculate the predicted price of a 2.5 carat diamond using this estimate of the model</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1340,10 +1397,13 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-is-the-predicted-price-of-a-2.5-carat-diamond" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>What is the predicted price of a 2.5 carat diamond?</h2>
+<section id="section-9" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>What is the predicted price of a 2.5 carat diamond?</strong></p>
+</div>
 
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-40-1.png" style="width:50.0%" class="r-stretch quarto-figure-center"><p><strong>Price = -2,256.36 + 7,756.43 x 2.5</strong></p>
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-38-1.png" style="width:50.0%" class="r-stretch quarto-figure-center"><p><strong>Price = -2,256.36 + 7,756.43 x 2.5</strong></p>
 <ul>
 <li><p>Price = $17,134.72</p></li>
 <li><p>(95% confidence interval: $17,085 - $17,183) ]</p></li>
@@ -1351,7 +1411,15 @@
 <aside class="notes">
 <p><strong>Questions on making a prediction using the OLS estimates?</strong></p>
 <p><br></p>
-<p><strong>SLIDE</strong>: Now we can answer our question from the start of class: What is the average price difference between 1.5 and 2.5 carat diamonds?</p>
+<p>You can produce an estimate for any diamond using our OLS regression formula.</p>
+<ul>
+<li>Just plug in a diamond size and out comes a predicted value.</li>
+</ul>
+<p><br></p>
+<p><strong>Out of curiosity, what does our model predict is the price of a 10 carat diamond?</strong></p>
+<ul>
+<li>(<strong>SLIDE</strong>: $75k!)</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1364,66 +1432,22 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="predicted-price-difference-of-a-1.5-and-a-2.5-carat-diamond" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Predicted price difference of a 1.5 and a 2.5 carat diamond?</h2>
-
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-41-1.png" style="width:58.0%" class="r-stretch quarto-figure-center"><p><strong>$17,134.72 - $9,378.29 = $7,756.43 (on average)</strong></p>
-<aside class="notes">
-<p><strong>SLIDE</strong>: Let’s practice!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-7" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<section id="section-10" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2></h2>
 
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-42-1.png" width="864" class="r-stretch quarto-figure-center"><aside class="notes">
-<p><strong>What explains the variation in movie box office?</strong></p>
+<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-39-1.png" style="width:50.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<p><strong>Why is this prediction nonsense?</strong></p>
 <ul>
-<li>I’m using some publicly available data from the website FiveThirtyEight to build a model of box office returns.</li>
+<li><p>The biggest diamond in our dataset is only 5 carats so our model has ZERO idea of what bigger diamonds should cost</p></li>
+<li><p>Be VERY careful! Just because the model will let you, do NOT go beyond the range of your actual data!</p></li>
 </ul>
 <p><br></p>
-<p>Values here in millions of 2013 dollars.</p>
-<h3 id="first-what-do-we-learn-from-this-scatterplot">First, what do we learn from this scatterplot?</h3>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="what-explains-the-variation-in-movie-box-office" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>What explains the variation in movie box office?</h2>
-
-<img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-43-1.png" style="width:65.0%" class="r-stretch quarto-figure-center"><p><strong>Box Office = 63.7 + 4.17 x Budget</strong></p>
-<aside class="notes">
-<p>Now let’s fit an OLS model to this.</p>
-<h3 id="interpret-this-model-for-me">Interpret this model for me!</h3>
-<p><br></p>
-<h3 id="what-does-this-model-predict-will-be-the-box-office-for-a-movie-with-a-60-million-dollar-budget">what does this model predict will be the box office for a movie with a 60 million dollar budget?</h3>
+<p>A linear model will assume an infinite line</p>
 <ul>
-<li>($310.66, CI $295 - $326)</li>
+<li>Your job as the data scientist is to remember that the model is built from data and so cannot say anything about a world outside its data</li>
 </ul>
 <p><br></p>
-<h3 id="how-about-a-120-million-dollar-budget">How about a 120 million dollar budget?</h3>
-<ul>
-<li>($557.66, CI $533.81 - $581.51)</li>
-</ul>
-<p><br></p>
-<h3 id="any-questions-on-interpreting-an-ols-using-the-formula-for-a-line">Any questions on interpreting an OLS using the formula for a line?</h3>
+<p><strong>Make sense?</strong></p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1442,23 +1466,15 @@
 <p><strong>Basics</strong></p>
 <ul>
 <li><p>Quantifies the relationship between variables</p></li>
-<li><p>Can be used to make predictions</p></li>
-<li><p>Provides estimates of uncertainty</p></li>
+<li><p>Uses ALL of the data</p></li>
+<li><p>Can be used to make predictions with estimates of uncertainty</p></li>
 </ul>
-</section>
-<section id="why-use-ols-regressions-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Why use OLS regressions?</h2>
-<p><br></p>
-<p><strong>Basics</strong></p>
-<ul>
-<li><p>Quantifies the relationship between variables</p></li>
-<li><p>Can be used to make predictions</p></li>
-<li><p>Provides estimates of uncertainty</p></li>
-</ul>
+<div class="fragment">
 <p><strong>Future Weeks</strong></p>
 <ul>
 <li>Can be adjusted for confounders (e.g.&nbsp;control variables), nonlinear relationships and different data structures</li>
 </ul>
+</div>
 </section>
 <section id="part-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>Part 2</h2>
@@ -1482,11 +1498,11 @@
 <h2>Fitting OLS Regressions in R</h2>
 <p>lm(data = dataset, outcome ~ predictor)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="do">## Regress `price` on `carat` in the `diamonds` dataset</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> carat)</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="do">## Check the Results</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">summary</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="do">## Regress `price` on `carat` in the `diamonds` dataset</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> carat)</span>
+<span id="cb22-3"><a href="#cb22-3"></a></span>
+<span id="cb22-4"><a href="#cb22-4"></a><span class="do">## Check the Results</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a><span class="fu">summary</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <div class="cell">
@@ -1513,6 +1529,8 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <aside class="notes">
 <p><strong>Everybody get these results?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s untangle these results</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1530,11 +1548,11 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p><br></p>
 <div class="columns">
 <div class="column" style="width:40%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.8" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-46_b049780a70c799b68116632e092fa752">
+<div class="cell" data-layout-align="center" data-fig.asp="0.8" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-42_779effad440a738693b89dff9b3900e5">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-46-1.png" style="width:85.0%"></p>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-42-1.png" style="width:85.0%"></p>
 </figure>
 </div>
 </div>
@@ -1564,14 +1582,17 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
-<ul>
-<li><p>Y = <span class="math inline">\(\alpha\)</span> + <span class="math inline">\(\beta\)</span> X</p></li>
-<li><p>Price = -2,256.36 + 7,756.43 x Carats</p></li>
-</ul>
-<aside class="notes">
-<p><strong>Everybody clear on how to connect the summary results to the formula for a line?</strong></p>
 <p><br></p>
-<p><strong>Everybody clear on how to make predictions using the formula for a line?</strong></p>
+<div class="r-fit-text">
+<p>Price = -2,256.36 + 7,756.43 x Carats</p>
+</div>
+<aside class="notes">
+<p>The estimates here in the middle is the main element we’ve been working with today</p>
+<ul>
+<li>These are your alpha and beta in the formula for a line</li>
+</ul>
+<p><br></p>
+<p><strong>Everybody clear on how to connect the summary results to the formula for a line?</strong></p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1584,25 +1605,25 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
           display:block!important;
       }</style></aside>
 </section>
-<section id="an-ols-estimate-of-diamond-prices-1" class="slide level2 center smaller">
+<section id="an-ols-estimate-of-diamond-prices-1" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
 <h2>An OLS Estimate of Diamond Prices</h2>
 <p><br></p>
 <div class="columns">
 <div class="column" style="width:55%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Fit the OLS</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> carat)</span>
-<span id="cb4-3"><a href="#cb4-3"></a></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Output OLS table for reports</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co"># (install package 'modelsummary')</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="fu">library</span>(modelsummary)</span>
-<span id="cb4-7"><a href="#cb4-7"></a></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="fu">modelsummary</span>(model1)</span>
-<span id="cb4-9"><a href="#cb4-9"></a></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co"># Optional arguments</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a><span class="fu">modelsummary</span>(model1, <span class="at">fmt =</span> <span class="dv">2</span>, </span>
-<span id="cb4-12"><a href="#cb4-12"></a>             <span class="at">stars =</span> <span class="fu">c</span>(<span class="st">'*'</span> <span class="ot">=</span> .<span class="dv">05</span>), </span>
-<span id="cb4-13"><a href="#cb4-13"></a>             <span class="at">gof_omit =</span> <span class="st">"IC|Log|F"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="co"># Fit the OLS</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> carat)</span>
+<span id="cb25-3"><a href="#cb25-3"></a></span>
+<span id="cb25-4"><a href="#cb25-4"></a><span class="co"># Output OLS table for reports</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a><span class="co"># (install package 'modelsummary')</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a><span class="fu">library</span>(modelsummary)</span>
+<span id="cb25-7"><a href="#cb25-7"></a></span>
+<span id="cb25-8"><a href="#cb25-8"></a><span class="fu">modelsummary</span>(model1)</span>
+<span id="cb25-9"><a href="#cb25-9"></a></span>
+<span id="cb25-10"><a href="#cb25-10"></a><span class="co"># Optional arguments</span></span>
+<span id="cb25-11"><a href="#cb25-11"></a><span class="fu">modelsummary</span>(model1, <span class="at">fmt =</span> <span class="dv">2</span>, </span>
+<span id="cb25-12"><a href="#cb25-12"></a>             <span class="at">stars =</span> <span class="fu">c</span>(<span class="st">'*'</span> <span class="ot">=</span> .<span class="dv">05</span>), </span>
+<span id="cb25-13"><a href="#cb25-13"></a>             <span class="at">gof_omit =</span> <span class="st">"IC|Log|F"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:45%;">
 <div class="cell">
@@ -1662,12 +1683,16 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>For reporting OLS results</p>
+<p>For reporting OLS results in a report</p>
 <ul>
 <li><p>fmt is how many digits after the decimal</p></li>
 <li><p>I set the significance stars to one level (.05)</p></li>
 <li><p>I omitted a bunch of fit statistics we don’t need at the moment</p></li>
 </ul>
+<p><br></p>
+<p>We’ll go through all of this on Wednesday.</p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Last bit of new code, automated model predictions!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1684,18 +1709,18 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2>Making Predictions</h2>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Automated Option (install package 'ggeffects')</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">library</span>(ggeffects)</span>
-<span id="cb5-3"><a href="#cb5-3"></a></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># Make the Predictions</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a>predictions1 <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(model1, <span class="at">terms =</span> <span class="st">"carat"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="co"># Automated Option (install package 'ggeffects')</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb26-3"><a href="#cb26-3"></a></span>
+<span id="cb26-4"><a href="#cb26-4"></a><span class="co"># Make the Predictions</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a>predictions1 <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(model1, <span class="at">terms =</span> <span class="st">"carat"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br></p>
 <div class="columns">
 <div class="column" style="width:55%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Predictions as a table</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>predictions1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="co"># Predictions as a table</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a>predictions1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Predicted values of price
 
@@ -1710,13 +1735,13 @@ carat | Predicted |             95% CI
 </div>
 </div>
 </div><div class="column" style="width:45%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.7" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-52_fc1ca7fbd4dcee7e3c7b9fa04698c280">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Predictions as Viz</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">plot</span>(predictions1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center" data-fig.asp="0.7" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-48_09aec54484e0343290bba098fc8a181f">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="co"># Predictions as Viz</span></span>
+<span id="cb29-2"><a href="#cb29-2"></a><span class="fu">plot</span>(predictions1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-52-1.png" style="width:70.0%"></p>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-48-1.png" style="width:70.0%"></p>
 </figure>
 </div>
 </div>

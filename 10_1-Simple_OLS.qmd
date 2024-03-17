@@ -28,19 +28,43 @@ Justin Leinaweaver (Spring 2024)
 ::: notes
 Prep for Class
 
-1. ...
+1. Consider printing sheets for "best fit" line practice in class (one per student) AND rulers for all
+
+<br>
+
+Today we begin exploring regressions
+
+- A powerful and incredibly common tool frequently used by scientists of all stripes for estimating relationships
+
+<br>
+
+My assumption: You have completed AND reflected on the readings for today
+
+- This discussion should NOT be your intro to regression!
+
+- As we move deeper into stats you will have to encounter concepts repeatedly for them to make sense!
+
+- The more you put in, the more you'll get out.
 :::
 
 
 
-## Part 1 {background-image="libs/Images/background-slate_v2.png" .center}
+## {background-image="libs/Images/background-slate_v2.png"}
+
+::: {.r-fit-text}
+**Part 1 **
 
 <br>
 
 **Why do we need regressions?**
+:::
 
 ::: notes
-Both in terms of the approach to summarizing data and what do we mean by the word 'regression'?
+Big picture:
+
+- What is a "regression"?
+
+- And why do we need it?
 :::
 
 
@@ -61,10 +85,32 @@ diamonds |>
 
 ::: notes
 
+Let's start by looking at some data you are now pretty familiar with from last week.
+
+- The diamonds dataset includes details on 53k+ diamondsin terms of their characteristics and estimated prices
+
+<br>
+
 ### What conclusions can we draw based on the visualization and the correlation?
 
-### - In other words, based on these stats what is the specific relationship between diamond size and price?
+- (Bigger diamonds are typically more expensive)
+
+- (There is a strong linear correlation between the two variables)
+
+<br>
+
+Excellent, now let's get more specific!
+
+<br>
+
+It's one thing to note an association between two variables (e.g. bigger diamonds are typically more expensive)
+
+- What we need is a numerical estimate for the relationship
+
+- In other words, as we move up in diamond weight, how big a jump in price should we expect to see?
+
 :::
+
 
 
 ## {background-image="libs/Images/background-slate_v2.png" .center}
@@ -79,7 +125,7 @@ diamonds |>
   geom_point(alpha = .05) +
   theme_bw() +
   labs(x = "Carats", y = "Price",
-       title = str_c("The correlation of diamond weight to price is ", round(cor(diamonds$carat, diamonds$price), 2))) +
+       title = "How expensive is a move from 1.5 to 2.5 carats?") +
   scale_y_continuous(labels = scales::dollar_format()) +
   coord_cartesian(xlim = c(0,4)) +
   annotate("segment", x = 1.5, xend = 1.5, y = range1[1], yend = range1[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both")) +
@@ -88,270 +134,197 @@ diamonds |>
 
 ::: notes
 
-Let's get more specific!
-
-### What is your most precise estimate of the price difference between a 1.5 carat and a 2.5 carat diamond?
-
-- My blue line segments show the range of prices at each size in the dataset.
+For example, here I am showing you the range of prices at two sizes in the dataset: 1.5 and 2.5 carats
 
 <br>
 
-**SLIDE**: Regression is an estimation tool that aims to answer this type of question.
+**Based on your tools to this point in the class, what kind of answer could we provide to this question?**
+
+- **What tools could you use to provide an answer to this question?**
+
+<br>
+
+- (**SLIDE**: Results)
 :::
 
 
-## {background-image="libs/Images/background-slate_v2.png" .center}
 
-<br>
-
-Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.
-
-<br>
-
-Y = $\alpha$ + $\beta$ X
-
-::: notes
-**What clarifications do you need from the readings?**
-:::
-
-
-## Why 'Regression'? {background-image="libs/Images/background-slate_v2.png" .center}
+## Using Descriptive Statistics {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 <br>
 
 :::: {.columns}
-::: {.column width="50%"}
-```{r, eval=FALSE}
-# Let's try creating an animation showing various diamonds pulled from the "bag"
-library(gifski)
+::: {.column width="40%"}
+```{r, fig.align = 'left', fig.asp=.9, fig.width = 6, cache=TRUE}
+range1 <- range(diamonds$price[diamonds$carat == 1.5])
+range2 <- range(diamonds$price[diamonds$carat == 2.5])
 
-# In descending order
-carat_selection <- c(2, 1.6, 1, .6)
-line_ends <- c(2500, 3500, 10000, 9000)
-
-# carat_selection <- c(2, .6, 1.6, 1)
-# line_ends <- c(2500, 9000, 3500, 10000)
-
-for (i in 1:4) {
-
-  # Save as png
-  png(str_c("hist-", i, "-diamonds.png"), width = 500, height = 450, units = "px")
-
-  # Make histogram with arrow
-  plot1 <- diamonds |>
-    ggplot(aes(x = carat)) +
-    geom_histogram(bins = 25, color = "white") +
-    theme_bw() +
-    labs(x = "Carats", y = "", title = str_c("Random Diamond ", i)) +
-    annotate("segment", x = carat_selection[i], xend = carat_selection[i], y = 15000, yend = line_ends[i], color = "red", arrow = arrow(angle = 30, length = unit(0.1, "inches")))
-
-  # This shouldn't be necessary but png is acting weird
-  print(plot1)
-
-  # Close output
-  dev.off()
-}
-
-# Make a list of the saved map files
-png_files <- list.files(pattern = ".*diamonds.png$", full.names = TRUE)
-
-# Use gifski to combine the separate images
-gifski(png_files, gif_file = "libs/Images/11_1-diamonds_carats.gif", delay = 1) #, width = 850, height = 600
-```
-
-```{r, fig.align = 'center'}
-knitr::include_graphics("libs/Images/11_1-diamonds_carats.gif")
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price",
+       title = "How expensive is a move from 1.5 to 2.5 carats?") +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  coord_cartesian(xlim = c(0,4)) +
+  annotate("segment", x = 1.5, xend = 1.5, y = range1[1], yend = range1[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both")) +
+  annotate("segment", x = 2.5, xend = 2.5, y = range2[1], yend = range2[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both"))
 ```
 :::
 
-::: {.column width="50%"}
-```{r, eval=FALSE}
-# Let's try creating an animation showing various diamonds pulled from the "bag"
-library(gifski)
-
-# Descending order
-price_selection <- c(15000, 10000, 5000, 2000)
-line_ends <- c(2000, 2000, 5000, 7000)
-
-# price_selection <- c(15000, 2000, 5000, 10000)
-# line_ends <- c(2000, 7000, 5000, 2000)
-
-for (i in 1:4) {
-
-  # Save as png
-  png(str_c("hist-", i, "-diamonds.png"), width = 500, height = 450, units = "px")
-
-  # Make histogram with arrow
-  plot2 <- diamonds |>
-    ggplot(aes(x = price)) +
-    geom_histogram(bins = 25, color = "white") +
-    theme_bw() +
-    scale_x_continuous(labels = scales::dollar_format()) +
-    labs(x = "Price", y = "", title = str_c("Random Diamond ", i)) +
-    annotate("segment", x = price_selection[i], xend = price_selection[i], y = 15000, yend = line_ends[i], color = "red", arrow = arrow(angle = 30, length = unit(0.1, "inches")))
-
-  # This shouldn't be necessary but png is acting weird
-  print(plot2)
-
-  # Close output
-  dev.off()
-}
-
-# Make a list of the saved map files
-png_files <- list.files(pattern = ".*diamonds.png$", full.names = TRUE)
-
-# Use gifski to combine the separate images
-gifski(png_files, gif_file = "libs/Images/11_1-diamonds_prices.gif", delay = 1) #, width = 850, height = 600
+::: {.column width="60%"}
+```{r, echo=TRUE}
+# Make subsets
+diamonds1_5 <- filter(diamonds, carat == 1.5)
+diamonds2_5 <- filter(diamonds, carat == 2.5)
 ```
 
-```{r, fig.align = 'center'}
-knitr::include_graphics("libs/Images/11_1-diamonds_prices.gif")
+<br>
+
+```{r, echo=TRUE}
+# Summarize
+summary(diamonds1_5$price)
+```
+
+<br>
+
+```{r, echo=TRUE}
+summary(diamonds2_5$price)
 ```
 :::
 ::::
 
 ::: notes
 
-Imagine you are holding a bag of diamonds.
-
-- Each diamond in the bag has weight and a price
-
-- We can visualize the distribution of each using these two histograms
-
-- Any single diamond you pull out of the bag will have a specific weight that corresponds to a specific value. 
+**What answer could we give using these descriptive stats?**
 
 <br>
 
-### If you pull a single diamond from this collection at random, what is the most likely price and size it will be?
+**Is this a good answer? Why or why not?**
+
+- **In other words, why not just answer the question by comparing the prices of 1.5 and 2.5 carat diamonds in the dataset?**
+
 :::
 
 
 
-## Why 'Regression'? {background-image="libs/Images/background-slate_v2.png" .center}
+## The Limits of Descriptive Statistics {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
-diamonds |>
-  #slice_sample(prop = .4) |>
-  ggplot(aes(x = carat)) +
-  geom_histogram(bins = 25, color = "white") +
-  theme_bw() +
-  labs(x = "Carats", y = "") +
-  geom_vline(xintercept = mean(diamonds$carat), color = "red", linewidth=1.5) +
-  annotate("text", x = 3, y = 12500, label = str_c("Mean(Carats) = ", round(mean(diamonds$carat), 2)), size = 6)
-```
-:::
+**1. Choosing a statistic is somewhat arbitrary**
 
-::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
-diamonds |>
-  #slice_sample(prop = .4) |>
-  ggplot(aes(x = price)) +
-  geom_histogram(bins = 25, color = "white") +
-  theme_bw() +
-  labs(x = "Price", y = "") +
-  geom_vline(xintercept = mean(diamonds$price), color = "red", linewidth=1.5) +
-  scale_x_continuous(labels = scales::dollar_format()) +
-  annotate("text", x = 12500, y = 12500, label = str_c("Mean(Price) = ", round(mean(diamonds$price), 2)), size = 6)
+```{r, echo=TRUE}
+# Summarize
+summary(diamonds1_5$price)
 ```
-:::
-::::
+
+<br>
+
+```{r, echo=TRUE}
+summary(diamonds2_5$price)
+```
 
 ::: notes
-**Pros and cons of guessing the average?**
+The FIRST big problem with this approach to answering our question is that it is somewhat arbitrary
 
-- Clearly the price of the diamonds isn't normally distributed, so maybe you're better off guessing lower.
+- There isn't really a robust way to defend our choice of which descriptive stats to compare
 
-:::
-
-
-
-## Why 'Regression'? {background-image="libs/Images/background-slate_v2.png" .center}
+- e.g. compare means, medians, IQRs?
 
 <br>
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
-diamonds |>
-  #slice_sample(prop = .4) |>
-  ggplot(aes(x = carat)) +
-  geom_histogram(bins = 25, color = "white") +
-  theme_bw() +
-  labs(x = "Carats", y = "") +
-  annotate("segment", x = 2.2, xend = 2.2, y = 5000, yend = 1000, arrow = arrow(angle = 30, length = unit(0.1, "inches")), color = "red")
-```
-:::
+In this case comparing the means and medians shows an increase in price with weight, but comparing the maximums doesn't
 
-::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
-diamonds |>
-  #slice_sample(prop = .4) |>
-  ggplot(aes(x = price)) +
-  geom_histogram(bins = 25, color = "white") +
-  theme_bw() +
-  labs(x = "Price ($)", y = "") +
-  annotate("segment", x = 14600, xend = 14600, y = 5000, yend = 1000, arrow = arrow(angle = 30, length = unit(0.1, "inches")), color = "red") +
-  scale_x_continuous(labels = scales::dollar_format())
-```
-:::
-::::
-
-::: notes
-**Does your guess change if the first diamond you pull out of the bag is massive?**
-
-- **In other words, if you first pull a massive diamond from the collection, what is the most likely price and size of the next one you draw?**
-:::
-
-
-## 'Regression to the mean'{background-image="libs/Images/background-slate_v2.png" .center}
+- Is one of these more "true" or "correct" than the others?
 
 <br>
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', cache=TRUE}
-diamonds |>
-  #slice_sample(prop = .4) |>
-  ggplot(aes(x = carat)) +
-  geom_histogram(bins = 25, color = "white") +
-  theme_bw() +
-  labs(x = "Carats", y = "") +
-  geom_vline(xintercept = mean(diamonds$carat), color = "red", size=1.5)
-```
+This is why descriptive stats are important for helping the reader see your data but not necessarily for supporting a strong argument on its own.
+
 :::
 
-::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', cache=TRUE}
-diamonds |>
-  #slice_sample(prop = .4) |>
-  ggplot(aes(x = price)) +
-  geom_histogram(bins = 25, color = "white") +
-  theme_bw() +
-  labs(x = "Price ($)", y = "") +
-  geom_vline(xintercept = mean(diamonds$price), color = "red", size=1.5) +
-  scale_x_continuous(labels = scales::dollar_format())
+
+## The Limits of Descriptive Statistics {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+**2. No measures of uncertainty (beyond the sd for the mean)**
+
+```{r, echo=TRUE}
+mean(diamonds1_5$price)
+sd(diamonds1_5$price)
 ```
-:::
-::::
+
+<br>
+
+```{r, echo=TRUE}
+mean(diamonds2_5$price)
+sd(diamonds2_5$price)
+```
 
 ::: notes
 
-(A random draw of an outlier is more likely to be followed by an average value than another outlier.)
+**REVEAL**: The SECOND big problem is that this approach doesn't give us an easy way to describe our uncertainty in the comparisons
+
+- These descriptive stats don't include any caveats for sample size or precision
+
+- In other words, how confident should we be in these estimates of the mean or median?
 
 <br>
 
-In statistical terms, we tend to see data trend toward its central tendency.
+We have the standard deviation for the mean, but nothing exactly comparable for the other comparisons.
 
-- e.g. "middle" values are more common than outliers.
 :::
 
 
 
-## 'Regression to the mean'{background-image="libs/Images/background-slate_v2.png" .center}
+## The Limits of Descriptive Statistics {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+**3. Sample size matters (and may be hidded)!**
+
+```{r, echo=TRUE}
+# Count the observations
+nrow(diamonds1_5)
+```
+
+<br>
+
+```{r, echo=TRUE}
+nrow(diamonds2_5)
+```
+
+::: notes
+
+THIRD big problem, the descriptive statistics approach can mislead you if the subsets of the data are small!
+
+- Out of 53k diamonds in this dataset only 793 have exactly 1.5 carats (e.g. 1%)
+
+- Out of 53k diamonds in this dataset only 17 have exactly 2.5 carats (e.g. .03%)
+
+- We probably shouldn't be confident drawing conclusions about the relationship between diamond weight and value using 1% of the sample!
+
+<br>
+
+Regression can help us with all three issues!
+
+- Simple OLS regression is not arbitrary as it assumes most natural processes exhibit a "regression to the mean",
+
+- It produces its estimates based on ALL of the data, AND
+
+- Its estimates come with measures of uncertainty!
+
+<br>
+
+**SLIDE**: So, we need a tool like regression that has these characteristics, but why should "regression to the mean" be a good baseline assumption?
+:::
+
+
+
+## 'Regression to the mean' {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo = FALSE, fig.align = 'center', out.width = '66%'}
 knitr::include_graphics("libs/Images/11_1-Galtons-rate_regression-diagram.png")
@@ -359,8 +332,7 @@ knitr::include_graphics("libs/Images/11_1-Galtons-rate_regression-diagram.png")
 
 ::: notes
 
-We get the word "regression" from Sir Francis Galton
-- A statistician working in the late 19th century
+The answer to that question, and the word "regression" itself comes from the work of a 19th century statistician, Sir Francis Galton.
 
 <br>
 
@@ -374,17 +346,23 @@ In 1886 he ran a now very famous experiment in which he gathered the heights of 
 
 <br>
 
-"It appeared from these experiments that the offspring did not tend to resemble their parents in size, but always to be more mediocre than they – to be smaller than the parents, if the parents were large; to be larger than the parents, if the parents were small."
+Generally, what Galton found was:
 
-- "regression to the mean"
+1. The children of tall parents tended to be taller than average, BUT were shorter than their parents
 
-- Per Galton, 'regress' means to go back or revert to an earlier or more primitive state.
-
-- It means that, in general, relatively high (or low) observations are likely to be followed by less extreme ones nearer the subject’s true mean.
+2. The children of short parents were taller than their parents but still shorter than average
 
 <br>
 
-**SLIDE**: Let me see if I can clarify this intuition using a simple simulated counting experiment.
+Galton described this as "regression to the mean"
+
+- In short, across tons of different processes in nature we typically see extreme observations followed by less extreme observations
+
+- For example, a football player with a long career of being average may put up an all star year, but the odds are that next year they go back to their averages
+
+<br>
+
+**SLIDE**: Let me clarify this with a simulation
 :::
 
 
@@ -453,6 +431,17 @@ On the right I have a bar plot showing where on the field each person is now
 <br>
 
 ### Questions on the set-up here?
+
+<br>
+
+Let's collect some guesses about the outcome of this experiment
+
+<br>
+
+**After 10 flips of the coin, how many of our 100 subjects will still be on the 50 yard line?**
+
+- *ON BOARD*
+
 :::
 
 
@@ -492,7 +481,8 @@ d1 |>
 ::::
 
 ::: notes
-**What happens after the first flip? Describe the outcome for me.**
+After the first flip EVERYONE has moved away from the 50 yard line by one randomly selected step!
+
 :::
 
 
@@ -538,7 +528,7 @@ d2 |>
 ::::
 
 ::: notes
-**What happens after the second flip? Describe the outcome for me.**
+After two random steps we have about half the sample two steps away from the 50 yard line and half back on it!
 :::
 
 
@@ -585,19 +575,66 @@ d3 |>
 
 ::: notes
 
-Ok, third flip.
+Ok, third flip
 
-**What do we see here?**
+<br>
+
+Again, random flips have moved some further away from the 50 and a number have again returned closer!
+
+<br>
+
+**SLIDE**: Let's unpack what were' seeing here with simple counting
 :::
 
 
-## Coin Flip 4 {background-image="libs/Images/background-slate_v2.png" .center}
+## Coin Flip 3: Possible Paths {background-image="libs/Images/background-slate_v2.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
+# Flip again
+p1 +
+  geom_point(data = d3, size = 2.5, color = "red", aes(x = new))
+```
+:::
+
+::: {.column width="50%"}
+- T, T, T = -3
+- H, T, T = -1
+- T, H, T = -1
+- T, T, H = -1
+- H, H, T = +1
+- H, T, H = +1
+- T, H, H = +1
+- H, H, H = +3
+:::
+::::
+
+::: notes
+There are only eight possible outcomes from flipping a fair coin 3 times
+
+- In six of these eight outcomes the flipper is only 1 step away from the starting point! (75%)
+
+- In only two of the outcomes has a flipper moved three steps away
+
+<br>
+
+So, apply these percentages to any group of subjects and our expectation is that after three flips most are very close to the starting place!
+
+<br>
+
+**SLIDE**: Let's check four flips!
+:::
+
+
+
+## Coin Flip 4: Possible Paths {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 <br>
 
 :::: {.columns}
-::: {.column width="50%"}
-```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
+::: {.column width="40%"}
+```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 # Flip again
 d4a <- d3 |>
   mutate(
@@ -617,8 +654,62 @@ p1 +
 ```
 :::
 
+::: {.column width="20%"}
+- T, H, T, H = 0
+- H, T, H, T = 0
+- H, T, T, H = 0
+- H, H, T, T = 0
+- T, H, H, T = 0
+- T, T, H, H = 0
+:::
+
+::: {.column width="20%"}
+- H, T, T, T = -2
+- T, H, T, T = -2
+- T, T, H, T = -2
+- T, T, T, H = -2
+- H, H, H, T = +2
+- H, H, T, H = +2
+- H, T, H, H = +2
+- T, H, H, H = +2
+:::
+
+::: {.column width="20%"}
+- T, T, T, T = -4
+- H, H, H, H = +4
+:::
+::::
+
+::: notes
+
+Here we see the 16 ways a person could flip a coin four times.
+
+- We expect 38% of our subjects (6/16) to end up back on the 50!
+
+- All in that puts 88% of subjects (14/16) within 2 steps!
+
+- Only 2 paths or 13% reach the extremes!
+
+<br>
+
+**SLIDE**: And check the bar plot!
+:::
+
+
+## Coin Flip 4 {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+:::: {.columns}
 ::: {.column width="50%"}
-```{r, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
+```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
+p1 +
+  geom_point(data = d4, size = 2.5, color = "red", aes(x = new))
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
 d4 |>
   mutate(
     new_f = factor(new, levels = seq(45,55, 1))
@@ -633,11 +724,15 @@ d4 |>
 ::::
 
 ::: notes
+And here we see the results of our experiment after flip 4.
 
-Flip 4!
+- Adding together a bunch of small, randomly assigned changes means that extremes tend to counter each other
 
-And then on to...
+<br>
+
+**SLIDE**: Let's jump ahead to flip 10!
 :::
+
 
 
 ## Coin Flip 10 {background-image="libs/Images/background-slate_v2.png" .center}
@@ -680,166 +775,18 @@ d10 |>
 ::::
 
 ::: notes
+The results will always be different given the random coin flips, but after ten flips we tend to see:
 
-Ok, what are we seeing develop here?
+- 25-30% of cases on the 50 yard line
 
-**Describe this distribution for me.**
-
-<br>
-
-### Why are we seeing so many subjects at or near the 50 yard line after 10 flips?
-- (A mix of heads and tails keeps you basically in place!)
+- 55% within 2 steps!
 
 <br>
 
-**SLIDE**: Let's unpack this using counting!
-:::
-
-
-## Coin Flip 3: Possible Paths {background-image="libs/Images/background-slate_v2.png" .center}
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
-# Flip again
-p1 +
-  geom_point(data = d3, size = 2.5, color = "red", aes(x = new))
-```
-:::
-
-::: {.column width="50%"}
-- T, T, T = -3
-- H, T, T = -1
-- T, H, T = -1
-- T, T, H = -1
-- H, H, T = +1
-- H, T, H = +1
-- T, H, H = +1
-- H, H, H = +3
-:::
-::::
-
-::: notes
-
-Go back to flip 3
-
-- There are only eight possible paths for our coin flippers to flip a coin three times
-
-### Does everybody understand how to read these entries?
-
-<br>
-
-### How does this list explain why so many subjects are still close to the 50 yard line?
-- (Importantly, out of all eight paths six of them (75%) keep the flipper one away from the start!)
-
-<br>
-
-**SLIDE**: Let's check four flips!
-:::
-
-
-## Coin Flip 4: Possible Paths {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-<br>
-
-:::: {.columns}
-::: {.column width="40%"}
-```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
-p1 +
-  geom_point(data = d4, size = 2.5, color = "red", aes(x = new))
-```
-:::
-
-::: {.column width="30%"}
-- T, H, T, H = 0
-- H, T, H, T = 0
-- H, T, T, H = 0
-- H, H, H, T = +2
-- H, H, T, H = +2
-- H, T, H, H = +2
-- T, H, H, H = +2
-- H, H, H, H = +4
-:::
-
-::: {.column width="30%"}
-- T, T, T, T = -4
-- H, T, T, T = -2
-- T, H, T, T = -2
-- T, T, H, T = -2
-- T, T, T, H = -2
-- H, H, T, T = 0
-- T, H, H, T = 0
-- T, T, H, H = 0
-:::
-::::
-
-::: notes
-
-Here we see the 16 ways a person could flip a coin four times.
-
-<br>
-
-### How does this list explain why so many subjects are still close to the 50 yard line?
-
-- 6/16 (38%) keep them directly on the mean
-
-- 14/16 (88%) are within 2!
-
-- Only 2 paths reach the extremes!
-:::
-
-
-## Coin Flip 4 {background-image="libs/Images/background-slate_v2.png" .center}
-
-<br>
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
-p1 +
-  geom_point(data = d4, size = 2.5, color = "red", aes(x = new))
-```
-:::
-
-::: {.column width="50%"}
-```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
-d4 |>
-  mutate(
-    new_f = factor(new, levels = seq(45,55, 1))
-  ) |>
-  ggplot(aes(x = new_f)) +
-  geom_bar(width = .7) +
-  theme_bw() +
-  scale_x_discrete(drop = FALSE) +
-  labs(x = "", y = "Count of Positions")
-```
-:::
-::::
-
-::: notes
-And here we see the results of our experiment after flip 4.
-
-- We know from the counts WHY extreme values are unlikely and the bar plot shows us that those values WERE unlikely
-
-<br>
-
-Expecting "regression to the mean" can be explained through a counting process
-
-- The key observation: When you add a bunch of things together there are more ways for them to stay near the average than near one of the extremes.
+The key observation: When you add a bunch of small differences together there are more ways for them to stay near the average than near one of the extremes.
 
 - The output of most complex systems in the natural world are more likely to produce values close to the "normal" than at the extremes.
 
-<br>
-
-1. Why are some people wealthier than others?
-    - Family wealth + Education + Experience + Opportunities + etc
-
-2. Why are some people healthier than others?
-    - Genetics + Access to food + Food quality + exercise + etc
-
-<br>
-
-### Does this make sense?
 :::
 
 
@@ -869,6 +816,72 @@ THIS is the power of regression.
 <br>
 
 ### Any questions on the intuition of why predicting the average is frequently useful for us?
+
+<br>
+
+**SLIDE**: Time to talk about what regression produces, how to interpret it and how to fit them in R
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.
+
+<br>
+
+::::: {.columns}
+:::: {.column width="50%"}
+```{r, fig.align = 'center', fig.asp=.8, fig.width = 6, cache=TRUE}
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price",
+       title = str_c("The correlation of diamond weight to price is ", round(cor(diamonds$carat, diamonds$price), 2))) +
+  scale_y_continuous(labels = scales::dollar_format())
+```
+::::
+
+:::: {.column width="50%"}
+
+<br>
+
+::: {.r-fit-text}
+Y = $\alpha$ + $\beta$ X
+:::
+
+::::
+:::::
+
+::: notes
+So, a simple regression estimates the relationship between two numeric variables with a straight line.
+
+- This means it generates an estimate of the relationship between weight and price based on ALL of the data and not just two subsets
+
+<br>
+
+And reaching back to your old math classes, and the readings for today, the formula for a line represents this relationship
+
+- The 'Y' is the outcome of interest (e.g. diamond price)
+
+- The 'X' is the predictor (e.g. diamond weight)
+
+- The 'alpha' is the y-intercept (e.g. where the line crosses the y-axis)
+
+- The 'beta' is the slope term and that represents the relationship between the two variables
+
+<br>
+
+**With me so far?**
+
+<br>
+
+So, we want to draw a line that represents the relationship between two numeric variables.
+
+- The next question is, "how"?
 :::
 
 
@@ -896,13 +909,10 @@ Back to the diamonds!
 
 <br>
 
-If data tends towards its 'central tendency' then let's start building a model of this relationship from the sample means.
+Let's draw a line using the logic of regression to the mean
 
-- Random draws from our hypothetical bag of diamonds should come closer to this dot rather than farther away.
+- And that means starting by identifying the mean of the sample
 
-<br>
-
-### Make sense?
 :::
 
 
@@ -953,7 +963,7 @@ That gives us our first point in our model.
 
 <br>
 
-### How do we pick the second point we need to identify the "best" line?
+**SLIDE**: Let's keep following the logic of regression to the mean
 :::
 
 
@@ -996,7 +1006,9 @@ diamonds |>
 ::: notes
 The model line should follow the data, so let's divide the plot into four quadrants split around the mean values.
 
-- Once we have our quadrants we can focus on the one with the most observations.
+<br>
+
+Once we have our quadrants we can focus on the one with the most observations.
 :::
 
 
@@ -1061,19 +1073,21 @@ diamonds |>
 ```
 
 ::: notes
-**How do we interpret this estimated formula for a line?**
+Interpret this formula of the line for me.
 
-- **In other words, what does the slope indicate?**
+- **What does the slope indicate in terms of diamond weight and price?**
 
 <br>
 
-### What are the strengths and weaknesses of this two-point estimator of the 'general tendency' line?
+**What is the big weakness of this estimate of the line?**
+
+- (Big weakness is that this line fits only two estimates of the mean, NOT all the data!) 
 
 <br>
 
 Crucial for us is that we can improve the fit of our model using Ordinary Least Squares (OLS).
 
-### Per the readings, how does OLS fit a line to the data?
+**Per the readings, how does OLS fit a line to the data using ALL of the data?**
 
 - (**SLIDE**)
 :::
@@ -1111,30 +1125,25 @@ d2 |>
 OLS finds the line that minimizes the squared residuals of ALL THE POINTS.
 
 - e.g. the line of "best fit"
-:::
-
-
-## What is the predicted price of a 1.5 carat diamond? {background-image="libs/Images/background-slate_v2.png" .center}
-
-```{r, fig.retina=3, fig.align='center', out.width='65%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
-diamonds |>
-  ggplot(aes(x = carat)) +
-  geom_point(alpha = .05, aes(y = price)) +
-  geom_ribbon(data = preds1, aes(x = x, ymin = conf.low, ymax = conf.high), fill = "lightblue") +
-  geom_line(data = preds1, aes(x = x, y = predicted), color = "royalblue1", size = 1.2) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price") +
-  coord_cartesian(ylim = c(0, 19000), xlim = c(0,4)) +
-  scale_y_continuous(labels = scales::dollar_format())
-```
 
 <br>
 
-**Price = -2,256.36 + 7,756.43 x Carats**
+**How do I interpret the slope of this line?**
+
+<br>
+
+**Using this formula, what is our predicted price for a diamond that weighs 1.5 carats?**
+
+- (**SLIDE**)
+:::
 
 
 
-## What is the predicted price of a 1.5 carat diamond? {background-image="libs/Images/background-slate_v2.png" .center}
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**What is the predicted price of a 1.5 carat diamond?**
+:::
 
 ```{r, fig.retina=3, fig.align='center', out.width='50%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
 diamonds |>
@@ -1162,12 +1171,22 @@ diamonds |>
 
 <br>
 
-CLASS: Now you calculate the predicted price of a 2.5 carat diamond using this estimate of the model
+We'll get to confidence intervals shortly, but I want you to see that this should always be provided when you make a prediction with an OLS regression.
+
+<br>
+
+Practice time!
+
+- CLASS: Now you calculate the predicted price of a 2.5 carat diamond using this estimate of the model
 :::
 
 
 
-## What is the predicted price of a 2.5 carat diamond? {background-image="libs/Images/background-slate_v2.png" .center}
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**What is the predicted price of a 2.5 carat diamond?**
+:::
 
 ```{r, fig.retina=3, fig.align='center', out.width='50%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
 diamonds |>
@@ -1196,115 +1215,55 @@ diamonds |>
 
 <br>
 
-**SLIDE**: Now we can answer our question from  the start of class: What is the average price difference between 1.5 and 2.5 carat diamonds?
-:::
+You can produce an estimate for any diamond using our OLS regression formula.
 
+- Just plug in a diamond size and out comes a predicted value.
 
+<br>
 
-## Predicted price difference of a 1.5 and a 2.5 carat diamond? {background-image="libs/Images/background-slate_v2.png" .center}
+**Out of curiosity, what does our model predict is the price of a 10 carat diamond?**
 
-```{r, fig.retina=3, fig.align='center', out.width='58%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
-diamonds |>
-  slice_sample(prop = .1) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  geom_smooth(method = "lm") +
-  annotate("point", x = 2.5, y = 17134.72, color = "red", size = 3) +
-  annotate("point", x = 1.5, y = 9378.29, color = "red", size = 3) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price") +
-  coord_cartesian(ylim = c(0, 18000), xlim = c(0,4)) +
-  scale_y_continuous(labels = scales::dollar_format())
-```
+- (**SLIDE**: $75k!)
 
-**$17,134.72 - $9,378.29 = $7,756.43 (on average)**
-
-::: notes
-**SLIDE**: Let's practice!
 :::
 
 
 
 ## {background-image="libs/Images/background-slate_v2.png" .center}
 
-```{r, fig.asp=0.618, fig.align = 'center', fig.width=9, cache=TRUE}
-library(fivethirtyeight)
-
-bechdel2 <- bechdel |>
-  mutate(
-    box_office = (domgross_2013 + intgross_2013)/1e9,
-    budget = budget_2013/1e6
-  )
-
-bechdel_labels <- bechdel2 |>
-  filter(box_office > 2 | budget > 270)
-
-ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
-  geom_point(alpha = .2) +
-  #geom_smooth(method = "lm") +
-  ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
+```{r, fig.retina=3, fig.align='center', out.width='50%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
+diamonds |>
+  ggplot(aes(x = carat)) +
+  geom_point(alpha = .05, aes(y = price)) +
+  geom_ribbon(data = preds1, aes(x = x, ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line(data = preds1, aes(x = x, y = predicted), color = "royalblue1", linewidth = 1.2) +
+  #annotate("point", x = 2.5, y = 17134.72, color = "red", size = 3) +
+  annotate("segment", x = 10, xend = 10, y = 0, yend = 75000, color = "red", linetype = "dashed", size = 1) +
+  annotate("segment", x = 0, xend = 10, y = 75000, yend = 75000, color = "red", linetype = "dashed", size = 1) +
   theme_bw() +
-  labs(x = "Budget (2013 USD)", y = "Box Office (2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight") +
-  scale_x_continuous(labels = scales::dollar_format(suffix = "m")) +
-  scale_y_continuous(labels = scales::dollar_format(suffix = "b"))
-
+  labs(x = "Carats", y = "Price") +
+  coord_cartesian(ylim = c(0, 80000), xlim = c(0,11)) +
+  scale_y_continuous(labels = scales::dollar_format())
 ```
 
 ::: notes
 
-**What explains the variation in movie box office?**
+**Why is this prediction nonsense?**
 
-- I'm using some publicly available data from the website FiveThirtyEight to build a model of box office returns.
+- The biggest diamond in our dataset is only 5 carats so our model has ZERO idea of what bigger diamonds should cost
 
-<br>
-
-Values here in millions of 2013 dollars.
-
-### First, what do we learn from this scatterplot?
-:::
-
-
-
-## What explains the variation in movie box office? {background-image="libs/Images/background-slate_v2.png" .center}
-
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.618, fig.align = 'center', out.width = '65%', fig.width=9}
-model3 <- lm(data = bechdel2, box_office ~ budget)
-#summary(model3)
-
-ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
-  geom_point(alpha = .2) +
-  geom_smooth(method = "lm") +
-  theme_bw() +
-  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
-
-predictions3 <- ggeffects::ggpredict(model3, terms = "budget")
-# 
-# modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-#              coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
-#   column_spec(1, width = "10em") |>
-#   kable_styling(font_size = 24)
-```
-
-**Box Office = 63.7 + 4.17 x Budget**
-
-::: notes
-Now let's fit an OLS model to this.
-
-### Interpret this model for me!
+- Be VERY careful! Just because the model will let you, do NOT go beyond the range of your actual data!
 
 <br>
 
-### what does this model predict will be the box office for a movie with a 60 million dollar budget?
-- ($310.66, CI $295 - $326)
+A linear model will assume an infinite line
+
+- Your job as the data scientist is to remember that the model is built from data and so cannot say anything about a world outside its data
 
 <br>
 
-### How about a 120 million dollar budget?
-- ($557.66, CI $533.81 - $581.51)
+**Make sense?**
 
-<br>
-
-### Any questions on interpreting an OLS using the formula for a line?
 :::
 
 
@@ -1316,29 +1275,17 @@ Now let's fit an OLS model to this.
 
 - Quantifies the relationship between variables
 
-- Can be used to make predictions
+- Uses ALL of the data
 
-- Provides estimates of uncertainty
+- Can be used to make predictions with estimates of uncertainty
 
-
-
-
-## Why use OLS regressions? {background-image="libs/Images/background-slate_v2.png" .center}
-
-<br>
-
-**Basics**
-
-- Quantifies the relationship between variables
-
-- Can be used to make predictions
-
-- Provides estimates of uncertainty
+::: {.fragment}
 
 **Future Weeks**
 
 - Can be adjusted for confounders (e.g. control variables), nonlinear relationships and different data structures
 
+:::
 
 
 
@@ -1374,6 +1321,10 @@ summary(model1)
 
 ::: notes
 **Everybody get these results?**
+
+<br>
+
+**SLIDE**: Let's untangle these results
 :::
 
 
@@ -1406,21 +1357,25 @@ summary(model1)
 :::
 ::::
 
-- Y = $\alpha$ + $\beta$ X
+<br>
 
-- Price = -2,256.36 + 7,756.43 x Carats
+::: {.r-fit-text}
+Price = -2,256.36 + 7,756.43 x Carats
+:::
 
 ::: notes
-**Everybody clear on how to connect the summary results to the formula for a line?**
+The estimates here in the middle is the main element we've been working with today
+
+- These are your alpha and beta in the formula for a line
 
 <br>
 
-**Everybody clear on how to make predictions using the formula for a line?**
+**Everybody clear on how to connect the summary results to the formula for a line?**
 :::
 
 
 
-## An OLS Estimate of Diamond Prices {.center .smaller}
+## An OLS Estimate of Diamond Prices {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 <br>
 
@@ -1453,13 +1408,21 @@ modelsummary(model1, fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F", outpu
 ::::
 
 ::: notes
-For reporting OLS results
+For reporting OLS results in a report
 
 - fmt is how many digits after the decimal
 
 - I set the significance stars to one level (.05)
 
 - I omitted a bunch of fit statistics we don't need at the moment
+
+<br>
+
+We'll go through all of this on Wednesday.
+
+<br>
+
+**SLIDE**: Last bit of new code, automated model predictions!
 :::
 
 
