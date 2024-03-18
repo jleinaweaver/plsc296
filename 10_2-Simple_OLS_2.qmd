@@ -48,7 +48,7 @@ Prep for Class
 
 <br>
 
-```{r}
+```{r, eval=FALSE}
 lm(data = mpg, cty ~ displ) |> summary()
 
 lm(data = midwest, percollege ~ percbelowpoverty) |> summary()
@@ -58,25 +58,35 @@ lm(data = midwest, percollege ~ percbelowpoverty) |> summary()
 
 
 
-## City Fuel Economy and Engine Size {.center .smaller}
-
-<br>
+## City Fuel Economy and Engine Size {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 :::: {.columns}
 ::: {.column width="50%"}
+
+<br>
+
 ```{r}
 model1 <- lm(data = mpg, cty ~ displ)
 predictions1 <- ggpredict(model1, terms = "displ")
 
-modelsummary(list("Fuel Economy (City)" = model1), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+modelsummary(list("Fuel Economy (City)" = model1), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
              coef_map = c("displ"= "Engine Size", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "9em") |>
-  kable_styling(font_size = 24)
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+  
+
+# modelsummary(list("Fuel Economy (City)" = model1), output = 'kableExtra', fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+#              coef_map = c("displ"= "Engine Size", "(Intercept)" = "Constant")) |>
+#   column_spec(1:2, background = "white") |>
+#   row_spec(0, background = "lightblue") |>
+#   kable_styling(font_size = 22)
 ```
 :::
 
 ::: {.column width="50%"}
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '75%', fig.width=5, cache=TRUE}
+```{r, echo = FALSE, fig.asp=0.7, fig.align = 'center', fig.width=5, cache=TRUE}
 plot(predictions1) +
   labs(x = "Engine Displacement", y = "City Fuel Economy",
        title = "OLS Predicted Values")
@@ -96,32 +106,43 @@ As you think about including OLS tables in reports, think about polishing them!
 
 - Model name should be the dependent variable
 
+<br>
+
 This table makes clear that this regression focuses on engine size as a predictor of fuel economy.
 
-### Make sense?
+- **Make sense?**
 :::
 
 
 
-## College Education and Poverty {.center .smaller}
-
-<br>
+## College Education and Poverty {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 :::: {.columns}
 ::: {.column width="50%"}
+
+<br>
+
 ```{r}
 model2 <- lm(data = midwest, percollege ~ percbelowpoverty)
 predictions2 <- ggpredict(model2, terms = "percbelowpoverty")
 
-modelsummary(list("College (%)" = model2), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+modelsummary(list("College (%)" = model2), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
              coef_map = c("percbelowpoverty"= "Below Poverty (%)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  kable_styling(font_size = 24)
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+
+# modelsummary(list("College (%)" = model2), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+#              coef_map = c("percbelowpoverty"= "Below Poverty (%)", "(Intercept)" = "Constant")) |>
+#   column_spec(1:2, background = "white") |>
+#   row_spec(0, background = "lightblue") |>
+#   kable_styling(font_size = 22)
 ```
 :::
 
 ::: {.column width="50%"}
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '75%', fig.width=5, cache=TRUE}
+```{r, echo = FALSE, fig.asp=0.7, fig.align = 'center', fig.width=5, cache=TRUE}
 plot(predictions2) +
   labs(x = "Below Poverty Line (%)", y = "College Education (%)",
        title = "OLS Predicted Values")
@@ -161,7 +182,7 @@ Let's go back to our diamond size models from last class.
 :::
 
 
-## Evaluate the Fit: {.center .smaller}
+## Evaluate the Fit {background-image="libs/Images/background-slate_v2.png" .center}
 
 **1. Missing data problems?**
 
@@ -173,20 +194,27 @@ Let's go back to our diamond size models from last class.
 model3 <- lm(data = diamonds, price ~ carat)
 predictions3 <- ggpredict(model3, terms = "carat")
 
-modelsummary(list("Diamond Value" = model3), 
+modelsummary(list("Diamond Value" = model3), output = "gt",
              fmt = 2, 
              stars = c('*' = .05), 
              gof_omit = "IC|Log|F",
              coef_map = c("carat"= "Size (carats)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  column_spec(2, background = c(rep("white", 4), "orange", rep("white", 3))) |>
-  kable_styling(font_size = 24)
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = 5))
 ```
 :::
 
 ::: {.column width="50%"}
+
+<br>
+
+<br>
+
 ```{r, echo = TRUE}
-# How many observations in the dataset?
+# Count of observations
 nrow(diamonds)
 ```
 :::
@@ -254,20 +282,22 @@ Collecting observational data faces it's own serious challenges
 :::
 
 
-## Evaluate the Fit: {.center}
+## Evaluate the Fit {background-image="libs/Images/background-slate_v2.png" .center}
 
 **2. Are the coefficients significant?**
 
 <br>
 
 ```{r}
-modelsummary(models = list("Diamond Value" = model3), 
+modelsummary(models = list("Diamond Value" = model3), output = "gt",
              fmt = 2, 
              stars = c('*' = .05), 
              gof_omit = "IC|Log|F",
              coef_map = c("carat"= "Size (carats)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  kable_styling(font_size = 24)
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
 ```
 
 ::: notes
@@ -324,6 +354,8 @@ We can do this with any hypothesis.
 
 ## What is Statistical Significance? {background-image="libs/Images/background-slate_v2.png" .center}
 
+<br>
+
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r, fig.asp=0.9, fig.align = 'center', fig.width=6, cache=TRUE}
@@ -375,7 +407,7 @@ Here you can see I've visualized the two hypotheses for us.
 
 
 
-## What is Statistical Significance? {.center}
+## What is Statistical Significance? {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
@@ -397,14 +429,16 @@ diamonds |>
 
 ::: {.column width="50%"}
 ```{r}
-modelsummary(list("Diamond Value" = model3), 
+modelsummary(list("Diamond Value" = model3), output = "gt",
              fmt = 2, 
              stars = c('*' = .05), 
              gof_omit = "IC|Log|F",
              coef_map = c("carat"= "Size (carats)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  column_spec(2, background = c("orange", "white", "orange", rep("white", 5))) |>
-  kable_styling(font_size = 24)
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = c(1,3)))
 ```
 :::
 ::::
@@ -431,7 +465,13 @@ Lots of problems with this, not least of which is, the null hypothesis is never 
 :::
 
 
-## Are deeper diamonds more expensive? {.center}
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Are deeper diamonds more expensive?**
+:::
+
+<br>
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -457,14 +497,16 @@ diamonds2 |>
 ```{r}
 model4 <- lm(data = diamonds2, price ~ depth)
 
-modelsummary(list("Diamond Value" = model4), 
+modelsummary(list("Diamond Value" = model4), output = "gt",
              fmt = 2, 
              stars = c('*' = .05), 
              gof_omit = "IC|Log|F",
              coef_map = c("depth"= "Total Depth", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  column_spec(2, background = c("orange", "white", "orange", rep("white", 5))) |>
-  kable_styling(font_size = 24)
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = c(1,3)))
 ```
 :::
 ::::
@@ -532,7 +574,7 @@ R^2 represents the proportion of the variance of an outcome variable that's expl
 
 
 
-## Evaluate the Fit: {.center}
+## Evaluate the Fit {background-image="libs/Images/background-slate_v2.png" .center}
 
 **3. What does the R<sup>2</sup> indicate?**
 
@@ -541,25 +583,29 @@ R^2 represents the proportion of the variance of an outcome variable that's expl
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r}
-modelsummary(list("Diamond Value" = model3), 
+modelsummary(list("Diamond Value" = model3), output = "gt",
              fmt = 2, 
              stars = c('*' = .05), 
              gof_omit = "IC|Log|F",
              coef_map = c("carat"= "Size (carats)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  kable_styling(font_size = 24)
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
 ```
 :::
 
 ::: {.column width="50%"}
 ```{r}
-modelsummary(list("Diamond Value" = model4), 
+modelsummary(list("Diamond Value" = model4), output = "gt",
              fmt = 2, 
              stars = c('*' = .05), 
              gof_omit = "IC|Log|F",
              coef_map = c("depth"= "Total Depth", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  kable_styling(font_size = 24)
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
 ```
 :::
 ::::
@@ -578,6 +624,8 @@ Here we see the OLS results from the regressions we were just examining to discu
 
 
 ## Be Careful Interpreting the R<sup>2</sup> {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -829,182 +877,266 @@ Here's the code you need to check the residuals plot.
 4. Any problems in the residuals plot?
 
 ::: notes
+**Any questions on these four steps?**
 
+<br>
+
+Let's practice as a group...
 :::
 
 
 
-## Do more expensive movies make more money? {background-image="libs/Images/background-slate_v2.png" .center}
+## Exploring Movie Box Office Returns {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+```{r}
+#library(fivethirtyeight)
+d <- read_excel("../Data_in_Class-SP24/FiveThirtyEight-Movie_Box_Office/Movie_Box_Office_Data-538.xlsx")
+
+d |>
+  select(year, title, budget_millions, boxoffice_millions) |>
+  slice_sample(n = 13) |>
+  kbl(align = c("c", "l", "c", "c"), digits = 2) |>
+  kableExtra::column_spec(1:4, background = "white") |>
+  kableExtra::row_spec(0, background = "lightblue") |>
+  kableExtra::kable_styling(font_size = 22)
+```
+
+::: notes
+Everybody grab the data file on Canvas modules for today
+
+- Movie_Box_Office_Data-538.xlsx
+
+<br>
+
+This dataset includes a sample of movies selected from the IMDB between 1970 and 2013 by 538
+
+- Each film comes with its budget and box office total converted into millions of 2013 US dollars
+
+<br>
+
+Everybody make a scatterplot of budget and box office for all the movies in the dataset
+
+- (**SLIDE**)
+:::
+
+
+## Exploring Movie Box Office Returns {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center', fig.asp=.618, fig.width=9, cache=TRUE}
+bechdel_labels <- d |>
+  filter(boxoffice_millions > 2000 | budget_millions > 270)
+
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
+  geom_point(alpha = .2) +
+  #geom_smooth(method = "lm") +
+  ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
+  theme_bw() +
+  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+```
+
+::: notes
+**Any surprises on this scatterplot?**
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Can we make useful predictions of movie earnings (`boxoffice_millions`) using a regression on budget (`budget_millions`)?**
+
+<br>
 
 :::: {.columns}
 ::: {.column width="50%"}
-```{r}
-library(fivethirtyeight)
-
-bechdel2 <- bechdel |>
-  mutate(
-    box_office = (domgross_2013 + intgross_2013)/1e6,
-    budget = budget_2013/1e6
-  )
-
-model3 <- lm(data = bechdel2, box_office ~ budget)
-
-predictions3 <- ggeffects::ggpredict(model3, terms = "budget")
-
-modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  kable_styling(font_size = 24)
-```
-:::
-
-::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', fig.width=8, cache=TRUE}
-ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
   geom_point(alpha = .2) +
-  geom_smooth(method = "lm") +
+  #geom_smooth(method = "lm") +
+  #ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
   theme_bw() +
   labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
 ```
 :::
-::::
-
-::: notes
-
-Let's go back to our regression analysis of movie box office from last class so we can practice evaluating an OLS estimate.
-
-<br>
-
-### Everybody remember this data, this plot and these regression results?
-
-<br>
-
-**SLIDE**: Let's evaluate the fit.
-:::
-
-
-## {.center .smaller}
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r}
-modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  column_spec(2, background = c("white", rep("white", 3), "orange", "white", "white", "white")) |>
-  kable_styling(font_size = 24)
-```
-
-<br>
-
-```{r, echo=TRUE}
-nrow(bechdel)
-```
-:::
 
 ::: {.column width="50%"}
-```{r, echo=FALSE}
-bechdel2 |>
-  filter(is.na(box_office)) |>
-  select(year, title) |>
-  arrange(year) |>
-  slice_head(n = 12) |>
-  kbl(col.names = c("Year", "Title"))
-```
+1. Missing data problems?
+
+2. Are the coefficients significant?
+
+3. What does the R<sup>2</sup> indicate? 
+
+4. Any problems in the residuals plot?
 :::
 ::::
 
 ::: notes
+Let's now practice regression
+
+- Everybody regress box office returns on movie budgets and evaluate the results with our four steps
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
 **1. Missing data problems?**
-:::
 
-
-## Do more expensive movies make more money? {.center}
+<br>
 
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r}
-modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  column_spec(2, background = c("orange", "white", "orange", "white", "white", "white", "white", "white")) |>
-  kable_styling(font_size = 24)
+model3 <- lm(data = d, boxoffice_millions ~ budget_millions)
+
+predictions3 <- ggeffects::ggpredict(model3, terms = "budget_millions")
+
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
 ```
 :::
 
 ::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', fig.width=8, cache=TRUE}
-ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
-  geom_point(alpha = .2) +
-  geom_smooth(method = "lm") +
-  theme_bw() +
-  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+```{r, echo=TRUE}
+# Count the observations
+nrow(d)
 ```
 :::
 ::::
 
-::: notes
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
 **2. Are the coefficients significant?**
 
-- What is the alternative hypothesis?
-
-- What is the null hypothesis?
-:::
-
-
-## Do more expensive movies make more money? {.center}
+<br>
 
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r}
-modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  column_spec(2, background = c("white", rep("white", 3), "white", "orange", "white", "white")) |>
-  kable_styling(font_size = 24)
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = c(1,3)))
 ```
 :::
 
 ::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', fig.width=8, cache=TRUE}
-ggplot(data = bechdel2, aes(x = budget, y = box_office)) +
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
   geom_point(alpha = .2) +
   geom_smooth(method = "lm") +
+  #ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
   theme_bw() +
   labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
 ```
 :::
 ::::
 
-::: notes
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
 **3. What does the R<sup>2</sup> indicate?**
-:::
 
-
-## Do more expensive movies make more money? {.center}
+<br>
 
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r}
-modelsummary(list("Box Office (millions)" = model3), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("budget"= "Budget (millions)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  #column_spec(2, background = c("white", rep("white", 3), "white", "orange", "white", "white")) |>
-  kable_styling(font_size = 24)
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = c(6,7)))
 ```
 :::
 
 ::: {.column width="50%"}
-```{r, fig.asp=0.9, fig.align = 'center', fig.width=8, cache=TRUE}
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
+  geom_point(alpha = .2) +
+  geom_smooth(method = "lm") +
+  #ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
+  theme_bw() +
+  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+```
+:::
+::::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+**4. Any problems in the residuals plot?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
 # Check residuals
 plot(model3, which = 1)
 ```
 :::
 ::::
 
-::: notes
-**4. Any problems in the residuals plot?**
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Can we make useful predictions of movie earnings (`boxoffice_millions`) using a regression on budget (`budget_millions`)?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
+  geom_point(alpha = .2) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+```
 :::
+
+::: {.column width="50%"}
+```{r}
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+::::
+
 
 
 ## For next class, evaluate the fit of both regressions (all four steps): {background-image="libs/Images/background-slate_v2.png" .center}

@@ -32,31 +32,33 @@ Prep for Class
 
 <br>
 
-Today we begin exploring regressions
-
-- A powerful and incredibly common tool frequently used by scientists of all stripes for estimating relationships
+Today we begin exploring regressions: A powerful and common tool used by scientists of all stripes for estimating relationships
 
 <br>
 
-My assumption: You have completed AND reflected on the readings for today
+**IMPORTANT**: You have to keep up with the assigned readings
 
-- This discussion should NOT be your intro to regression!
+- Today's class SHOULD NOT be your intro to regression!
 
-- As we move deeper into stats you will have to encounter concepts repeatedly for them to make sense!
+- Everything today will make so much more sense if you already have been exposed to basic elements
 
-- The more you put in, the more you'll get out.
+<br>
+
+Regression, to the uninitiated, will appear confusing.
+
+- BUT I promise that each time you go through the material it will make more sense
 :::
 
 
 
-## {background-image="libs/Images/background-slate_v2.png"}
+## {background-image="libs/Images/background-slate_v2.png" .center}
 
 ::: {.r-fit-text}
 **Part 1 **
 
 <br>
 
-**Why do we need regressions?**
+**Why do scientists use regressions?**
 :::
 
 ::: notes
@@ -87,7 +89,7 @@ diamonds |>
 
 Let's start by looking at some data you are now pretty familiar with from last week.
 
-- The diamonds dataset includes details on 53k+ diamondsin terms of their characteristics and estimated prices
+- The diamonds dataset includes details on 53k+ diamonds in terms of their characteristics and estimated prices
 
 <br>
 
@@ -99,21 +101,24 @@ Let's start by looking at some data you are now pretty familiar with from last w
 
 <br>
 
-Excellent, now let's get more specific!
+As a matter of description these two data summaries are very useful.
+
+- Thanks to these we have a much better sense of what the world of diamonds actually looks like
 
 <br>
 
-It's one thing to note an association between two variables (e.g. bigger diamonds are typically more expensive)
+HOWEVER, this approach is also incredibly limited for helping us understand HOW and WHY these two things are related
 
-- What we need is a numerical estimate for the relationship
+<br>
 
-- In other words, as we move up in diamond weight, how big a jump in price should we expect to see?
-
+**SLIDE**: I think these limitations are most evident when we try to answer specific questions with our summaries
 :::
 
 
 
 ## {background-image="libs/Images/background-slate_v2.png" .center}
+
+**How much more should we expect to pay in order to move from a 1.5 carat to a 2.5 carat diamond?**
 
 ```{r, fig.align = 'center', fig.asp=.7, fig.width = 6, cache=TRUE}
 range1 <- range(diamonds$price[diamonds$carat == 1.5])
@@ -124,8 +129,7 @@ diamonds |>
   ggplot(aes(x = carat, y = price)) +
   geom_point(alpha = .05) +
   theme_bw() +
-  labs(x = "Carats", y = "Price",
-       title = "How expensive is a move from 1.5 to 2.5 carats?") +
+  labs(x = "Carats", y = "Price") +
   scale_y_continuous(labels = scales::dollar_format()) +
   coord_cartesian(xlim = c(0,4)) +
   annotate("segment", x = 1.5, xend = 1.5, y = range1[1], yend = range1[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both")) +
@@ -134,7 +138,7 @@ diamonds |>
 
 ::: notes
 
-For example, here I am showing you the range of prices at two sizes in the dataset: 1.5 and 2.5 carats
+Now that we have access to real diamond prices for 53k examples, it MUST be possible to answer simple questions like this.
 
 <br>
 
@@ -213,21 +217,53 @@ summary(diamonds2_5$price)
 
 <br>
 
-**1. Choosing a statistic is somewhat arbitrary**
+::: {.r-fit-text}
+**1. Choosing a point of comparison is somewhat arbitrary**
+:::
 
-```{r, echo=TRUE}
-# Summarize
-summary(diamonds1_5$price)
-```
+```{r, echo=FALSE, fig.align='center', fig.asp=.618, cache=TRUE}
+# Overlapping densities
+diamonds |>
+  mutate(
+    class2 = case_when(
+      carat == 1.5 ~ "1.5 carats",
+      carat == 2.5 ~ "2.5 carats",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  na.omit() |>
+  ggplot(aes(x = price, fill = class2)) +
+  geom_density(alpha = .5) +
+  theme_bw() +
+  scale_x_continuous(labels = scales::dollar_format()) +
+  labs(x = "Diamond Prices", y = "Density", fill = "")
 
-<br>
-
-```{r, echo=TRUE}
-summary(diamonds2_5$price)
+# diamonds |>
+#   mutate(
+#     class2 = case_when(
+#       carat == 1.5 ~ "1.5 carats",
+#       carat == 2.5 ~ "2.5 carats",
+#       TRUE ~ NA_character_
+#     )
+#   ) |>
+#   na.omit() |>
+#   ggplot(aes(x = price)) +
+#   #geom_histogram(bins = 20) +
+#   geom_density() +
+#   theme_bw() +
+#   facet_wrap(~class2, ncol = 1, scales = "free_y")
 ```
 
 ::: notes
-The FIRST big problem with this approach to answering our question is that it is somewhat arbitrary
+Quick Aside: These are density curves
+
+- Think of them like a smoothed version of a histogram.
+
+- Useful because you don't have to play with bin sizes and and its easier to overlay two distributions on top of each other
+
+<br>
+
+Back to the point! The FIRST big problem with trying to answer our question with descriptive stats is that our choice of comparison is somewhat arbitrary
 
 - There isn't really a robust way to defend our choice of which descriptive stats to compare
 
@@ -239,9 +275,13 @@ In this case comparing the means and medians shows an increase in price with wei
 
 - Is one of these more "true" or "correct" than the others?
 
+- What if you have one of the super expensive small diamonds? You could upgrade and get money back!
+
 <br>
 
-This is why descriptive stats are important for helping the reader see your data but not necessarily for supporting a strong argument on its own.
+This is why descriptive stats are important for helping the reader see your data but not necessarily for answering specific questions on their own.
+
+- These stats give us a sense of the distribution, but the distribution isn't the same as a sense of any single diamond chosen at random
 
 :::
 
@@ -250,18 +290,24 @@ This is why descriptive stats are important for helping the reader see your data
 
 <br>
 
-**2. No measures of uncertainty (beyond the sd for the mean)**
+**2. Hard to quantify uncertainty**
 
-```{r, echo=TRUE}
-mean(diamonds1_5$price)
-sd(diamonds1_5$price)
-```
-
-<br>
-
-```{r, echo=TRUE}
-mean(diamonds2_5$price)
-sd(diamonds2_5$price)
+```{r, echo=FALSE, fig.align='center', fig.asp=.618, cache=TRUE}
+# Overlapping densities
+diamonds |>
+  mutate(
+    class2 = case_when(
+      carat == 1.5 ~ "1.5 carats",
+      carat == 2.5 ~ "2.5 carats",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  na.omit() |>
+  ggplot(aes(x = price, fill = class2)) +
+  geom_boxplot() +
+  theme_bw() +
+  scale_x_continuous(labels = scales::dollar_format()) +
+  labs(x = "Diamond Prices", y = "Density", fill = "")
 ```
 
 ::: notes
@@ -309,17 +355,28 @@ THIRD big problem, the descriptive statistics approach can mislead you if the su
 
 <br>
 
-Regression can help us with all three issues!
+**SLIDE**: Regression can help us with all three issues!
+:::
 
-- Simple OLS regression is not arbitrary as it assumes most natural processes exhibit a "regression to the mean",
 
-- It produces its estimates based on ALL of the data, AND
 
-- Its estimates come with measures of uncertainty!
+## Part 1 {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Why do scientists use regressions?**
 
 <br>
 
-**SLIDE**: So, we need a tool like regression that has these characteristics, but why should "regression to the mean" be a good baseline assumption?
+1. Assumes "regression to the mean" describes most natural processes
+
+2. Produces estimates based on ALL of the data
+
+3. Produces estimates with measures of uncertainty
+
+::: notes
+
+Let's now talk through these characteristics to make sure we're clear on the intutions underpinning regression
+
+- **SLIDE**
 :::
 
 
@@ -589,6 +646,8 @@ Again, random flips have moved some further away from the 50 and a number have a
 
 ## Coin Flip 3: Possible Paths {background-image="libs/Images/background-slate_v2.png" .center}
 
+<br>
+
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
@@ -598,14 +657,17 @@ p1 +
 ```
 :::
 
-::: {.column width="50%"}
-- T, T, T = -3
+::: {.column width="25%"}
 - H, T, T = -1
 - T, H, T = -1
 - T, T, H = -1
 - H, H, T = +1
 - H, T, H = +1
 - T, H, H = +1
+:::
+
+::: {.column width="25%"}
+- T, T, T = -3
 - H, H, H = +3
 :::
 ::::
@@ -1457,8 +1519,11 @@ plot(predictions1)
 ::::
 
 ::: notes
+You can always calculate predictions using your regression model results
 
-Automated approach with confidence intervals
+- However, automated tools can make this way easier AND will provide confidence intervals for you!
+
+<br>
 
 **Questions on this code or these results?**
 :::
