@@ -247,8 +247,6 @@ Just as we did previously, we will be guided in learning our new tools by this r
 
 **Categorical x Categorical**
 
-<br>
-
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.9, cache=TRUE}
@@ -283,8 +281,6 @@ Ah yes, our old friend the bar plot!
 
 **Categorical x Categorical**
 
-<br>
-
 ```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=TRUE}
 # Side-by-side bar plots
 ggplot(mpg, aes(x = class, fill = drv)) +
@@ -311,8 +307,6 @@ By default geom_bar adjusts the width of the bars so each x label takes up the s
 ## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 **Categorical x Categorical**
-
-<br>
 
 ```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=TRUE, `code-line-numbers`="1,3"}
 # Side-by-side bar plots
@@ -373,8 +367,6 @@ Same data, same tool, very different questions answered!
 
 **Categorical x Categorical**
 
-<br>
-
 ```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=TRUE}
 # Stacked bar plots
 ggplot(mpg, aes(x = class, fill = drv)) +
@@ -403,8 +395,6 @@ Here we see the second style of bivariate bar plot: A Stacked Bar Plot
 ## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 **Categorical x Categorical**
-
-<br>
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -456,39 +446,22 @@ Clearly makes comparisons and summary easier, BUT...
 
 ## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=TRUE, `code-line-numbers`="3,4"}
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=TRUE, `code-line-numbers`="3,4,5"}
 ggplot(mpg, aes(x = class, fill = drv)) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent_format()) +
-  labs(x = "", y = "")
-```
-
-::: notes
-Since the Y-axis is now proportions we can label the values as percentages with scale_y_continuous.
-
-- scale_y_continuous lets you tweak the y-axis
-
-- In this case I've kept all the defaults but asked it to change the labeling of each tick mark
-
-<br>
-
-I've also removed the y axis label because these are proportions and not counts
-:::
-
-
-
-## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=TRUE, `code-line-numbers`="5"}
-ggplot(mpg, aes(x = class, fill = drv)) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(x = "", y = "") +
+  labs(x = "Class", y = "", fill = "Drive Train") +
   scale_fill_manual(values = c("tan", "slategray3", "sandybrown"))
 ```
 
 ::: notes
-And since we have added color to the bars using the "fill" argument, we can adjust those colors using the scale_fill_manual function
+The new-ish tweaks here:
+
+1. The y-axis is converted to proportions so we can tweak the labels along the tick marks
+
+2. You can change the label of the legend in the labs() function by specifying a name for the "fill"
+
+3. We can alter the colors
 
 <br>
 
@@ -531,6 +504,8 @@ We have a numeric variable, city fuel economy, and a categorical variable, car d
 
 - Last class we calculated summary statistics of the numeric variable for each level of the categorical variable using the aggregate function
 
+- Today I'll show you three options for visualizing this relationship
+
 <br>
 
 **SLIDE**: Our first option is simply to make separate histograms for each drive train
@@ -538,21 +513,32 @@ We have a numeric variable, city fuel economy, and a categorical variable, car d
 
 
 
-## Bivariate Categorical Variables {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-**Categorical x Numeric Variable**
+**1. Facet Wrap**
 
-<br>
-
-```{r, echo=TRUE, `code-line-numbers`="4", fig.align='center', cache=TRUE}
+:::: {.columns}
+::: {.column width="60%"}
+```{r, echo=TRUE, fig.align='center', cache=TRUE}
 ggplot(mpg, aes(x = cty)) +
   geom_histogram(bins = 15) +
   theme_bw() +
   facet_wrap(~ drv)
 ```
+:::
+
+::: {.column width="40%"}
+```{r, echo=TRUE, fig.align='center', fig.asp=1.2, cache=TRUE}
+ggplot(mpg, aes(x = cty)) +
+  geom_histogram(bins = 15) +
+  theme_bw() +
+  facet_wrap(~ drv, ncol = 1)
+```
+:::
+::::
 
 ::: notes
-One option is to use a facet_wrap
+Option 1: facet_wrap
 
 - Use a tilde and then the categorical variable
 
@@ -560,21 +546,7 @@ One option is to use a facet_wrap
 
 <br>
 
-**SLIDE**: Not the easiest thing to compare in this way
-:::
-
-
-## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-```{r, echo=TRUE, `code-line-numbers`="4", fig.align='center', cache=TRUE, fig.asp=1.3, fig.width=6}
-ggplot(mpg, aes(x = cty)) +
-  geom_histogram(bins = 15) +
-  theme_bw() +
-  facet_wrap(~ drv, ncol = 1)
-```
-
-::: notes
-Use the "ncol" argument to specify you want a single column of plots
+On the right I used the "ncol" argument to specify you want a single column of plots
 
 - Much easier to compare across the distributions this way
 
@@ -584,12 +556,88 @@ Use the "ncol" argument to specify you want a single column of plots
 
 <br>
 
-**SLIDE**: Facet wraps are handy, but this is a problem box plots were designed to solve!
+**SLIDE**: Let's try a new approach, overlapping density plots
 :::
 
 
 
-## Bivariate Categorical Variables {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+**2. Density Plots**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=TRUE, fig.align='center', fig.asp=0.75}
+ggplot(mpg, aes(x = cty)) +
+  geom_histogram(bins = 15) +
+  theme_bw() +
+  labs(x = "City Fuel Economy (mpg)", 
+       y = "Count")
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=TRUE, fig.align='center', fig.asp=0.75}
+ggplot(mpg, aes(x = cty)) +
+  geom_density() +
+  theme_bw()  +
+  labs(x = "City Fuel Economy (mpg)", 
+       y = "Density")
+```
+:::
+::::
+
+::: notes
+Think of a density plot like a smoothed histogram
+
+- Histograms count observations in bins
+
+- Density plots represent the relative probability of values
+
+- The higher the point on the curve, the more likely the observations near that value of the variable
+
+<br>
+
+**Does everybody see how these two plots represent the same idea in different ways?**
+
+<br>
+
+**SLIDE**: Density plots make it much easier to overlay distributions
+:::
+
+
+
+## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+**2. Density Plots**
+
+```{r, echo=TRUE, fig.align='center', fig.asp=0.618}
+ggplot(mpg, aes(x = cty, fill = drv)) +
+  geom_density(alpha = .4) +
+  theme_bw() 
+```
+
+::: notes
+Much clearer if only two levels of the categorical variable OR if the distributions are separated widely
+
+- However, a useful tool to add to your toolbox.
+
+<br>
+
+**Questions on this second option for visualizing the relationship between a numeric and a categorical variable?**
+
+<br>
+
+**SLIDE**: Facet wraps and density plots can help you see the whole distribution-ish, but this is a problem box plots were designed to solve!
+:::
+
+
+
+## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+**3. Box Plots**
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -685,8 +733,7 @@ Go for it!
 ```{r, echo=FALSE, fig.align='center', fig.width=5, fig.asp=1, cache=TRUE}
 # Scatter Plot
 ggplot(mpg, aes(x = displ, y = cty)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE)
+  geom_point()
 ```
 :::
 

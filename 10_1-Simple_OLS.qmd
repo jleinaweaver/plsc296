@@ -1355,106 +1355,140 @@ A linear model will assume an infinite line
 
 <br>
 
-**How do we fit a regression and make predictions in R?**
+**How do we fit a regression, output a table and make predictions in R?**
 
 ::: notes
-?
+Three tools for your proverbial toolbox
+
+1. Fitting regressions with lm()
+
+2. Making regression tables with modelsummary()
+
+3. Making predictions with ggeffect
 :::
+
+
+
+## Fitting OLS Regressions in R {background-image="libs/Images/background-slate_v2.png"}
+
+<br>
+
+::: {.r-fit-text}
+lm(data = dataset, outcome ~ predictor)
+:::
+
+![](libs/Images/10_1-lm_help_file.png){.absolute width="70%" bottom=100 left=150}
+
+::: notes
+We use the lm function to fit simple linear models in R
+
+<br>
+
+While the help file shows you can do a ton of stuff with the lm() function, we'll be starting with just these three elements
+
+- Specify the dataset,
+
+- The outcome variable, and
+
+- The predictor
+
+<br>
+
+**SLIDE**: Applied example
+:::
+
 
 
 ## Fitting OLS Regressions in R {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-lm(data = dataset, outcome ~ predictor)
-
-```{r, echo = TRUE, eval = FALSE}
-## Regress `price` on `carat` in the `diamonds` dataset
+```{r, echo = TRUE, eval = TRUE}
+# Regress `price` on `carat` in the `diamonds` dataset
 model1 <- lm(data = diamonds, price ~ carat)
-
-## Check the Results
-summary(model1)
 ```
 
 <br>
 
-```{r}
-model1 <- lm(data = diamonds, price ~ carat)
+```{r, echo = TRUE, eval = TRUE}
+# Check the Results
 summary(model1)
 ```
+
+:::: {.fragment}
+::: {.r-fit-text}
+Price = -2,256.36 + 7,756.43 x Carats
+:::
+::::
 
 ::: notes
 **Everybody get these results?**
 
 <br>
 
-**SLIDE**: Let's untangle these results
-:::
-
-
-
-## An OLS Estimate of Diamond Prices {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-<br>
-
-:::: {.columns}
-::: {.column width="40%"}
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.8, fig.align = 'center', out.width = '85%', fig.width = 5, cache=TRUE}
-diamonds |>
-  slice_sample(prop = .1) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  geom_smooth(method = "lm") +
-  theme_bw() +
-  labs(x = "Carats", y = "Price") +
-  coord_cartesian(ylim = c(0, 18000), xlim = c(0,4)) +
-  scale_y_continuous(labels = scales::dollar_format())
-```
-:::
-
-::: {.column width="60%"}
-```{r, echo = FALSE}
-model1 <- lm(data = diamonds, price ~ carat)
-
-summary(model1)
-```
-:::
-::::
-
-<br>
-
-::: {.r-fit-text}
-Price = -2,256.36 + 7,756.43 x Carats
-:::
-
-::: notes
-The estimates here in the middle is the main element we've been working with today
+**REVEAL**: The estimates here in the middle is the main element we've been working with today
 
 - These are your alpha and beta in the formula for a line
 
 <br>
 
-**Everybody clear on how to connect the summary results to the formula for a line?**
+**Questions on this code?**
+
+<br>
+
+**Everybody clear on how to pull the estimates from the summary results to the formula for a line?**
 :::
 
 
 
-## An OLS Estimate of Diamond Prices {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Formatting Regression Tables in R {background-image="libs/Images/background-slate_v2.png"}
+
+![](libs/Images/10_1-Jensen2011_Example_Regression.png){.absolute width="65%" bottom=0 left=170}
+
+::: notes
+Let's talk about reporting regression results in professional situations (presentations and reports)
+
+<br>
+
+This example comes from a paper by Jensen and Spoon that tries to explain why some countries met their climate change targets from the Kyoto Protocol and others did not.
+
+<br>
+
+This is essentially the standard you should see in basically every quantitative research paper you read
+
+- Each column represents a different run of the model (or different models)
+
+- Each row is labelled to explain what it is and then gives the results from the regression
+
+- The top of the table leads with the predictors in the model, the bottom of the table gives the model fit stats we'll explore next class
+
+- Each predictor specifies its coefficient estimate with the standard error below it
+
+- After the variables come the model fit statistics which we'll discuss next class
+
+<br>
+
+**SLIDE**: The good news is that we can make this using code in R
+:::
+
+
+## Formatting Regression Tables in R {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 <br>
 
 :::: {.columns}
 ::: {.column width="55%"}
 ```{r, echo=TRUE, eval=FALSE}
-# Fit the OLS
+# Fit the regression
 model1 <- lm(data = diamonds, price ~ carat)
 
-# Output OLS table for reports
+# Formatting a regression table
 # (install package 'modelsummary')
 library(modelsummary)
 
 modelsummary(model1)
 
-# Optional arguments
-modelsummary(model1, fmt = 2, 
+# Use this one!
+modelsummary(model1, 
+             fmt = 2, 
              stars = c('*' = .05), 
              gof_omit = "IC|Log|F")
 ```
@@ -1462,17 +1496,36 @@ modelsummary(model1, fmt = 2,
 
 ::: {.column width="45%"}
 ```{r}
-modelsummary(model1, fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F", output = "kableExtra") |>
-  column_spec(1, width = "10em") |>
-  kable_styling(font_size = 24)
+modelsummary(model1, output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F") |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
 ```
 :::
 ::::
 
 ::: notes
-For reporting OLS results in a report
+There are a bunch of packages that can do this, but recently I've been using modelsummary
 
-- fmt is how many digits after the decimal
+- Makes a wide variety of elegant tables and the code isn't too tough to tweak
+
+<br>
+
+Everyone will have to install the modelsummary package before they can use it
+
+<br>
+
+If you run line 8 you'll get a HUGE table with all possible statistics included
+
+- This is fine for rough and ready model testing but for reporting you don't want to include unneccesary information
+
+<br>
+
+Our preferred version modifies three of the arguments in the modelsummary function
+
+- fmt is how many digits after the decimal (two is a good rule of thumb)
 
 - I set the significance stars to one level (.05)
 
@@ -1484,16 +1537,65 @@ We'll go through all of this on Wednesday.
 
 <br>
 
-**SLIDE**: Last bit of new code, automated model predictions!
+**Did everybody get this code to run?**
+
+<br>
+
+**SLIDE**: Last bit of new code, making regression predictions in R
 :::
 
 
-## Making Predictions {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+## Making Predictions in R {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+**Install the ggeffects package**
+
+<br>
+
+ggpredict(model, terms)
+
+- "model" is the regression model you've already fit
+
+- "terms" is the variable you want to examine
+
+::: notes
+You can always use the formula for a line to make predictions using your regression models
+
+- However, ONCE YOU UNDERSTAND THAT PROCESS, automated methods are incredibly useful
+
+- More precise, faster and can automatically calculate confidence intervals
+
+<br>
+
+Just as before, there are many packages that aim to help with this but I've found ggeffects the best of the current bunch.
+
+- Make sure to install the package before you try to use it!
+
+<br>
+
+The key here is the ggpredict function
+
+- It can do a TON but we'll focus on just these two parts
+
+- You have to tell ggpredict the name of your regression object and which predictor you want to use to make predictions
+
+<br>
+
+**SLIDE**: Example
+:::
+
+
+## Making Predictions in R {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 <br>
 
 ```{r, echo=TRUE}
-# Automated Option (install package 'ggeffects')
+# Fit the regression
+model1 <- lm(data = diamonds, price ~ carat)
+
+# (Make sure the package is installed!)
 library(ggeffects)
 
 # Make the Predictions
@@ -1505,23 +1607,33 @@ predictions1 <- ggpredict(model1, terms = "carat")
 :::: {.columns}
 ::: {.column width="55%"}
 ```{r, echo=TRUE}
-# Predictions as a table
+# Predictions table
 predictions1
 ```
 :::
 
 ::: {.column width="45%"}
 ```{r, echo = TRUE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '70%', fig.width = 5, cache=TRUE}
-# Predictions as Viz
+# Predictions visualization
 plot(predictions1)
 ```
 :::
 ::::
 
 ::: notes
-You can always calculate predictions using your regression model results
+Our current regression model only has one predictor so we have only one choice for the ggpredict function
 
-- However, automated tools can make this way easier AND will provide confidence intervals for you!
+- This asks for predictions across the main integers of the carat variable in the dataset
+
+<br>
+
+The table shows the predicted value of a diamond at these six possible weights according to our model (plus CIs).
+
+<br>
+
+The visualization converts this table into a line plot
+
+- This will include the confidence interval, but the CI is so tight here you can't see it
 
 <br>
 

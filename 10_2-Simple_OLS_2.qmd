@@ -186,10 +186,23 @@ Let's go back to our diamond size models from last class.
 
 **1. Missing data problems?**
 
+:::: {.columns}
+::: {.column width="60%"}
+
 <br>
 
-:::: {.columns}
-::: {.column width="50%"}
+"Missing Not At Random" (MNAR)
+
+- Survey Bias
+
+- Lack of infrastructure
+
+- Inaccessibility
+
+- Governmental Interference
+:::
+
+::: {.column width="40%"}
 ```{r}
 model3 <- lm(data = diamonds, price ~ carat)
 predictions3 <- ggpredict(model3, terms = "carat")
@@ -201,20 +214,13 @@ modelsummary(list("Diamond Value" = model3), output = "gt",
              coef_map = c("carat"= "Size (carats)", "(Intercept)" = "Constant")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "x-large")
+                  gt::cell_text(size = "large")
   ), locations = gt::cells_body()) |>
   gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = 5))
 ```
-:::
-
-::: {.column width="50%"}
-
-<br>
-
-<br>
 
 ```{r, echo = TRUE}
-# Count of observations
+# All observations
 nrow(diamonds)
 ```
 :::
@@ -227,46 +233,25 @@ Important note: R will omit observations with missing data and it's up to YOU to
 
 If your regression is being fit on less than ALL the data in your sample it's up to you to investigate why and to look for patterns in the missing data.
 
-- **SLIDE**: Examples of things to look out for...
-:::
-
-
-
-## Missing Not At Random (MNAR) {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+- The key is to identify any Missing Not At Random (MNAR) problems
 
 <br>
 
-Survey Data
+Surveys deal with tons of biases
 
-- Social-Desirability Bias
-- Non-Response Bias
-- Language Barriers / Cultural Differences
+1. Social-desirability bias: The tendency of survey respondents to answer questions in a manner that will be viewed favorably by others.
+    - e.g. over-reporting "good" behavior or under-reporting "bad" behavior.
 
-Observational Data
-
-- Lack of infrastructure
-- Inaccessibility
-- Governmental Interference
-
-::: notes
-
-Collecting representative samples using surveys faces this problem in a big way.
-
-- Social-desirability bias: The tendency of survey respondents to answer questions in a manner that will be viewed favorably by others.
-    - It can take the form of over-reporting "good behavior" or under-reporting "bad", or undesirable behavior.
-    - Ex: Survey respondents tend to show more socially liberal positions when the survey interviewer is a woman or member of a minority group.
-    - Ex: Survey respondents less likely to truthfully report "bad" behaviors (e.g. drinking, drug use, etc)
-    
-- Non-response bias is currently a massive problem for political polling in this country.
+2. Non-response bias is currently a massive problem for political polling in this country.
     - Trump voters have simply been less likely to participate in phone polls than Democratic voters in the last few cycles.
     
-- Language Barriers: How do you word a survey question so it will have the same meaning across different languages? Across different cultures?
+3. Language Barriers: How do you word a survey question so it will have the same meaning across different languages? Across different cultures?
     
 <br>
 
 Collecting observational data faces it's own serious challenges
 
-- World Bank reports GDP figures for most every economy on the planet, but let's not pretend the national economists working for the government of South Sudan is equivalently trained and resourced as those in a developed state.
+- Lack of infrastructure: I'm guessing South Sudan lacks the infrastructure needed to develop high quality GDP figures
 
 - Inaccessibility: Studies examining things like the effects of poverty, war or gender discrimination often cannot get reliable data from those places where these lived experiences are hardest.
 
@@ -274,7 +259,7 @@ Collecting observational data faces it's own serious challenges
 
 <br>
 
-### Does all of this make sense? Questions on evaluation step 1?
+**Does all of this make sense? Questions on evaluation step 1?**
 
 - This will be very relevant for us as we work on our project.
 
@@ -346,9 +331,44 @@ For every alternative hypothesis we can also describe the null hypothesis as the
 
 <br>
 
-We can do this with any hypothesis.
+**SLIDE**: We can do this with any hypothesis.
+:::
 
-### Does that make sense so far?
+
+
+## What is Statistical Significance? {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+H<sub>A</sub> = Greater levels of education lead to high voter turnout
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("libs/Images/10_2-voters_v2.png")
+```
+
+<br>
+
+H<sub>0</sub> = Education has no impact on voter turnout
+
+
+::: notes
+Some research has proposed that increasing levels of education may increase the likelihood of voting.
+
+- AND, conventional hypothesis testing requires us to specify a null hypothesis
+
+<br>
+
+Let's be honest, this is probably the biggest weakness of testing hypotheses for "statistical significance"
+
+- The assumption of ZERO relationship between two amorphous social dynamics is almost certainly not likely
+
+<br>
+
+**Does everybody understand this first step, specifying the null hypothesis?**
+
+<br>
+
+**SLIDE**: Let's go back to the diamonds regression
 :::
 
 
@@ -366,7 +386,7 @@ diamonds |>
   geom_smooth(method = "lm") +
   theme_bw() +
   labs(x = "Carats", y = "Price",
-       title = "Alternative Hypothesis",
+       title = expression(paste("H"["A"], ": Larger diamonds are more expensive than smaller ones")),
        subtitle = str_c("Sum of Squared Errors: ", round(sum((model3$residuals)^2)/1e9, 1), " billion")) +
   coord_cartesian(ylim = c(0, 18000), xlim = c(0,4)) +
   scale_y_continuous(labels = scales::dollar_format())
@@ -384,7 +404,7 @@ diamonds |>
   geom_hline(yintercept = mean(diamonds$price), color = "red") +
   theme_bw() +
   labs(x = "Carats", y = "Price",
-       title = "Null Hypothesis",
+       title = expression(paste("H"["0"], ": Diamond size has no impact on price")),
        subtitle = str_c("Sum of Squared Errors: ", round(sum((model0$residuals)^2)/1e9, 1), " billion")) +
   coord_cartesian(ylim = c(0, 18000), xlim = c(0,4)) +
   scale_y_continuous(labels = scales::dollar_format())
@@ -403,6 +423,20 @@ Here you can see I've visualized the two hypotheses for us.
 <br>
 
 ### Is everybody clear on how we draw these two different lines?
+
+<br>
+
+We can also see from these plots the staggering difference in the errors attached to each line
+
+- The regression line has a residual error of 129 billion
+
+- The null line has 6 times the error in its line!
+
+<br>
+
+As we did last class, we prefer a line that minimizes the error
+
+- THIS is the significance test!
 :::
 
 
@@ -515,17 +549,23 @@ modelsummary(list("Diamond Value" = model4), output = "gt",
 
 Here I'm fitting an OLS model to only 10% of the diamonds data.
 
-### Can everybody see why the regression cannot differentiate between the null and the alternative hypotheses?
+- **Can everybody see why the regression cannot differentiate between the null and the alternative hypotheses?**
 
 <br>
 
-### Questions on this basic intro to statistical significance?
+**Questions on this basic intro to statistical significance?**
 
 <br>
 
 Ultimately, statistical significance is one piece of evidence, among many, that implies your model "fits" the data better than the null argument.
 
 - None of these are the end-all, be-all, you need all of them!
+
+<br>
+
+Our Takeaway: A model with significance stars is preferred because it fits the data better than the null.
+
+**Make sense?**
 :::
 
 
@@ -565,12 +605,28 @@ ggplot(data = d2, aes(x = x, y = Values)) +
 ```
 
 ::: notes
+Your third step in evaluating a regression model is to consider the R2 value
 
-R^2 represents the proportion of the variance of an outcome variable that's explained by a predictor variable (or set of predictor variables)
+- In our simple OLS terms, the R-squared is the square of the correlation coefficient
 
-- Larger the R^2, the more of the outcome explained by your model.
+<br>
+
+The correlation coefficient describes the association between two variables
+
+- Runs from -1 to 1, focuses on linear relationships, has no units attached and can be positive or negative
+
+<br>
+
+The R-squared tells you what proportion of the outcome can be explained by the predictor
+
+- This runs from 0 (e.g. explains none of the variation) to 1 (e.g. explains all of the variation)
+
+- Much more useful than correlation when your model includes more than one predictor (e.g. multiple regression)
+
+<br>
+
+The takeaway is that, all things equal, we prefer models that explain more of the outcome (e.g. higher R-squared values)
 :::
-
 
 
 
@@ -591,10 +647,52 @@ modelsummary(list("Diamond Value" = model3), output = "gt",
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
-  ), locations = gt::cells_body())
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = 6))
 ```
 :::
 
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.75, fig.width=6, cache=TRUE}
+diamonds |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .06) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw() +
+  labs(x = "Diamond Size (carats)", y = "Price") +
+  scale_y_continuous(labels = scales::dollar_format(), limits = c(0, 20000))
+```
+:::
+::::
+
+::: notes
+Here we see the OLS results from the regression we began with.
+
+- I hope you can clearly see that this line fits the data points quite well
+
+- The observations cluster nicely and that carries an R2 value of .849
+
+<br>
+
+So, our model that focuses entirely on the size of a diamond explains 85% of the variation in the price of a diamond.
+
+- **Make sense?**
+
+<br>
+
+**SLIDE**: The other model...
+:::
+
+
+
+
+## Evaluate the Fit {background-image="libs/Images/background-slate_v2.png" .center}
+
+**3. What does the R<sup>2</sup> indicate?**
+
+<br>
+
+:::: {.columns}
 ::: {.column width="50%"}
 ```{r}
 modelsummary(list("Diamond Value" = model4), output = "gt",
@@ -605,16 +703,32 @@ modelsummary(list("Diamond Value" = model4), output = "gt",
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
-  ), locations = gt::cells_body())
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = 6))
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.75, fig.width=6, cache=TRUE}
+diamonds2 |>
+  ggplot(aes(x = depth, y = price)) +
+  geom_point(alpha = .06) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw() +
+  labs(x = "Diamond Depth", y = "Price") +
+  scale_y_continuous(labels = scales::dollar_format(), limits = c(0, 20000))
 ```
 :::
 ::::
 
 ::: notes
+And here we see the OLS results from the regression with the non-significant coefficients
 
-Here we see the OLS results from the regressions we were just examining to discuss statistical significance.
+- Nice visualization of how a predictor that isn't better than the null, also doesn't explain any of the variation in the outcome.
 
-- Nice visualization of a predictor that doesn't explain any of the variation in the outcome.
+<br>
+
+**Everybody following me on the R2?**
 
 <br>
 
@@ -687,7 +801,7 @@ d1 <- tibble(
 
 model4 <- lm(data = d1, y1 ~ x1)
 
-plot(model4, which = 1)
+plot(model4, which = 1, main = "Homoskedastic errors are good!")
 ```
 
 ::: notes
@@ -708,6 +822,14 @@ The red line is an effort to show you if your errors tend to be positive or nega
 
 <br>
 
+This is what we would describe as a good result, e.g. homoscedastic errors
+
+- From the Greek: Homo meaning "same" and skedastic meaning “able to be scattered”
+
+- If your residuals plot looks like someone threw dots at a wall you're probably in good shape
+
+<br>
+
 **SLIDE**: What does a bad residual plot look like?
 :::
 
@@ -718,23 +840,7 @@ The red line is an effort to show you if your errors tend to be positive or nega
 
 <br>
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, fig.align = 'center', fig.asp = 0.95, fig.width=6}
-d1 |>
-  modelr::add_residuals(model4) |>
-  modelr::add_predictions(model4) |>
-  ggplot(aes(x = pred, y = resid)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "darkgrey") +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Regression Fitted Values", y = "Residuals",
-       title = "Homoskedastic Errors are Good!")
-```
-:::
-
-::: {.column width="50%"}
-```{r, fig.align = 'center', fig.asp = 0.95, fig.width=6}
+```{r, fig.align = 'center', fig.asp = 0.75, fig.width=8}
 # Create fake data with heteroskedastic errors
 n <- rep(1:100,2)
 a <- 0
@@ -764,8 +870,7 @@ d2 |>
   geom_abline(slope = .6, intercept = 4, linetype = "dashed", color = "red") +
   geom_abline(slope = -.2, intercept = -16, linetype = "dashed", color = "red") 
 ```
-:::
-::::
+
 
 ::: notes
 
@@ -774,6 +879,14 @@ Heteroskedastic Errors are Bad
 - Heteroskedasticity means that the variance of the errors is not constant across observations.
 
 - In other words, when the scatter of the errors is different, varying depending on the value of one or more of the independent variables, the error terms are heteroskedastic.
+
+<br>
+
+In this hypothetical case our model makes much more accurate predictions at the low end than at the high end
+
+- This is a bad sign
+
+- It means our regression hasn't found a representative path through the conditional means
 :::
 
 
@@ -792,6 +905,16 @@ knitr::include_graphics("libs/Images/09_1-nonlinear_errors.png")
 Non-Linear Errors are Bad
 
 - OLS assumes the residuals have constant variance (homoskedasticity) AND that there is no pattern in them 
+
+<br>
+
+Remember our talk about correlation missing important relationships if they were non-linear?
+
+- Same thing here!
+
+<br>
+
+The good news is that you can alter your regression to solve these kinds of problems!
 :::
 
 
@@ -847,17 +970,25 @@ Here's the code you need to check the residuals plot.
 
 - (Yes, both kinds!)
 
-1. Some heteroskedasticity
-    - Model is super accurate for cheap diamonds and then varying accuracy for the rest
-    - Slight funneling effect from left to right (bigger on left than right)
+<br>
 
-2. A clear non-linear trend
-    - Low values diamonds have mostly positive errors (under-predicts actual prices)
-    - High value diamonds have mostly negative errors (over-estimates actual prices)
+FIRST, there is clearly some heteroskedasticity
+
+- Model is super accurate for cheap diamonds and then varying accuracy for the rest
+
+- Slight funneling effect from left to right (bigger on left than right)
+
+<br>
+
+SECOND, there is a clear non-linear trend
+
+- Low values diamonds have mostly positive errors (under-predicts actual prices)
+
+- High value diamonds have mostly negative errors (over-estimates actual prices)
     
 <br>
 
-### Questions?
+**Questions?**
 
 - Fixing this requires some more advanced tools for a future class!
 :::
