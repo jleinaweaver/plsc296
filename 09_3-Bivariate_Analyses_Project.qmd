@@ -301,45 +301,28 @@ Here's where I believe we are currently in developing our research project.
 
 
 
-## Make a scatterplot and calculate the correlation for each pairing {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Make a scatterplot and calculate the correlation for each pairing in 2016 {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+<br>
 
 :::: {.columns}
-::: {.column width="20%"}
+::: {.column width="45%"}
 CoW NMC Dataset
 
-- `cinc`
-- `milex`
-- `milper`
-- `irst`
-- `pec`
-- `tpop`
-- `upop`
+- `cinc_pct`
+- `milex_billions`
+- `milper_thousands`
+- `irst_millions`
+- `pec_thousand_tons`
+- `tpop_millions`
+- `upop_millions`
 :::
 
-::: {.column width="60%"}
+::: {.column width="10%"}
 
-<br>
-
-<br>
-
-```{r, fig.width = 9, fig.height=2}
-## Manual DAG
-d1 <- tibble(
-  x = c(-3, 3),
-  y = c(1, 1),
-  labels = c("Military\nPower\n(CoW NMC)", "Human rights\nand\nthe rule of law\n(FFP)")
-)
-
-ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = -1.9, xend = 1.85, y = 1, yend = 1, arrow = arrow())
-```
 :::
 
-::: {.column width="20%"}
+::: {.column width="45%"}
 Fund for Peace Dataset
 
 - `P3_Human_Rts`
@@ -356,7 +339,7 @@ Your assignment is to pair each of these predictors from the NMC database one ti
 
 Notes to keep in mind:
 
-1. Run these tests on all the available years, NOT just 2016
+1. Run these tests on just 2016
 
 2. Your outcome variable ALWAYS goes on the y-axis in a scatterplot
     - e.g. P3 Human Rights is the outcome variation we are trying to explain
@@ -367,6 +350,8 @@ Notes to keep in mind:
 
 - Get to it!
 
+- **OPTIONAL**: Next slide has results to discuss
+
 <br>
 
 <br>
@@ -376,8 +361,84 @@ NOTES FOR YOU: Not all of these will be required for the report.
 - This exercise helps them practice their skills, test a bunch of hypotheses and will guide us in future steps (regression and confounders)
 
 - for the report require 2 scatters (cinc and milper), plus... annotate a country?
-
 :::
+
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.618, fig.width=12, cache=TRUE}
+d |>
+  filter(Year == 2016) |>
+  pivot_longer(cols = c(cinc_pct:upop_millions), names_to = "Predictor", values_to = "Value") |>
+  ggplot(aes(x = Value, y = P3_Human_Rts)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  facet_wrap(~ Predictor, scales = "free_x", ncol = 4)
+```
+
+**Correlations with P3_Human_Rights**
+
+```{r, echo=FALSE}
+x1 <- d |>
+  filter(Year == 2016) |>
+  select(P3_Human_Rts, cinc_pct:upop_millions) |>
+  cor(use = "pairwise")
+
+round(x1[2:8,1], 2)
+```
+
+::: notes
+
+Hoo boy, these results suck!
+
+- But not shocking
+
+- Can't explain variation with an absence of variation!
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.618, fig.width=12, cache=TRUE}
+# What proportion are outliers here?
+#summary(d$cinc_pct) # 3rd quartile is .366
+
+# What would 95% of cases be?
+#quantile(d$cinc_pct, probs = .95)
+
+# Which states removed? 8 countries - Brazil, China, Germany, India, Japan, Russia, South Korea, United States
+# d |>
+#   filter(Year == 2016) |>
+#   filter(cinc_pct > quantile(d$cinc_pct, probs = .95)) |> View()
+#   select(Country) |>
+#   arrange(Country)
+
+d |>
+  filter(Year == 2016) |>
+  filter(cinc_pct < quantile(d$cinc_pct, probs = .5)) |>
+  pivot_longer(cols = c(cinc_pct:upop_millions), names_to = "Predictor", values_to = "Value") |>
+  ggplot(aes(x = Value, y = P3_Human_Rts)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  facet_wrap(~ Predictor, scales = "free_x", ncol = 4)
+```
+
+**Correlations with P3_Human_Rights**
+
+```{r, echo=FALSE}
+x1 <- d |>
+  filter(Year == 2016) |>
+  filter(cinc_pct < quantile(d$cinc_pct, probs = .5)) |>
+  select(P3_Human_Rts, cinc_pct:upop_millions) |>
+  cor(use = "pairwise")
+
+round(x1[2:8,1], 2)
+```
 
 
 

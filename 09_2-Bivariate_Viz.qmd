@@ -83,6 +83,52 @@ When you have 50k+ observations across this many levels of each variable it can 
 
 <br>
 
+What I hope you're very quickly seeing here is that interpreting the relationships in tables is hard!
+
+- That's why we build pictures!
+
+<br>
+
+**SLIDE**: It is possible to polish a table
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r}
+proportions(table(diamonds$clarity, diamonds$cut), margin = 1) |>
+  round(digits = 2) |>
+  kbl(align = "c") |>
+  kable_styling(bootstrap_options = c("condensed")) |>
+  column_spec(2, color = "white", background = c("#C6DBEF", rep("lightgrey", 7))) |>
+  column_spec(3, color = "white", background = c(rep("lightgrey", 8))) |>
+  column_spec(4, color = "white", background = c(rep("lightgrey", 8))) |>
+  column_spec(5, color = "white", background = c("lightgrey", "#BDD7E7", rep("lightgrey", 6))) |>
+  column_spec(6, color = "white", background = c(rep("lightgrey", 2), "#BDD7E7", rep("#6BAED6", 2), rep("#3182BD", 2), "#08519C")) |>
+  row_spec(0, background = "white") |>
+  column_spec(1, background = "white")
+
+#RColorBrewer::brewer.pal(n = 6, name = "Blues")
+
+# proportions(table(diamonds$clarity, diamonds$cut), margin = 1) |>
+#   round(digits = 2) |>
+#   kbl(align = "c") |>
+#   kable_styling(bootstrap_options = c("condensed")) |>
+#   column_spec(2, color = "white", background = c("orange", rep("lightgrey", 7))) |>
+#   column_spec(3, color = "white", background = c(rep("lightgrey", 8))) |>
+#   column_spec(4, color = "white", background = c(rep("lightgrey", 8))) |>
+#   column_spec(5, color = "white", background = c("lightgrey", "orange", rep("lightgrey", 6))) |>
+#   column_spec(6, color = "white", background = c(rep("lightgrey", 2), rep("orange", 6))) |>
+#   row_spec(0, background = "antiquewhite") |>
+#   column_spec(1, background = "antiquewhite")
+```
+
+::: notes
+Here I've highlighted the highest proportion in each row AND increased the heat of the color as the proportions increase
+
+<br>
+
 Assuming jewelers can control cut, but not clarity I think this version of the table makes the most sense (e.g. row margins)
 
 - When jewelers have an internally flawless diamond (IF) or close to it, they clearly try to give it their highest quality cut (maximize price)
@@ -95,23 +141,16 @@ Assuming jewelers can control cut, but not clarity I think this version of the t
 
 <br>
 
-What I hope you're very quickly seeing here is that interpreting the relationships in tables is hard!
 
-- That's why we build pictures!
 :::
 
 
 
-## Practice for Today {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Practice for Today {background-image="libs/Images/background-slate_v2.png" .center}
 
 **Categorical x Numeric**
 
 <br>
-
-```{r}
-options(width = 100)
-```
-
 
 ```{r, echo=TRUE}
 aggregate(data = diamonds, price ~ cut, FUN = summary)
@@ -136,7 +175,7 @@ Your next job was to analyze the relationship between the price and cut quality 
 
 
 
-## Practice for Today {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Practice for Today {background-image="libs/Images/background-slate_v2.png" .center}
 
 **Numeric x Numeric: Convert one into a categorical variable**
 
@@ -144,8 +183,9 @@ Your next job was to analyze the relationship between the price and cut quality 
 
 ```{r, echo=TRUE}
 # Transform Numeric Variable to Categorical
-diamonds$carat2 <- cut(diamonds$carat, breaks = c(0, .8, 6), 
-                       labels = c("Smaller than Avg", "Larger than Avg"))
+diamonds$carat2 <- cut(diamonds$carat, 
+                       breaks = c(0, .8, 6), 
+                       labels = c("Below Avg", "Above Avg"))
 ```
 
 <br>
@@ -164,18 +204,14 @@ Your next job was to analyze the relationship between the price and weight of th
 
 
 
-## Practice for Today {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Practice for Today {background-image="libs/Images/background-slate_v2.png" .center}
 
 **Numeric x Numeric: Correlation**
-
-<br>
 
 ```{r, echo=TRUE}
 # Correlation
 cor(diamonds$carat, diamonds$price)
 ```
-
-<br>
 
 ```{r, echo=TRUE}
 # Statistical Test
@@ -207,7 +243,7 @@ This is another approach that would REALLY benefit from visualization!
     - Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations
 
 2. Visualizations
-    - Bar plots (stacked, side-by-side, proportions), box plots and scatter plots
+    - Bar plots (stacked, side-by-side, proportions), facet wraps, density plots, box plots and scatter plots
 
 ::: notes
 
@@ -243,20 +279,18 @@ Just as we did previously, we will be guided in learning our new tools by this r
 
 
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
-
-**Categorical x Categorical**
+## Categorical x Categorical {background-image="libs/Images/background-slate_v2.png" .center}
 
 :::: {.columns}
 ::: {.column width="50%"}
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.9, cache=TRUE}
+```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=TRUE}
 ggplot(mpg, aes(x = class)) +
   geom_bar()
 ```
 :::
 
 ::: {.column width="50%"}
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.9, cache=TRUE}
+```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=TRUE}
 ggplot(mpg, aes(x = drv)) +
   geom_bar()
 ```
@@ -277,9 +311,7 @@ Ah yes, our old friend the bar plot!
 :::
 
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**Categorical x Categorical**
+## Categorical x Categorical {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=TRUE}
 # Side-by-side bar plots
@@ -304,9 +336,7 @@ By default geom_bar adjusts the width of the bars so each x label takes up the s
 
 
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**Categorical x Categorical**
+## Categorical x Categorical {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=TRUE, `code-line-numbers`="1,3"}
 # Side-by-side bar plots
@@ -325,9 +355,7 @@ Now swap the 'x' and 'fill' variables in this plot.
 :::
 
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**Categorical x Categorical**
+## Categorical x Categorical {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
@@ -363,19 +391,13 @@ Same data, same tool, very different questions answered!
 
 
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**Categorical x Categorical**
+## Categorical x Categorical {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=TRUE}
 # Stacked bar plots
 ggplot(mpg, aes(x = class, fill = drv)) +
   geom_bar(position = "stack")
 ```
-
-<br>
-
-(See Chang Recipes 3.7, and 10 for controlling the colors and legend layout)
 
 ::: notes
 Here we see the second style of bivariate bar plot: A Stacked Bar Plot
@@ -392,25 +414,13 @@ Here we see the second style of bivariate bar plot: A Stacked Bar Plot
 :::
 
 
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Categorical x Categorical {background-image="libs/Images/background-slate_v2.png" .center}
 
-**Categorical x Categorical**
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.9, cache=TRUE}
-ggplot(mpg, aes(x = class, fill = drv)) +
-  geom_bar(position = "stack")
-```
-:::
-
-::: {.column width="50%"}
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.9, cache=TRUE}
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, cache=TRUE}
+# Proportionate bar plot
 ggplot(mpg, aes(x = class, fill = drv)) +
   geom_bar(position = "fill")
 ```
-:::
-::::
 
 ::: notes
 Last style of common bar plot is a proportional stacked bar plot.
@@ -444,9 +454,9 @@ Clearly makes comparisons and summary easier, BUT...
 
 
 
-## {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Categorical x Categorical {background-image="libs/Images/background-slate_v2.png" .center}
 
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=TRUE, `code-line-numbers`="3,4,5"}
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, cache=TRUE, `code-line-numbers`="3,4,5"}
 ggplot(mpg, aes(x = class, fill = drv)) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent_format()) +
@@ -471,15 +481,11 @@ The new-ish tweaks here:
 
 
 
-## Bivariate Categorical Variables {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**Categorical x Numeric Variable**
-
-<br>
+## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 :::: {.columns}
 ::: {.column width="50%"}
-```{r, echo=TRUE, fig.asp=.85, fig.align='center', cache=TRUE}
+```{r, echo=FALSE, fig.asp=.85, fig.align='center', cache=TRUE}
 ggplot(mpg, aes(x = cty)) +
   geom_histogram(bins = 15) +
   theme_bw()
@@ -487,7 +493,7 @@ ggplot(mpg, aes(x = cty)) +
 :::
 
 ::: {.column width="50%"}
-```{r, echo=TRUE, fig.asp=.85, fig.align='center', cache=TRUE}
+```{r, echo=FALSE, fig.asp=.85, fig.align='center', cache=TRUE}
 ggplot(mpg, aes(x = drv)) +
   geom_bar(fill = "darkblue") +
   theme_bw()
@@ -561,15 +567,16 @@ On the right I used the "ncol" argument to specify you want a single column of p
 
 
 
-## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center}
 
-**2. Density Plots**
+:::: {.columns}
+::: {.column width="35%"}
 
 <br>
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=TRUE, fig.align='center', fig.asp=0.75}
+<br>
+
+```{r, echo=FALSE, fig.align='center', fig.asp=0.75}
 ggplot(mpg, aes(x = cty)) +
   geom_histogram(bins = 15) +
   theme_bw() +
@@ -578,8 +585,9 @@ ggplot(mpg, aes(x = cty)) +
 ```
 :::
 
-::: {.column width="50%"}
-```{r, echo=TRUE, fig.align='center', fig.asp=0.75}
+::: {.column width="65%"}
+```{r, echo=TRUE, fig.align='center', fig.asp=0.618}
+# 2. Density Plots
 ggplot(mpg, aes(x = cty)) +
   geom_density() +
   theme_bw()  +
@@ -609,14 +617,13 @@ Think of a density plot like a smoothed histogram
 
 
 
-## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**2. Density Plots**
+## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo=TRUE, fig.align='center', fig.asp=0.618}
+# 2. Density Plots
 ggplot(mpg, aes(x = cty, fill = drv)) +
   geom_density(alpha = .4) +
-  theme_bw() 
+  theme_bw()
 ```
 
 ::: notes
@@ -635,14 +642,12 @@ Much clearer if only two levels of the categorical variable OR if the distributi
 
 
 
-## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**3. Box Plots**
+## Categorical x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center}
 
 :::: {.columns}
-::: {.column width="50%"}
+::: {.column width="60%"}
 ```{r, echo=TRUE, eval=FALSE}
-# Box Plot
+# 3. Box Plot
 ggplot(mpg, aes(x = cty, y = drv)) +
   geom_boxplot()
 ```
@@ -655,7 +660,10 @@ ggplot(mpg, aes(x = cty, y = drv)) +
 ```
 :::
 
-::: {.column width="50%"}
+::: {.column width="40%"}
+
+<br>
+
 ```{r, echo=FALSE, fig.align='center', fig.width=5, fig.asp=1.2, cache=TRUE}
 ggplot(mpg, aes(x = cty)) +
   geom_histogram(bins = 15, `code-line-numbers`="1,3") +
@@ -692,11 +700,7 @@ Here is where we see the real utility of box plots.
 
 
 
-## Bivariate Categorical Variables {background-image="libs/Images/background-slate_v2.png" .center}
-
-**Numeric x Numeric Variable**
-
-<br>
+## Numeric x Numeric Variable {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=TRUE}
 # Scatter Plot
@@ -724,7 +728,7 @@ Go for it!
 :::
 
 
-## Bivariate Categorical Variables {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Bivariate Categorical Variables {background-image="libs/Images/background-slate_v2.png" .center}
 
 **Numeric x Numeric Variable**
 
@@ -741,8 +745,6 @@ ggplot(mpg, aes(x = displ, y = cty)) +
 
 <br>
 
-<br>
-
 ```{r, echo=TRUE}
 cor.test(mpg$displ, mpg$cty)
 ```
@@ -750,17 +752,21 @@ cor.test(mpg$displ, mpg$cty)
 ::::
 
 
-
-
-## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
+## Bivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
 <br>
 
-1. Descriptive Statistics by Group
-    - Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations
+**Categorical x Categorical**
 
-2. Visualizations
-    - **Bar plots (stacked, side-by-side, proportions), box plots and scatter plots**
+- Tables, Proportions (with margins) and Bar plots (stacked, side-by-side, proportions)
+
+**Numeric x Categorical**
+
+- Descriptive statistics by group (aggregate across summary, mean, median, percentiles, standard deviations), facet wraps, overlapping density plots and box plots
+
+**Numeric x Numeric**
+
+- Descriptive statistics by group (cut numeric into categorical), correlations and scatter plots
 
 ::: notes
 **Any questions on the tools we learned today?**

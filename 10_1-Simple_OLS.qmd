@@ -153,31 +153,8 @@ Now that we have access to real diamond prices for 53k examples, it MUST be poss
 
 
 
-## Using Descriptive Statistics {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Using Descriptive Statistics {background-image="libs/Images/background-slate_v2.png" .center}
 
-<br>
-
-:::: {.columns}
-::: {.column width="40%"}
-```{r, fig.align = 'left', fig.asp=.9, fig.width = 6, cache=TRUE}
-range1 <- range(diamonds$price[diamonds$carat == 1.5])
-range2 <- range(diamonds$price[diamonds$carat == 2.5])
-
-diamonds |>
-  slice_sample(prop = .1) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price",
-       title = "How expensive is a move from 1.5 to 2.5 carats?") +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  coord_cartesian(xlim = c(0,4)) +
-  annotate("segment", x = 1.5, xend = 1.5, y = range1[1], yend = range1[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both")) +
-  annotate("segment", x = 2.5, xend = 2.5, y = range2[1], yend = range2[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both"))
-```
-:::
-
-::: {.column width="60%"}
 ```{r, echo=TRUE}
 # Make subsets
 diamonds1_5 <- filter(diamonds, carat == 1.5)
@@ -196,8 +173,6 @@ summary(diamonds1_5$price)
 ```{r, echo=TRUE}
 summary(diamonds2_5$price)
 ```
-:::
-::::
 
 ::: notes
 
@@ -1399,16 +1374,12 @@ While the help file shows you can do a ton of stuff with the lm() function, we'l
 
 
 
-## Fitting OLS Regressions in R {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Fitting OLS Regressions in R {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo = TRUE, eval = TRUE}
 # Regress `price` on `carat` in the `diamonds` dataset
 model1 <- lm(data = diamonds, price ~ carat)
-```
 
-<br>
-
-```{r, echo = TRUE, eval = TRUE}
 # Check the Results
 summary(model1)
 ```
@@ -1470,12 +1441,12 @@ This is essentially the standard you should see in basically every quantitative 
 :::
 
 
-## Formatting Regression Tables in R {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+## Formatting Regression Tables in R {background-image="libs/Images/background-slate_v2.png" .center}
 
 <br>
 
 :::: {.columns}
-::: {.column width="55%"}
+::: {.column width="65%"}
 ```{r, echo=TRUE, eval=FALSE}
 # Fit the regression
 model1 <- lm(data = diamonds, price ~ carat)
@@ -1494,7 +1465,7 @@ modelsummary(model1,
 ```
 :::
 
-::: {.column width="45%"}
+::: {.column width="35%"}
 ```{r}
 modelsummary(model1, output = "gt",
              fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F") |>
