@@ -343,6 +343,8 @@ Notes to keep in mind:
 
 2. Your outcome variable ALWAYS goes on the y-axis in a scatterplot
     - e.g. P3 Human Rights is the outcome variation we are trying to explain
+    
+3. Correlations with missing data need extra arguments: use = "pairwise"
 
 <br>
 
@@ -362,6 +364,10 @@ NOTES FOR YOU: Not all of these will be required for the report.
 
 - for the report require 2 scatters (cinc and milper), plus... annotate a country?
 :::
+
+
+
+
 
 
 
@@ -397,6 +403,14 @@ Hoo boy, these results suck!
 - But not shocking
 
 - Can't explain variation with an absence of variation!
+
+<br>
+
+HOWEVER, all is not lost!
+
+- Confounders matter (lessons to come)
+
+- EVERYBODY filter the dataset for the current year (2016) AND let's focus on the developing world so also filter the bottom 50% of countries by cinc score
 :::
 
 
@@ -423,7 +437,7 @@ d |>
   pivot_longer(cols = c(cinc_pct:upop_millions), names_to = "Predictor", values_to = "Value") |>
   ggplot(aes(x = Value, y = P3_Human_Rts)) +
   geom_point() +
-  #geom_smooth(method = "lm") +
+  #geom_smooth(method = "lm", se=F) +
   theme_bw() +
   facet_wrap(~ Predictor, scales = "free_x", ncol = 4)
 ```
@@ -440,7 +454,10 @@ x1 <- d |>
 round(x1[2:8,1], 2)
 ```
 
+::: notes
 
+
+:::
 
 
 
