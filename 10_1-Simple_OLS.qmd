@@ -9,6 +9,7 @@ library(tidyverse)
 library(readxl)
 library(kableExtra)
 library(modelsummary)
+library(ggeffects)
 ```
 
 <br>
@@ -305,7 +306,7 @@ We have the standard deviation for the mean, but nothing exactly comparable for 
 
 <br>
 
-**3. Sample size matters (and may be hidded)!**
+**3. Sample size matters (and may be hidden)!**
 
 ```{r, echo=TRUE}
 # Count the observations
@@ -1558,38 +1559,48 @@ The key here is the ggpredict function
 :::
 
 
-## Making Predictions in R {background-image="libs/Images/background-slate_v2.png" .center .smaller}
 
-<br>
+## Making Predictions in R {background-image="libs/Images/background-slate_v2.png" .center}
 
-```{r, echo=TRUE}
+::::: {.panel-tabset}
+
+### Code
+```{r, echo=TRUE, eval=FALSE}
 # Fit the regression
 model1 <- lm(data = diamonds, price ~ carat)
 
-# (Make sure the package is installed!)
+# Install one time: install.packages("ggeffects")
 library(ggeffects)
 
 # Make the Predictions
 predictions1 <- ggpredict(model1, terms = "carat")
+
+# Output: Table
+predictions1
+
+# Output: Marginal effects plot
+plot(predictions1)
 ```
 
-<br>
+### Outputs
 
 :::: {.columns}
-::: {.column width="55%"}
-```{r, echo=TRUE}
-# Predictions table
+::: {.column width="60%"}
+```{r, fig.align='center'}
+predictions1 <- ggpredict(model1, terms = "carat")
+
 predictions1
 ```
 :::
 
-::: {.column width="45%"}
-```{r, echo = TRUE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '70%', fig.width = 5, cache=TRUE}
-# Predictions visualization
+::: {.column width="40%"}
+```{r, fig.align='center', fig.asp=0.95, fig.width=6}
 plot(predictions1)
 ```
 :::
 ::::
+
+:::::
 
 ::: notes
 Our current regression model only has one predictor so we have only one choice for the ggpredict function
@@ -1619,13 +1630,13 @@ The visualization converts this table into a line plot
 
 1. Regress city fuel economy (`cty`) on engine displacement (`displ`) in the `mpg` datatset
 
-2. Regress percent college educated (`percollege`) on the percent of people below the  poverty line (`percbelowpoverty`) in the `midwest` datatset
+2. Regress percent of people below the  poverty line (`percbelowpoverty`) on the percent college educated (`percollege`) in the `midwest` datatset
 
 ::: notes
 
 ```{r}
 lm(data = mpg, cty ~ displ) |> summary()
 
-lm(data = midwest, percollege ~ percbelowpoverty) |> summary()
+lm(data = midwest, percbelowpoverty ~ percollege) |> summary()
 ```
 :::

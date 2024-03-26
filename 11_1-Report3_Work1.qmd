@@ -16,9 +16,11 @@ library(ggeffects)
 
 <br>
 
-**Build the Third Report**
+::: {.r-fit-text}
+**Working on Report 3**
 
-- Bivariate Analyses: Simple OLS
+- Scatterplots, correlations and simple OLS regressions
+:::
 
 <br>
 
@@ -37,132 +39,114 @@ Prep for Class
 
 <br>
 
-**SLIDE**: Before we start on the third report, let's review your work for today evaluating the fit of our practice OLS regressions.
-:::
-
-
-
-## Evaluate the fit of both regressions: {background-image="libs/Images/background-slate_v2.png" .center}
-
-<br>
-
-1. Regress city fuel economy ('cty') on engine displacement ('displ') in the 'mpg' datatset
-
-2. Regress percent college educated ('percollege') on the percent of people below the  poverty line ('percbelowpoverty') in the 'midwest' datatset
-
-:::notes
-**How did this go?**
-:::
-
-
-
-## City Fuel Economy and Engine Size {.center .smaller}
-
-<br>
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r}
-model1 <- lm(data = mpg, cty ~ displ)
-
-modelsummary(list("Fuel Economy (City)" = model1), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("displ"= "Engine Size", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "9em") |>
-  column_spec(2, background = c("orange", rep("white", 3), "orange", "orange", "white", "white")) |>
-  kable_styling(font_size = 24)
-```
-:::
-
-::: {.column width="50%"}
-```{r, echo=TRUE}
-nrow(mpg)
-```
-
-<br>
-
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '90%', fig.width=7, cache=TRUE}
-# Check residuals
-plot(model1, which = 1)
-```
-:::
-::::
-
-::: notes
-
-1. Missing data problems?
-
-2. Are the coefficients significant?
-
-3. What does the R<sup>2</sup> indicate? 
-
-4. Any problems in the residuals plot?
-:::
-
-
-
-## College Education and Poverty  {.center .smaller}
-
-<br>
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r}
-model2 <- lm(data = midwest, percollege ~ percbelowpoverty)
-
-modelsummary(list("College (%)" = model2), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("percbelowpoverty"= "Below Poverty (%)", "(Intercept)" = "Constant")) |>
-  column_spec(1, width = "10em") |>
-  column_spec(2, background = c("orange", rep("white", 3), "orange", "orange", "white", "white")) |>
-  kable_styling(font_size = 24)
-```
-:::
-
-::: {.column width="50%"}
-```{r, echo=TRUE}
-nrow(midwest)
-```
-
-<br>
-
-```{r, echo = FALSE, fig.retina=3, fig.asp=0.7, fig.align = 'center', out.width = '90%', fig.width=7, cache=TRUE}
-# Check residuals
-plot(model2, which = 1)
-```
-:::
-::::
-
-::: notes
-
-1. Missing data problems?
-
-2. Are the coefficients significant?
-
-3. What does the R<sup>2</sup> indicate? 
-
-4. Any problems in the residuals plot?
+**SLIDE**: Ok, this week we work on your third report so let's talk about it.
 :::
 
 
 
 ## Report 3 {background-image="libs/Images/background-slate_v2.png" .center}
 
-**Submission Requirements**
+**Bivariate Test of your Hypotheses**
 
 <br>
 
-- Submit a **pdf** to **Canvas** (due **Mar 26th**)
+This report should focus on making a single, over-arching argument that answers this question: Are powerful states more likely to respect the human rights of their citizens?
+
+::: notes
+Report 3 is your first chance to try and answer our research question
+
+- This is possible in an effective way because of the work you have done in the first two reports
+:::
+
+
+
+## Report 3 {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Bivariate Test of your Hypotheses**
+
+<br>
+
+**Are powerful states more likely to respect the human rights of their citizens?**
+
+1. Analyze the relationship between a country's `cinc` score (CoW NMC) and its measured level of respect for human rights and the rule of law (FFP) **using a scatter plot, a correlation and a simple OLS regression**. 
+
+2. Repeat the above using the CoW NMC **indicator you were assigned in Report 2** instead of the `cinc` score.
+
+::: notes
+In order to answer our research question you will perform two tests on **ALL** of the data
+
+- cinc x p3_human_rights
+
+- a selected NMC indicator x p3_human_rights
+
+<br>
+
+**Questions on prompts?**
+
+<br>
+
+**SLIDE**: Notes for the report
+:::
+
+
+
+## Report 3 {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Bivariate Test of your Hypotheses**
+
+<br>
+
+**Submission Requirements**
+
+- Submit a **pdf** to **Canvas** (due **Apr 5th**)
 
 - Include an **APA** formatted bibliography
 
 - Polish **all** included visualizations and tables
 
+- Lead with **arguments** NOT evidence
+
 ::: notes
-
-Ok, this week we work on your second report.
-
-- The basic requirements same as last time
+The basic requirements same as last time
 
 - Late penalty (-10) points per day
+
+<br>
+
+Important note 1: Make sure to lead all paragraphs in the paper with your argument and not with the evidence.
+
+- Explain your argument and support it with the evidence, not vice versa.
+
+<br>
+
+**Questions on these elements?**
+
+<br>
+
+**SLIDE**: Important note 2...
+:::
+
+
+
+## Evaluating the Fit of an OLS Regression {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+1. Missing data problems?
+
+2. Are the coefficients significant?
+
+3. What does the R<sup>2</sup> indicate? 
+
+4. Any problems in the residuals plot?
+
+
+::: notes
+Important note 2: Be sure to evaluate all OLS regressions you include using the four steps reviewed in class. 
+
+<br>
+
+These four steps allow you to explain how confident you are in the answers provided by the OLS regression.
 :::
 
 
@@ -173,98 +157,15 @@ Ok, this week we work on your second report.
 
 <br>
 
-1. Introduction
+**Are powerful states more likely to respect the human rights of their citizens?**
 
-2. Test hypotheses with bivariate visualizations and statistics
+1. Analyze the relationship between a country's `cinc` score (CoW NMC) and its measured level of respect for human rights and the rule of law (FFP) **using a scatter plot, a correlation and a simple OLS regression**. 
 
-3. Test hypotheses with simple OLS regressions
+2. Repeat the above using the CoW NMC **indicator you were assigned in Report 2** instead of the `cinc` score.
 
 ::: notes
-Next report has three required sections.
+Alright, let's get to work!
+
+- Let me know if you have questions
 :::
 
-
-
-## Report 3 {background-image="libs/Images/background-slate_v2.png" .center}
-
-**Bivariate Test of your Hypotheses**
-
-<br>
-
-1. Introduction
-    - Research Question?
-    - Why is it important?
-    - What are your three hypotheses?
-
-2. Test hypotheses with bivariate visualizations and statistics
-
-3. Test hypotheses with simple OLS regressions
-
-::: notes
-
-Section 1: Introduction
-- What is the research question?
-- Make an argument: Why should we care?
-- What are your hypotheses? List all three
-:::
-
-
-
-## Report 3 {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**Bivariate Test of your Hypotheses**
-
-<br>
-
-1. Introduction
-
-2. Test hypotheses with bivariate visualizations and statistics
-    - 2019 only
-    - Scatterplots and correlations
-        - GII x military
-        - GII x education
-        - GII x health
-
-3. Test hypotheses with simple OLS regressions
-
-::: notes
-
-This is what we worked on in class last Friday.
-
-<br>
-
-Section 2: Test your hypothesis using bivariate visualizations and statistics
-
-- Make a scatterplot AND calculate the correlation for each (2019 only):
-    - GII x military
-    - GII x education
-    - GII x health
-:::
-    
-    
-    
-## Report 3 {background-image="libs/Images/background-slate_v2.png" .center .smaller}
-
-**Bivariate Test of your Hypotheses**
-
-<br>
-
-1. Introduction
-
-2. Test hypotheses with bivariate visualizations and statistics
-
-3. Test hypotheses with simple OLS regressions
-    - 2019 only
-    - Fit, interpret and evaluate each regression
-        - GII ~ military
-        - GII ~ education
-        - GII ~ health
-
-::: notes
-
-Today's work!
-
-Section 3: Test your hypothesis using simple OLS regressions
-
-- Fit, interpret and evaluate three simple OLS regressions (2019 only)
-::: 

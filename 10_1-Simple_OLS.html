@@ -630,7 +630,7 @@
 <section id="the-limits-of-descriptive-statistics-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>The Limits of Descriptive Statistics</h2>
 <p><br></p>
-<p><strong>3. Sample size matters (and may be hidded)!</strong></p>
+<p><strong>3. Sample size matters (and may be hidden)!</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Count the observations</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="fu">nrow</span>(diamonds1_5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2181,25 +2181,33 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
           display:block!important;
       }</style></aside>
 </section>
-<section id="making-predictions-in-r-1" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
+<section id="making-predictions-in-r-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>Making Predictions in R</h2>
-<p><br></p>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Code</a></li><li><a href="#tabset-1-2">Outputs</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Fit the regression</span></span>
 <span id="cb13-2"><a href="#cb13-2"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> carat)</span>
 <span id="cb13-3"><a href="#cb13-3"></a></span>
-<span id="cb13-4"><a href="#cb13-4"></a><span class="co"># (Make sure the package is installed!)</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="co"># Install one time: install.packages("ggeffects")</span></span>
 <span id="cb13-5"><a href="#cb13-5"></a><span class="fu">library</span>(ggeffects)</span>
 <span id="cb13-6"><a href="#cb13-6"></a></span>
 <span id="cb13-7"><a href="#cb13-7"></a><span class="co"># Make the Predictions</span></span>
-<span id="cb13-8"><a href="#cb13-8"></a>predictions1 <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(model1, <span class="at">terms =</span> <span class="st">"carat"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-8"><a href="#cb13-8"></a>predictions1 <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(model1, <span class="at">terms =</span> <span class="st">"carat"</span>)</span>
+<span id="cb13-9"><a href="#cb13-9"></a></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="co"># Output: Table</span></span>
+<span id="cb13-11"><a href="#cb13-11"></a>predictions1</span>
+<span id="cb13-12"><a href="#cb13-12"></a></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="co"># Output: Marginal effects plot</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="fu">plot</span>(predictions1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><br></p>
+</div>
+<div id="tabset-1-2">
 <div class="columns">
-<div class="column" style="width:55%;">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Predictions table</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a>predictions1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
 <pre><code># Predicted values of price
 
@@ -2213,15 +2221,16 @@ carat | Predicted |             95% CI
     5 |  36525.77 | 36409.18, 36642.36</code></pre>
 </div>
 </div>
-</div><div class="column" style="width:45%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.7" data-hash="10_1-Simple_OLS_cache/revealjs/unnamed-chunk-42_04f4b8fb7235a1dfca68058877c00498">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Predictions visualization</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">plot</span>(predictions1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div><div class="column" style="width:40%;">
+<div class="cell" data-layout-align="center" data-fig.asp="0.95">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-42-1.png" style="width:70.0%"></p>
+<p><img data-src="10_1-Simple_OLS_files/figure-revealjs/unnamed-chunk-42-1.png" width="576"></p>
 </figure>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -2258,7 +2267,7 @@ carat | Predicted |             95% CI
 <p><br></p>
 <ol type="1">
 <li><p>Regress city fuel economy (<code>cty</code>) on engine displacement (<code>displ</code>) in the <code>mpg</code> datatset</p></li>
-<li><p>Regress percent college educated (<code>percollege</code>) on the percent of people below the poverty line (<code>percbelowpoverty</code>) in the <code>midwest</code> datatset</p></li>
+<li><p>Regress percent of people below the poverty line (<code>percbelowpoverty</code>) on the percent college educated (<code>percollege</code>) in the <code>midwest</code> datatset</p></li>
 </ol>
 <aside class="notes">
 <div class="cell">
@@ -2285,20 +2294,20 @@ F-statistic: 408.2 on 1 and 232 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = percollege ~ percbelowpoverty, data = midwest)
+lm(formula = percbelowpoverty ~ percollege, data = midwest)
 
 Residuals:
    Min     1Q Median     3Q    Max 
--8.468 -3.788 -1.547  1.945 29.687 
+-8.088 -3.489 -0.748  2.514 33.649 
 
 Coefficients:
-                 Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)      22.55324    0.75670  29.805  &lt; 2e-16 ***
-percbelowpoverty -0.34215    0.05594  -6.116 2.13e-09 ***
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 16.73964    0.73083  22.905  &lt; 2e-16 ***
+percollege  -0.23144    0.03784  -6.116 2.13e-09 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 6.016 on 435 degrees of freedom
+Residual standard error: 4.948 on 435 degrees of freedom
 Multiple R-squared:  0.07919,   Adjusted R-squared:  0.07707 
 F-statistic: 37.41 on 1 and 435 DF,  p-value: 2.134e-09</code></pre>
 </div>

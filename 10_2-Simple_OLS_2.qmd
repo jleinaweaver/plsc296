@@ -41,7 +41,7 @@ Prep for Class
 
 1. Regress city fuel economy (`cty`) on engine displacement (`displ`) in the `mpg` datatset
 
-2. Regress percent college educated (`percollege`) on the percent of people below the  poverty line (`percbelowpoverty`) in the `midwest` datatset
+2. Regress percent of people below the  poverty line (`percbelowpoverty`) on the percent college educated (`percollege`) in the `midwest` datatset
 
 ::: notes
 **How did this go?**
@@ -51,7 +51,7 @@ Prep for Class
 ```{r, eval=FALSE}
 lm(data = mpg, cty ~ displ) |> summary()
 
-lm(data = midwest, percollege ~ percbelowpoverty) |> summary()
+lm(data = midwest, percbelowpoverty ~ percollege) |> summary()
 ```
 :::
 
@@ -123,11 +123,11 @@ This table makes clear that this regression focuses on engine size as a predicto
 <br>
 
 ```{r}
-model2 <- lm(data = midwest, percollege ~ percbelowpoverty)
-predictions2 <- ggpredict(model2, terms = "percbelowpoverty")
+model2 <- lm(data = midwest, percbelowpoverty ~ percollege)
+predictions2 <- ggpredict(model2, terms = "percollege")
 
-modelsummary(list("College (%)" = model2), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("percbelowpoverty"= "Below Poverty (%)", "(Intercept)" = "Constant")) |>
+modelsummary(list("Below Poverty (%)" = model2), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("percollege"= "College Educated (%)", "(Intercept)" = "Constant")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
@@ -144,7 +144,7 @@ modelsummary(list("College (%)" = model2), output = "gt", fmt = 2, stars = c('*'
 ::: {.column width="50%"}
 ```{r, echo = FALSE, fig.asp=0.7, fig.align = 'center', fig.width=5, cache=TRUE}
 plot(predictions2) +
-  labs(x = "Below Poverty Line (%)", y = "College Education (%)",
+  labs(x = "College Educated (%)", y = "Below Poverty Line (%)",
        title = "OLS Predicted Values")
 ```
 
@@ -1276,7 +1276,7 @@ modelsummary(list("Box Office (millions)" = model3), output = "gt",
 
 1. Regress city fuel economy on engine displacement ('mpg' datatset)
 
-2. Regress percent college educated on the percent of people below the  poverty line ('midwest' datatset)
+2. Regress percent of people below the  poverty line (`percbelowpoverty`) on the percent college educated (`percollege`) in the `midwest` datatset
 
 ::: notes
 
