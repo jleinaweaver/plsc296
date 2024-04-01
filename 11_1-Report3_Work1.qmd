@@ -39,8 +39,87 @@ Prep for Class
 
 <br>
 
-**SLIDE**: Ok, this week we work on your third report so let's talk about it.
+**SLIDE**: Let's touch base on the pre-class work
+
+Ok, this week we work on your third report so let's talk about it.
 :::
+
+
+
+## For today, evaluate the fit of both regressions (all four steps): {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+1. Regress city fuel economy on engine displacement ('mpg' datatset)
+
+2. Regress percent of people below the  poverty line (`percbelowpoverty`) on the percent college educated (`percollege`) in the `midwest` datatset
+
+
+
+## City Fuel Economy and Engine Size {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="40%"}
+```{r}
+model1 <- lm(data = mpg, cty ~ displ)
+predictions1 <- ggpredict(model1, terms = "displ")
+
+modelsummary(list("Fuel Economy (City)" = model1), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("displ"= "Engine Size", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+
+```{r, echo=TRUE}
+nrow(mpg)
+```
+:::
+
+::: {.column width="60%"}
+```{r, echo = FALSE, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
+plot(model1, which = 1)
+```
+
+:::
+::::
+
+
+
+## College Education and Poverty {background-image="libs/Images/background-slate_v2.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="40%"}
+
+```{r}
+model2 <- lm(data = midwest, percbelowpoverty ~ percollege)
+predictions2 <- ggpredict(model2, terms = "percollege")
+
+modelsummary(list("Below Poverty (%)" = model2), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("percollege"= "College Educated (%)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+```{r, echo=TRUE}
+nrow(midwest)
+```
+:::
+
+::: {.column width="60%"}
+```{r, echo = FALSE, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
+plot(model2, which = 1)
+```
+:::
+::::
+
+
+
+
 
 
 
