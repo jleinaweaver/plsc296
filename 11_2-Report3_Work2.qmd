@@ -76,7 +76,382 @@ Ok, this week we work on your second report.
 2. Repeat the above using the CoW NMC **indicator you were assigned in Report 2** instead of the `cinc` score.
 
 ::: notes
-Alright, let's get to work!
+Here's what we worked on last class
 
-- Let me know if you have questions
+- **Does everybody have these basic requirements completed (e.g. two scatter plots, correlations and OLS regressions)?**
+
+<br>
+
+In order to make an argument that answers the research question in this report you will need to turn to analyzing and interpreting the work you did last class.
+
+<br>
+
+**SLIDE**: Let's briefly start off today by discussing the elements of an effective quantitative argument
 :::
+
+
+
+## Making a Quantitative Argument {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+Write your report so that any interested reader can both:
+
+1. Understand your argument, and
+
+2. Get something of value from **EVERY** statistical tool you use
+:::
+
+::: notes
+
+Point 1 means it is your job to lead EVERY paragraph with your ideas, not the data
+
+- Topic sentences that explain conclusions are KEY to this exercise
+
+<br>
+
+Point 2 means it is your job, as the data analyst, to help the reader understand why these statistical tools are useful
+
+<br>
+
+**SLIDE**: Let's talk about how to do point 2 well
+:::
+
+
+
+
+## Making a Quantitative Argument {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+1. You must explain the tools before using them
+
+```{r, fig.align='center', fig.asp=.7}
+tibble(
+  x1 = rnorm(1000, 0, 5)
+) |>
+  ggplot(aes(x = x1)) +
+  geom_histogram(color = "white") +
+  theme_bw() +
+  labs(x = "", y = "Count of Observations")
+```
+
+::: notes
+Include brief explanations of the tools you are using to support your argument BEFORE you use them to analyze the data
+
+<br>
+
+If I'm going to include a histogram then I need to BRIEFLY explain to the reader what it does and why it helps us.
+
+- **Speaking of, why do we need histograms? How do they help us?**
+
+<br>
+
+A histogram lets us see how a variable is distributed across the observations and that helps us understand what the world looks like!
+
+- Do all the observations have similar central values? Is this a case where the average is a useful summary of the data?
+
+- How spread out are the observations? Is this a variable that captures substantial variation in the world?
+
+- Any evidence of outliers?
+:::
+
+
+
+## Making a Quantitative Argument {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+1. You must explain the tools before using them
+
+```{r, fig.align='center', fig.asp=.7}
+tibble(
+  x1 = rnorm(1000, 25, 5),
+  y1 = x1*2 + rnorm(1000, 0, 9)
+) |>
+  ggplot(aes(x = x1,y = y1)) +
+  geom_point() +
+  theme_bw() +
+  #geom_smooth(method = "lm") +
+  labs(x = "Predictor", y = "Outcome")
+  
+```
+
+::: notes
+
+If I'm going to include a scatterplot then I need to BRIEFLY explain to the reader what they do and why they help us.
+
+- **Speaking of, why do we need scatter plots? How do they help us?**
+
+<br>
+
+- See the relationship
+
+- Identify outliers
+
+- Look for trends and correlations
+
+:::
+
+
+
+## Making a Quantitative Argument {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+1. You must explain the tools before using them
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.7}
+set.seed(72)
+x1 <- rnorm(1000, 25, 5)
+set.seed(120)
+y1 <- x1*3 + rnorm(1000, 0, 9)
+
+res1 <- lm(y1 ~ x1)
+
+modelsummary(res1, fmt = 2, stars = c("*" = .05), gof_omit = "Lik|IC|F", output = "gt") |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.7, fig.width=6}
+plot(ggpredict(res1))
+```
+:::
+::::
+
+::: notes
+If I'm going to include a regression then I need to BRIEFLY explain to the reader what they do and why they help us.
+
+- **Why do we need OLS regressions? How do they help us?**
+
+<br>
+
+- Quantify the relationship
+
+- Create estimates of uncertainty
+
+- Make predictions about the future
+
+<br>
+
+Bottom line on this first point, you must explain to the reader why you are doing what you are doing in the paper.
+
+- **Make sense?**
+
+<br>
+
+**SLIDE**: Second piece of advice
+:::
+
+
+
+## Making a Quantitative Argument {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+2. Use specific examples to illustrate statistical tools
+
+```{r, fig.align='center', fig.asp=.7}
+set.seed(72)
+x1 <- rnorm(1000, 25, 5)
+set.seed(120)
+y1 <- x1*3 + rnorm(1000, 0, 9)
+
+tibble(
+  x1 = x1,
+  y1 = y1
+) |>
+  ggplot(aes(x = x1,y = y1)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  #geom_smooth(method = "lm") +
+  annotate("text", x = 38, y = 140, label = "United\nStates", color = "blue2") +
+  annotate("point", x = 38.5, y = 132, color = "blue", size = 3.5) +
+  annotate("text", x = 10, y = 23, label = "Russia", color = "red") +
+  annotate("point", x = 10.3, y = 30, color = "red", size = 3.5)
+```
+
+::: notes
+Related to the idea of explaining the tools you are using is the necessity of translating your findings into more digestible terms.
+
+<br>
+
+For those trying to get their heads around a scatterplot, identifying specific observations can help immeasurably
+
+- Reminds the reader what your observations are and provides context for each axis scale
+
+<br>
+
+Do this whenever possible.
+
+- Try to ensure that the reader can quickly get to grips with what is being shown to them and why
+
+- This is also why I require informative figure titles and captions!
+
+
+<br>
+
+**Make sense?**
+:::
+
+
+
+## Making a Quantitative Argument {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+2. Use specific examples to illustrate statistical tools
+
+```{r, fig.align='center', fig.asp=.7}
+set.seed(72)
+x1 <- rnorm(1000, 25, 5)
+set.seed(120)
+y1 <- x1*3 + rnorm(1000, 0, 9)
+
+tibble(
+  x1 = x1,
+  y1 = y1
+) |>
+  ggplot(aes(x = x1,y = y1)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  geom_smooth(method = "lm") +
+  annotate("text", x = 38, y = 140, label = "United\nStates", color = "blue2") +
+  annotate("point", x = 38.5, y = 132, color = "blue", size = 3.5) +
+  annotate("text", x = 10, y = 23, label = "Russia", color = "red") +
+  annotate("point", x = 10.3, y = 30, color = "red", size = 3.5)
+```
+
+::: notes
+This goes doubly for understanding regression coefficients!
+
+- You should definitely report the slope of the line as that's vital, BUT
+
+- You should also present that in the terms of the actual variables, e.g. as the predictor increases by one the outcome increases by three!
+
+<br>
+
+Even better, use observation examples to help the reader understand
+
+- If Russia here at the bottom of the plot increased its predictor to the average (approximately 25), they would increase their outcome by X
+
+- Always present stat results in human terms!
+
+<br>
+
+**Make sense?**
+
+<br>
+
+**SLIDE**: Last one...
+:::
+
+
+
+
+## Making a Quantitative Argument {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+3. Help the reader understand the uncertainty
+
+:::: {.columns}
+::: {.column width="40%"}
+```{r, fig.align='center', fig.asp=.7}
+res1 <- lm(y1 ~ x1)
+
+modelsummary(res1, fmt = 2, stars = c("*" = .05), gof_omit = "Lik|IC|F", output = "gt") |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+
+::: {.column width="60%"}
+```{r, fig.align='center', fig.asp=.7}
+plot(res1, which = 1)
+```
+:::
+::::
+
+::: notes
+
+Remember, a big part of your job as the analyst is to help the reader understand the uncertainty in the data.
+
+<br>
+
+In other words, how confident are you in the answer you are providing to the big question in the report? 
+
+- What aspects of the research design and the sample you are analyzing give you confidence in the answer? 
+
+- What aspects make you hesitant?
+
+<br>
+
+This is where all the good strengths and weaknesses work you did in the first two reports comes into play, AND
+
+- where you discuss the strengths and weaknesses of the statistics you are providing as evidence
+
+<br>
+
+**Any questions on any of this advice?**
+:::
+
+
+
+## Report 3 {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Bivariate Test of your Hypotheses**
+
+<br>
+
+**Are powerful states more likely to respect the human rights of their citizens?**
+
+1. Analyze the relationship between a country's `cinc` score (CoW NMC) and its measured level of respect for human rights and the rule of law (FFP) **using a scatter plot, a correlation and a simple OLS regression**. 
+
+2. Repeat the above using the CoW NMC **indicator you were assigned in Report 2** instead of the `cinc` score.
+
+::: notes
+
+Alright, let's get back to work!
+
+:::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
