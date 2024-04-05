@@ -28,71 +28,6 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      { color: #003b4f; background-color: #f1f3f5; }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span { color: #003b4f; } /* Normal */
-    code span.al { color: #ad0000; } /* Alert */
-    code span.an { color: #5e5e5e; } /* Annotation */
-    code span.at { color: #657422; } /* Attribute */
-    code span.bn { color: #ad0000; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; } /* ControlFlow */
-    code span.ch { color: #20794d; } /* Char */
-    code span.cn { color: #8f5902; } /* Constant */
-    code span.co { color: #5e5e5e; } /* Comment */
-    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-    code span.dt { color: #ad0000; } /* DataType */
-    code span.dv { color: #ad0000; } /* DecVal */
-    code span.er { color: #ad0000; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #ad0000; } /* Float */
-    code span.fu { color: #4758ab; } /* Function */
-    code span.im { color: #00769e; } /* Import */
-    code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; } /* Keyword */
-    code span.op { color: #5e5e5e; } /* Operator */
-    code span.ot { color: #003b4f; } /* Other */
-    code span.pp { color: #ad0000; } /* Preprocessor */
-    code span.sc { color: #5e5e5e; } /* SpecialChar */
-    code span.ss { color: #20794d; } /* SpecialString */
-    code span.st { color: #20794d; } /* String */
-    code span.va { color: #111111; } /* Variable */
-    code span.vs { color: #20794d; } /* VerbatimString */
-    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="12_2-DAGs_files/libs/revealjs/dist/theme/quarto.css">
   <link href="12_2-DAGs_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -814,9 +749,10 @@
 </div>
 <aside class="notes">
 <p>So, it turns out that there is a rather high correlation between ice cream sales and the number of forest fires in a given area.</p>
+<p><br></p>
+<p>Almost certainly “correlation, not causation”, right?</p>
 <ul>
-<li><p>I assume everybody senses that this is a case of correlation, not causation, right?</p></li>
-<li><p>We don’t actually think that buying ice cream leads someone to want to start a fire.</p></li>
+<li>I don’t think buying ice cream leads someone to want to start a fire.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -890,9 +826,11 @@
 <aside class="notes">
 <p>This is Judea Pearl’s technical definition of confounding.</p>
 <ul>
-<li><p>Basically, with observational data we suspect our comparison groups are not identical on average, and so, we need to identify the important differences between them.</p></li>
+<li><p><em>Read slide</em></p></li>
 <li><p>Thinking about confounding means thinking about what our data would look like if we had run this as an experiment.</p></li>
 </ul>
+<p><br></p>
+<p>Basically, with observational data we suspect our comparison groups are not identical on average, and so, we need to identify the important differences between them.</p>
 <p><br></p>
 <p><strong>SLIDE</strong>: I know this is a little dense, but let’s think about what this means in the context of our ice cream and arson example.</p>
 <style type="text/css">
@@ -911,19 +849,27 @@
 <h2></h2>
 
 <img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-17-1.png" style="width:85.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Here’s the DAG with summer included, BUT in a world where we are able to RANDOMLY assign ice cream sales to different cities.</p>
+<p>What if we could run an RCT to test our “ice cream leads to arson” hypothesis?</p>
 <ul>
-<li><p>In other words, what if we could run an RCT to test this hypothesis?</p></li>
+<li><p>In other words, wait until summer and then control how much ice cream different cities get for sale</p></li>
 <li><p>Flip a coin with head’s meaning a city gets a bunch of ice cream and tails meaning almost none.</p></li>
 </ul>
 <p><br></p>
-<p>The confounding definition asks, if you could remove the effect of this proposed variable, summer, do we think the forest fire results would change?</p>
+<p>The question then becomes, do we expect randomly assigned ice cream sales to impact the number of forest fires that are started?</p>
 <ul>
-<li><p>If we believe that removing this causal path changes the results then it is a confounder in the relationship.</p></li>
-<li><p>In other words, without summertime, we expect no effect of ice cream sales variation on forest fires.</p></li>
+<li><p>If we believe that removing the effect of summertime changes the results then it is a confounder in the relationship.</p></li>
+<li><p>So in this case we expect ice cream sales and forest fires to correlate only until we remove the effect of summertime</p></li>
+<li><p>Hence, summer is a confounder</p></li>
 </ul>
 <p><br></p>
-<h3 id="does-this-make-sense-1">Does this make sense?</h3>
+<p>Another way to think of this is as saying that a confounder is a variable that causes BOTH your predictor and your outcome to change</p>
+<ul>
+<li><p>Summertime causes ice cream sales to increase, and</p></li>
+<li><p>Summertime causes forest fires to increase</p></li>
+<li><p>Therefore: confounder!</p></li>
+</ul>
+<p><br></p>
+<p><strong>Does this make sense?</strong></p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -952,7 +898,7 @@
 <li>Your list of confounders represents your argument that you have identified the causal mechanism</li>
 </ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: Let’s practice this second step on our hypothetical class size project.</p>
+<p><strong>SLIDE</strong>: Before we practice finding confounders, let’s highlight a few things that may LOOK like confounders but are NOT.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -967,34 +913,21 @@
 </section>
 <section id="section-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2></h2>
+<div class="r-fit-text">
+<p><strong>Is ‘experience’ a confounder in this mechanism?</strong></p>
+</div>
 
-<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-18-1.png" style="width:85.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p><strong>What on our brainstormed lists might function as a confounder in this relationship?</strong></p>
-<ul>
-<li><p><em>EXPLORE and DISCUSS</em></p></li>
-<li><p>?</p></li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s talk for a second about things that may LOOK like confounders but are not.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="is-experience-a-confounder-in-this-mechanism" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Is ‘experience’ a confounder in this mechanism?</h2>
-<p><br></p>
-
-<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-19-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
+<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-18-1.png" width="864" class="r-stretch quarto-figure-center"><aside class="notes">
 <p>Imagine we are developing a research project whose aim is to estimate the causal effect of ‘education’ on ‘salary.’</p>
-<h3 id="do-we-believe-that-experience-is-a-confounder-of-this-mechanism-why-or-why-not">Do we believe that ‘experience’ is a confounder of this mechanism? Why or why not?</h3>
+<ul>
+<li><p>The question becomes, do we believe that ‘experience’ is a confounder of this mechanism?</p></li>
+<li><p><strong>In other words, do you believe that experience causes education and salary to change or is it something else?</strong></p></li>
+</ul>
+<p><br></p>
+<p>Unlike the ice cream example, I suspect that randomly assigning education levels would have BIG effects on salary income!</p>
+<ul>
+<li><strong>SLIDE</strong>: This is an example of a mediator, NOT a confounder</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1007,29 +940,172 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="rule-2-do-not-include-mediators" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Rule 2: Do not include mediators</h2>
+<section id="do-not-control-for-mediators" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do Not Control for Mediators</h2>
+
+<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-19-1.png" width="864" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Mediators are variables that dilute the effect you are actually interested in.</p>
+<ul>
+<li><p>This means education has a positive impact on salary AND</p></li>
+<li><p>Education increases experience which then increases salary</p></li>
+<li><p>In other words, people with more education are more likely to have more significant work experiences and higher pay</p></li>
+</ul>
+<p><br></p>
+<p>The problem is that our goal is to measure the TOTAL effect of education on salary</p>
+<ul>
+<li><p>That should include the indirect effect that happens through experience</p></li>
+<li><p>In other words, IF we include experience in the identification strategy SOME of the estimated effect will move to the experience variable</p></li>
+<li><p>This will give us a too small estimate on education</p></li>
+</ul>
+<p><br></p>
+<p>If you control for a mediator you will shrink the estimated effect size of interest</p>
+<ul>
+<li><strong>Does this make sense?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Also do not control for colliders</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="do-not-control-for-colliders" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do Not Control for Colliders</h2>
+
+<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-20-1.png" width="864" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>A second note of caution concerns the danger of what are called collider effects or collider bias</p>
+<ul>
+<li>A collider is a variable that is caused by both your predictor and your outcome variable</li>
+</ul>
+<p><br></p>
+<p>If you adjust your analyses to include a collider it will tend to create the illusion of an effect between the predictor and the outcome where none actually exists</p>
+<ul>
+<li>In essence, the fact that each variable causes the same thing will make it appear like they are correlated</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: For example…</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="do-not-control-for-colliders-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do Not Control for Colliders</h2>
+
+<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-21-1.png" width="864" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>In 1979, a researcher named Sackett wanted to examine a hypothesis:</p>
+<ul>
+<li><p>Does locomotor disease (a loss of mobility) lead to respiratory disease</p></li>
+<li><p>Theory: locomotor disease could lead to inactivity, which could cause respiratory disease.</p></li>
+<li><p>Gathers data on 257 hospitalized individuals and finds a strong correlation between the two diseases</p></li>
+</ul>
+<p><br></p>
+<p>To be thorough he runs a second test</p>
+<ul>
+<li><p>This time he gathers data on a sample of 2,783 individuals from the general population</p></li>
+<li><p>This test finds no association!</p></li>
+</ul>
+<p><br></p>
+<p>What happened?</p>
+<ul>
+<li><strong>SLIDE</strong>: A collider!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="do-not-control-for-colliders-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do Not Control for Colliders</h2>
+
+<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-22-1.png" width="864" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>The first test was spoiled by collider bias</p>
+<ul>
+<li><p>Both diseases cause hospitalization</p></li>
+<li><p>When you control for hospitalization these wrong facing arrows make it look like there is an association between the diseases!</p></li>
+</ul>
+<p><br></p>
+<p>The lesson for us is that collider bias is often the result of selection bias!</p>
+<ul>
+<li>Missing data might present as a collider variable!</li>
+</ul>
+<p><br></p>
+<p>If your “global” dataset is missing the poorest countries then you are adjusting your analysis by wealth!</p>
+<ul>
+<li>If wealth is impacted by your predictor and outcome, then you have a serious collider problem</li>
+</ul>
+<p><br></p>
+<p>If your “global” dataset is missing countries at war then you are adjusting your analysis by conflict!</p>
+<ul>
+<li>If conflict is impacted by your predictor and outcome, then you have a serious collider problem</li>
+</ul>
+<p><br></p>
+<p>The lesson here, as always, is to remember that data collection and measurement matters the most!</p>
+<ul>
+<li>Including a collider will make it look like you’ve found something that isn’t actually there.</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s practice our skills at developing an identification strategy using the “small class sizes leads to student success” hypothesis.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="classify-our-options" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Classify our Options</h2>
+<p><br></p>
+<p><strong>Make a list: Mediators, Colliders and Confounders</strong></p>
 <p><br></p>
 
-<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-20-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Experience is a mediator in this mechanism.</p>
+<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-23-1.png" width="1056" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Ok, let’s see what we can take from our brainstormed lists that represent confounders, mediators and colliders.</p>
 <ul>
-<li>It should NOT be included in our identification strategy.</li>
+<li>Take a minute, talk to the people around you and let’s get three lists up on the board</li>
 </ul>
 <p><br></p>
-<p>Remember, your interest in “testing” this relationship is to identify the size of the main arrow</p>
+<p><em>REPORT BACK!</em></p>
+<p>Mediators:</p>
 <ul>
-<li>e.g.&nbsp;How big is the effect of education on future salary?</li>
+<li></li>
+</ul>
+<p>Colliders:</p>
+<ul>
+<li></li>
+</ul>
+<p>Confounders:</p>
+<ul>
+<li></li>
 </ul>
 <p><br></p>
-<p>Including a mediator takes some of that effect you are interested in and redirects it to another mechanism</p>
-<ul>
-<li>In other words, the estimated size of the effect of the main arrow will shrink which means it no longer represents a clean test of the mechanism.</li>
-</ul>
-<p><br></p>
-<h3 id="does-this-make-sense-2">Does this make sense?</h3>
-<p><br></p>
-<p>So, don’t include mediators!</p>
+<p><strong>SLIDE</strong>: Now, keep in mind our goal here is to only keep the confounders!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1051,140 +1127,19 @@
 <li><p>Find ways to block out those alternate reasons and so dig out the variation we need</p></li>
 </ol>
 <aside class="notes">
-<p>There are lots of other ways to add a variable to a DAG, but I think this is enough for us to move forward on our project.</p>
-<p><br></p>
-<h3 id="any-questions-on-our-work-with-dags-and-confounders-today">Any questions on our work with DAGs and confounders today?</h3>
-<p><br></p>
-<p>We’ll get into this third step more next week, but let me illustrate the effect of “controlling” for a confounder with toy data.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-
-<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-21-1.png" style="width:95.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Here we see simulated data.</p>
-<h3 id="what-is-the-relationship-evident-from-this-scatterplot-and-ols-line">What is the relationship evident from this scatterplot and OLS line?</h3>
-<p><br></p>
-<p>These correlations and OLS slope are an estimate of the association between these two variables.</p>
+<p>Bottom line, our identification strategy SHOULD identify any variable that confounds the relationship we are trying to measure</p>
 <ul>
-<li>This is NOT a test of the causal argument until we diagram the DGP and adjust the analysis for our confounders</li>
+<li><p>Confounding means that the variable, in essence, precedes and causes BOTH the predictor and outcome we are studying</p></li>
+<li><p>Pearl’s more formal definition asks you to imagine that you could test the relationship with an RCT</p></li>
+<li><p>If you believe removing the third variable and randomly assigning the predictor would change the outcome, then the third variable is likely a confounder.</p></li>
 </ul>
 <p><br></p>
+<p><strong>Any questions on our work with DAGs and confounders today?</strong></p>
+<p><br></p>
+<p>Next week we’ll learn techniques for doing step 3 here, e.g.&nbsp;adjusting our analysis to “control” for the confounders</p>
 <ul>
-<li>Correlation: 0.5752803</li>
+<li><strong>SLIDE</strong>: But now we go back to our class project!</li>
 </ul>
-<p>.code80[</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = fires ~ ice_cream, data = d10)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--8.0853 -3.5859 -0.3384  3.2324  8.1471 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  4.06037    2.96795   1.368    0.177    
-ice_cream    0.16564    0.03093   5.356 1.52e-06 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 4.252 on 58 degrees of freedom
-Multiple R-squared:  0.3309,    Adjusted R-squared:  0.3194 
-F-statistic: 28.69 on 1 and 58 DF,  p-value: 1.525e-06</code></pre>
-</div>
-</div>
-<p>]</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-6" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-
-<img data-src="12_2-DAGs_files/figure-revealjs/unnamed-chunk-23-1.png" style="width:100.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Here we see one approach to “controlling” for a confounder</p>
-<ul>
-<li>I am splitting the sample using facets by season
-<ul>
-<li>On the right is summer only</li>
-<li>On the left is the rest</li>
-</ul></li>
-</ul>
-<p><br></p>
-<h3 id="what-is-the-relationship-evident-from-this-split-sample-scatterplots-and-ols-lines">What is the relationship evident from this split sample scatterplots and OLS lines?</h3>
-<p>.code80[</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Summer</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">cor</span>(d10<span class="sc">$</span>ice_cream[d10<span class="sc">$</span>summer <span class="sc">==</span> <span class="dv">1</span>], d10<span class="sc">$</span>fires[d10<span class="sc">$</span>summer <span class="sc">==</span> <span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.02729393</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Other</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">cor</span>(d10<span class="sc">$</span>ice_cream[d10<span class="sc">$</span>summer <span class="sc">==</span> <span class="dv">0</span>], d10<span class="sc">$</span>fires[d10<span class="sc">$</span>summer <span class="sc">==</span> <span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.01899087</code></pre>
-</div>
-</div>
-<p>]</p>
-<p><br></p>
-<p>The OLS lines and estimated correlations are now, I argue, estimates of the effect of ice cream sales ON forest fires.</p>
-<ul>
-<li>By adjusting for the confounder I can argue I have designed a test of the causal relationship here</li>
-</ul>
-<p><br></p>
-<h3 id="does-the-intuition-here-make-sense">Does the intuition here make sense?</h3>
-<p><br></p>
-<p>We’ll dig into HOW to do this next week.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="identification-and-the-dgp-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Identification and the DGP</h2>
-<p><br></p>
-<ol type="1">
-<li><p>Using theory, paint the most accurate picture possible of what the data generating process looks like</p></li>
-<li><p>Refine the DGP to only keep variables that confound the key mechanism</p></li>
-<li><p>Find ways to block out those alternate reasons and so dig out the variation we need</p></li>
-</ol>
-<aside class="notes">
-<p>In short, making a causal argument using observational data requires:</p>
-<ol type="1">
-<li><p>Describing the DGP, and then</p></li>
-<li><p>Refining the DGP to include only the confounders to the key mechanism</p></li>
-<li><p>Finally we adjust our analysis to “control” for the confounders</p></li>
-</ol>
-<p><br></p>
-<h3 id="questions-on-the-material-today">Questions on the material today?</h3>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1198,22 +1153,23 @@ F-statistic: 28.69 on 1 and 58 DF,  p-value: 1.525e-06</code></pre>
       }</style></aside>
 </section>
 <section id="for-today" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>For Today:</h2>
+<h2>For Today</h2>
 <p><br></p>
 <ol type="1">
-<li><p>Read HK (2022) ch 6 and 7</p></li>
-<li><p>Brainstorm the DGP for our project (e.g.&nbsp;<strong>SUBMIT</strong> four separate lists of reasons why states would vary in):</p>
+<li><p>Read Huntington-Klein chapters 6 and 7</p></li>
+<li><p>Brainstorm the DGP for our project (e.g.&nbsp;<strong>SUBMIT</strong> three separate lists of reasons why states would vary in):</p>
 <ul>
-<li>GII</li>
-<li>Education Spending</li>
-<li>Military Spending</li>
-<li>Healthcare Spending</li>
+<li>P3_Human_Rights</li>
+<li>CoW NMC CINC</li>
+<li>Your assigned indicator from CoW NMC</li>
 </ul></li>
 </ol>
 <aside class="notes">
 <p>For class today you each submitted to Canvas DGPs for the main variables in our project.</p>
-<p><em>IF TIME ENOUGH</em>: Get the lists on the board and discuss, NOT AS CONFOUNDERS, just as credible predictors for each variable</p>
-<p><em>IF TIME IS SHORT</em>: Go to the next slide!</p>
+<p><br></p>
+<p><strong>IF LOTS OF TIME</strong>: Get the lists on the board and discuss, NOT AS CONFOUNDERS, just as credible predictors for each variable</p>
+<p><br></p>
+<p><strong>IF TIME IS SHORT</strong>: Go to the next slide!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1227,19 +1183,21 @@ F-statistic: 28.69 on 1 and 58 DF,  p-value: 1.525e-06</code></pre>
       }</style></aside>
 </section>
 <section id="for-next-class" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>For Next Class:</h2>
+<h2>For Next Class</h2>
 <p><br></p>
-<p>Propose an identification strategy for each causal mechanism in our project:</p>
+<div class="r-fit-text">
+<p>Submit a DAG for our research project</p>
 <ul>
-<li><p>Education Spending —&gt; GII</p></li>
-<li><p>Military Spending —&gt; GII</p></li>
-<li><p>Healthcare Spending —&gt; GII</p></li>
+<li>CINC → P3_Human_Rights</li>
 </ul>
+</div>
 <aside class="notes">
-<p><strong>Questions on the assignment?</strong></p>
+<p>Submit your proposed DAG to Canvas before class</p>
 <ul>
-<li>Make three DAGs, one per mechanism and submit your proposals to Canvas before class.</li>
+<li>Give us a list of proposed confounders in this relationship</li>
 </ul>
+<p><br></p>
+<p><strong>Questions on the assignment?</strong></p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

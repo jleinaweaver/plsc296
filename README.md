@@ -63,7 +63,7 @@ Data, slides and errata for my class at Drury University (PLSC 296: Data Analysi
 
 11_2-Report3_Work2.html
 
-11_3-Report3_Work3.html
+11_3-Simple_OLS_Practice.html
 
 12_1-Identification.html
 

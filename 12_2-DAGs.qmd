@@ -493,9 +493,11 @@ ggplot(data = d1, aes(x = x, y = y)) +
 
 So, it turns out that there is a rather high correlation between ice cream sales and the number of forest fires in a given area.
 
-- I assume everybody senses that this is a case of correlation, not causation, right?
+<br>
 
-- We don't actually think that buying ice cream leads someone to want to start a fire.
+Almost certainly "correlation, not causation", right?
+
+- I don't think buying ice cream leads someone to want to start a fire.
 :::
 
 
@@ -586,9 +588,13 @@ This is what we call a spurious correlation, e.g. a fake relationship
 
 This is Judea Pearl's technical definition of confounding.
 
-- Basically, with observational data we suspect our comparison groups are not identical on average, and so, we need to identify the important differences between them.
+- *Read slide*
 
 - Thinking about confounding means thinking about what our data would look like if we had run this as an experiment.
+
+<br>
+
+Basically, with observational data we suspect our comparison groups are not identical on average, and so, we need to identify the important differences between them.
 
 <br>
 
@@ -619,23 +625,35 @@ ggplot(data = d1, aes(x = x, y = y)) +
 
 ::: notes
 
-Here's the DAG with summer included, BUT in a world where we are able to RANDOMLY assign ice cream sales to different cities.
+What if we could run an RCT to test our "ice cream leads to arson" hypothesis?
 
-- In other words, what if we could run an RCT to test this hypothesis?
+- In other words, wait until summer and then control how much ice cream different cities get for sale
 
 - Flip a coin with head's meaning a city gets a bunch of ice cream and tails meaning almost none.
 
 <br>
 
-The confounding definition asks, if you could remove the effect of this proposed variable, summer, do we think the forest fire results would change?
+The question then becomes, do we expect randomly assigned ice cream sales to impact the number of forest fires that are started?
 
-- If we believe that removing this causal path changes the results then it is a confounder in the relationship.
+- If we believe that removing the effect of summertime changes the results then it is a confounder in the relationship.
 
-- In other words, without summertime, we expect no effect of ice cream sales variation on forest fires.
+- So in this case we expect ice cream sales and forest fires to correlate only until we remove the effect of summertime
+
+- Hence, summer is a confounder
 
 <br>
 
-### Does this make sense?
+Another way to think of this is as saying that a confounder is a variable that causes BOTH your predictor and your outcome to change
+
+- Summertime causes ice cream sales to increase, and
+
+- Summertime causes forest fires to increase
+
+- Therefore: confounder!
+
+<br>
+
+**Does this make sense?**
 :::
 
 
@@ -660,48 +678,18 @@ THIS represents your identification strategy.
 
 <br>
 
-**SLIDE**: Let's practice this second step on our hypothetical class size project.
+**SLIDE**: Before we practice finding confounders, let's highlight a few things that may LOOK like confounders but are NOT.
 :::
+
 
 
 ## {background-image="libs/Images/background-slate_v2.png" .center}
 
-```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
-## Manual DAG
-d1 <- tibble(
-  x = c(1, 2, 3),
-  y = c(1, 2, 1),
-  labels = c("Class\n Size", "Confounders", "Student\n Success")
-)
-
-ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = 1.35, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
-  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.2, arrow = arrow()) +
-  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.2, arrow = arrow())
-```
-
-::: notes
-**What on our brainstormed lists might function as a confounder in this relationship?**
-
-- *EXPLORE and DISCUSS*
-
-- ?
-
-<br>
-
-**SLIDE**: Let's talk for a second about things that may LOOK like confounders but are not.
+::: {.r-fit-text}
+**Is 'experience' a confounder in this mechanism?**
 :::
 
-
-## Is 'experience' a confounder in this mechanism? {background-image="libs/Images/background-slate_v2.png" .center}
-
-<br>
-
-```{r, fig.retina=3, fig.align='center', fig.height=4, out.width='80%'}
+```{r, fig.align='center', fig.asp=.75, fig.width=9}
 ## Manual DAG
 tibble(
   x = c(3, -3, 0),
@@ -721,15 +709,21 @@ tibble(
 ::: notes
 Imagine we are developing a research project whose aim is to estimate the causal effect of 'education' on 'salary.'
 
-### Do we believe that 'experience' is a confounder of this mechanism? Why or why not?
-:::
+- The question becomes, do we believe that 'experience' is a confounder of this mechanism?
 
-
-## Rule 2: Do not include mediators {background-image="libs/Images/background-slate_v2.png" .center}
+- **In other words, do you believe that experience causes education and salary to change or is it something else?**
 
 <br>
 
-```{r, fig.retina=3, fig.align='center', fig.height=4, out.width='80%'}
+Unlike the ice cream example, I suspect that randomly assigning education levels would have BIG effects on salary income!
+
+- **SLIDE**: This is an example of a mediator, NOT a confounder
+:::
+
+
+## Do Not Control for Mediators {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center', fig.asp=.75, fig.width=9}
 ## Manual DAG
 tibble(
   x = c(3, -3, 0),
@@ -741,36 +735,231 @@ tibble(
   theme_void() +
   coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
   geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow()) +
-  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow()) +
-  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow(), linewidth = .1)
+  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow(), linewidth = 1.2) +
+  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow(), linewidth = 1.2) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow(), linewidth = .3)
 ```
 
 ::: notes
-Experience is a mediator in this mechanism.
+Mediators are variables that dilute the effect you are actually interested in.
 
-- It should NOT be included in our identification strategy.
+- This means education has a positive impact on salary AND
 
-<br>
+- Education increases experience which then increases salary
 
-Remember, your interest in "testing" this relationship is to identify the size of the main arrow
-
-- e.g. How big is the effect of education on future salary?
+- In other words, people with more education are more likely to have more significant work experiences and higher pay
 
 <br>
 
-Including a mediator takes some of that effect you are interested in and redirects it to another mechanism
+The problem is that our goal is to measure the TOTAL effect of education on salary
 
-- In other words, the estimated size of the effect of the main arrow will shrink which means it no longer represents a clean test of the mechanism.
+- That should include the indirect effect that happens through experience
+
+- In other words, IF we include experience in the identification strategy SOME of the estimated effect will move to the experience variable
+
+- This will give us a too small estimate on education
 
 <br>
 
-### Does this make sense?
+If you control for a mediator you will shrink the estimated effect size of interest
+
+- **Does this make sense?**
 
 <br>
 
-So, don't include mediators!
+**SLIDE**: Also do not control for colliders
 :::
+
+
+
+## Do Not Control for Colliders {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center', fig.asp=.75, fig.width=9}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Outcome", "Predictor", "Collider")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 2.5, xend = .4, y = 1.15, yend = 1.85, arrow = arrow()) +
+  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow()) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow(), color = "grey")
+```
+
+::: notes
+A second note of caution concerns the danger of what are called collider effects or collider bias
+
+- A collider is a variable that is caused by both your predictor and your outcome variable
+
+<br>
+
+If you adjust your analyses to include a collider it will tend to create the illusion of an effect between the predictor and the outcome where none actually exists
+
+- In essence, the fact that each variable causes the same thing will make it appear like they are correlated
+
+<br>
+
+**SLIDE**: For example...
+:::
+
+
+
+## Do Not Control for Colliders {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center', fig.asp=.75, fig.width=9}
+## Manual DAG
+tibble(
+  x = c(3, -3),
+  y = c(1, 1),
+  labels = c("Respiratory\nDisease", "Locomotor\nDisease")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 1.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 2.1, y = 1, yend = 1, arrow = arrow())
+```
+
+
+::: notes
+In 1979, a researcher named Sackett wanted to examine a hypothesis: 
+
+- Does locomotor disease (a loss of mobility) lead to respiratory disease
+
+- Theory: locomotor disease could lead to inactivity, which could cause respiratory disease.
+
+- Gathers data on 257 hospitalized individuals and finds a strong correlation between the two diseases
+
+<br>
+
+To be thorough he runs a second test 
+
+- This time he gathers data on a sample of 2,783 individuals from the general population
+
+- This test finds no association!
+
+<br>
+
+What happened?
+
+- **SLIDE**: A collider!
+:::
+
+
+
+## Do Not Control for Colliders {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center', fig.asp=.75, fig.width=9}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Respiratory\nDisease", "Locomotor\nDisease", "Hospitalization")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 2.5, xend = .4, y = 1.15, yend = 1.85, arrow = arrow()) +
+  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow())
+```
+
+::: notes
+
+The first test was spoiled by collider bias
+
+- Both diseases cause hospitalization
+
+- When you control for hospitalization these wrong facing arrows make it look like there is an association between the diseases!
+
+<br>
+
+The lesson for us is that collider bias is often the result of selection bias!
+
+- Missing data might present as a collider variable!
+
+<br>
+
+If your "global" dataset is missing the poorest countries then you are adjusting your analysis by wealth!
+
+- If wealth is impacted by your predictor and outcome, then you have a serious collider problem
+
+<br>
+
+If your "global" dataset is missing countries at war then you are adjusting your analysis by conflict!
+
+- If conflict is impacted by your predictor and outcome, then you have a serious collider problem
+
+<br>
+
+The lesson here, as always, is to remember that data collection and measurement matters the most!
+
+- Including a collider will make it look like you've found something that isn't actually there.
+
+<br>
+
+**SLIDE**: Let's practice our skills at developing an identification strategy using the "small class sizes leads to student success" hypothesis.
+:::
+
+
+## Classify our Options {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+**Make a list: Mediators, Colliders and Confounders**
+
+<br>
+
+```{r, fig.align = 'center', fig.asp=.3, fig.width=11}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 3),
+  y = c(1, 1),
+  labels = c("Class\n Size", "Student\n Success")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(.5, 3.5), ylim = c(.75, 1.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.35, xend = 2.5, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+Ok, let's see what we can take from our brainstormed lists that represent confounders, mediators and colliders.
+
+- Take a minute, talk to the people around you and let's get three lists up on the board
+
+<br>
+
+*REPORT BACK!*
+
+Mediators:
+
+- 
+
+Colliders:
+
+- 
+
+Confounders:
+
+- 
+
+<br>
+
+**SLIDE**: Now, keep in mind our goal here is to only keep the confounders!
+:::
+
+
 
 
 ## Identification and the DGP {background-image="libs/Images/background-slate_v2.png" .center}
@@ -784,192 +973,71 @@ So, don't include mediators!
 3. Find ways to block out those alternate reasons and so dig out the variation we need
 
 ::: notes
-There are lots of other ways to add a variable to a DAG, but I think this is enough for us to move forward on our project.
+Bottom line, our identification strategy SHOULD identify any variable that confounds the relationship we are trying to measure
+
+- Confounding means that the variable, in essence, precedes and causes BOTH the predictor and outcome we are studying
+
+- Pearl's more formal definition asks you to imagine that you could test the relationship with an RCT
+
+- If you believe removing the third variable and randomly assigning the predictor would change the outcome, then the third variable is likely a confounder.
 
 <br>
 
-### Any questions on our work with DAGs and confounders today?
+**Any questions on our work with DAGs and confounders today?**
 
 <br>
 
-We'll get into this third step more next week, but let me illustrate the effect of "controlling" for a confounder with toy data.
+Next week we'll learn techniques for doing step 3 here, e.g. adjusting our analysis to "control" for the confounders
+
+- **SLIDE**: But now we go back to our class project!
 :::
 
 
-## {background-image="libs/Images/background-slate_v2.png" .center}
 
-```{r, fig.retina=3, fig.align='center', fig.asp=0.618, out.width='95%'}
-# Simulate fires and ice cream that are confounded by summer
-set.seed(2)
-
-d10 <- tibble(
-  obs = rep(1:12, 5),
-  month = rep(month.abb, 5),
-  summer = if_else(month %in% c("Jun", "Jul", "Aug"), 1, 0),
-  summer_c = if_else(summer == 1, "Summer", "Other Seasons"),
-  summer_x = case_when(
-    obs %in% 6:8 ~ 1.4,
-    obs == 5 ~ 1,
-    obs == 9 ~ 1,
-    TRUE ~ 1
-  ),
-  ice_cream = rnorm(n = 12*5, mean = 85, sd = 8) * summer_x,
-  fires = round(rnorm(n = 12*5, mean = 18, sd = 3) * summer_x, 0)
-)
-
-#d10
-#cor.test(d10$ice_cream, d10$fires)
-
-model10 <- lm(data = d10, fires ~ ice_cream)
-#summary(model10)
-
-d10 |>
-  ggplot(aes(x = ice_cream, y = fires)) +
-  geom_smooth(method = "lm", se = FALSE) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Ice Cream Sales (Thousands USD)", y = "Forest Fires")
-```
-
-::: notes
-
-Here we see simulated data.
-
-### What is the relationship evident from this scatterplot and OLS line?
+## For Today {.center background-image="libs/Images/background-slate_v2.png"}
 
 <br>
 
-These correlations and OLS slope are an estimate of the association between these two variables.
+1.  Read Huntington-Klein chapters 6 and 7
 
-- This is NOT a test of the causal argument until we diagram the DGP and adjust the analysis for our confounders
+2.  Brainstorm the DGP for our project (e.g. **SUBMIT** three separate lists of reasons why states would vary in):
 
-<br>
-
-- Correlation: `r cor(d10$ice_cream, d10$fires)`
-
-.code80[
-```{r}
-summary(model10)
-```
-]
-:::
-
-
-## {background-image="libs/Images/background-slate_v2.png" .center}
-
-```{r, fig.retina=3, fig.align='center', fig.asp=0.5, fig.width=9, out.width='100%'}
-# Control for summer
-model10a <- lm(data = d10, fires ~ ice_cream + summer_x)
-#summary(model10a)
-
-d10 |>
-  ggplot(aes(x = ice_cream, y = fires)) +
-  geom_smooth(method = "lm", se = FALSE) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Ice Cream Sales (Thousands USD)", y = "Forest Fires") +
-  facet_wrap(~ summer_c)
-```
-
-::: notes
-
-Here we see one approach to "controlling" for a confounder
-
-- I am splitting the sample using facets by season
-    - On the right is summer only
-    - On the left is the rest
-
-<br>
-
-### What is the relationship evident from this split sample scatterplots and OLS lines?
-
-.code80[
-```{r, echo=TRUE}
-# Summer
-cor(d10$ice_cream[d10$summer == 1], d10$fires[d10$summer == 1])
-
-# Other
-cor(d10$ice_cream[d10$summer == 0], d10$fires[d10$summer == 0])
-```
-]
-
-<br>
-
-The OLS lines and estimated correlations are now, I argue, estimates of the effect of ice cream sales ON forest fires.
-
-- By adjusting for the confounder I can argue I have designed a test of the causal relationship here
-
-<br>
-
-### Does the intuition here make sense?
-
-<br>
-
-We'll dig into HOW to do this next week.
-:::
-
-
-## Identification and the DGP {background-image="libs/Images/background-slate_v2.png" .center}
-
-<br>
-
-1. Using theory, paint the most accurate picture possible of what the data generating process looks like
-
-2. Refine the DGP to only keep variables that confound the key mechanism
-
-3. Find ways to block out those alternate reasons and so dig out the variation we need
-
-::: notes
-
-In short, making a causal argument using observational data requires:
-
-1. Describing the DGP, and then
-
-2. Refining the DGP to include only the confounders to the key mechanism
-
-3. Finally we adjust our analysis to "control" for the confounders
-
-<br>
-
-### Questions on the material today?
-:::
-
-
-## For Today: {background-image="libs/Images/background-slate_v2.png" .center}
-
-<br>
-
-1. Read HK (2022) ch 6 and 7
-
-2. Brainstorm the DGP for our project (e.g. **SUBMIT** four separate lists of reasons why states would vary in):
-    - GII
-    - Education Spending
-    - Military Spending
-    - Healthcare Spending
+    - P3_Human_Rights
+    - CoW NMC CINC
+    - Your assigned indicator from CoW NMC
 
 ::: notes
 For class today you each submitted to Canvas DGPs for the main variables in our project.
 
-*IF TIME ENOUGH*: Get the lists on the board and discuss, NOT AS CONFOUNDERS, just as credible predictors for each variable
+<br>
 
-*IF TIME IS SHORT*: Go to the next slide!
-:::
-
-
-## For Next Class: {background-image="libs/Images/background-slate_v2.png" .center}
+**IF LOTS OF TIME**: Get the lists on the board and discuss, NOT AS CONFOUNDERS, just as credible predictors for each variable
 
 <br>
 
-Propose an identification strategy for each causal mechanism in our project:
+**IF TIME IS SHORT**: Go to the next slide!
+:::
 
-- Education Spending ---> GII
 
-- Military Spending ---> GII
 
-- Healthcare Spending ---> GII
+## For Next Class {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+
+Submit a DAG for our research project
+
+- CINC &#8594; P3_Human_Rights
+
+:::
 
 ::: notes
-**Questions on the assignment?**
+Submit your proposed DAG to Canvas before class
 
-- Make three DAGs, one per mechanism and submit your proposals to Canvas before class.
+- Give us a list of proposed confounders in this relationship
+
+<br>
+
+**Questions on the assignment?**
 :::
