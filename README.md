@@ -73,11 +73,11 @@ Data, slides and errata for my class at Drury University (PLSC 296: Data Analysi
 
 13_1-Multivariate-Viz.html
 
-13_2-Multivariate-Viz2.html
+13_2-Multivariate_Viz_Project.html
 
-13_3-Multivariate_Analyses_Project.html
+13_3-Multivariate-OLS-1.html
 
-14_1-Multivariate-OLS.html
+14_1-Multivariate-OLS-2.html
 
 14_3-Multivariate-OLS_Applied.html
 

@@ -396,13 +396,12 @@
 <section id="todays-agenda" class="title-slide slide level1 center" data-background-image="libs/Images/background-data_blue_v3.png">
 <h1>Today’s Agenda</h1>
 <p><br></p>
-<p><br></p>
+<div class="r-fit-text">
 <p><strong>Multivariate Analyses</strong></p>
-<ol type="1">
-<li><p>Descriptive statistics by groups</p></li>
-<li><p>Using facets to extend any visualization</p></li>
-<li><p>Mapping 3rd variables with colors or shapes</p></li>
-</ol>
+<ul>
+<li>Descriptive Statistics and Visualizations</li>
+</ul>
+</div>
 <p><br></p>
 <div class="r-stack">
 <p>Justin Leinaweaver (Spring 2024)</p>
@@ -410,9 +409,13 @@
 <aside class="notes">
 <p>Prep for Class</p>
 <ol type="1">
-<li><p>Upload WDI data for class to Canvas: WDI-Life_Expectancy-2015.csv</p></li>
-<li><p>??</p></li>
+<li>Keep using WDI-Practice_Simple_OLS-2024-04-04.xlsx on Modules in Week 11</li>
 </ol>
+<p><br></p>
+<p>Everybody make sure they have, or redownload, the WDI data I posted in Week 11 on our Canvas Modules page</p>
+<ul>
+<li>We’ll keep working with that data today</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -463,7 +466,7 @@
 <img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-3-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
 <p>In class on Friday we worked to:</p>
 <ol type="1">
-<li><p>Draw DAGs for each of our three hypotheses, and</p></li>
+<li><p>Draw a DAG for our key mechanism, and</p></li>
 <li><p>Gather data that operationalizes the concepts we identified as important confounders in these relatonships.</p></li>
 </ol>
 <p><br></p>
@@ -483,21 +486,20 @@
 <section id="multivariate-analyses" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>Multivariate Analyses</h2>
 <p><br></p>
+<div class="r-fit-text">
 <ol type="1">
 <li><p>Descriptive statistics by groups</p></li>
 <li><p>Using facets to extend any visualization</p></li>
-<li><p>Mapping 3rd variables with colors or shapes</p></li>
+<li><p>Mapping 3rd variables with colors, shapes or sizes</p></li>
 </ol>
+</div>
 <aside class="notes">
-<p>Today I will introduce you to a series of statistical tools that will allow you to adjust your analyses for a confounder variable.</p>
+<p>Today I will introduce you to a series of multivariate statistical tools</p>
 <ul>
-<li><p>These are what we call multivariate analyses</p></li>
-<li><p>e.g.&nbsp;Analyses on three or more variables simultaneously</p></li>
+<li>These allow you to adjust your analyses for a confounder variable (or multiple confounder variables)</li>
 </ul>
 <p><br></p>
-<p>Note that you can also use these techniques to extend simple descriptive analyses to summarize data across multiple variables</p>
-<p><br></p>
-<p>I’ll introduce these tools to you today and then we’ll apply them in class on Friday on your research projects.</p>
+<p>Today we’ll focus on adapting to a single confounder, but know that these techniques can be used for multiple confounders (although it does get messy)</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -510,275 +512,17 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
+<section id="do-countries-with-higher-average-fertility-rates-have-shorter-life-expectancies" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Do countries with higher average fertility rates have shorter life expectancies?</h2>
 <p><br></p>
 
 <img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-4-1.png" style="width:90.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Let’s say you were working on a research project exploring the impact of healthcare spending on key outcomes.</p>
+<p>Two weeks ago we used simple OLS models to explore global predictors of life expectancy</p>
 <ul>
-<li>Specifically we are interested in estimating the effect of hospital capacity on life expectancies across the world.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-1" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
-<p><br></p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table" data-quarto-postprocess="true" style="font-size: 20px; margin-left: auto; margin-right: auto;">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">country</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">life_expectancy</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">hospital_beds_per_1k</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">hosp_beds_cats</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">gdp</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">gdp_cats</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Kiribati</td>
-<td style="text-align: center;">66.1</td>
-<td style="text-align: center;">1.9</td>
-<td style="text-align: center;">&lt; 2 per 1k</td>
-<td style="text-align: center;">1.702910e+08</td>
-<td style="text-align: center;">Bottom 25%</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Italy</td>
-<td style="text-align: center;">82.5</td>
-<td style="text-align: center;">3.2</td>
-<td style="text-align: center;">&gt; 2 per 1k</td>
-<td style="text-align: center;">1.836638e+12</td>
-<td style="text-align: center;">Top 25%</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">France</td>
-<td style="text-align: center;">82.3</td>
-<td style="text-align: center;">6.1</td>
-<td style="text-align: center;">&gt; 2 per 1k</td>
-<td style="text-align: center;">2.439189e+12</td>
-<td style="text-align: center;">Top 25%</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Uruguay</td>
-<td style="text-align: center;">77.5</td>
-<td style="text-align: center;">2.4</td>
-<td style="text-align: center;">&gt; 2 per 1k</td>
-<td style="text-align: center;">5.327430e+10</td>
-<td style="text-align: center;">Middle 50%</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Brunei Darussalam</td>
-<td style="text-align: center;">74.8</td>
-<td style="text-align: center;">2.8</td>
-<td style="text-align: center;">&gt; 2 per 1k</td>
-<td style="text-align: center;">1.293039e+10</td>
-<td style="text-align: center;">Middle 50%</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Barbados</td>
-<td style="text-align: center;">76.7</td>
-<td style="text-align: center;">5.9</td>
-<td style="text-align: center;">&gt; 2 per 1k</td>
-<td style="text-align: center;">4.724691e+09</td>
-<td style="text-align: center;">Bottom 25%</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Somalia</td>
-<td style="text-align: center;">54.9</td>
-<td style="text-align: center;">0.9</td>
-<td style="text-align: center;">&lt; 1 per 1k</td>
-<td style="text-align: center;">5.335000e+09</td>
-<td style="text-align: center;">Bottom 25%</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Ireland</td>
-<td style="text-align: center;">81.5</td>
-<td style="text-align: center;">2.9</td>
-<td style="text-align: center;">&gt; 2 per 1k</td>
-<td style="text-align: center;">2.917752e+11</td>
-<td style="text-align: center;">Top 25%</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Iraq</td>
-<td style="text-align: center;">69.4</td>
-<td style="text-align: center;">1.4</td>
-<td style="text-align: center;">&lt; 2 per 1k</td>
-<td style="text-align: center;">1.667741e+11</td>
-<td style="text-align: center;">Top 25%</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-<ul>
-<li>Import ‘WDI-Life_Expectancy-2015.csv’ into R</li>
-</ul>
-<aside class="notes">
-<p>I’ve pulled the 2015 data from the World Bank’s WDI database for us to explore.</p>
-<ul>
-<li>Everybody grab this dataset from Canvas and import it into RStudio.</li>
+<li>One of our strongest findings was that there is an association between higher average fertility rates and considerably lower life expectancies</li>
 </ul>
 <p><br></p>
-<p>Variables</p>
-<ul>
-<li><p>Life expectancy is total in years</p></li>
-<li><p>Hospital beds is per 1,000 people in the population</p></li>
-<li><p>GDP is gross domestic product</p></li>
-<li><p>I’ve also given you a categorical version of both hospital beds and GDP for us to explore</p></li>
-</ul>
-<p><br></p>
-<h3 id="ok-what-is-the-first-step-we-need-to-do-to-answer-this-question">Ok, what is the first step we need to do to answer this question?</h3>
-<h3 id="e.g.-the-first-thing-you-need-a-good-sense-of-before-building-your-causal-argument">- e.g.&nbsp;the first thing you need a good sense of before building your causal argument?</h3>
-<ul>
-<li>(You MUST first analyze the variation in the outcome variable!)</li>
-</ul>
-<ol type="1">
-<li><p>If there is no variation there, then your project cannot proceed, and</p></li>
-<li><p>Your job is then to explain the distribution you find there</p></li>
-</ol>
-<p><br></p>
-<p>Let’s get started!</p>
-<ul>
-<li>Everybody make a histogram of life expectancy and calculate the descriptive statistics for it.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center" data-fig.asp="0.9" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-6_2111a60fc5658a873fe20e0d255a1326">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-6-1.png" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<table data-quarto-postprocess="true">
-<tbody>
-<tr class="odd">
-<td style="text-align: left; background-color: white !important;">Min</td>
-<td style="text-align: center; background-color: white !important;">54.9</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; background-color: white !important;">1st Qu</td>
-<td style="text-align: center; background-color: white !important;">72.9</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; background-color: white !important;">Median</td>
-<td style="text-align: center; background-color: white !important;">76.4</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; background-color: white !important;">Mean</td>
-<td style="text-align: center; background-color: white !important;">75.6</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; background-color: white !important;">3rd Qu</td>
-<td style="text-align: center; background-color: white !important;">80.7</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; background-color: white !important;">Max</td>
-<td style="text-align: center; background-color: white !important;">83.8</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-</div>
-</div>
-<aside class="notes">
-<p><strong>Analyze these univariate analyses for me</strong></p>
-<ul>
-<li><strong>What do we learn from this about the outcome we are trying to explain?</strong></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
-<p><br></p>
-
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-8-1.png" style="width:90.0%" class="r-stretch quarto-figure-center"><p><br></p>
-<p>Calculate the mean life expectancy (‘life_expectancy’) across the levels of hospital beds (‘hosp_beds_cats’)</p>
-<aside class="notes">
-<p>Let’s now move from a univariate to a bivariate analysis.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
-<p><br></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy <span class="sc">~</span> hosp_beds_cats, <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  hosp_beds_cats life_expectancy
-1     &lt; 1 per 1k        67.26267
-2     &lt; 2 per 1k        73.20436
-3     &gt; 2 per 1k        78.40434</code></pre>
-</div>
-</div>
-<aside class="notes">
-<p><strong>Analyze these bivariate analyses for me</strong></p>
-<ul>
-<li><strong>What do we learn from this about the relationship we are trying to test?</strong></li>
-</ul>
-<p><br></p>
-<p>Key here is that we have established a correlation with this analysis, but not causation.</p>
-<h3 id="what-do-we-need-to-add-to-make-this-a-causal-argument">What do we need to add to make this a causal argument?</h3>
-<ul>
-<li>(<strong>SLIDE</strong>: An identification strategy that specifies the confounders!)</li>
-</ul>
+<p><strong>SLIDE</strong>: The question for us is can we build a causal argument that this is more than simple correlation?</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -793,59 +537,30 @@
 </section>
 <section id="building-a-causal-argument-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>Building a Causal Argument</h2>
-<p><br></p>
 
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-10-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>My DAG displays one identification strategy for this argument.</p>
-<h3 id="what-does-it-mean-to-say-that-gdp-is-presented-as-a-confounder">What does it mean to say that GDP is presented as a confounder?</h3>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-5-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><p><strong>Possible Confounders</strong>: GDP per capita, unemployment rate, tobacco use, compulsory education</p>
+<aside class="notes">
+<p>Here is a list of the other variables in the dataset that we can consider as confounders in this relationship</p>
+<p><br></p>
+<p><strong>Remind me, what is the test for a confounder?</strong></p>
 <ul>
-<li><p>Argument that the size of your economy influences your hospital capacity, and</p></li>
-<li><p>Argument that the size of your economy influences your average life expectancies</p></li>
+<li><strong>When should we adjust our analysis for one of these variables?</strong></li>
 </ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: Put another way…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="building-a-causal-argument-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Building a Causal Argument</h2>
-<p><br></p>
-
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-11-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>This diagram argues that we cannot get a causal estimate of the effect of changing the number of hospital beds on life expectancy without adjusting our analysis for the size of the economy.</p>
-<p><br></p>
-<p><strong>SLIDE</strong>: This brings us to the tools we will need to adjust our analyses for the confounders.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="multivariate-analyses-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Multivariate Analyses</h2>
-<p><br></p>
+<p>A confounder is a variable that explains some of the variation in both the treatment and the outcome variables.</p>
 <ol type="1">
-<li><p><strong>Descriptive statistics by groups</strong></p></li>
-<li><p>Using facets to extend any visualization</p></li>
-<li><p>Mapping 3rd variables with colors or shapes</p></li>
+<li><p>The confounder MUST cause BOTH variables in the mechanism</p></li>
+<li><p>The direction of effect is FROM the confounder TO the mechanism</p></li>
 </ol>
-<aside class="notes">
-<p>First approach extends our descriptive statistics across groups in the data.</p>
+<p><br></p>
+<p>I think it can be useful to think about this in terms of the “gold standard” of running a RCT (randomized controlled experiment)</p>
+<ul>
+<li><p>Do you believe that, on average, the high and low fertility rate countries are identical?</p></li>
+<li><p>If not, are the key differences also things that should influence life expectancy?</p></li>
+<li><p>If you believe they are not identical on average and the variable also influences the outcome then it is a confounder!</p></li>
+</ul>
+<p><br></p>
+<p><strong>Of these options, are we convinced all of them are likely confounders of this relationship? Why or why not?</strong></p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -858,21 +573,120 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="descriptive-statistics-by-group" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>1. Descriptive Statistics by Group</h2>
-<p><strong>Bivariate Analyses: Numerical x Categorical</strong></p>
+<section id="multivariate-analyses-approach-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 1</h2>
+<p><br></p>
+<div class="r-fit-text">
+<p><strong>Descriptive statistics by groups</strong></p>
+<ul>
+<li><p>categorical x categorical x categorical</p></li>
+<li><p>categorical x categorical x numeric</p></li>
+</ul>
+</div>
+<aside class="notes">
+<p>Data analysis principle 3 remains in effect: Variable type determines tool!</p>
+<p><br></p>
+<p>When your multivariate analysis is composed of mostly categorical variables then descriptive statistics by group is a viable approach</p>
+<p><br></p>
+<p>The WDI data we are working with is all numerical data, but we know how to convert numeric into categorical right?</p>
+<ul>
+<li><p><strong>What function do we use?</strong></p></li>
+<li><p>(<strong>SLIDE</strong>: Cut!)</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-1-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 1</h2>
+<p><br></p>
+<p><strong>Identify the quartiles</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">summary</span>(d<span class="sc">$</span>fertility_rate_per_woman)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+  0.837   1.558   2.040   2.525   3.257   6.892       6 </code></pre>
+</div>
+</div>
+<p><br></p>
+<p><strong>Convert numeric var to categorical</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>d<span class="sc">$</span>fertility2 <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x =</span> d<span class="sc">$</span>fertility_rate_per_woman, </span>
+<span id="cb3-2"><a href="#cb3-2"></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.558</span>, <span class="fl">2.040</span>, <span class="fl">3.257</span>, <span class="dv">7</span>), </span>
+<span id="cb3-3"><a href="#cb3-3"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Fertility (Q1)"</span>, <span class="st">"Fertility (Q2)"</span>, </span>
+<span id="cb3-4"><a href="#cb3-4"></a>                               <span class="st">"Fertility (Q3)"</span>, <span class="st">"Fertility (Q4)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<p><strong>Practice: Create categorical versions of <code>gdp_per_capita</code> and <code>tobacco_use_pct</code></strong></p>
+</div>
+<aside class="notes">
+<p>Refresh memories on using cut() to convert numeric to categorical</p>
+<ul>
+<li><p>Remember, your breaks argument needs one more value than labels!</p></li>
+<li><p>Defining the bins requires a start and end point for each bin</p></li>
+</ul>
+<p><br></p>
+<p><strong>Questions on the code?</strong></p>
+<p><br></p>
+<p><strong>REVEAL</strong>: Practice this code by using it to convert gdp and tobacco using the same approach as shown here</p>
+<ul>
+<li><p>e.g.&nbsp;group the cases into quartiles</p></li>
+<li><p>Remember, quartiles mean four equally sized groups which can make it a useful way to describe variation in each group for comparison</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Code results</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-1-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 1</h2>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy <span class="sc">~</span> hosp_beds_cats, <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>d<span class="sc">$</span>gdp_pc2 <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x =</span> d<span class="sc">$</span>gdp_per_capita, </span>
+<span id="cb4-2"><a href="#cb4-2"></a>                 <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">2262.2</span>, <span class="fl">6370.9</span>, <span class="fl">22805.3</span>, <span class="dv">183000</span>),</span>
+<span id="cb4-3"><a href="#cb4-3"></a>                 <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"GDP pc (Q1)"</span>, <span class="st">"GDP pc (Q2)"</span>, </span>
+<span id="cb4-4"><a href="#cb4-4"></a>                            <span class="st">"GDP pc (Q3)"</span>, <span class="st">"GDP pc (Q4)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>d<span class="sc">$</span>tobacco2 <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x =</span> d<span class="sc">$</span>tobacco_use_pct, </span>
+<span id="cb5-2"><a href="#cb5-2"></a>                  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">11.80</span>, <span class="fl">20.30</span>, <span class="fl">26.60</span>, <span class="dv">50</span>), </span>
+<span id="cb5-3"><a href="#cb5-3"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Tobacco (Q1)"</span>, <span class="st">"Tobacco (Q2)"</span>, </span>
+<span id="cb5-4"><a href="#cb5-4"></a>                             <span class="st">"Tobacco (Q3)"</span>, <span class="st">"Tobacco (Q4)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>AUDIT: Check the group sizes</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">table</span>(d<span class="sc">$</span>gdp_pc2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  hosp_beds_cats life_expectancy
-1     &lt; 1 per 1k        67.26267
-2     &lt; 2 per 1k        73.20436
-3     &gt; 2 per 1k        78.40434</code></pre>
+<pre><code>
+GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4) 
+         53          52          52          53 </code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>Let’s go back to the aggregate code you wrote earlier.</p>
+<p>Always a good idea to audit the data work you do</p>
+<ul>
+<li><p>In this case checking the size of each category with table()</p></li>
+<li><p>Since we made quartiles each groups should be approximately the same size</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Now that we have categorical variables we can build our first multivariate analysis</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -885,38 +699,49 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="descriptive-statistics-by-group-1" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2>1. Descriptive Statistics by Group</h2>
-<p><strong>Multivariate Analyses: Numerical x Categorical x Categorical</strong></p>
+<section id="multivariate-analyses-approach-1-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 1</h2>
+<p><br></p>
+<p><strong>Bivariate Descriptive Statistics</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2, <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      fertility2 life_expectancy_total
+1 Fertility (Q1)              78.58678
+2 Fertility (Q2)              76.57482
+3 Fertility (Q3)              71.09696
+4 Fertility (Q4)              63.19423</code></pre>
+</div>
+</div>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy <span class="sc">~</span> hosp_beds_cats <span class="sc">+</span> gdp_cats, <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2, <span class="at">FUN =</span> median)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  hosp_beds_cats   gdp_cats life_expectancy
-1     &lt; 1 per 1k Bottom 25%        54.85700
-2     &lt; 2 per 1k Bottom 25%        66.99950
-3     &gt; 2 per 1k Bottom 25%        75.36496
-4     &lt; 1 per 1k Middle 50%        67.85600
-5     &lt; 2 per 1k Middle 50%        74.32208
-6     &gt; 2 per 1k Middle 50%        76.71923
-7     &lt; 1 per 1k    Top 25%        68.88075
-8     &lt; 2 per 1k    Top 25%        74.49050
-9     &gt; 2 per 1k    Top 25%        80.13991</code></pre>
+<pre><code>      fertility2 life_expectancy_total
+1 Fertility (Q1)               79.2740
+2 Fertility (Q2)               75.8920
+3 Fertility (Q3)               71.6285
+4 Fertility (Q4)               62.8290</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>Adding a third variable that is categorical to the aggregate function is very simple.</p>
+<p><strong>Does everybody remember the aggregate function from our bivariate work a few weeks ago?</strong></p>
+<p><br></p>
+<p>Uses the formula method for variable selection</p>
 <ul>
-<li><p>Modify the formula argument to add a second predictor variable just like adding two numbers together with the plus sign.</p></li>
-<li><p>You can add as many CATEGORICAL variables to the right side of the formula as you want.</p></li>
+<li>Any descriptive stats function can be used (mean, median, sd, summary, min, max, etc)</li>
 </ul>
 <p><br></p>
-<h3 id="does-the-code-make-sense">Does the code make sense?</h3>
+<p>Here we see our main causal mechanism in action</p>
+<ul>
+<li><p>e.g.&nbsp;how mean life expectancy changes across fertility rate groupings</p></li>
+<li><p>In terms of both the means and medians, increasing average fertility rates is associated with a reduction in average life expectancy in 2020.</p></li>
+</ul>
 <p><br></p>
-<h3 id="so-when-we-calculate-the-averages-while-adjusting-for-gdp-what-happens-to-our-estimate-of-the-effect-we-are-interested-in">So, when we calculate the averages while adjusting for GDP what happens to our estimate of the effect we are interested in?</h3>
-<h3 id="does-increasing-hospital-beds-increase-life-expectancies-when-controlling-for-gdp">- Does increasing hospital beds increase life expectancies when controlling for GDP?</h3>
-<p><br></p>
-<p><strong>SLIDE</strong>: You can also add a third variable to the aggregate function if it is a numeric variable.</p>
+<p>There are two ways to add a third variable to the aggregate function</p>
+<ul>
+<li><strong>SLIDE</strong>: Option 1 is to use the subset argument</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -929,52 +754,67 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="descriptive-statistics-by-group-2" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2>1. Descriptive Statistics by Group</h2>
-<p><strong>Multivariate Analyses: Numerical x Categorical x Numerical</strong></p>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
+<section id="multivariate-analyses-approach-1-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 1</h2>
+<p><strong>The Subsets Argument</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, </span>
-<span id="cb7-2"><a href="#cb7-2"></a>          life_expectancy <span class="sc">~</span> hosp_beds_cats, </span>
-<span id="cb7-3"><a href="#cb7-3"></a>          <span class="at">FUN =</span> mean,</span>
-<span id="cb7-4"><a href="#cb7-4"></a>          <span class="at">subset =</span> gdp <span class="sc">&lt;</span> <span class="fl">8e10</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2, <span class="at">FUN =</span> mean,</span>
+<span id="cb12-2"><a href="#cb12-2"></a>          <span class="at">subset =</span> gdp_per_capita <span class="sc">&lt;</span> <span class="fl">6370.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  hosp_beds_cats life_expectancy
-1     &lt; 1 per 1k        66.87580
-2     &lt; 2 per 1k        71.44538
-3     &gt; 2 per 1k        76.37256</code></pre>
+<pre><code>      fertility2 life_expectancy_total
+1 Fertility (Q1)              74.11989
+2 Fertility (Q2)              72.83625
+3 Fertility (Q3)              69.39530
+4 Fertility (Q4)              63.19822</code></pre>
 </div>
 </div>
-</div><div class="column" style="width:50%;">
+<p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, </span>
-<span id="cb9-2"><a href="#cb9-2"></a>          life_expectancy <span class="sc">~</span> hosp_beds_cats, </span>
-<span id="cb9-3"><a href="#cb9-3"></a>          <span class="at">FUN =</span> mean,</span>
-<span id="cb9-4"><a href="#cb9-4"></a>          <span class="at">subset =</span> gdp <span class="sc">&gt;</span> <span class="fl">8e10</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2, <span class="at">FUN =</span> mean,</span>
+<span id="cb14-2"><a href="#cb14-2"></a>          <span class="at">subset =</span> gdp_per_capita <span class="sc">&gt;</span> <span class="fl">6370.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  hosp_beds_cats life_expectancy
-1     &lt; 1 per 1k        68.03640
-2     &lt; 2 per 1k        75.10992
-3     &gt; 2 per 1k        79.84797</code></pre>
-</div>
-</div>
+<pre><code>      fertility2 life_expectancy_total
+1 Fertility (Q1)              79.37761
+2 Fertility (Q2)              77.66560
+3 Fertility (Q3)              75.24399
+4 Fertility (Q4)              64.98400</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>You can also use the subset argument in aggregate to split your sample by a numeric variable.</p>
+<p>Exact same code as before but now include a subset argument</p>
 <ul>
-<li>The key here is to use evaluation functions like less than, greater than, less than or equal to and greater than or equal to.</li>
+<li><p>Subset allows you to define what part of the dataset you want to focus on using relational symbols</p></li>
+<li><p>Any relational symbols can be used in subset (e.g.&nbsp;&gt;, &lt;, &gt;=, &lt;=, etc)</p></li>
 </ul>
 <p><br></p>
-<p>I hope everyone can see now how powerful the aggregate function can be.</p>
+<p>Here I am running the aggregate function one time on countries with GDP pc above the median and one time below the median</p>
 <ul>
-<li><p>Add multiple categorical variables to the formula, OR</p></li>
-<li><p>Use subset to add numeric variables.</p></li>
+<li>In other words, I am estimating the relationship between fertility and life expectancy one time for countries below median wealth and one time above it</li>
 </ul>
 <p><br></p>
-<h3 id="questions-on-using-subset-in-the-aggregate-function-to-adjust-your-results-for-a-numeric-variable">Questions on using subset in the aggregate function to adjust your results for a numeric variable?</h3>
+<p><strong>Questions on the code?</strong></p>
+<p><br></p>
+<p><strong>Remind me, why are we doing this and what do these results indicate?</strong></p>
+<p><br></p>
+<p>This represents our first attempt to establish a causal argument</p>
+<ul>
+<li><p>Remember, our interest is on estimating the effect of fertility rate changes on average life expectancies</p></li>
+<li><p>Here we have adjusted our analysis for GDP pc as a confounder in the relationship</p></li>
+</ul>
+<p><br></p>
+<p>Per these results, adjusting our analyses for the wealth of the country does not change our estimated association!</p>
+<ul>
+<li><p>Put more assertively, IFF GDP pc is the only confounder then this is evidence that increasing fertility rates may reduce average life expectancies</p></li>
+<li><p>This is the kind of evidence we would provide to make a causal argument</p></li>
+</ul>
+<p><br></p>
+<p><strong>Make sense?</strong></p>
+<p><br></p>
+<p>Now this is a very weak attempt to adjust for wealth</p>
+<ul>
+<li><p>Just above and below the median</p></li>
+<li><p><strong>SLIDE</strong>: Let’s try another technique to adjust for more levels of wealth</p></li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -987,46 +827,48 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Multivariate Analyses</h2>
+<section id="multivariate-analyses-approach-1-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 1</h2>
 <p><br></p>
-<ol type="1">
-<li><p>Descriptive statistics by groups</p></li>
-<li><p><strong>Using facets to extend any visualization</strong></p></li>
-<li><p>Mapping 3rd variables with colors or shapes</p></li>
-</ol>
+<p><strong>Adding Extra Categorical Variables</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2 <span class="sc">+</span> gdp_pc2, </span>
+<span id="cb16-2"><a href="#cb16-2"></a>          <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fertility2     gdp_pc2 life_expectancy_total
+1  Fertility (Q2) GDP pc (Q1)              71.96800
+2  Fertility (Q3) GDP pc (Q1)              68.15742
+3  Fertility (Q4) GDP pc (Q1)              62.27090
+4  Fertility (Q1) GDP pc (Q2)              74.11989
+5  Fertility (Q2) GDP pc (Q2)              72.91518
+6  Fertility (Q3) GDP pc (Q2)              69.98948
+7  Fertility (Q4) GDP pc (Q2)              67.31967
+8  Fertility (Q1) GDP pc (Q3)              76.45263
+9  Fertility (Q2) GDP pc (Q3)              75.60695
+10 Fertility (Q3) GDP pc (Q3)              73.19929
+11 Fertility (Q4) GDP pc (Q3)              64.98400
+12 Fertility (Q1) GDP pc (Q4)              81.48360
+13 Fertility (Q2) GDP pc (Q4)              79.62132
+14 Fertility (Q3) GDP pc (Q4)              79.84459</code></pre>
+</div>
+</div>
 <aside class="notes">
-<p>Let’s shift to our second multivariate analysis technique.</p>
+<p>The second way to modify the aggregate function is to add additional categorical variables to the formula argument</p>
 <ul>
-<li>Using facets to extend any visualization</li>
+<li>This creates a long set of results that shows the mean life expectancy for each combination of fertility and gdp quartiles</li>
 </ul>
 <p><br></p>
-<p>In short, facets let you take any visualization and break it into separate plots across levels of another variable.</p>
+<p><strong>Everybody get this code to work?</strong></p>
+<p><br></p>
+<p><strong>Do our results hold up to adjusting for four levels of state wealth?</strong></p>
 <ul>
-<li>Think of this like the visual version of what we just did using aggregate</li>
+<li><p>We can see the effect of interest (fertility -&gt; life exp) holds up in all instances except the richest countries!</p></li>
+<li><p>Apparently, in rich countries it looks like the negative effects of fertility rate may be reduced!</p></li>
 </ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: Let’s start with a bivariate visualization</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="do-countries-with-more-hospital-capacity-have-longer-life-expectancies-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Do countries with more hospital capacity have longer life expectancies?</h2>
+<p><strong>Any questions about using aggregate for multivariate analyses?</strong></p>
 <p><br></p>
-
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-16-1.png" style="width:90.0%" class="r-stretch quarto-figure-center"><p><br></p>
-<p>Visualize life expectancy (‘life_expectancy’) and hospital beds (‘hospital_beds_per_1k’) with a scatter plot</p>
-<aside class="notes">
-<p>???</p>
+<p><strong>SLIDE</strong>: Practice on tobacco use</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1039,443 +881,52 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>2. Using facets to extend a visualization</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.618" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-17_a5bcb21427752e893a0cb308605805d8">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy)) <span class="sc">+</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-17-1.png" style="width:70.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p><strong>Analyze this bivariate analysis for me</strong></p>
-<ul>
-<li><strong>What do we learn from this about the relationship we are trying to test?</strong></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>2. Using facets to extend a visualization</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.4" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-18_4ceae41817bd050329e3c3e8af50bb04">
-<div class="sourceCode cell-code" id="cb12" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy)) <span class="sc">+</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb12-4"><a href="#cb12-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Here we see the facet_wrap function.</p>
-<ul>
-<li>The argument requires a tilde (‘~’) and then the name of a third categorical variable.</li>
-</ul>
+<section id="multivariate-analyses-approach-1-6" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 1</h2>
 <p><br></p>
-<h3 id="analyze-these-multivariate-analyses-for-me">Analyze these multivariate analyses for me</h3>
-<h3 id="what-do-we-learn-from-this-about-the-relationship-we-are-trying-to-test">- What do we learn from this about the relationship we are trying to test?</h3>
+<p><strong>What is the impact of adjusting for tobacco use as a confounder?</strong></p>
 <p><br></p>
-<p>The slope is positive across all three levels of GDP!</p>
-<ul>
-<li><p>This means we have more confidence that increasing hospital beds increases life expectancy across all three levels of economy size.</p></li>
-<li><p>This is how we build a causal argument by pairing our analyses to our identification strategy.</p></li>
-</ul>
-<p><br></p>
-<h3 id="any-questions-on-using-the-facet_wrap-function-to-adjust-an-analysis-for-a-confounder">Any questions on using the facet_wrap function to adjust an analysis for a confounder?</h3>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="multivariate-analyses-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Multivariate Analyses</h2>
-<p><br></p>
-<ol type="1">
-<li><p>Descriptive statistics by groups</p></li>
-<li><p>Using facets to extend any visualization</p></li>
-<li><p><strong>Mapping 3rd variables with colors or shapes</strong></p></li>
-</ol>
-<aside class="notes">
-<p>Last multivariate approach for today!</p>
-<ul>
-<li>Mapping 3rd variables with colors or shapes</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.65" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-19_1cc98ee2d3b326fa5277627c1a2df1ef">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy)) <span class="sc">+</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-19-1.png" style="width:65.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Back to our standby baseline plot.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-3" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.65" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-20_65a1980f46accc4cd733d1766bc98fa5">
-<div class="sourceCode cell-code" id="cb14" data-code-line-numbers="1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, <span class="at">color =</span> gdp_cats)) <span class="sc">+</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-20-1.png" style="width:60.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Rather than facet wrap, we can tell R to assign colors to the levels of a categorical variable.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-4" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.65" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-21_84bfb1864a1845e58dc2b0cf25dc73f0">
-<div class="sourceCode cell-code" id="cb15" data-code-line-numbers="1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-21-1.png" style="width:60.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Printing in black and white?</p>
-<ul>
-<li>Use shapes instead of colors!</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-5" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.65" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-22_af3bd4fbdbd297cd7ddce5a8e8a2143f">
-<div class="sourceCode cell-code" id="cb16" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
-<span id="cb16-2"><a href="#cb16-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span> </span>
-<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-22-1.png" style="width:60.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Best approach? Do both!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-6" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.45" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-23_72d709b348a92e10c0706b4653a73cf4">
-<div class="sourceCode cell-code" id="cb17" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
-<span id="cb17-2"><a href="#cb17-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
-<span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-23-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>If your dots overlap too much then also add a facet wrap!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-7" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.45" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-24_bb69e3cb1adb3ddaf3cc2924739c22ae">
-<div class="sourceCode cell-code" id="cb18" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
-<span id="cb18-2"><a href="#cb18-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
-<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb18-4"><a href="#cb18-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats) <span class="sc">+</span></span>
-<span id="cb18-5"><a href="#cb18-5"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>, <span class="at">shape =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-24-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>If doing both then omit the legend as it is redundant (each facet is labeled).</p>
-<ul>
-<li>Because the plot adds a color and a shape you have to remove both of their legends hence the two arguments here</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-8" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.4" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-25_fe38cf928b84f58aaf1a8fca449f098e">
-<div class="sourceCode cell-code" id="cb19" data-code-line-numbers="6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
-<span id="cb19-2"><a href="#cb19-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
-<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats) <span class="sc">+</span></span>
-<span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>, <span class="at">shape =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb19-6"><a href="#cb19-6"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-25-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>You can also pick the colors manually</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-9" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>3. Mapping 3rd variables with colors or shapes</strong></p>
-<div class="cell" data-layout-align="center" data-fig.asp="0.4" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-26_be4e034eab37d31e943ee42a9846da4d">
-<div class="sourceCode cell-code" id="cb20" data-code-line-numbers="7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> d, <span class="fu">aes</span>(<span class="at">x =</span> hospital_beds_per_1k, <span class="at">y =</span> life_expectancy, </span>
-<span id="cb20-2"><a href="#cb20-2"></a>                     <span class="at">color =</span> gdp_cats, <span class="at">shape =</span> gdp_cats)) <span class="sc">+</span></span>
-<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_cats) <span class="sc">+</span></span>
-<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>, <span class="at">shape =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb20-6"><a href="#cb20-6"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>))  <span class="sc">+</span></span>
-<span id="cb20-7"><a href="#cb20-7"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-26-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p>Finally, let’s put our OLS lines back on!</p>
-<p><br></p>
-<h3 id="any-questions-on-this-approach">Any questions on this approach?</h3>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="multivariate-analyses-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Multivariate Analyses</h2>
-<p><br></p>
-<ol type="1">
-<li><p>Descriptive statistics by groups</p></li>
-<li><p>Using facets to extend any visualization</p></li>
-<li><p>Mapping 3rd variables with colors or shapes</p></li>
-</ol>
-<aside class="notes">
-<p><strong>Any questions on our multivariate tools from today?</strong></p>
-<p><br></p>
-<p><strong>SLIDE</strong>: Descriptive stats practice…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="ggplot2-dataset-mpg" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>ggplot2 Dataset: mpg</h2>
-<p><br></p>
+<div class="fragment">
 <div class="cell">
 <div class="cell-output-display">
-<table class="table" data-quarto-postprocess="true" style="font-size: 22px; margin-left: auto; margin-right: auto;">
+<table class="table" data-quarto-postprocess="true" style="font-size: 30px; margin-left: auto; margin-right: auto;">
 <thead>
 <tr class="header">
-<th style="text-align: center;" data-quarto-table-cell-role="th">manufacturer</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">model</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">displ</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">year</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">cyl</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">trans</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">drv</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">cty</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">hwy</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">fl</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">class</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">tobacco2</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Fertility (Q1)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Fertility (Q2)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Fertility (Q3)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Fertility (Q4)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center; background-color: gold !important;">ford</td>
-<td style="text-align: center;">explorer 4wd</td>
-<td style="text-align: center;">4.6</td>
-<td style="text-align: center; background-color: gold !important;">2008</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">auto(l6)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">13</td>
-<td style="text-align: center;">19</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">suv</td>
+<td style="text-align: left;">Tobacco (Q1)</td>
+<td style="text-align: center;">74.6</td>
+<td style="text-align: center;">75.0</td>
+<td style="text-align: center;">70.8</td>
+<td style="text-align: center;">62.0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; background-color: gold !important;">ford</td>
-<td style="text-align: center;">explorer 4wd</td>
-<td style="text-align: center;">4.0</td>
-<td style="text-align: center; background-color: gold !important;">1999</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">auto(l5)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">14</td>
-<td style="text-align: center;">17</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">suv</td>
+<td style="text-align: left;">Tobacco (Q2)</td>
+<td style="text-align: center;">80.9</td>
+<td style="text-align: center;">77.9</td>
+<td style="text-align: center;">70.9</td>
+<td style="text-align: center;">63.9</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; background-color: gold !important;">toyota</td>
-<td style="text-align: center;">4runner 4wd</td>
-<td style="text-align: center;">4.7</td>
-<td style="text-align: center; background-color: gold !important;">2008</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">auto(l5)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">14</td>
-<td style="text-align: center;">17</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">suv</td>
+<td style="text-align: left;">Tobacco (Q3)</td>
+<td style="text-align: center;">80.0</td>
+<td style="text-align: center;">76.8</td>
+<td style="text-align: center;">71.2</td>
+<td style="text-align: center;">67.7</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; background-color: gold !important;">pontiac</td>
-<td style="text-align: center;">grand prix</td>
-<td style="text-align: center;">3.1</td>
-<td style="text-align: center; background-color: gold !important;">1999</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">auto(l4)</td>
-<td style="text-align: center;">f</td>
-<td style="text-align: center; background-color: gold !important;">18</td>
-<td style="text-align: center;">26</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">midsize</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: gold !important;">toyota</td>
-<td style="text-align: center;">toyota tacoma 4wd</td>
-<td style="text-align: center;">2.7</td>
-<td style="text-align: center; background-color: gold !important;">1999</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">auto(l4)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">16</td>
-<td style="text-align: center;">20</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">pickup</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: gold !important;">ford</td>
-<td style="text-align: center;">f150 pickup 4wd</td>
-<td style="text-align: center;">5.4</td>
-<td style="text-align: center; background-color: gold !important;">1999</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">auto(l4)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">11</td>
-<td style="text-align: center;">15</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">pickup</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: gold !important;">audi</td>
-<td style="text-align: center;">a4 quattro</td>
-<td style="text-align: center;">3.1</td>
-<td style="text-align: center; background-color: gold !important;">2008</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">auto(s6)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">17</td>
-<td style="text-align: center;">25</td>
-<td style="text-align: center;">p</td>
-<td style="text-align: center;">compact</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: gold !important;">audi</td>
-<td style="text-align: center;">a4 quattro</td>
-<td style="text-align: center;">2.0</td>
-<td style="text-align: center; background-color: gold !important;">2008</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">manual(m6)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">20</td>
-<td style="text-align: center;">28</td>
-<td style="text-align: center;">p</td>
-<td style="text-align: center;">compact</td>
+<td style="text-align: left;">Tobacco (Q4)</td>
+<td style="text-align: center;">77.0</td>
+<td style="text-align: center;">75.5</td>
+<td style="text-align: center;">69.7</td>
+<td style="text-align: center;">67.1</td>
 </tr>
 </tbody>
 </table>
@@ -1483,219 +934,250 @@
 
 </div>
 </div>
-<p><br></p>
-<p><strong>Practice</strong>: Which auto manufacturers improved their average city fuel economy when moving from 1999 to 2008 models?</p>
-<aside class="notes">
-
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="which-auto-manufacturers-improved-their-average-city-fuel-economy-when-moving-from-1999-to-2008-models" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Which auto manufacturers improved their average city fuel economy when moving from 1999 to 2008 models?</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># Save the group means</span></span>
-<span id="cb21-2"><a href="#cb21-2"></a>x1 <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="at">data =</span> mpg, </span>
-<span id="cb21-3"><a href="#cb21-3"></a>          cty <span class="sc">~</span> manufacturer <span class="sc">+</span> year, </span>
-<span id="cb21-4"><a href="#cb21-4"></a>          <span class="at">FUN =</span> mean)</span>
-<span id="cb21-5"><a href="#cb21-5"></a></span>
-<span id="cb21-6"><a href="#cb21-6"></a><span class="co"># Order the output</span></span>
-<span id="cb21-7"><a href="#cb21-7"></a><span class="fu">arrange</span>(x1, manufacturer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>   manufacturer year      cty
-1          audi 1999 17.11111
-2          audi 2008 18.11111
-3     chevrolet 1999 15.14286
-4     chevrolet 2008 14.91667
-5         dodge 1999 13.37500
-6         dodge 2008 12.95238
-7          ford 1999 13.93333
-8          ford 2008 14.10000
-9         honda 1999 24.80000
-10        honda 2008 24.00000
-11      hyundai 1999 18.33333
-12      hyundai 2008 18.87500
-13         jeep 1999 14.50000
-14         jeep 2008 13.16667
-15   land rover 1999 11.00000
-16   land rover 2008 12.00000
-17      lincoln 1999 11.00000
-18      lincoln 2008 12.00000
-19      mercury 1999 13.50000
-20      mercury 2008 13.00000
-21       nissan 1999 17.66667
-22       nissan 2008 18.42857
-23      pontiac 1999 17.00000
-24      pontiac 2008 17.00000
-25       subaru 1999 19.00000
-26       subaru 2008 19.50000
-27       toyota 1999 18.15000
-28       toyota 2008 19.07143
-29   volkswagen 1999 21.25000
-30   volkswagen 2008 20.45455</code></pre>
-</div>
-</div>
-</div>
 </div>
 <aside class="notes">
-<p>Because there are only two levels in year I treated it here as a categorical variable</p>
-<p><br></p>
-<h3 id="so-what-do-we-learn-from-this">So, what do we learn from this?</h3>
-<p><br></p>
-<p><strong>SLIDE</strong>: Visualization practice…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="ggplot2-dataset-mpg-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>ggplot2 Dataset: mpg</h2>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table" data-quarto-postprocess="true" style="font-size: 22px; margin-left: auto; margin-right: auto;">
-<thead>
-<tr class="header">
-<th style="text-align: center;" data-quarto-table-cell-role="th">manufacturer</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">model</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">displ</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">year</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">cyl</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">trans</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">drv</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">cty</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">hwy</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">fl</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">class</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center; background-color: gold !important;">hyundai</td>
-<td style="text-align: center;">tiburon</td>
-<td style="text-align: center; background-color: gold !important;">2.0</td>
-<td style="text-align: center;">2008</td>
-<td style="text-align: center; background-color: gold !important;">4</td>
-<td style="text-align: center;">manual(m5)</td>
-<td style="text-align: center;">f</td>
-<td style="text-align: center; background-color: gold !important;">20</td>
-<td style="text-align: center;">28</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">subcompact</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: gold !important;">dodge</td>
-<td style="text-align: center;">ram 1500 pickup 4wd</td>
-<td style="text-align: center; background-color: gold !important;">4.7</td>
-<td style="text-align: center;">2008</td>
-<td style="text-align: center; background-color: gold !important;">8</td>
-<td style="text-align: center;">manual(m6)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">9</td>
-<td style="text-align: center;">12</td>
-<td style="text-align: center;">e</td>
-<td style="text-align: center;">pickup</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: gold !important;">land rover</td>
-<td style="text-align: center;">range rover</td>
-<td style="text-align: center; background-color: gold !important;">4.0</td>
-<td style="text-align: center;">1999</td>
-<td style="text-align: center; background-color: gold !important;">8</td>
-<td style="text-align: center;">auto(l4)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">11</td>
-<td style="text-align: center;">15</td>
-<td style="text-align: center;">p</td>
-<td style="text-align: center;">suv</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: gold !important;">nissan</td>
-<td style="text-align: center;">altima</td>
-<td style="text-align: center; background-color: gold !important;">3.5</td>
-<td style="text-align: center;">2008</td>
-<td style="text-align: center; background-color: gold !important;">6</td>
-<td style="text-align: center;">auto(av)</td>
-<td style="text-align: center;">f</td>
-<td style="text-align: center; background-color: gold !important;">19</td>
-<td style="text-align: center;">26</td>
-<td style="text-align: center;">p</td>
-<td style="text-align: center;">midsize</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: gold !important;">toyota</td>
-<td style="text-align: center;">toyota tacoma 4wd</td>
-<td style="text-align: center; background-color: gold !important;">4.0</td>
-<td style="text-align: center;">2008</td>
-<td style="text-align: center; background-color: gold !important;">6</td>
-<td style="text-align: center;">auto(l5)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">16</td>
-<td style="text-align: center;">20</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">pickup</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: gold !important;">dodge</td>
-<td style="text-align: center;">durango 4wd</td>
-<td style="text-align: center; background-color: gold !important;">5.9</td>
-<td style="text-align: center;">1999</td>
-<td style="text-align: center; background-color: gold !important;">8</td>
-<td style="text-align: center;">auto(l4)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">11</td>
-<td style="text-align: center;">15</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">suv</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: gold !important;">dodge</td>
-<td style="text-align: center;">caravan 2wd</td>
-<td style="text-align: center; background-color: gold !important;">3.3</td>
-<td style="text-align: center;">1999</td>
-<td style="text-align: center; background-color: gold !important;">6</td>
-<td style="text-align: center;">auto(l4)</td>
-<td style="text-align: center;">f</td>
-<td style="text-align: center; background-color: gold !important;">16</td>
-<td style="text-align: center;">22</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">minivan</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-<p><br></p>
-<p><strong>Practice</strong>: How do various manufacturers design their fleets to meet the EPA requirements for corporate average fuel economy (CAFE)?</p>
-<aside class="notes">
-<p>EPA requires manufacturers to meet a certain level of fuel economy across their entire fleet.</p>
+<p>Now everybody practice this one time using the categorical version of tobacco use</p>
 <ul>
-<li>So, some models can have big, less efficient engines but only if they offset those sales with sales of cleaner cars.</li>
+<li>Check to see if the negative effect of fertility on life expectancy remains when adjusting for the quartiles of tobacco use</li>
 </ul>
 <p><br></p>
-<p>Let’s try developing a visualization to let us see this dynamic in practice!</p>
-<h3 id="how-could-we-visualize-these-four-variables">How could we visualize these four variables?</h3>
+<p>(<strong>REVEAL</strong>: Results in wide format for ease of reading)</p>
+<ul>
+<li>Read results within each row and across the columns, e.g.&nbsp;countries with lowest tobacco use is row 1, how does their life expectancy change as fertility increases?</li>
+</ul>
+<p><br></p>
+<p><strong>What do we learn from this?</strong></p>
+<ul>
+<li>IFF tobacco use is the only confounder then this is evidence that increasing fertility rates reduces average life expectancies</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 2</h2>
+<p><br></p>
+<p><strong>If you are adding a categorical variable you can use a facet wrap on ANY visualization</strong></p>
+<aside class="notes">
+<p>Multivariate approach 2 uses facet wraps</p>
+<ul>
+<li>IFF the third variable you want to add to any analysis is categorical, you can use a facet wrap to do it</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-2-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 2</h2>
+<div class="cell" data-layout-align="center" data-fig.asp="0.75" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-17_882bdc4e46e693fb0c8c9ee17356c3c2">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-17-1.png" width="864" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Here’s our bivariate scatter plot of the key association we’re analyzing</p>
+<ul>
+<li><p>I’m going to omit the polish and just focus on the new techniques here.</p></li>
+<li><p>I’ve also added the geom_smooth function to add an OLS line of best fit to our plot</p></li>
+</ul>
+<p><br></p>
+<p><strong>Everybody clear on this code?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s now adjust this analysis for GDP pc using a facet wrap</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-2-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 2</h2>
+<p><br></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.25" data-hash="13_1-Multivariate-Viz_cache/revealjs/unnamed-chunk-18_61ebd58e2e84b73b650ff20551075c45">
+<div class="sourceCode cell-code" id="cb19" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_pc2, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-18-1.png" width="1344" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>We worked with facet wraps a few weeks ago when doing bivariate analyses</p>
+<ul>
+<li><strong>Questions on the code?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>What do we learn from this effort to adjust the relationship for the wealth confounder?</strong></p>
+<p><br></p>
+<ul>
+<li><p>Some cases missing GDP data, but fortunately, the relationship there appears similar to the others</p></li>
+<li><p>The negative slope is evident in each facet</p></li>
+<li><p>If our identification hinged on adjusting for wealth this represents another step in the right direction</p></li>
+</ul>
+<p><br></p>
+<p>Now everybody practice this one time using the categorical version of tobacco use</p>
+<ul>
+<li><p>Check to see if the negative effect of fertility on life expectancy remains when adjusting for the quartiles of tobacco use</p></li>
+<li><p>(<strong>SLIDE</strong>)</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-2-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 2</h2>
+<p><br></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.25">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco2, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-19-1.png" width="1344" class="r-stretch quarto-figure-center"><aside class="notes">
+<p><strong>What do we learn from this effort to adjust the relationship for tobacco use as a confounder?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: One more multivariate approach for today</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 3</h2>
+<p><br></p>
+<div class="r-fit-text">
+<p><strong>You can adapt scatter plots to confounders</strong></p>
+<ul>
+<li><p>Categorical confounder: Colors and/or shapes</p></li>
+<li><p>Numeric confounder: Vary the sizes</p></li>
+</ul>
+</div>
+<aside class="notes">
+<p>Multivariate approach 3 focuses on the points in a scatter plot</p>
+<ul>
+<li><p>IFF the third variable you want to add to any analysis is categorical, you can use colors and shapes</p></li>
+<li><p>IFF the third variable you want to add to any analysis is numeric, you can use sizes</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-3-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 3</h2>
+<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.618">
+<div class="sourceCode cell-code" id="cb21" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
+<span id="cb21-2"><a href="#cb21-2"></a>              <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb21-3"><a href="#cb21-3"></a>              <span class="at">color =</span> gdp_pc2)) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb21-5"><a href="#cb21-5"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-20-1.png" width="768" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>TBD</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-3-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 3</h2>
+<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.618">
+<div class="sourceCode cell-code" id="cb22" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
+<span id="cb22-2"><a href="#cb22-2"></a>              <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb22-3"><a href="#cb22-3"></a>              <span class="at">shape =</span> gdp_pc2)) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb22-5"><a href="#cb22-5"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-21-1.png" width="768" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>If printing in B&amp;W</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-3-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 3</h2>
+<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.618">
+<div class="sourceCode cell-code" id="cb23" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
+<span id="cb23-2"><a href="#cb23-2"></a>              <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb23-3"><a href="#cb23-3"></a>              <span class="at">color =</span> gdp_pc2, <span class="at">shape =</span> gdp_pc2)) <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb23-5"><a href="#cb23-5"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-22-1.png" width="768" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Use Both!</p>
+<p><br></p>
+<p>If there aren’t too many observations or there is considerable spacing between groups this can be a really effective visualization technique</p>
+<p><br></p>
+<p>Everybody practice this replacing GDP with tobacco again</p>
 <ul>
 <li>(<strong>SLIDE</strong>)</li>
 </ul>
@@ -1711,80 +1193,22 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="ggplot2-dataset-mpg-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>ggplot2 Dataset: mpg</h2>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table" data-quarto-postprocess="true" style="font-size: 22px; margin-left: auto; margin-right: auto;">
-<thead>
-<tr class="header">
-<th style="text-align: center;" data-quarto-table-cell-role="th">manufacturer</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">model</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">displ</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">year</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">cyl</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">trans</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">drv</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">cty</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">hwy</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">fl</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">class</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center; background-color: gold !important;">audi</td>
-<td style="text-align: center;">a4 quattro</td>
-<td style="text-align: center; background-color: gold !important;">2.0</td>
-<td style="text-align: center;">2008</td>
-<td style="text-align: center; background-color: gold !important;">4</td>
-<td style="text-align: center;">auto(s6)</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center; background-color: gold !important;">19</td>
-<td style="text-align: center;">27</td>
-<td style="text-align: center;">p</td>
-<td style="text-align: center;">compact</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: gold !important;">chevrolet</td>
-<td style="text-align: center;">malibu</td>
-<td style="text-align: center; background-color: gold !important;">2.4</td>
-<td style="text-align: center;">1999</td>
-<td style="text-align: center; background-color: gold !important;">4</td>
-<td style="text-align: center;">auto(l4)</td>
-<td style="text-align: center;">f</td>
-<td style="text-align: center; background-color: gold !important;">19</td>
-<td style="text-align: center;">27</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">midsize</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: gold !important;">chevrolet</td>
-<td style="text-align: center;">c1500 suburban 2wd</td>
-<td style="text-align: center; background-color: gold !important;">5.3</td>
-<td style="text-align: center;">2008</td>
-<td style="text-align: center; background-color: gold !important;">8</td>
-<td style="text-align: center;">auto(l4)</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center; background-color: gold !important;">14</td>
-<td style="text-align: center;">20</td>
-<td style="text-align: center;">r</td>
-<td style="text-align: center;">suv</td>
-</tr>
-</tbody>
-</table>
-
+<section id="multivariate-analyses-approach-3-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 3</h2>
+<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.618">
+<div class="sourceCode cell-code" id="cb24" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
+<span id="cb24-2"><a href="#cb24-2"></a>              <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb24-3"><a href="#cb24-3"></a>              <span class="at">color =</span> tobacco2, <span class="at">shape =</span> tobacco2)) <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb24-5"><a href="#cb24-5"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-</div>
-<p><br></p>
-<p>Make a scatter plot of city fuel economy x engine size</p>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-23-1.png" width="768" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>I don’t think this actually clarifies the test given the overlap in the groups</p>
 <ul>
-<li><p>Add colors and shapes for drive train</p></li>
-<li><p>Add facet wrapping for the manufacturers</p></li>
+<li><strong>SLIDE</strong>: So combine approaches and re-add the facet wrap!</li>
 </ul>
-<aside class="notes">
-
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1797,16 +1221,22 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-10" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<div class="cell" data-layout-align="center" data-fig.asp="0.65">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mpg, <span class="fu">aes</span>(<span class="at">x =</span> displ, <span class="at">y =</span> cty, <span class="at">color =</span> drv, <span class="at">shape =</span> drv)) <span class="sc">+</span></span>
-<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb23-3"><a href="#cb23-3"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> manufacturer, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="multivariate-analyses-approach-3-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 3</h2>
+<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.25">
+<div class="sourceCode cell-code" id="cb25" data-code-line-numbers="3,6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
+<span id="cb25-2"><a href="#cb25-2"></a>              <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb25-3"><a href="#cb25-3"></a>              <span class="at">color =</span> tobacco2, <span class="at">shape =</span> tobacco2)) <span class="sc">+</span></span>
+<span id="cb25-4"><a href="#cb25-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb25-5"><a href="#cb25-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco2, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-32-1.png" style="width:70.0%" class="r-stretch quarto-figure-center"><aside class="notes">
-<p><strong>Lessons from this?</strong></p>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-24-1.png" width="1344" class="r-stretch quarto-figure-center"><aside class="notes">
+<p><strong>Any questions on using colors or shapes for categorical confounders?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Adding numeric confounders is also a bit clunky but I’d like you to be aware of the option</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1819,18 +1249,83 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<section id="multivariate-analyses-approach-3-6" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 3</h2>
+<p><strong>Numerical Confounder: Use Sizing</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.618">
+<div class="sourceCode cell-code" id="cb26" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
+<span id="cb26-2"><a href="#cb26-2"></a>              <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb26-3"><a href="#cb26-3"></a>              <span class="at">size =</span> gdp_per_capita)) <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb26-5"><a href="#cb26-5"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-25-1.png" width="768" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Size will rescale the points per a numeric variable</p>
+<ul>
+<li>Some refer to these as bubble plots</li>
+</ul>
+<p><br></p>
+<p>Shows us there is a clear separation between the rich and poor world in this relationship!</p>
+<p><br></p>
+<p>Everybody practice this on tobacco!</p>
+<ul>
+<li>(<strong>SLIDE</strong>)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-approach-3-7" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<h2>Multivariate Analyses: Approach 3</h2>
+<p><strong>Numerical Confounder: Use Sizing</strong></p>
+<div class="cell" data-layout-align="center" data-fig.asp="0.618">
+<div class="sourceCode cell-code" id="cb27" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
+<span id="cb27-2"><a href="#cb27-2"></a>              <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb27-3"><a href="#cb27-3"></a>              <span class="at">size =</span> tobacco_use_pct)) <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb27-5"><a href="#cb27-5"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-26-1.png" width="768" class="r-stretch quarto-figure-center"><aside class="notes">
+<p>Tobacco use much more spread out across this relationship</p>
+<ul>
+<li>Less distinction rich vs poor on this one</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="multivariate-analyses-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>Multivariate Analyses</h2>
 <p><br></p>
+<div class="r-fit-text">
 <ol type="1">
 <li><p>Descriptive statistics by groups</p></li>
 <li><p>Using facets to extend any visualization</p></li>
-<li><p>Mapping 3rd variables with colors or shapes</p></li>
+<li><p>Mapping 3rd variables with colors, shapes or sizes</p></li>
 </ol>
+</div>
 <aside class="notes">
-<p><strong>Any questions on our multivariate tools from today?</strong></p>
+<p><strong>Any questions on the multivariate techniques we covered today?</strong></p>
 <p><br></p>
-<p><strong>SLIDE</strong>: Add assignment for next class</p>
+<p><strong>SLIDE</strong>: Practice for next class!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1845,13 +1340,16 @@
 </section>
 <section id="for-next-class" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
 <h2>For Next Class</h2>
-<p><br></p>
-<ol type="1">
-<li><p>…</p></li>
-<li><p>…</p></li>
-</ol>
+
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-27-1.png" style="width:80.0%" class="r-stretch quarto-figure-center"><p><strong>Possible Confounders</strong>: GDP per capita, tobacco use, unemployment rate, compulsory education</p>
 <aside class="notes">
-<p>Practice multivariate…</p>
+<p>We covered GDP and tobacco in class today</p>
+<ul>
+<li><p>Your job for Wednesday is to replicate our work today using the other two possible confounders</p></li>
+<li><p>Does the central mechanism hold up when we adjust the analyses for either unemployment or years of compulsory education?</p></li>
+</ul>
+<p><br></p>
+<p><strong>Questions?</strong></p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

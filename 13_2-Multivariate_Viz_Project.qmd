@@ -1,0 +1,622 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+
+d <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/Practice_Simple_OLS/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Apply multivariate analyses to our research project**
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
+
+::: notes
+Prep for Class
+
+1. Bring a usb with the data file to class so we can live code together
+
+<br>
+
+Last class I introduced you to a series of tools we can use to begin performing multivariate analyses
+
+1. Descriptive statistics by groups
+  
+2. Using facets to extend any visualization
+    
+3. Mapping 3rd variables with colors, shapes or sizes
+
+<br>
+
+**SLIDE**: Assignment for today
+:::
+
+
+## For Today {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+**Possible Confounders**: GDP per capita, tobacco use, unemployment rate, compulsory education
+
+::: notes
+
+Your job for today was to use these new tools to examine the other two possible confounders
+
+- Does the central mechanism hold up when we adjust the analyses for either unemployment or years of compulsory education?
+
+<br>
+
+**How did this go?**
+
+:::
+
+
+
+## Adjusting for Unemployment {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, echo=FALSE, fig.asp=.85, fig.align='center', fig.width=8}
+d |>
+  mutate(
+    unemployment2 = case_when(
+      unemployment_pct < quantile(d$unemployment_pct, probs = .25, na.rm = T) ~ "Unemployment (Q1)",
+      unemployment_pct < quantile(d$unemployment_pct, probs = .50, na.rm = T) ~ "Unemployment (Q2)",
+      unemployment_pct < quantile(d$unemployment_pct, probs = .75, na.rm = T) ~ "Unemployment (Q3)",
+      unemployment_pct >= quantile(d$unemployment_pct, probs = .75, na.rm = T) ~ "Unemployment (Q4)"
+      )
+    ) |>
+  select(fertility_rate_per_woman, life_expectancy_total, unemployment2) |>
+  na.omit() |>
+  ggplot(aes(x = fertility_rate_per_woman, y = life_expectancy_total, color = unemployment2, shape = unemployment2)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = T) +
+  theme_bw() +
+  facet_wrap(~ unemployment2, ncol = 2) +
+  guides(color = "none", shape = "none") +
+  labs(x = "Fertility Rate (births per woman)", y = "Life Expectancy (years)",
+       caption = "Source: WDI (2024) for data from 2020")
+```
+
+::: notes
+
+Note: I removed the NAs by filtering the dataset before making the plots
+
+<br>
+
+**Does adjusting for unemployment change the key relationship of interest?**
+
+- **What is our takeaway from this?**
+
+- IFF our identification strategy requires adjusting for unemployment then these correlations may be causal!
+
+<br>
+
+(**SLIDE**: Code to remove missing data on next slide)
+
+:::
+
+
+
+## Remove the Missing Data {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, echo=TRUE, eval=FALSE}
+# Create new variable
+d$unemp2 <- cut(d$unemployment_pct, 
+            breaks = c(0, 4.191, 6.453, 11.718, 28),
+            labels = c("Unemployment (Q1)", "Unemployment (Q2)", 
+                       "Unemployment (Q3)", "Unemployment (Q4)"))
+
+# Make a new dataset with only the needed variables
+d_subset <- select(.data = d, 
+                   fertility_rate_per_woman, 
+                   life_expectancy_total, 
+                   unemp2)
+
+# Make a new dataset without the missing data
+d2 <- na.omit(d_subset)
+
+# Make the visualization with d2
+```
+
+::: notes
+
+Two new functions here
+
+<br>
+
+FIRST, select() lets you create a new data object with only some of the variables in the original dataset
+
+- Here we are creating a copy of the dataset with only three variables in it
+
+<br>
+
+SECOND, na.omit() removes any observation from the dataset if it has missing data in ANY of the variables
+
+- Be very careful with this!
+
+- If you apply na.omit without narrowing the variables using select then you may lose a ton of data you didn't mean to remove
+
+:::
+
+
+## Adjusting for Education {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, echo=FALSE, fig.asp=.85, fig.align='center', fig.width=8}
+d |>
+  mutate(
+    education2 = case_when(
+      compulsory_education_yrs < quantile(d$compulsory_education_yrs, probs = .25, na.rm = T) ~ "Education (Q1)",
+      compulsory_education_yrs < quantile(d$compulsory_education_yrs, probs = .50, na.rm = T) ~ "Education (Q2)",
+      compulsory_education_yrs < quantile(d$compulsory_education_yrs, probs = .75, na.rm = T) ~ "Education (Q3)",
+      compulsory_education_yrs >= quantile(d$compulsory_education_yrs, probs = .75, na.rm = T) ~ "Education (Q4)"
+      )
+    ) |>
+  select(fertility_rate_per_woman, life_expectancy_total, education2) |>
+  na.omit() |>
+  ggplot(aes(x = fertility_rate_per_woman, y = life_expectancy_total, color = education2, shape = education2)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = T) +
+  theme_bw() +
+  facet_wrap(~ education2, ncol = 2) +
+  guides(color = "none", shape = "none") +
+  labs(x = "Fertility Rate (births per woman)", y = "Life Expectancy (years)",
+       caption = "Source: WDI (2024) for data from 2020")
+```
+
+::: notes
+
+**Does adjusting for education change the key relationship of interest?**
+
+:::
+
+
+
+## Multivariate Analyses {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+1. Descriptive statistics by groups
+  
+2. Using facets to extend any visualization
+    
+3. Mapping 3rd variables with colors, shapes or sizes
+:::
+
+::: notes
+
+**Any questions on these techniques for adding confounders to our analyses?**
+
+:::
+
+
+
+
+## Causal Arguments {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("National Material\nCapabailities", "Confounders", "Human Rights and\nthe Rule of Law")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.6, xend = 2.3, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+
+## Input project data
+d <- read_excel("../Data_in_Class-SP24/Merged_Dataset-2006-2016_with_confounders.xlsx", na = "NA")
+```
+
+**Possible Confounders**: GDP, Immunizations DPT, Infant mortality & Compulsory education
+
+::: notes
+
+Today we work to apply our new techniques to our ongoing class project!
+
+- GDP (constant 2015 US$)
+    - (Source: World Bank national accounts data, and OECD National Accounts data files.)
+    
+- Immunization, DPT (% of children ages 12-23 months)
+    - (Source: WHO and UNICEF (http://www.who.int/immunization/monitoring_surveillance/en/).)
+
+- Mortality rate, infant (per 1,000 live births)
+    - (Source: Estimates developed by the UN Inter-agency Group for Child Mortality Estimation (UNICEF, WHO, World Bank, UN DESA Population Division) at www.childmortality.org.)
+
+- Compulsory education, duration (years)
+    - (Source: UNESCO Institute for Statistics (UIS). UIS.Stat Bulk Data Download Service. Accessed September 19, 2023. https://apiportal.uis.unesco.org/bdds.)
+
+<br>
+
+**SLIDE**: Step 1 check for variation in the new measures!
+
+:::
+
+
+
+## Adjusting for Confounders {background-image="libs/Images/background-slate_v2.png" .center}
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=7}
+d |>
+  select(gdp_2015usd_billions, immunization_dpt, compulsory_education, infant_mortality) |>
+  pivot_longer(cols = gdp_2015usd_billions:infant_mortality, names_to = "Confounders", values_to = "Values") |>
+  ggplot(aes(x = Values)) +
+  geom_histogram(color = "white") +
+  theme_bw() +
+  facet_wrap(~ Confounders, scales = "free")
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1, fig.width=6}
+d |>
+  filter(Year == 2016) |>
+  ggplot(aes(x = cinc_pct, y = P3_Human_Rts)) +
+  geom_point() +
+  theme_bw() + 
+  geom_smooth(method = "lm") +
+  labs(x = "CINC (%)", y = "Human Rights / Rule of Law",
+       caption = "Note: Focusing on 2016 data only")
+```
+:::
+::::
+
+::: notes
+
+Today your job is to think about how to adjust your analyses for these confounders
+
+- Let's focus just on 2016 for now (the most recent year available)
+
+<br>
+
+Use our tools from Monday and explore different ways of adjusting the plot on the right for the levels of the variables on the left
+
+<br>
+
+**Questions?**
+
+- Let's get to work!
+
+- Make sure to share what you find with the rest of the class!
+
+:::
+
+
+## For Next Class {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+
+1. *Linear Regression in R*, "Multiple OLS" section only
+
+2. Wheelan ch 12 "Common Regression Mistakes"
+
+:::
+
+::: notes
+Next class I want to introduce you to multiple regression (e.g. OLS regression with more than one predictor variable)
+:::
+
+
+## Old slides
+
+## Check for Variation {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center', fig.asp=.75, fig.width=8}
+d |>
+  mutate(
+    logGDP = log(gdp_2015usd)
+  ) |>
+  ggplot(aes(x = logGDP)) +
+  geom_histogram(color = "white") +
+  theme_bw() +
+  labs(x = "GDP (2015 USD, Log Scale)", y = "") +
+  scale_x_continuous(breaks = 19:30)
+
+#scale_x_continuous(breaks = c(21, 24, 27, 30), labels = c("$1.3 billion", "$26.5 billion", "$532.0 billion", "$10.7 trillion"))
+```
+
+::: notes
+
+This is a view of GDP in the natural log scale
+
+- Each step up by one on the natural log scale is equivalent to multiplying by euler's number
+
+- approximately 2.7 times
+
+<br>
+
+So, basically, for a country to move from 21 to 22 they have to triple the size of their economy
+
+- This means each step up the scale represents a huge increase in your economy
+
+<br>
+
+**SLIDE**: Let me put this in dollar terms
+
+:::
+
+
+
+## Check for Variation {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center', fig.asp=.75, fig.width=8}
+d |>
+  mutate(
+    logGDP = log(gdp_2015usd)
+  ) |>
+  ggplot(aes(x = logGDP)) +
+  geom_histogram(color = "white") +
+  theme_bw() +
+  labs(x = "GDP (2015 USD, Log Scale)", y = "") +
+  scale_x_continuous(breaks = c(21, 24, 27, 30), labels = c("$1.3 billion", "$26.5 billion", "$532.0 billion", "$10.7 trillion"))
+```
+
+::: notes
+
+I show you this simply to let you know that there is considerable variation in GDP
+
+- Countries differ from each other in GDP a lot, but the US messes up our ability to see it
+
+- e.g. most countries have small GDPs relative to the biggest economies and this scale helps us see that
+
+:::
+
+
+
+## Causal Arguments {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("National Material\nCapabailities", "Confounders", "Human Rights and\nthe Rule of Law")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.6, xend = 2.3, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+
+## Input project data
+d <- read_excel("../Data_in_Class-SP24/Merged_Dataset-2006-2016_with_confounders.xlsx", na = "NA")
+```
+
+**Possible Confounders**: GDP, Immunizations DPT, Infant mortality & Compulsory education
+
+::: notes
+
+For today, I would like each of you to make a multivariate visualization for each of the confounders here.
+
+- So, examine the primary relationship between cinc and human rights but adjusted for each of the confounders
+
+- **FOCUS on most recent year only (e.g. 2016)**
+
+:::
+
+
+
+## Possible Confounder: Immunizations {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+```{r, fig.align='center', fig.asp=.4, fig.width=13}
+d |>
+  filter(Year == 2016) |>
+  mutate(
+    # immune2 = case_when(
+    #   immunization_dpt < quantile(d$immunization_dpt, probs = .25, na.rm = T) ~ "Immunization (Bottom 25%)",
+    #   immunization_dpt < quantile(d$immunization_dpt, probs = .75, na.rm = T) ~ "Immunization (Middle 50%)",
+    #   immunization_dpt >= quantile(d$immunization_dpt, probs = .75, na.rm = T) ~ "Immunization (Top 25%)"
+    # )
+    immune2 = case_when(
+      immunization_dpt < quantile(d$immunization_dpt, probs = .75, na.rm = T) ~ "Immunization (Bottom 75%)",
+      immunization_dpt >= quantile(d$immunization_dpt, probs = .75, na.rm = T) ~ "Immunization (Top 25%)"
+    )
+  ) |>
+  select(immune2, cinc_pct, P3_Human_Rts) |>
+  na.omit() |>
+  ggplot(aes(x = cinc_pct, y = P3_Human_Rts)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ immune2, scales = "free_x") +
+  scale_y_continuous(breaks = 0:10) +
+  coord_cartesian(ylim = c(0,10)) +
+  labs(x = "CINC (%)", y = "Human Rights / Rule of Law",
+       caption = "Note that the x-axis scales differ across facets") +
+  theme_bw()
+```
+
+<br>
+
+**facet_wrap(~ gdp_quartiles, scales = "free_x")**
+
+::: notes
+
+As we noted before, not much variation in immunization!
+
+- Maybe a tiny effect in the least healthy states. Maybe.
+
+- Not a super promising confounder
+
+<br>
+
+Important caveat! The x-axis scales differ across the facets
+
+- Code on the slide
+
+- So, be careful interpreting the x-axes here
+
+:::
+
+
+
+
+## Possible Confounder: GDP {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+```{r, fig.align='center', fig.asp=.4, fig.width=13}
+d |>
+  filter(Year == 2016) |>
+  mutate(
+    gdp2 = case_when(
+      gdp_2015usd < quantile(d$gdp_2015usd, probs = .25, na.rm = T) ~ "GDP (Bottom 25%)",
+      gdp_2015usd < quantile(d$gdp_2015usd, probs = .75, na.rm = T) ~ "GDP (Middle 50%)",
+      gdp_2015usd >= quantile(d$gdp_2015usd, probs = .75, na.rm = T) ~ "GDP (Top 25%)"
+    )
+  ) |>
+  select(gdp2, cinc_pct, P3_Human_Rts) |>
+  na.omit() |>
+  ggplot(aes(x = cinc_pct, y = P3_Human_Rts)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ gdp2, scales = "free_x") +
+  scale_y_continuous(breaks = 0:10) +
+  coord_cartesian(ylim = c(0,10)) +
+  labs(x = "CINC (%)", y = "Human Rights / Rule of Law",
+       caption = "Note that the x-axis scales differ across facets") +
+  theme_bw()
+```
+
+
+::: notes
+
+This looks WAY better!
+
+- Those lines go through those data points!!
+
+:::
+
+
+
+
+## Possible Confounder: Infant Mortality {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+```{r, fig.align='center', fig.asp=.4, fig.width=13}
+d |>
+  filter(Year == 2016) |>
+  mutate(
+    infant2 = case_when(
+      infant_mortality < quantile(d$infant_mortality, probs = .25, na.rm = T) ~ "Infant Mortality (Bottom 25%)",
+      infant_mortality < quantile(d$infant_mortality, probs = .75, na.rm = T) ~ "Infant Mortality (Middle 50%)",
+      infant_mortality >= quantile(d$infant_mortality, probs = .75, na.rm = T) ~ "Infant Mortality (Top 25%)"
+    )
+  ) |>
+  select(infant2, cinc_pct, P3_Human_Rts) |>
+  na.omit() |>
+  ggplot(aes(x = cinc_pct, y = P3_Human_Rts)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ infant2, scales = "free_x") +
+  scale_y_continuous(breaks = 0:10) +
+  coord_cartesian(ylim = c(0,10)) +
+  labs(x = "CINC (%)", y = "Human Rights / Rule of Law",
+       caption = "Note that the x-axis scales differ across facets") +
+  theme_bw()
+```
+
+::: notes
+
+Remember here that higher infant mortality is BAD!
+
+- Not nearly as compelling as GDP, but maybe...
+
+<br>
+
+Keep in mind, we are only examining the variation in 3 groups
+
+- That might not be fine-grained enough
+
+:::
+
+
+
+## Possible Confounder: Education {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+```{r, fig.align='center', fig.asp=.4, fig.width=13}
+d |>
+  filter(Year == 2016) |>
+  mutate(
+    ed2 = case_when(
+      compulsory_education < quantile(d$compulsory_education, probs = .25, na.rm = T) ~ "Education (Bottom 25%)",
+      compulsory_education < quantile(d$compulsory_education, probs = .75, na.rm = T) ~ "Education (Middle 50%)",
+      compulsory_education >= quantile(d$compulsory_education, probs = .75, na.rm = T) ~ "Education (Top 25%)"
+    )
+  ) |>
+  select(ed2, cinc_pct, P3_Human_Rts) |>
+  na.omit() |>
+  ggplot(aes(x = cinc_pct, y = P3_Human_Rts)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ ed2, scales = "free_x") +
+  scale_y_continuous(breaks = 0:10) +
+  coord_cartesian(ylim = c(0,10)) +
+  labs(x = "CINC (%)", y = "Human Rights / Rule of Law",
+       caption = "Note that the x-axis scales differ across facets") +
+  theme_bw()
+```
+
+::: notes
+
+Same as last one, I call this a maybe
+
+:::
+
+
+
+
+
+
+
+
+

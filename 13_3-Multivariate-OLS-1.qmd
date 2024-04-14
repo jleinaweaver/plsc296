@@ -1,0 +1,1009 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+library(ggeffects)
+
+d <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/Practice_Simple_OLS/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+```
+
+<br>
+
+::: {.r-fit-text}
+**Multivariate Analyses**
+
+- Adding confounders to OLS regressions
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
+
+::: notes
+Prep for Class
+
+1. Keep using the simple OLS WDI data
+
+<br>
+
+We'll continue using the WDI data from Monday.
+
+- Everybody open up a new script file and import the WDI data so we can work with it again
+
+<br>
+
+**SLIDE**: Kick this off with the research problem
+
+:::
+
+
+
+## Building a Causal Argument {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+**Possible Confounders**: GDP per capita, unemployment rate, tobacco use, compulsory education
+
+::: notes
+
+Always want to keep our work rooted in the problem which is making a causal argument using observational data
+
+<br>
+
+This week we've been trying to adjust our analysis for confounders using multivariate data visualization and descriptive statistics tools
+
+<br>
+
+The aim for today is to use OLS regressions to bring a confounder into the adjustment process
+
+<br>
+
+**SLIDE**: Why move back to regression?
+
+:::
+
+
+
+## Why use OLS regressions? {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+- Assumes **"regression to the mean"**
+
+- **Quantifies** the relationship between variables
+
+- Uses **ALL** of the data
+
+- Provides estimates of **uncertainty**
+
+- Can be adjusted for **non-linear effects** and **confounders**
+:::
+
+::: notes
+
+*Read slide*
+
+<br>
+
+Key to this is to remember that regression is a method for finding conditional means. 
+
+- e.g. drawing a line through the middle of the points, and by middle we mean averages.
+
+<br>
+
+**SLIDE**: And what is a simple regression?
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Ordinary Least Squares (OLS) Regression**
+:::
+
+<br>
+
+OLS regression is a technique for estimating the relationship between an outcome (Y) and a predictor variable (X) by finding the line that minimizes the squared residuals.
+
+$$Y = \alpha + \beta X$$
+
+```{r, echo = TRUE, eval = FALSE}
+model <- lm(data, outcome ~ predictor)
+```
+
+::: notes
+
+Conceptually, this is what you have been working with
+
+- "Simple" in the OLS case means bivariate analysis: One predictor and one outcome.
+
+<br>
+
+The lm function in R gives us an estimate of the intercept term and the beta coefficient which together give us our "model" using the formula for a line.
+
+<br>
+
+**Everybody still with me?**
+
+:::
+
+
+## Our Baseline Estimate {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, echo=TRUE}
+res1 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman)
+```
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+modelsummary(models = list("Baseline" = res1), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.85, fig.width=6}
+predict1 <- ggpredict(res1)
+
+plot(predict1) +
+  labs(x = "Fertility (births per woman)", y = "Predicted Average Life Expectancy (years)",
+       title = "Increases in average fertility rates are associated with\n lower life expectancies around the world")
+```
+:::
+::::
+
+::: notes
+
+Here are the results of regressing life expectancy on fertility rates around the world in 2020
+
+- We estimated this during our work in week 11
+
+- Everybody make sure you have loaded the data and can fit this model.
+
+<br>
+
+**How do we interpret this coefficient in real world terms?**
+
+- An increase in the fertility rate by one additional birth per woman is associated, on average, with a decrease in average life expectancy of almost five years.  
+
+<br>
+
+**How well does this model fit the data when evaluated using our four step evaluation process?**
+
+- Missing 8 countries out of 217 in the dataset
+
+- Coefficient is significant
+
+- R2 says fertility rates explain some 70% of the variation in life expectancy
+
+- **SLIDE**: Residuals plot
+
+:::
+
+
+## Our Baseline Estimate {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+modelsummary(models = list("Baseline" = res1), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.85, fig.width=8}
+plot(res1, which = 1)
+```
+:::
+::::
+
+::: notes
+
+**Any concerns raised by the residuals plot?**
+
+- (DEFINITE evidence of non-linearity!)
+
+- Positive error at the extremes but negative in the middle
+
+<br>
+
+If we have time we'll fix this non-linearity before the end of class using a multiple regression.
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Ordinary Least Squares (OLS) Regression**
+:::
+
+<br>
+
+Multiple OLS regression estimates the relationship between an outcome (Y) and a series of predictor variables (X$_i$) by finding the line that minimizes the squared residuals.
+
+$$Y = \alpha + \beta_1 X_1 + \beta_2 X_2 + ... + \beta_k X_k$$
+
+```{r, echo = TRUE, eval = FALSE}
+model <- lm(data, outcome ~ predictor1 + predictor2 + ...)
+```
+
+::: notes
+
+In mathematical terms, we can add as many predictor variables to the formula for a line as we want and still have it produce a SINGLE line
+
+- One intercept term is now joined by multiple X variables (your predictors)
+
+- Each X is partnered with a beta coefficient that represents the effect of that predictor on the outcome ceteris paribus ('holding all else equal')
+
+<br>
+
+In R terms, it is equally easy to add predictors to the lm function!
+
+- Add the variable as a list after the tilde and separate predictors with plus signs
+
+<br>
+
+For our first multiple regression we are going to add the simplest possible predictor variable, a dummy variable
+
+- **Anybody know what a "dummy" variable is?**
+
+<br>
+
+Think "dummy" like a store mannequin
+
+- e.g. it stands in for something else (plastic person for showing how clothes might fit)
+
+<br>
+
+A dummy variable, also called dichotomous, can only have a value of zero or 1
+
+- If the value is 1 then the characteristic is present, if zero then it is absent
+
+<br>
+
+**SLIDE**: Let's make this idea more concrete!
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+**1. Find the median of wealth**
+```{r, echo=TRUE}
+summary(d$gdp_per_capita)
+```
+
+<br>
+
+**2. Create a dummy variable**
+```{r, echo=TRUE}
+d$wealthier_median <- if_else(d$gdp_per_capita >= 6370.9,
+                            true = 1, false = 0)
+```
+
+<br>
+
+**3. Fit a multiple regression using the dummy confounder**
+```{r, echo=TRUE}
+res2 <- lm(data = d, life_expectancy_total ~ 
+             fertility_rate_per_woman + wealthier_median)
+```
+
+::: notes 
+
+Let's reduce the variation in GDP per capita to a dummy variable
+
+- Specifically, we'll create a new variable that gets a value of '1' if a state is wealthier than the median and a '0' if not
+
+<br>
+
+We're using the if_else function to do this
+
+- if_else requires a test in the data and then an argument for what to do if the test is true and what to do if the test is false
+
+- Here I am giving if_else the test of greater than or equal to the median GDP per capita in the dataset
+
+- If true then that country gets a '1' and if false a '0'
+
+<br>
+
+**Make sense?**
+
+- Everybody run these lines of code and examine the results!
+
+- (**SLIDE**)
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Multiple Regression: Add a Dummy Confounder**
+:::
+
+<br>
+
+:::: {.columns}
+::: {.column width="25%"}
+
+```{r, echo=FALSE}
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="70%"}
+
+**Model 1: Simple**
+
+- $$Y = \alpha + \beta_1 X_1$$
+
+**Model 2: Multiple**
+
+- $$Y = \alpha + \beta_1 X_1 + \beta_2 X_2$$
+
+:::
+::::
+
+::: notes
+
+I'm using modelsummary to output the two models side-by-side
+
+- **Did everybody get the results for Model 2 here?**
+
+<br>
+
+Keep in mind, both of these models describe a SINGLE line
+
+- The second simply has two slope coefficients instead of one
+
+<br>
+
+**Focus on Model 1 for a sec, what are the components from the table that go into this formula for a line?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Multiple Regression: Add a Dummy Confounder**
+:::
+
+<br>
+
+:::: {.columns}
+::: {.column width="25%"}
+
+```{r, echo=FALSE}
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="70%"}
+
+**Model 1: Simple**
+
+- Life_Exp = 84.72 + -4.89 (Fertility)
+
+<br>
+
+**Model 2: Multiple**
+
+- $$Y = \alpha + \beta_1 X_1 + \beta_2 X_2$$
+
+:::
+::::
+
+::: notes
+
+**And using this line, what does our regression predict is the average life expectancy for a country with a fertility rate of two births per woman on average?**
+
+- (`r predict(res1, newdata = data.frame("fertility_rate_per_woman" = 2))`)
+
+<br>
+
+**Now focus on Model 2, what are the components from the table that go into this formula for a line?**
+
+- (**SLIDE**)
+
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Multiple Regression: Add a Dummy Confounder**
+:::
+
+<br>
+
+:::: {.columns}
+::: {.column width="25%"}
+
+```{r, echo=FALSE}
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="70%"}
+
+**Model 1: Simple**
+
+- Life = 84.7 + -4.9 (Fertility)
+
+<br>
+
+**Model 2: Multiple**
+
+- Life = 79.4 + -3.7 (Fertility) +  4.8 (Wealthy)
+
+:::
+::::
+
+::: notes
+
+**Is everybody clear on how we get from the lm function to the table to the formula for a line?**
+
+<br>
+
+Before we use Model 2 to make predictions, let's talk about the fit of the model
+
+- **Does Model 2 fit the data "better" than model 1? Why or why not?**
+
+<br>
+
+- We lose 7 more states from the regression but 202/217 is still pretty darn good
+
+- Two significant coefficients instead of one
+
+- R2 increases; we now explain 76% of the variation in life expectancy
+
+- RMSE error is reduced (e.g. avg residuals are smaller)
+
+<br>
+
+**SLIDE**: Let's check the residuals plot
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Multiple Regression: Add a Dummy Confounder**
+:::
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+
+**Simple OLS Regression**
+```{r, fig.align='center', fig.asp=.85, fig.width=8}
+plot(res1, which = 1)
+```
+:::
+
+::: {.column width="50%"}
+**Multiple OLS Regression 1**
+```{r, fig.align='center', fig.asp=.85, fig.width=8}
+plot(res2, which = 1)
+```
+:::
+::::
+
+::: notes
+
+**What happens to the residuals when we move from the simple to the multiple regression in this case?**
+
+<br>
+
+Multiple regression model line simply fits the data better than our simple model line
+
+- Almost completely removes the non-linearity!
+
+- Much more homoscedastic errors
+
+<br>
+
+To be clear, this is not something you should expect simply by moving to a multiple regression
+
+- It just so happens that adjusting our model for wealth has addressed this underlying problem!
+
+<br>
+
+**Make sense?**
+
+:::
+
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Multiple Regression: Add a Dummy Confounder**
+:::
+
+<br>
+
+:::: {.columns}
+::: {.column width="25%"}
+
+```{r, echo=FALSE}
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="70%"}
+
+**Model 1: Simple**
+
+- Life = 84.7 + -4.9 (Fertility)
+
+<br>
+
+**Model 2: Multiple**
+
+- Life = 79.4 + -3.7 (Fertility) +  4.8 (Wealthy)
+
+:::
+::::
+
+::: notes
+
+Now let's talk about using the multiple regression model to make predictions
+
+- Remember that we just used Model 1 to predict an average life expectancy of `r predict(res1, newdata = data.frame("fertility_rate_per_woman" = 2))` if a country has a fertility rate of two
+
+<br>
+
+**What does model 2 predict for the same case? e.g. Fertility = 2?**
+
+<br>
+
+Can't do it without making an assumption for rich states!
+
+- That's the trick with a multiple regression!
+
+- The coefficient for fertility can ONLY make predictions if you specify the other predictors in the model
+
+<br>
+
+**So, what does model 2 predict for fertility 2 if the country is rich? e.g. the value of wealthy here is a '1'**
+
+- `r predict(res2, newdata = data.frame("fertility_rate_per_woman" = 2, "wealthier_median" = 1))`
+
+<br>
+
+**And for states below median wealth levels?**
+
+- `r predict(res2, newdata = data.frame("fertility_rate_per_woman" = 2, "wealthier_median" = 0))`
+
+<br>
+
+So, remember, making predictions with a multiple regression requires specifying the values for all the predictors in the model
+
+- **Does that make sense?**
+
+<br>
+
+**SLIDE**: Let's use ggpredict to handle this
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Multiple Regression: Add a Dummy Confounder**
+:::
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.75, fig.width=7}
+# Make the predictions
+pred2 <- ggpredict(res2, 
+                   terms = c("fertility_rate_per_woman", 
+                             "wealthier_median"))
+
+# Visualize the predictions
+plot(pred2)
+```
+
+::: notes
+
+Given that our wealth variable is a dummy, we have to use ggpredict a little differently
+
+- We have to ask it to make predictions using both variables in the terms argument
+
+<br>
+
+**Everybody get the code to work?**
+
+<br>
+
+**Why are there two lines here and not just one?**
+
+- **I keep telling you the regression makes a single line, don't I?**
+
+<br>
+
+(**SLIDE**)
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Multiple Regression: Add a Dummy Confounder**
+:::
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+
+```{r, echo=FALSE}
+modelsummary(models = list(res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+:::
+
+::: {.column width="50%"}
+
+<br>
+
+
+```{r, echo=F, fig.align='center', fig.asp=.75, fig.width=7}
+# Visualize the predictions
+plot(pred2)
+```
+:::
+::::
+
+::: notes
+
+The key here is that plugging in different values for the predictors shifts the line up or down, BUT THE LINE REMAINS THE SAME FUNCTION
+
+<br>
+
+Our slope coefficient on fertility is -3.7 and that gets applied to EVERY change in fertility rate we plug in.
+
+- So, move from fertility rate 1 to fertility rate 2 and life expectancy goes down by 3.7 years
+
+- Move from fertility rate 2 to fertility rate 3 and that's ANOTHER 3.7 years lost
+
+- That's 7.4 years for adding two more births per woman on average
+
+<br>
+
+That's NOT the story with the dummy variable
+
+- The dummy can only ever have one of two values: zero or one
+
+- A wealthier than the median state has almost 5 years more life expectancy and that effect can only happen one time
+
+- So, what we see in the prediction plot is the dummy variable raising or lowering the line but not changing the slope
+
+<br>
+
+**Does that make sense?**
+
+- **e.g. one formula for a line, two sets of predictions depending on the values you plug in**
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Multiple Regression: Add a Dummy Confounder**
+:::
+
+<br>
+
+```{r, echo=FALSE}
+modelsummary(models = list("Association" = res1, "Causal Argument" = res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2:3, rows = 1))
+```
+
+
+::: notes
+
+Keep in mind, our primary interest is in estimating the coefficient on fertility while adjusting for the confounder
+
+- In other words, we're trying to make a causal argument
+
+- In those terms, we don't really care about the coefficient on the dummy variable
+
+- We're trying to make a causal argument about the power of fertility rates to move life expectancies around the world
+
+<br>
+
+IFF our identification strategy is convincing then our second model is getting us closer to causality
+
+- Interestingly for this case these results suggest that the association is stronger than the actual causal effect
+
+- Fertility rates definitely appear to matter, but maybe a little less than the simple correlation suggests
+
+<br>
+
+**Make sense?**
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Multiple Regression: Add a Numeric Confounder**
+:::
+
+<br>
+
+**Rescale GDP pc (10k)**
+```{r, echo=TRUE}
+d$gdp_pc_10k <- d$gdp_per_capita/10000
+```
+
+<br>
+
+**Fit a multiple regression using the rescaled confounder**
+```{r, echo=TRUE}
+res3 <- lm(data = d, life_expectancy_total ~ 
+             fertility_rate_per_woman + gdp_pc_10k)
+```
+
+::: notes
+
+Our dummy version was just to get us into multiple regression more easily
+
+- In reality, we do not want to throw away variation so cheaply
+
+- We have tons of variation in wealth around the world so we need to see how that impacts the mechanism we are interested in
+
+<br>
+
+Here I have simply rescaled GDP per capita into 10s of thousands of dollars to make it easier to study
+
+- Otherwise I have not changed the variable at all
+
+<br>
+
+Everybody run this code and examine the results!
+
+- (**SLIDE**)
+
+:::
+
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=FALSE}
+modelsummary(models = list(res1, res2, res3), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "gdp_pc_10k" = "GDP per capita", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+:::
+
+::: {.column width="50%"}
+
+<br>
+
+```{r, fig.align='center', fig.asp=.85, fig.width=8}
+plot(res3, which = 1)
+```
+:::
+::::
+
+::: notes
+
+**Alright, let's start just with the fit of Model 3**
+
+- **What are your takeaways about the fit of the model?**
+
+<br>
+
+Improvements to the fit: 
+
+- Increased R2, 
+- significant coefficients, 
+- smaller average residuals
+
+<br>
+
+**Any concerns in the residuals?**
+
+- (My sense, obs 115 is definitely an outlier but the red line is really exaggerating the effect of this point.)
+
+<br>
+
+**Just for practice, how do we interpret the coefficient on GDP per capita?**
+
+- (Each increase of $10k in GDP pc is associated, on average, with an increase in life expectancy of approximately one year)
+
+<br>
+
+**Alright, use ggpredict on our Model 3**
+
+- In this case, just include fertility as the only "term" in the function
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.85, fig.width=8}
+ggpredict(res3, terms = "fertility_rate_per_woman")
+```
+
+::: notes
+
+What I want you to see here is that with numeric confounders ggpredict will set them at their average value in the dataset
+
+- Here avg GDP pc is approximately $16k
+
+<br>
+
+**Questions on the mutliple regressions we've worked on today?**
+
+- How to fit?
+
+- How to evaluate?
+
+- How to make predictions?
+
+<br>
+
+**SLIDE**: Assignment for next class
+
+:::
+
+
+
+## For Next Class {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+**Possible Confounders**: GDP per capita, (1) unemployment rate, (2) tobacco use, (3) compulsory education
+
+::: notes
+
+For next class everybody try fitting, evaluating and interpreting three more multiple regression models
+
+- Regress life expectancy on fertility plus each of these confounders separately
+
+<br>
+
+**Questions on the assignment?**
+
+:::
+
+
+
+
+
+
+
+
+
+
