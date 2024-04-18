@@ -87,6 +87,16 @@ Your job for today was to use these new tools to examine the other two possible 
 ## Adjusting for Unemployment {background-image="libs/Images/background-slate_v2.png" .center}
 
 ```{r, echo=FALSE, fig.asp=.85, fig.align='center', fig.width=8}
+# d$unemploy2 <- cut(d$unemployment_pct, breaks = c(4,191, 6.453, 11.7, 30))
+# 
+# ggplot(data = d, aes(x = fertility_rate_per_woman, y = life_expectancy_total, color = unemploy2)) +
+#   geom_point() +
+#   theme_bw() +
+#   scale_color_manual(values = c("red", "orange", "green", "blue"))
+
+
+
+
 d |>
   mutate(
     unemployment2 = case_when(
@@ -105,7 +115,12 @@ d |>
   facet_wrap(~ unemployment2, ncol = 2) +
   guides(color = "none", shape = "none") +
   labs(x = "Fertility Rate (births per woman)", y = "Life Expectancy (years)",
-       caption = "Source: WDI (2024) for data from 2020")
+       caption = "Source: WDI (2024) for data from 2020") +
+  scale_color_manual(values = c("red", "green", "blue", "yellow"))
+
+
+
+
 ```
 
 ::: notes

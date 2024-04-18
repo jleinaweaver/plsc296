@@ -306,6 +306,7 @@ A dummy variable, also called dichotomous, can only have a value of zero or 1
 :::
 
 
+
 ## {background-image="libs/Images/background-slate_v2.png" .center}
 
 **1. Find the median of wealth**
@@ -323,10 +324,9 @@ d$wealthier_median <- if_else(d$gdp_per_capita >= 6370.9,
 
 <br>
 
-**3. Fit a multiple regression using the dummy confounder**
+**3. Audit the new variable**
 ```{r, echo=TRUE}
-res2 <- lm(data = d, life_expectancy_total ~ 
-             fertility_rate_per_woman + wealthier_median)
+table(d$wealthier_median)
 ```
 
 ::: notes 
@@ -349,9 +349,44 @@ We're using the if_else function to do this
 
 **Make sense?**
 
-- Everybody run these lines of code and examine the results!
+- Everybody run these lines of code and audit the results
 
-- (**SLIDE**)
+- The median is the 50th percentile so it should essentially split the observations in the dataset in half.
+
+<br>
+
+**SLIDE**: With our new variable we can fit our first multiple regression
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+**4. Fit a multiple regression using the dummy confounder**
+```{r, echo=TRUE}
+res2 <- lm(data = d, life_expectancy_total ~ 
+             fertility_rate_per_woman + wealthier_median)
+```
+
+```{r}
+modelsummary(models = list("Model 2" = res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::: notes
+
+**Did everybody get these results?**
+
+- You can use the summary() function for quick results or the modelsummary() function for the formatted table
+
+<br>
+
+**SLIDE**: Let's compare our models to help us understand these results
+
 :::
 
 
@@ -360,8 +395,6 @@ We're using the if_else function to do this
 ::: {.r-fit-text}
 **Multiple Regression: Add a Dummy Confounder**
 :::
-
-<br>
 
 :::: {.columns}
 ::: {.column width="25%"}
@@ -382,6 +415,8 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 
 ::: {.column width="70%"}
 
+<br>
+
 **Model 1: Simple**
 
 - $$Y = \alpha + \beta_1 X_1$$
@@ -394,12 +429,6 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 ::::
 
 ::: notes
-
-I'm using modelsummary to output the two models side-by-side
-
-- **Did everybody get the results for Model 2 here?**
-
-<br>
 
 Keep in mind, both of these models describe a SINGLE line
 
@@ -421,8 +450,6 @@ Keep in mind, both of these models describe a SINGLE line
 **Multiple Regression: Add a Dummy Confounder**
 :::
 
-<br>
-
 :::: {.columns}
 ::: {.column width="25%"}
 
@@ -442,6 +469,8 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 
 ::: {.column width="70%"}
 
+<br>
+
 **Model 1: Simple**
 
 - Life_Exp = 84.72 + -4.89 (Fertility)
@@ -457,7 +486,13 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 
 ::: notes
 
-**And using this line, what does our regression predict is the average life expectancy for a country with a fertility rate of two births per woman on average?**
+**Is everybody clear on how to convert the simple regression results into the formula for a line?**
+
+<br>
+
+As we've done many times, we can then use this formula to make predictions for ANY value of the predictor
+
+- **What does Model 1 predict is the average life expectancy for a country with a fertility rate of two births per woman on average?**
 
 - (`r predict(res1, newdata = data.frame("fertility_rate_per_woman" = 2))`)
 
@@ -478,8 +513,6 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 **Multiple Regression: Add a Dummy Confounder**
 :::
 
-<br>
-
 :::: {.columns}
 ::: {.column width="25%"}
 
@@ -498,6 +531,8 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 :::
 
 ::: {.column width="70%"}
+
+<br>
 
 **Model 1: Simple**
 
@@ -520,21 +555,19 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 
 Before we use Model 2 to make predictions, let's talk about the fit of the model
 
-- **Does Model 2 fit the data "better" than model 1? Why or why not?**
+- **Does Model 2 fit the data "better" than Model 1? Why or why not?**
 
 <br>
 
-- We lose 7 more states from the regression but 202/217 is still pretty darn good
+- Missing Data? We lose 7 more states from the regression but 202/217 is still pretty darn good
 
-- Two significant coefficients instead of one
+- Significance? Two significant coefficients instead of one
 
-- R2 increases; we now explain 76% of the variation in life expectancy
+- R2: R2 increases; we now explain 76% of the variation in life expectancy
 
 - RMSE error is reduced (e.g. avg residuals are smaller)
 
-<br>
-
-**SLIDE**: Let's check the residuals plot
+- **SLIDE**: Let's check the residuals plot
 
 :::
 
@@ -587,6 +620,101 @@ To be clear, this is not something you should expect simply by moving to a multi
 
 **Make sense?**
 
+<br>
+
+That was our four-step approach to evaluating a simple OLS regression
+
+- The multiple regression case requires that we tweak our evaluation steps slightly
+
+- **SLIDE**: Write these down!
+
+:::
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Evaluating the Fit of a Multiple Regression**
+:::
+
+**1. Use the adjusted R2**
+
+```{r, echo=FALSE}
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 1:3, rows = 9))
+```
+
+::: notes
+
+Remember that the R-squared tells us what proportion the variance in the outcome can be explained by the predictor
+
+- In Model 1 here we see that almost 70% of the variation in life expectancies around the world can be explained by fertility rates
+
+<br>
+
+Here's the catch: As you add more variables to a regression the R2 value will almost certainly increase
+
+- Even if the new variables have nothing to do with it in the real world
+
+- By chance some of the variation in the new variable will overlap with the outcome which increases the R2
+
+<br>
+
+The adjusted r-squared adds a small penalty to its calculation that is meant to represent the increase you would see by adding a random variable to the regression
+
+- In other words, the adjusted r-squared only increases if the model improves by more than this random amount
+
+<br>
+
+**Questions on this?**
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Evaluating the Fit of a Multiple Regression**
+:::
+
+**2. Include the F-test**
+```{r, echo=TRUE}
+summary(res2)
+```
+
+::: notes
+R includes an F-statistic at the bottom of the summary function results
+
+<br>
+
+Up to this point we have used "stars" to represent a significance test of each coefficient
+
+- e.g. does the estimated coefficient fit the data better than the null hypothesis of no effect?
+
+<br>
+
+In multiple regression, the F-test is a significance test for the entire model
+
+- e.g. does your estimated formula for a line fit the data better than a model that sets the coefficient on each variable to 0?
+
+<br>
+
+In our example on the slide we can see that the F-statistic has an absurdly tiny p-value (2.2 x 10 to the -16)
+
+- That's 15 zeroes before the 2!
+
+- If your p-value is SMALLER than .05 we call it significant
+
+<br>
+
+So, when evaluating the fit of a regression model we check the significance of each coefficient separately AND of all the coefficients together
+
+- **Questions on the F-statistic?**
+
 :::
 
 
@@ -633,6 +761,18 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 ::::
 
 ::: notes
+
+With those evaluation changes in mind we can see that our multiple regression model:
+
+1. Still improves its R2 value even when adjusted for the new variables, and
+
+2. Fits the data better than the overall null hypothesis that none of our predictors matter for life expectancy
+
+<br>
+
+**Questions on evaluating the fit of a multiple regression model?**
+
+<br>
 
 Now let's talk about using the multiple regression model to make predictions
 
@@ -906,9 +1046,21 @@ plot(res3, which = 1)
 
 Improvements to the fit: 
 
-- Increased R2, 
+- Increased ADJUSTED R2, 
 - significant coefficients, 
+- significant F-statistic
 - smaller average residuals
+
+<br>
+
+Important note
+
+- Feel free to compare residual error across models (the RMSE), but don't compare F-statistic values in the same way
+
+- We would like to see the error get smaller
+
+- The F-test is only a question of "is it significant or not?" not comparable nominal values across models
+
 
 <br>
 

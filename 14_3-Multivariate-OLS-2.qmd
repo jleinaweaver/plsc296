@@ -1,0 +1,428 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+library(ggeffects)
+```
+
+<br>
+
+::: {.r-fit-text}
+**Multiple Regression**
+
+- Including multiple confounders
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
+
+::: notes
+Prep for Class
+
+1. Data Needs:
+    - WDI data on life expectancy
+    - Ross 1990 xlsx and codebook
+
+2. Be ready to do live coding in class (usb key with all datasets or laptop with HDMI)
+
+:::
+
+
+
+## Why use OLS regressions? {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+- Assumes **"regression to the mean"**
+
+- **Quantifies** the relationship between variables
+
+- Uses **ALL** of the data
+
+- Provides estimates of **uncertainty**
+
+- Can include a **confounder**
+:::
+
+
+
+## Why use multiple regressions? {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+- Can include more than one **confounder**
+
+- Can be adjusted for **non-linear effects**
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Do higher fertility rates lower average life expectancies around the world?**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<br>
+
+```{r, fig.align = 'center', fig.asp=1, fig.width=7, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.4, y = 1, yend = 1, arrow = arrow(), linewidth = 1.4) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+d <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/Practice_Simple_OLS/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+
+d$gdp_pc_10k <- d$gdp_per_capita/10000
+
+res1 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman)
+res2 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman + gdp_pc_10k)
+res3 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman + unemployment_pct)
+res4 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman + tobacco_use_pct)
+res5 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman + compulsory_education_yrs)
+
+modelsummary(models = list(res1, res2, res3, res4, res5), 
+             out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", 
+                          "gdp_pc_10k" = "GDP pc ($10k)", 
+                          "unemployment_pct" = "Unemployment (%)",
+                          "tobacco_use_pct" = "Tobacco Use (%)",
+                          "compulsory_education_yrs" = "Education (years)",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "15px")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 1:6, rows = 1))
+
+```
+:::
+::::
+
+::: notes
+
+**Alright, from these options what is our identification strategy for this relationship?**
+
+- *ON BOARD*
+
+<br>
+
+Ok, everybody fit the new multiple regression that includes all of the confounders we decided were necessary to identify the relationship.
+
+- *You code this too!*
+
+<br>
+
+*FIRST, class leads you through evaluating the model*
+
+- Missing data, significance, R2, residuals
+
+<br>
+
+*SECOND, ask the class to generate predictions using ggeffects:ggpredict*
+
+<br>
+
+Ok, data analysts, the big question is ultimately how convinced are you from our work that increasing fertility rates directly reduces average life expectancy around the world?
+
+<br>
+
+Your certainty should depend on the quality of:
+
+1. The data (research design)
+
+2. The sample (representative of the population or not)
+
+3. The regression
+
+<br>
+
+Let's consider each of those:
+
+**FIRST, what's your level of confidence in the quality of the data pulled form the World Bank?**
+
+<br>
+
+**SECOND, what's your level of confidence that we have a representative sample of the countries in the world in 2022?**
+
+<br>
+
+**THIRD, what's your level of confidence in the fit of the multiple regression model?**
+
+<br>
+
+**Bottom line, have we built a useful causal argument or not?**
+
+::: 
+
+
+
+## The Ross (1990) Dataset {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+Ross, Catherine E. (1990) *Work, Family and Well-being in the United States*. Inter-university Consortium for Political and Social Research (ICPSR).
+
+<br>
+
+This study measures the effects of various social conditions on individuals' physical and mental health.
+
+::: notes
+Everybody grab the data and the codebook from Canvas (ICPSR_Ross_Survey_1990.xlsx)
+
+<br>
+
+Note: Since 1990, the USD is up 237% so I adjusted the reported income levels for this inflation so we can work with what $ look like for us today
+
+- example: $50k in 1990 is $118k in 2024
+
+```{r, eval=FALSE}
+names(d)
+
+lm(data = d, earnk2024 ~ education) |> summary()
+lm(data = d, earnk2024 ~ ethnicity) |> summary()
+lm(data = d, earnk2024 ~ height) |> summary()
+lm(data = d, earnk2024 ~ male) |> summary()
+lm(data = d, earnk2024 ~ exercise) |> summary()
+
+
+
+lm(data = d, earnk2024 ~ education) |> summary()
+lm(data = d, earnk2024 ~ education + male) |> summary()
+lm(data = d, earnk2024 ~ education + angry) |> summary()
+lm(data = d, earnk2024 ~ education + ethnicity) |> summary()
+
+
+
+```
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Education", "Confounders", "Personal\nIncome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+**Possible Confounders**: Height, weight, gender, ethnicity, walk, exercise, smokenow, tense, angry, age
+
+::: notes
+
+**Alright, from these options what is our identification strategy for this relationship?**
+
+- *ON BOARD*
+
+<br>
+
+Ok, everybody fit the new multiple regression that includes all of the confounders we decided were necessary to identify the relationship.
+
+- Include the baseline regression too (education -> earnk2024)
+
+- *You code this too!*
+
+<br>
+
+*FIRST, class leads you through evaluating the model*
+
+- Missing data, significance, R2, residuals
+
+<br>
+
+*SECOND, ask the class to generate predictions using ggeffects:ggpredict*
+
+<br>
+
+Ok, data analysts, the big question is ultimately how convinced are you from our work that pursuing more education will increase your personal earnings?
+
+<br>
+
+Just like last time, your certainty should depend on the quality of:
+
+1. The data (research design)
+
+2. The sample (representative of the population or not)
+
+3. The regression
+
+<br>
+
+Let's consider each of those:
+
+**FIRST, what's your level of confidence in the quality of the dataset built by Ross (1990)?**
+
+<br>
+
+**SECOND, what's your level of confidence that we have a representative sample of the people in the US in 1990?**
+
+- **Is data from 30 years ago still applicable today? Why or why not?**
+
+<br>
+
+**THIRD, what's your level of confidence in the fit of the multiple regression model?**
+
+<br>
+
+**Bottom line, have we built a useful causal argument or not?**
+
+
+<br>
+
+**Codebook Notes**
+
+"height"
+
+- What is your height without shoes on? (inches)
+
+"weight"
+
+- What is your weight without clothing? (lb)
+
+"male"
+
+- dummy variable = 1 if male and 0 if female
+
+"earn"
+
+- During 1989, what was your personal income from your own wages, salary, or other sources, before taxes?
+
+"earnk"
+
+- As above but rescaled into thousands of dollars
+
+"ethnicity"
+
+"education"
+
+- What is the highest grade or year in school that you have completed?
+    - None . . . . . . . . . . . . . . . . . . . .  00
+    - Elementary . . . . . . . 01 02 03 04 05 06 07 08
+    - High school . . . . . . . .  . . . . 09 10 11 12
+    - College . . . . . . . . . .  . . . . 13 14 15 16
+    - Some graduate school . . . . .  . . . . . . . 17
+    - Graduate or professional degree . . . . . . . 18
+
+"mother_education"
+
+- What is the highest grade or year of school your mother completed?
+    - None . . . . . . . . . . . . . . . . . . . .  00
+    - Elementary . . . . . . . 01 02 03 04 05 06 07 08
+    - High school . . . . . . . .  . . . . 09 10 11 12
+    - College . . . . . . . . . .  . . . . 13 14 15 16
+    - Some graduate school . . . . .  . . . . . . . 17
+    - Graduate or professional degree . . . . . . . 18
+    - DON'T KNOW  . . . . . . . . . . . . . . . . . 98
+
+"father_education"
+
+- What is the highest grade or year of school your father completed?
+    - None . . . . . . . . . . . . . . . . . . . .  00
+    - Elementary . . . . . . . 01 02 03 04 05 06 07 08
+    - High school . . . . . . . .  . . . . 09 10 11 12
+    - College . . . . . . . . . .  . . . . 13 14 15 16
+    - Some graduate school . . . . .  . . . . . . . 17
+    - Graduate or professional degree . . . . . . . 18
+    - DON'T KNOW  . . . . . . . . . . . . . . . . . 98
+
+"walk"
+
+- How often do you take a walk? (Includes walking to work/train station etc.) Would you say . . . 
+    - Never, . . . . . . . . . . .  01
+    - Once a month or less, . . . . 02
+    - About twice a month, . . . .  03
+    - About once a week, . . . . .  04
+    - Twice a week, . . . . . . . . 05
+    - Three times a week, or . . .  06
+    - More than 3 times a week? . . 07
+    - EVERY DAY . . . . . . . . . . 08
+
+"exercise"
+
+- How often do you do strenuous exercise such as running, basketball, aerobics, tennis, swimming, biking, and so on? Would you say . . .
+    - Never, . . . . . . . . . . .  1
+    - Once a month or less, . . . . 2
+    - About twice a month, . . . .  3
+    - About once a week, . . . . .  4
+    - Twice a week, . . . . . . . . 5
+    - Three times a week, or . . .  6
+    - More than 3 times a week? . . 7
+
+"smokenow"
+
+- Do you currently smoke 7 or more cigarettes a week?
+    - Yes . . . . . . . . . . . . . 1
+    - No  . . . . . . . . . . . . . 2
+
+"tense"
+
+- On how many of the past 7 days have you felt tense or anxious?
+
+"angry"
+
+- On how many of the past 7 days have you felt angry?
+
+"age"
+
+:::
+
+
+
+## Next Week: The Final Report {background-image="libs/Images/background-slate_v2.png" .center}
+
+<br>
+
+Are powerful states more likely to respect the human rights of their citizens?
+
+
+
+
+
+
+
+
+
+
+
+

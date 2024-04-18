@@ -1,0 +1,753 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="libs/Images/background-data_blue_v3.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+
+d <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/Practice_Simple_OLS/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+```
+
+<br>
+
+::: {.r-fit-text}
+**Multivariate Analyses**
+
+- Adding confounders to OLS regressions
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2024)
+:::
+
+::: notes
+Prep for Class
+
+1. Assignment for today used the WDI data on life expectancy
+
+2. Make sure merged project data is available
+
+:::
+
+
+## For Today {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+**Possible Confounders**: GDP per capita, (1) unemployment rate, (2) tobacco use, (3) compulsory education
+
+::: notes
+
+For today I asked you to practice fitting, evaluating and interpreting three multiple regression models
+
+- **How did this go?**
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Do higher fertility rates lower average life expectancies around the world?**
+:::
+
+```{r}
+d$gdp_pc_10k <- d$gdp_per_capita/10000
+
+res1 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman)
+res2 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman + gdp_pc_10k)
+res3 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman + unemployment_pct)
+res4 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman + tobacco_use_pct)
+res5 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman + compulsory_education_yrs)
+
+modelsummary(models = list(res1, res2, res3, res4, res5), 
+             out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", 
+                          "gdp_pc_10k" = "GDP pc ($10k)", 
+                          "unemployment_pct" = "Unemployment (%)",
+                          "tobacco_use_pct" = "Tobacco Use (%)",
+                          "compulsory_education_yrs" = "Education (years)",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "15px")
+  ), locations = gt::cells_body())
+
+```
+
+::: notes
+
+Quick note, I don't know why modelsummary is omitting some of the F-statistics...
+
+<br>
+
+**Did everybody get these results?**
+
+<br>
+
+**Interpret each coefficient for me**
+
+- **At what level increase does each predictor make a serious impact on life expectancy?**
+
+<br>
+
+**Any missing data concerns?**
+
+<br>
+
+**Any meaningful changes in the R2?**
+
+<br>
+
+**SLIDE**: Let's check the residuals
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png"}
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.625, fig.width=8}
+plot(res2, which = 1)
+
+plot(res3, which = 1)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.625, fig.width=8}
+plot(res4, which = 1)
+
+plot(res5, which = 1)
+```
+:::
+::::
+
+::: notes
+
+**Takeaways from checking the residuals?**
+
+<br>
+
+Looks to me like only adjusting for wealth deals with the underlying non-linear effect
+
+- I suspect wealth is a big confounder in our causal mechanism and omitting it messes up the estimated relationship between fertility and life expectancy
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Do higher fertility rates lower average life expectancies around the world?**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<br>
+
+```{r, fig.align = 'center', fig.asp=1, fig.width=7, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.4, y = 1, yend = 1, arrow = arrow(), linewidth = 1.4) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+modelsummary(models = list(res1, res2, res3, res4, res5), 
+             out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", 
+                          "gdp_pc_10k" = "GDP pc ($10k)", 
+                          "unemployment_pct" = "Unemployment (%)",
+                          "tobacco_use_pct" = "Tobacco Use (%)",
+                          "compulsory_education_yrs" = "Education (years)",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "15px")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 1:6, rows = 1))
+
+```
+:::
+::::
+
+::: notes
+
+Remember, the goal of this exercise is to use an identification strategy to make a causal argument about fertility and life expectancy
+
+- **Bottom line, what do we learn from these regressions?**
+
+<br>
+
+- Robustness Test: It is reassuring that the coefficient on fertility rate is fairly stable across models
+
+- The direction of effect makes sense on wealth and unemployment (the other two aren't significant or large enough to interpret)
+
+<br>
+
+**Did anybody compare their regression results to the multivariate visualizations we made in class on Monday?**
+
+- (**SLIDE**: Compare to our multivariate visualizations last week)
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png"}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Education as a Confounder**
+:::
+
+:::: {.columns}
+::: {.column width="70%"}
+```{r, echo=FALSE, fig.asp=.85, fig.align='center', fig.width=8, cache=TRUE}
+d |>
+  mutate(
+    education2 = case_when(
+      compulsory_education_yrs < quantile(d$compulsory_education_yrs, probs = .25, na.rm = T) ~ "Education (Q1)",
+      compulsory_education_yrs < quantile(d$compulsory_education_yrs, probs = .50, na.rm = T) ~ "Education (Q2)",
+      compulsory_education_yrs < quantile(d$compulsory_education_yrs, probs = .75, na.rm = T) ~ "Education (Q3)",
+      compulsory_education_yrs >= quantile(d$compulsory_education_yrs, probs = .75, na.rm = T) ~ "Education (Q4)"
+      )
+    ) |>
+  select(fertility_rate_per_woman, life_expectancy_total, education2) |>
+  na.omit() |>
+  ggplot(aes(x = fertility_rate_per_woman, y = life_expectancy_total, color = education2, shape = education2)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = T) +
+  theme_bw() +
+  facet_wrap(~ education2, ncol = 2) +
+  guides(color = "none", shape = "none") +
+  labs(x = "Fertility Rate (births per woman)", y = "Life Expectancy (years)",
+       caption = "Source: WDI (2024) for data from 2020")
+```
+:::
+
+::: {.column width="30%"}
+
+<br>
+
+```{r}
+modelsummary(models = list(res5), 
+             out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", 
+                          "compulsory_education_yrs" = "Education (years)",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "16px")
+  ), locations = gt::cells_body())
+```
+:::
+::::
+
+::: notes
+
+Ok, let's make sure everybody understands the intuitions of our work on multivariate analyses over the last few weeks
+
+<br>
+
+Help me understand what I'm seeing here.
+
+- On the left, I see scatter plots where the negative effect of fertility rate on life expectancy seems consistent across the levels of education
+
+- On the right, the results of a multiple regression showing education is not a significant predictor of life expectancy
+
+- **Are these two pieces of data analysis consistent with each other or not?**
+
+<br>
+
+This is KEY to understanding our work over the last few weeks
+
+- Never forget our focus is to use data analyses **to make a causal argument that changes in fertility rates CHANGE average life expectancy** around the world
+
+- NONE of these tables or pictures tell us about the causal effect of education on life expectancy
+
+- We are interested in the effect of fertility rates WHEN CONTROLLING FOR EDUCATION
+
+- In other words, for this identification strategy we assume that countries with high vs low fertility rates differ in their levels of education
+
+- e.g. we cannot assume they are identical on average
+
+<br>
+
+**If you were interested in estimating the effect of education on life expectancy, what would you have to do?**
+
+- (**SLIDE**: Generate a brand new ID strategy!)
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**A new research question...**
+:::
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Compulsory\nEducation", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+::: {.r-fit-text}
+**Requires a new ID strategy!**
+:::
+
+::: notes
+
+In this story, I do not think fertility rates are a confounder
+
+<br>
+
+Probably a mediator, no?
+
+- Education changes fertility rates which changes life expectancy
+
+- That would mean a regression with both fertility and education will produce an underestimate of the importance of education!
+
+<br>
+
+**SLIDE**: Let's check!
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+**Do countries that require more years of compulsory education have higher life expectancy?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+
+```{r, fig.align = 'center', fig.asp=1, fig.width=7, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Compulsory\nEducation", "Fertility\nRate", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.6, xend = 2.4, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1, xend = 1.7, y = 1.15, yend = 1.85, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+:::
+
+::: {.column width="50%"}
+
+```{r}
+res6 <- lm(data = d, life_expectancy_total ~ compulsory_education_yrs)
+
+modelsummary(models = list(res6, res1, res5), 
+             out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("compulsory_education_yrs" = "Education (years)",
+                          "fertility_rate_per_woman" = "Fertility (births per woman)", 
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "15px")
+  ), locations = gt::cells_body())
+```
+:::
+::::
+
+::: notes
+
+Regression results
+
+- Model 1 shows that compulsory education increases life expectancy considerably
+
+- Model 2 shows that fertility rate increases lower life expectancy dramatically
+
+- And Model 3 shows when you include both it looks like fertility rate eats up education as you would expect if it is a mediator
+
+<br>
+
+**Does this make sense?**
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Do higher fertility rates lower average life expectancies around the world?**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<br>
+
+```{r, fig.align = 'center', fig.asp=1, fig.width=7, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.4, y = 1, yend = 1, arrow = arrow(), linewidth = 1.4) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+modelsummary(models = list(res1, res2, res3, res4, res5), 
+             out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", 
+                          "gdp_pc_10k" = "GDP pc ($10k)", 
+                          "unemployment_pct" = "Unemployment (%)",
+                          "tobacco_use_pct" = "Tobacco Use (%)",
+                          "compulsory_education_yrs" = "Education (years)",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "15px")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 1:6, rows = 1))
+
+```
+:::
+::::
+
+::: notes
+
+All of this is just meant to reinforce the key intuition here
+
+- We selected a mechanism of interest,
+
+- We developed an identification strategy for it alone, and now
+
+- We are adjusting our analyses for the confounders
+
+<br>
+
+In either case, this is all a reminder not to become infatuated with your regression tables
+
+- The confounders are there to help us estimate the main relationship, that's it.
+
+- We don't really care about the significance of wealth, unemployment, education, etc
+
+<br>
+
+**Any questions on all of this?**
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**Using Multiple Regressions on our Project**
+:::
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=FALSE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("National Material\nCapabailities", "Confounders", "Human Rights and\nthe Rule of Law")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.6, xend = 2.3, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+
+## Input project data
+d <- read_excel("../Data_in_Class-SP24/Merged_Dataset-2006-2016_with_confounders.xlsx", na = "NA")
+```
+
+**Possible Confounders**: 1) Baseline, 2) GDP, 3) Immunizations DPT, 4) Infant mortality & 5) Compulsory education
+
+::: notes
+
+Today we work to apply our new techniques to our ongoing class project!
+
+<br>
+
+I'm asking everyone to work together to fit these five models
+
+- The baseline is the simple regression of human rights on cinc_pct
+
+- Each of the additional models adds a single confounder to the baseline
+
+- Let's use all of the data! Not just 2016.
+
+<br>
+
+**Any questions?**
+
+- We'll check in and see how we did at 11:35a!
+
+- Go!
+
+<br>
+
+**Notes**
+
+- GDP (constant 2015 US$)
+    - (Source: World Bank national accounts data, and OECD National Accounts data files.)
+    
+- Immunization, DPT (% of children ages 12-23 months)
+    - (Source: WHO and UNICEF (http://www.who.int/immunization/monitoring_surveillance/en/).)
+
+- Mortality rate, infant (per 1,000 live births)
+    - (Source: Estimates developed by the UN Inter-agency Group for Child Mortality Estimation (UNICEF, WHO, World Bank, UN DESA Population Division) at www.childmortality.org.)
+
+- Compulsory education, duration (years)
+    - (Source: UNESCO Institute for Statistics (UIS). UIS.Stat Bulk Data Download Service. Accessed September 19, 2023. https://apiportal.uis.unesco.org/bdds.)
+
+:::
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r}
+res1 <- lm(data = d, P3_Human_Rts ~ cinc_pct)
+res2 <- lm(data = d, P3_Human_Rts ~ cinc_pct + gdp_2015usd_billions)
+res3 <- lm(data = d, P3_Human_Rts ~ cinc_pct + immunization_dpt)
+res4 <- lm(data = d, P3_Human_Rts ~ cinc_pct + infant_mortality)
+res5 <- lm(data = d, P3_Human_Rts ~ cinc_pct + compulsory_education)
+
+# d2016 <- d |> filter(Year == 2016)
+# 
+# res1 <- lm(data = d2016, P3_Human_Rts ~ cinc_pct)
+# res2 <- lm(data = d2016, P3_Human_Rts ~ cinc_pct + gdp_2015usd_billions)
+# res3 <- lm(data = d2016, P3_Human_Rts ~ cinc_pct + immunization_dpt)
+# res4 <- lm(data = d2016, P3_Human_Rts ~ cinc_pct + infant_mortality)
+# res5 <- lm(data = d2016, P3_Human_Rts ~ cinc_pct + compulsory_education)
+
+modelsummary(models = list(res1, res2, res3, res4, res5), out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("cinc_pct" = "CINC (%)",
+                          "gdp_2015usd_billions" = "GDP (billions)", 
+                          "immunization_dpt" = "Immunization DPT", 
+                          "infant_mortality" = "Infant Mortality", 
+                          "compulsory_education" = "Compulsory Education", 
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "18px")
+  ), locations = gt::cells_body())
+```
+
+::: notes
+
+**Did everybody get these results?**
+
+<br>
+
+**SLIDE**: Quick adjustment before we discuss the results
+
+:::
+
+
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r}
+d$gdp_2015usd_trillions <- d$gdp_2015usd/1e12
+
+res2a <- lm(data = d, P3_Human_Rts ~ cinc_pct + gdp_2015usd_trillions)
+
+modelsummary(models = list(res1, res2a, res3, res4, res5), out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("cinc_pct" = "CINC (%)",
+                          "gdp_2015usd_trillions" = "GDP (trillions)", 
+                          "immunization_dpt" = "Immunization DPT", 
+                          "infant_mortality" = "Infant Mortality", 
+                          "compulsory_education" = "Compulsory Education", 
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "18px")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 1:6, rows = 1))
+```
+
+::: notes
+
+Never report a coefficient of zero as we see here with GDP.
+
+- It's not actually zero it's just such a small number it's hard to see
+
+- I converted GDP into trillions to ensure I could report the coefficient on this table
+
+- You should always do the same
+
+<br>
+
+**Ok, what do we learn from these regressions?**
+
+- **What happened to our estimate of the effect of CINC on human rights?**
+
+<br>
+
+1. Missing data problems?
+
+2. Are the coefficients significant?
+
+3. What does the R2 indicate?
+
+4. Any problems in the residuals plots? (**SLIDE**)
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png"}
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.625, fig.width=8}
+plot(res2a, which = 1)
+
+plot(res3, which = 1)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.625, fig.width=8}
+plot(res4, which = 1)
+
+plot(res5, which = 1)
+```
+:::
+::::
+
+::: notes
+
+Two steps forward, a handful of steps back!
+
+- The GDP residuals are a mess
+
+- Infant mortality is DEFINITELY nonlinear
+
+- Immunization shows a funneling effect...
+
+- Education looks ok!
+
+:::
+
+
+## {background-image="libs/Images/background-slate_v2.png" .center}
+
+```{r}
+modelsummary(models = list(res1, res2a, res3, res4, res5), out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("cinc_pct" = "CINC (%)",
+                          "gdp_2015usd_trillions" = "GDP (trillions)", 
+                          "immunization_dpt" = "Immunization DPT", 
+                          "infant_mortality" = "Infant Mortality", 
+                          "compulsory_education" = "Compulsory Education", 
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "18px")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 1:6, rows = 1))
+```
+
+::: notes
+
+Heading in the right direction!
+
+<br>
+
+**Questions on our work today?**
+
+<br>
+
+Friday we'll keep working on mutliple regressions
+
+:::
