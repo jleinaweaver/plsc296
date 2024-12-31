@@ -1,0 +1,657 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v3.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+```
+
+<br>
+
+<br>
+
+What is research?
+
+What is a good RQ?
+
+Get to work picking an outcome for the class
+
+<br>
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2025)
+:::
+
+::: notes
+Prep for Class
+
+1. Review Canvas submissions
+
+2. Try to save time at end of class to explore the data options spreadsheet
+
+3. Links for today
+    - [Huntington-Klein 2022 chapter 1 "Designing Research"](https://theeffectbook.net/ch-TheDesignofResearch.html)
+    - Wheelan chapter 7 "The Importance of Data"
+    - [Link to Data Sets Spreadsheet](https://docs.google.com/spreadsheets/d/1qOBt2M_yoIkeeuw6x3MMBMjEQsPquGDDkWUYF-aNtBo/edit#gid=0)
+    
+:::
+
+    
+
+## For Today {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+1. Huntington-Klein (2022) Chapter 1 "Designing Research"
+
+<br>
+
+2. Wheelan (2014) Chapter 7 "The Importance of Data"
+
+::: notes
+
+The readings I assigned you for today are designed to set the table for our semester.
+
+<br>
+
+### Does everyone have the Wheelan book?
+
+- A very useful reference for those new to the world of statistics
+
+- Wheelan focuses on the intuitions underpinning the statistical methods and provides examples of when you would use each of the tools in the real world
+
+- I really appreciate how accessible this book is and I don't want you to underestimate the value of learning statistics at an intuitive level before tackling the math
+
+<br>
+
+We'll rely on the Huntington-Klein book, among others, for guidance on research design and using data to answer questions.
+
+- Not a ton in chapter 1 that we need to analyze deeply, that will come with the next chapter.
+
+- **SLIDE**: But there is at least one super important idea for our semester so let's highlight it.
+
+:::
+
+
+
+## "Required Courses" in Poli Sci {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+```{r, fig.align = 'center'}
+knitr::include_graphics("Images/02_1-Major_Courses.png")
+```
+
+::: notes
+
+First, let's talk required courses!
+
+<br>
+
+Here is a list of the required courses for our major
+
+- This is "the spine" of the major
+
+- The first three courses introduce you to different "area" specializations (e.g. US pols, comparative and IR)
+
+- BUT, more than half of the required courses focus on training you to be a social scientist
+
+<br>
+
+A big part of 160 was designed to help you think like a political scientist.
+
+- e.g. How do we ask useful research questions?
+
+- What kinds of questions do we tend to ask in political science? 
+
+- How have researchers answered these questions in the literature?
+
+- What are the components of a "good" answer to a research question (theory, design, data, etc)?
+
+<br> 
+
+My job this semester is to continue your training along these lines
+
+- Specifically, I will train you to answer important questions with observations from the real-world (aka data)
+
+- This will require you to develop skills in both data analysis (statistics) and data science (programming and visualization)
+
+<br>
+
+However, playing with the data is only useful if we get the research design piece right!
+
+- Research design is the process by which we learn how to connect research questions with data
+
+- **SLIDE**: And the thing about research design is...
+
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+"Research design is hard..."
+:::
+
+::: notes
+
+Ok, I know this doesn't strike you as a deep insight, but humor me!
+
+- Huntington-Klein makes this point really well in chapter 1 and we need to make sure we understand it
+
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+"Research design is hard, and just because you want to answer a question doesn’t mean there’s necessarily a straightforward way of doing it. 
+
+<br>
+
+But the worst that could happen is that we’d figure out that the answer will be difficult to get. Then, at least, we’ll know.
+
+<br>
+
+The best that could happen is that we can answer our question. And we do. And then we win a Nobel prize" (Huntington-Klein Chapter 1).
+
+::: notes
+
+As I hope we started to see last week with our warm-up activities, using data to answer a question means having to grapple with measurement. 
+
+- And thinking critically about measurement means thinking VERY carefully about the kinds of questions we can and cannot answer.
+
+<br>
+
+Many people seem to think that you need fancy statistics knowledge to unpack quantitative research.
+
+- The media especially seems quite infatuated with the illusion of certainty provided by numbers.
+
+<br>
+
+**One of our key lessons this semester is to note that the research design in ANY project is WAY more important than the statistics!**
+
+- There are tons of "answers" out there, my job is to help you develop the tools to interpret the usefulness of those answers.
+
+<br>
+
+### Any questions on the first chapter of the Huntington-Klein book?
+
+- As I said, very much setting the table for the work to come.
+
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("Images/02_1-Data_Options.png")
+```
+
+::: notes
+
+On our Canvas Modules page is a link to a Google Sheet I've made that includes 50+ data projects with interesting topics and accessible datasets.
+
+<br>
+
+Our big job this semester is to build a research project using these sources
+
+- In terms of that goal, Our first task is to pick one of these data projects as our key outcome to explain.
+
+- e.g. the dependent variable for our class research project.
+
+<br>
+
+### Has everybody been able to access the link?
+
+<br>
+
+### Any questions on the set-up of the sheet?
+
+:::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("Images/02_1-Assignment.png")
+```
+
+::: notes
+
+For next class you have a reading and an assignment.
+
+- The reading is meant to help you complete the assignment.
+
+<br>
+
+Take some time to actually visit the web page for the data project you select and build your argument for choosing this project based on the details of what you learned there. Take us deeper into why you believe this project is a good source of variation for us and cite details from the project itself. Tell us something cool about the specific measurements that sell us on why we should pick this project!"
+
+
+<br>
+
+### Questions on the assignment?
+
+- Excellent! Get to it!
+:::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+"Research design is hard, and just because you want to answer a question doesn’t mean there’s necessarily a straightforward way of doing it. 
+
+<br>
+
+But the worst that could happen is that we’d figure out that the answer will be difficult to get. Then, at least, we’ll know.
+
+<br>
+
+The best that could happen is that we can answer our question. And we do. And then we win a Nobel prize" (Huntington-Klein Chapter 1).
+
+::: notes
+
+Research design is hard.
+
+- We know from our work last week that measurements are always uncertain
+
+- Research design is the process of adapting uncertain measures to a specific research question
+
+<br>
+
+So, don't be daunted by this.
+
+- Just keep working at it and it will inevitably get easier.
+
+<br>
+
+**SLIDE**: Last class we also discussed the Wheelan chapter's treatment of a series of "red flags" warning us about different ways data could mislead us.
+
+:::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("Images/02_3-garbage-in-garbage-out.webp")
+```
+
+<br>
+
+Survey Design Biases, Selection Bias, Publication Bias, Recall Bias, Survivorship Bias, Healthy User Bias, and more
+
+::: notes
+
+**Give me an example of one of these forms of bias in action**
+
+- **What should we be on the lookout for?**
+
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("Images/02_1-Assignment.png")
+```
+
+::: notes
+
+Today we continue our work in developing a class research project.
+
+- As a first step we are focusing on data sources and research questions.
+
+<br>
+
+### Has everybody submitted their choice and explanation?
+
+<br>
+
+To get us started today I'd like us all to hear what you picked and why.
+
+- So, let's go around the room and you can walk us through what you picked and why.
+
+- Class, give feedback as you listen
+    - Is there anything that needs clarification?
+    
+<br>
+
+At this point, I don't want anyone abandoning their chosen data!
+
+- We'll focus in on a single project as a class on Friday
+
+<br>
+
+Today's job is to develop a research question for your chosen outcome variable
+
+- **SLIDE**: Stay focused on what you brought today and see it through!
+:::
+
+
+
+## "Research Questions" {background-image="Images/background-slate_v2.png" .center}
+
+**(Huntington-Klein 2022)**
+
+<br>
+
+::: {.r-fit-text}
+**What is a research question?**
+:::
+
+::: notes
+
+Today's reading is all about helping us see the difference between questions and RESEARCH questions.
+
+- A very important distinction.
+
+<br>
+
+### Per the reading, what is the first key element that distinguishes a "question" from a "research question"?
+
+- (**SLIDE**)
+
+:::
+
+
+
+## "Research Questions" {background-image="Images/background-slate_v2.png" .center}
+
+**(Huntington-Klein 2022)**
+
+<br>
+
+**A research question:**
+
+1. Can be answered
+
+::: notes
+
+It means that it’s possible for there to be some set of evidence in the world that, if you found it, your question would have a believable answer. 
+
+- The book chapter gives an example: what is the best James Bond movie?
+
+<br>
+
+### Why can't that be answered?
+
+### - What if we collected survey data asking people to rank their favorite Bond movies in order? Wouldn't that do it?
+
+- (That's a measure of "popularity" not "quality"!)
+
+<br>
+
+### Give me some examples of other questions that cannot be answered with empirical data.
+
+<br>
+
+### Everybody clear on the first criteria?
+
+<br>
+
+### What is the second key element that distinguishes a "question" from a "research question"?
+
+- **SLIDE**
+
+:::
+
+
+
+## "Research Questions" {background-image="Images/background-slate_v2.png" .center}
+
+**(Huntington-Klein 2022)**
+
+<br>
+
+**A research question:**
+
+1. Can be answered
+
+2. Improves our understanding of how the world works.
+
+::: notes
+
+A good research question leads to an answer that will improve your understanding of how the world works.
+- It should inform theory in some way.
+
+<br>
+
+### Alright then, what is "theory"?
+- (Theory just means that there’s a *why* underpinning your view of the world)
+
+- Theory explains why we think the relationships we see in the world are happening 
+
+<br>
+
+**SLIDE**: You've encountered a TON of theories in your time in poli sci so far
+:::
+
+
+
+## {background-image="Images/02_2-soldier-British-trench-Western-Front-World-War.webp" .center}
+
+::: notes
+
+Essentially, the entire specialization of International Relations exists to propose and test alternative theories of why wars happen.
+
+- Given that war is a devastating and risky activity, it is a puzzle that states keep starting them!
+
+<br>
+
+Selected IR theories to explain war:
+
+- Neorealism: War is the result of states' worrying about their security
+
+- Institutionalism: War is the result of survival fears overwhelming our institutions of international cooperation 
+
+- Economic liberalism: War should be less likely in a world of interdependent trade and specialization
+
+- and on, and on
+
+<br>
+
+None of these theories can be proven, BUT each makes specific predictions about the world and our research questions can help us set up projects to test them.
+
+- Neorealists might propose a research question like: Does the risk of conflict increase when states invest in purely defensive technologies only? e.g. Do security dilemmas actually exist?
+
+- Institutionalists might propose a research question like: Does UN involvement in a conflict zone shorten wars?
+
+- And economic liberals might propose a research question like: Do states that participate more in international trade specialize in fewer types of goods and services?
+
+<br>
+
+### Does this theory piece make some sense?
+
+:::
+
+
+
+## "Research Questions" {background-image="Images/background-slate_v2.png" .center}
+
+**(Huntington-Klein 2022)**
+
+<br>
+
+**A research question:**
+
+1. Can be answered
+
+2. Improves our understanding of how the world works.
+
+::: notes
+
+You almost certainly have a million intuitions about how and why the world works like it does.
+
+- Our aim is to design research projects that force us to clarify these assumptions in order to test them with empirical data.
+
+- A good research question helps us begin that process
+
+<br>
+
+I especially like the advice from Huntington-Klein that: "A good test for whether a research question informs theory is to imagine that you find an unexpected result, and then wonder whether it would make you change your understanding of the world."
+
+- If the data shows us that defensive military investments don't lead to war I would certainly hope that neorealists would reconsider their theory
+
+<br>
+
+### Any questions on these two basic requirements of a research question?
+
+<br>
+
+So, all academic projects in quantitative political science are framed as an answer to a research question.
+
+- The question itself MUST be answerable with data and the answer must help us better understand the world (support or lead to revision of a theory).
+:::
+
+
+
+## Propose a research question using the data you selected before class{background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+- Can it be answered?
+
+- Does its answer improve our understanding of the world?
+
+::: notes
+
+Let's now apply this first part to your work for today.
+
+<br>
+
+Everybody take a moment to reflect on the data project they chose and the reasons that led you to it. 
+
+- Then, on a piece of paper write down your proposed research question AND a short explanation of how it meets BOTH criteria
+
+- Force yourself to write this down on paper, not electronically. 
+
+- Writing by hand represents a different style of thinking and we want to track the revisions you make during class today.
+
+<br>
+
+### Everybody have their question and argument written down?
+
+<br>
+
+Go around the room and hear everyone's proposed question
+
+- Make sure everybody has a question that can be answered and whose answer would improve our knowledge of the world. 
+
+- For now, focus just on these two criteria only!
+
+<br>
+
+Now, take a moment to reflect on the feedback you received and the questions you saw and use that experience to revise your question.
+
+<br>
+
+**SLIDE**: Once you have a research question, we now have to make it a "good" one.
+:::
+
+    
+    
+## "Research Questions" {background-image="Images/background-slate_v2.png" .center}
+
+**(Huntington-Klein 2022)**
+
+<br>
+
+**How Do You Know if You’ve Got a Good One?**
+
+:::: {.columns}
+::: {.column width="50%"}
+- Consider Potential Results
+
+- Consider Feasibility
+
+- Consider Scale
+:::
+
+::: {.column width="50%"}
+- Consider Design
+
+- Keep It Simple!
+:::
+::::
+
+::: notes
+Walk me through each of these. 
+
+### What does each criteria mean and how do I use it to make my research question "better"?
+
+- **Consider Potential Results**: "If you can’t say something interesting about your potential results, that probably means your research question and your theory aren’t as closely linked as you think!"
+
+- **Consider Feasibility**: "A research question should be a question that can be answered using the right data, if the right data is available. But is the right data available?"
+    - You picked the data project first so this should be done!
+
+- **Consider Scale**: "What kind of resources and time can you dedicate to answering the research question? ... Given the confines of, say, a term paper, you could take some wild swings at that question, but you’re likely to do a much more thorough job answering questions with a lot less complexity."
+
+- **Consider Design**: "So, an important part of evaluating whether you have a workable research question is figuring out if there’s a reasonable research design you can use to answer it. Figuring out whether you do have a reasonable research design is the topic of the rest of this book."
+
+- **Keep It Simple!**: "Answering any research question can be difficult. Don’t make it even harder on yourself by biting off more than you can chew!"
+
+<br>
+
+### Everybody clear on these criteria?
+
+Take a minute to reflect and revise
+- Try to revise your question to improve it across these criteria
+
+- You may end up with multiple versions, that's great! Keep them all!
+
+<br>
+
+Ok, let's mix it up again!
+- Go around the room and hear all the questions
+
+- Explain to each other how you think your question meets these criteria
+
+- Try to help each other refine/tweak/improve the questions
+
+<br>
+
+Now, take a moment to reflect on the feedback you received and the questions you saw and use that experience to revise your question.
+:::
+
+
+
+## For Next Class {background-image="Images/background-blue_triangles_flipped.png" .center}
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("Images/02_2-Assignment.png")
+```
+
+::: notes
+
+Now you have the basic components of a research proposal:
+- A research question, and
+
+- A source for the outcome data
+
+<br>
+
+For Friday, I want each of you to submit your proposal to Canvas.
+
+- Give us a compelling argument and evidence for why we should pick your proposal (even if you don't think we should choose it)!
+
+<br>
+
+### Questions on the assignment?
+:::
+
+
+
+
+
+
+
+

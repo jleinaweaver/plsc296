@@ -1,0 +1,475 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="Images/background-data_blue_v3.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+library(ggeffects)
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Ordinary Least Squares (OLS) Regression**
+
+- The intuitions
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2025)
+:::
+
+::: notes
+Prep for Class
+
+1. Printing sheets for "best fit" line practice in class (one per student) AND rulers for all
+    - Graph paper with axes printed on them so everyone using same reference points
+    - Pencils and rulers too?
+:::
+
+
+
+
+## Part 2 {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+### Let's practice by hand!
+
+::: notes
+
+```{r}
+# Give them a handful of coordinates and ask them to plot them on graph paper then EYEBALL draw a line of best fit!
+# They can then measure and square the error from each point to the line
+# Extra credit for whomever got the closest! e.g. minimized the squared error
+# Also have them eyeball the slope
+
+d_test <- tibble(
+  x1 = c(2, 3, 4, 5, 6),
+  y1 = c(3, 2, 4, 3, 5)
+)
+
+d_test |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point() +
+  scale_x_continuous(limits = c(0,7)) +
+  scale_y_continuous(limits = c(0, 7)) +
+  geom_smooth(method = "lm", se=FALSE)
+
+res1 <- lm(data = d_test, y1 ~ x1)
+
+summary(res1)
+
+residuals(res1)
+res1$residuals
+res1$fitted.values
+
+sum(res1$residuals^2)
+
+```
+
+:::
+
+
+
+
+## For next class, fit, interpret and make predictions using OLS: {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+1. Regress city fuel economy (`cty`) on engine displacement (`displ`) in the `mpg` datatset
+
+2. Regress percent of people below the  poverty line (`percbelowpoverty`) on the percent college educated (`percollege`) in the `midwest` datatset
+
+::: notes
+**How did this go?**
+
+<br>
+
+```{r, eval=FALSE}
+lm(data = mpg, cty ~ displ) |> summary()
+
+lm(data = midwest, percbelowpoverty ~ percollege) |> summary()
+```
+:::
+
+
+
+
+## City Fuel Economy and Engine Size {background-image="Images/background-slate_v2.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<br>
+
+```{r}
+model1 <- lm(data = mpg, cty ~ displ)
+predictions1 <- ggpredict(model1, terms = "displ")
+
+modelsummary(list("Fuel Economy (City)" = model1), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("displ"= "Engine Size", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+  
+
+# modelsummary(list("Fuel Economy (City)" = model1), output = 'kableExtra', fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+#              coef_map = c("displ"= "Engine Size", "(Intercept)" = "Constant")) |>
+#   column_spec(1:2, background = "white") |>
+#   row_spec(0, background = "lightblue") |>
+#   kable_styling(font_size = 22)
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.asp=0.7, fig.align = 'center', fig.width=5, cache=TRUE}
+plot(predictions1) +
+  labs(x = "Engine Displacement", y = "City Fuel Economy",
+       title = "OLS Predicted Values")
+```
+
+```{r}
+predictions1
+```
+:::
+::::
+
+::: notes
+
+As you think about including OLS tables in reports, think about polishing them!
+
+- Variable names should be in plain english
+
+- Model name should be the dependent variable
+
+<br>
+
+This table makes clear that this regression focuses on engine size as a predictor of fuel economy.
+
+- **Make sense?**
+:::
+
+
+
+## College Education and Poverty {background-image="Images/background-slate_v2.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<br>
+
+```{r}
+model2 <- lm(data = midwest, percbelowpoverty ~ percollege)
+predictions2 <- ggpredict(model2, terms = "percollege")
+
+modelsummary(list("Below Poverty (%)" = model2), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("percollege"= "College Educated (%)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+
+# modelsummary(list("College (%)" = model2), fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+#              coef_map = c("percbelowpoverty"= "Below Poverty (%)", "(Intercept)" = "Constant")) |>
+#   column_spec(1:2, background = "white") |>
+#   row_spec(0, background = "lightblue") |>
+#   kable_styling(font_size = 22)
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.asp=0.7, fig.align = 'center', fig.width=5, cache=TRUE}
+plot(predictions2) +
+  labs(x = "College Educated (%)", y = "Below Poverty Line (%)",
+       title = "OLS Predicted Values")
+```
+
+```{r}
+predictions2
+```
+:::
+::::
+
+
+
+
+
+
+
+## Exploring Movie Box Office Returns {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+```{r}
+#library(fivethirtyeight)
+d <- read_excel("../Data_in_Class/FiveThirtyEight-Movie_Box_Office/Movie_Box_Office_Data-538.xlsx")
+
+d |>
+  select(year, title, budget_millions, boxoffice_millions) |>
+  slice_sample(n = 13) |>
+  kbl(align = c("c", "l", "c", "c"), digits = 2) |>
+  kableExtra::column_spec(1:4, background = "white") |>
+  kableExtra::row_spec(0, background = "lightblue") |>
+  kableExtra::kable_styling(font_size = 22)
+```
+
+::: notes
+Everybody grab the data file on Canvas modules for today
+
+- Movie_Box_Office_Data-538.xlsx
+
+<br>
+
+This dataset includes a sample of movies selected from the IMDB between 1970 and 2013 by 538
+
+- Each film comes with its budget and box office total converted into millions of 2013 US dollars
+
+<br>
+
+Everybody make a scatterplot of budget and box office for all the movies in the dataset
+
+- (**SLIDE**)
+:::
+
+
+## Exploring Movie Box Office Returns {background-image="Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center', fig.asp=.618, fig.width=9, cache=TRUE}
+bechdel_labels <- d |>
+  filter(boxoffice_millions > 2000 | budget_millions > 270)
+
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
+  geom_point(alpha = .2) +
+  #geom_smooth(method = "lm") +
+  ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
+  theme_bw() +
+  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+```
+
+::: notes
+**Any surprises on this scatterplot?**
+:::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+**Can we make useful predictions of movie earnings (`boxoffice_millions`) using a regression on budget (`budget_millions`)?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
+  geom_point(alpha = .2) +
+  #geom_smooth(method = "lm") +
+  #ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
+  theme_bw() +
+  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+```
+:::
+
+::: {.column width="50%"}
+1. Missing data problems?
+
+2. Are the coefficients significant?
+
+3. What does the R<sup>2</sup> indicate? 
+
+4. Any problems in the residuals plot?
+:::
+::::
+
+::: notes
+Let's now practice regression
+
+- Everybody regress box office returns on movie budgets and evaluate the results with our four steps
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+**1. Missing data problems?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+model3 <- lm(data = d, boxoffice_millions ~ budget_millions)
+
+predictions3 <- ggeffects::ggpredict(model3, terms = "budget_millions")
+
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=TRUE}
+# Count the observations
+nrow(d)
+```
+:::
+::::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+**2. Are the coefficients significant?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = c(1,3)))
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
+  geom_point(alpha = .2) +
+  geom_smooth(method = "lm") +
+  #ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
+  theme_bw() +
+  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+```
+:::
+::::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+**3. What does the R<sup>2</sup> indicate?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2, rows = c(6,7)))
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
+  geom_point(alpha = .2) +
+  geom_smooth(method = "lm") +
+  #ggrepel::geom_text_repel(data = bechdel_labels, aes(label = title), size = 3) +
+  theme_bw() +
+  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+```
+:::
+::::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+**4. Any problems in the residuals plot?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
+# Check residuals
+plot(model3, which = 1)
+```
+:::
+::::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+**Can we make useful predictions of movie earnings (`boxoffice_millions`) using a regression on budget (`budget_millions`)?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.9, fig.width=7, cache=TRUE}
+ggplot(data = d, aes(x = budget_millions, y = boxoffice_millions)) +
+  geom_point(alpha = .2) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Budget (millions 2013 USD)", y = "Box Office (millions 2013 USD)", title = "Analyzing Movie Box Office Returns", caption = "Source: FiveThirtyEight")
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+modelsummary(list("Box Office (millions)" = model3), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("budget_millions"= "Budget (millions)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+::::
+
+
+
+## For next class, evaluate the fit of both regressions (all four steps): {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+1. Regress city fuel economy on engine displacement ('mpg' datatset)
+
+2. Regress percent of people below the  poverty line (`percbelowpoverty`) on the percent college educated (`percollege`) in the `midwest` datatset
+
+::: notes
+
+
+:::
+

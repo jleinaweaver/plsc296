@@ -1,0 +1,648 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v3.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+
+library(gganimate)
+
+# Data for today
+data1 <- read_excel("../Data_in_Class-SP24/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
+
+data2021 <- filter(data1, year == 2021)
+
+fh <- read_excel("../Data_in_Class-SP24/Freedom_House/FreedomHouse-Tidy-1972-2023.xlsx")
+
+fh1972 <- filter(fh, year == 1972)
+
+fh2023 <- filter(fh, year == 2023)
+```
+
+<br>
+
+**Practicing univariate analyses in R**
+
+- Review: Practice exercises
+
+- New: Freedom House Data
+
+- Canvas: "FreedomHouse-Tidy-1972-2023.xlsx"
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2025)
+:::
+
+::: notes
+Prep for Class
+
+1. Review Canvas submissions
+
+<br>
+
+Today we continue practicing our univariate analyses tools in R
+
+- **SLIDE**: Let's kick things off with your practice work for today.
+:::
+
+
+## For Today {background-image="Images/background-slate_v2.png" .center}
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("Images/05_2-Assignment.png")
+```
+
+::: notes
+**In broad strokes, how did this go?**
+
+- **Were you able to make all the visualizations?**
+
+<br>
+
+Everybody open up Canvas and review the submissions.
+
+- Let's highlight compelling answers to the two questions that do a good job drawing on descriptive statistics as evidence!
+
+<br>
+
+### Any questions on making an argument in text and supporting it with descriptive statistics as evidence?
+
+<br>
+
+**SLIDE**: Let's now shift to the visualizations you made
+:::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+**Is the world getting richer or more unequal?**
+
+:::: {.columns}
+::: {.column width="45%"}
+```{r, cache=TRUE, fig.asp=0.618, fig.width=6}
+# Snapshot bar plots
+data1 |>
+  filter(year == 1985) |>
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (1985)", caption = "Source: WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
+
+data1 |>
+  filter(year == 2021) |>
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (2021)", caption = "Source: WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
+```
+:::
+
+::: {.column width="55%"}
+
+<br>
+
+```{r, cache=TRUE, fig.asp=0.8, fig.width=6}
+ggplot(data1, aes(x = wb_income)) +
+  geom_bar(fill = "green3") +
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High")) +
+  transition_time(year) +
+  # transition_states(year, transition_length = 4, state_length = 1) +
+  # view_follow(fixed_x = TRUE)  +
+  labs(title = "World Bank Income Categories ({as.integer(frame_time)})",
+       x = "", y = "Countries", caption = "Source: WDI (2024)")
+```
+:::
+::::
+
+::: notes
+**How did we do making these visualizations?**
+
+<br>
+
+**Which approach, in this case, is a better choice for supporting an argument about global change over time?**
+
+<br>
+
+**SLIDE**: Are birth rates rising or falling around the world?
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+**Are birth rates changing across time?**
+
+:::: {.columns}
+::: {.column width="45%"}
+```{r, cache=TRUE, fig.asp=0.618, fig.width=6}
+# Snapshot bar plots
+data1 <- data1 |>
+  mutate(
+    birth_groups = case_when(
+      birth_rate <= 12 ~"A",
+      birth_rate <= 22 ~"B",
+      birth_rate <= 32 ~"C",
+      birth_rate <= 42 ~"D",
+      birth_rate <= 52 ~"E"
+    )
+  )
+
+data1 |>
+  filter(year == 1985) |>
+  ggplot(aes(x = birth_rate, fill = birth_groups)) +
+  geom_histogram(bins = 20, color = "white", breaks = seq(0,50,2)) +
+  labs(x = "(per 1,000 people)", y = "Countries", title = "Global Birth Rates (1985)", caption = "Source: WDI (2024)") +
+  xlim(5, 50) +
+  scale_fill_brewer(type = "div", palette = 4, direction = -1) +
+  guides(fill = "none")
+
+data1 |>
+  filter(year == 2021) |>
+  ggplot(aes(x = birth_rate, fill = birth_groups)) +
+  geom_histogram(bins = 20, color = "white", breaks = seq(0,50,2)) +
+  labs(x = "(per 1,000 people)", y = "Countries", title = "Global Birth Rates (2021)", caption = "Source: WDI (2024)") +
+  xlim(5, 50) +
+  scale_fill_brewer(type = "div", palette = 4, direction = -1) +
+  guides(fill = "none")
+```
+:::
+
+::: {.column width="55%"}
+
+<br>
+
+```{r, cache=TRUE, fig.asp=0.8, fig.width=6}
+ggplot(data1, aes(x = birth_rate)) +
+  geom_histogram(bins = 20, color = "white", fill = "darkgoldenrod3") +
+  transition_time(year) +
+  labs(title = "Global Birth Rates ({as.integer(frame_time)})",
+       x = "(per 1,000 people)", y = "Countries",
+       caption = "Source: WDI (2024)") +
+  xlim(5, 50)
+```
+:::
+::::
+
+::: notes
+**How did we do making these visualizations?**
+
+<br>
+
+**Which approach, in this case, is a better choice for supporting an argument about global change over time?**
+
+<br>
+
+I'm hopeful everyone is convinced that the most compelling answer to each question requires:
+1. Complete sentence explanations of your answers, 
+
+2. Evidence in visualizations, AND 
+
+3. Evidence in descriptive statistics
+
+<br>
+
+ALSO, the utility of an animation depends on the clarity of the trend over time!
+
+<br>
+
+**SLIDE**: Alright, let's analyze some new data!
+:::
+
+
+
+## {background-image="Images/05_2-Freedom_House1.png" .center}
+
+::: notes
+
+Today we practice our univariate analysis tools by examining some of the data produced by Freedom House.
+
+### In very broad strokes, what is the purpose of the measures produced by Freedom House? What are they trying to measure?
+
+<br>
+
+Freedom House's "Freedom in the World" project is an attempt to quantify "freedom" in countries across the world in terms of "political rights" and "civil liberties"
+
+<br>
+
+### According to Freedom House, what is the difference between "political rights" and "civil liberties"?
+
+- Political Rights in three subcategories:
+    1. Electoral Process (3 questions), 
+    2. Political Pluralism and Participation (4), and
+    3. Functioning of Government (3).
+    
+- Civil liberties in four subcategories:
+    1. Freedom of Expression and Belief (4 questions),
+    2. Associational and Organizational Rights (3), 
+    3. Rule of Law (4), and 
+    4. Personal Autonomy and Individual Rights (4).)
+
+<br>
+
+If we had chosen Freedom House as our data set we would need to spend quite a bit of time digging into these conceptual labels.
+
+- How distinct are they? 
+
+- Are these valid definitions? Are they reliable?
+
+<br>
+
+Our focus today is to practice our univariate analyses so we'll set methodology aside for the moment.
+:::
+
+
+
+## Exercise 1 {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+How is global freedom changing across time?
+:::
+
+<br>
+
+::: {.r-fit-text}
+Visualize FH `status` in 1972 and 2023
+:::
+
+::: notes
+
+Alright, let's crunch some data!
+
+- Answer my question with two visualizations!
+
+<br>
+
+### What's the answer to our question?
+
+### - How did you get to that answer?
+
+- (**SLIDE**)
+:::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+**How is global freedom changing across time?**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.85, fig.width=5}
+fh |>
+  filter(year == 1972) |>
+  ggplot(aes(x = status)) +
+  geom_bar(fill = c("cornflowerblue", "red3", "pink")) +
+  labs(title = "Freedom House Status (1972)", x = "", y = "Countries",
+       caption = "Source: Freedom House (2024)") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 85)
+```
+:::
+
+::: {.column width="50%"}
+```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.85, fig.width=5}
+fh |>
+  filter(year == 2023) |>
+  ggplot(aes(x = status)) +
+  geom_bar(fill = c("cornflowerblue", "red3", "pink")) +
+  labs(title = "Freedom House Status (2023)", x = "", y = "Countries",
+       caption = "Source: Freedom House (2024)") +
+  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
+  ylim(0, 85)
+```
+:::
+::::
+
+::: notes
+
+A big problem for us in interpreting these counts is that the number of countries being studied increased DRAMATICALLY between the two ends of our dataset
+
+- 1972 obs: `r nrow(fh1972)`
+
+- 2023 obs: `r nrow(fh2023)`
+
+- +`r round((nrow(fh2023)/nrow(fh1972)-1)*100, 1)`%
+
+<br>
+
+Key lesson: IF the sample changes across time, then counts and proportions are very dangerous to interpret!
+
+- We really can't tell from this if states are becoming more free or if new states are more likely to be free
+
+<br>
+
+### Make sense?
+
+<br>
+
+Let's try some alternative analyses to see if we can unpack what is happening here.
+
+- To start, everybody make me a bar plot of the number of countries in each year in the full dataset
+
+- We're going to treat `year` as a categorical variable
+
+- So, our aim is to count countries in each year
+
+<br>
+
+(**SLIDE**)
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+# Observations counted across time
+ggplot(fh, aes(x = year)) +
+  geom_bar()
+```
+
+::: notes
+**What do we learn from this about the world and about Freedom House?**
+
+- (Spike in 1991 as USSR collapses so maybe some new countries were more free?)
+
+- (Not as sure about that spike in 2023)
+
+<br>
+
+**SLIDE**: Now, we can also take this one step further by tracking the count of each type of country in this plot.
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+# Counts of one variable across time
+ggplot(fh, aes(x = year, fill = status)) +
+  geom_bar()
+```
+
+::: notes
+
+Kind of cool, right?
+
+- Think of this like what you've been doing all semester to "fill" in the bars with color
+
+- This tells R to "fill" in the bars with a different variable!
+
+<br>
+
+### Did everybody make this?
+
+<br>
+
+One problem here is that the levels in our status variable are not in a logical order
+
+- Should probably go NF, PF to F on top
+
+- **SLIDE**
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"))
+
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar()
+```
+
+::: notes
+
+*Talk them through creating a new variable*
+
+- Don't overwrite your variables, make new ones!
+
+- The levels represents the order you want
+
+- This order looks backwards because the bar plot builds up from the bottom
+
+<br>
+
+### Everybody get this?
+
+<br>
+
+**SLIDE**: Before we analyze, let's fix the colors
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+# Add colors
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3"))
+```
+
+::: notes
+
+This function draws on the R Color Brewer which is a package full of built in color palettes
+
+- You should explore the options on this as it can do a ton!
+
+- Three types available: "seq" (sequential), "div" (diverging) or "qual" (qualitative)
+
+- A big number of different color palettes
+
+- And I've used "direction" here to reverse the order of the colors so red is not free.
+
+<br>
+
+### What do we learn from this about the world and about Freedom House?
+
+<br>
+
+**SLIDE**: One more tweak possible here...
+:::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+# Convert the counts to proportions
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar(position = "fill") +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  scale_y_continuous(labels = scales::percent_format())
+```
+
+::: notes
+
+Position = 'fill' asks the bar plot to convert itself into proportions on the y axis
+
+- Think of this like using prop.table()
+
+<br>
+
+### How does this change our conclusions?
+
+<br>
+
+### Why is this SUPER risky?
+
+- Completely hides the change in the number of countries per year
+
+- Assumes changes in % are the same when there are 149 countries vs 210...
+
+<br>
+
+**SLIDE**: Let's look at one more option for analyzing change across time before we practice
+:::
+
+
+
+## Exercise 2 {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+How are political rights changing across time?
+:::
+
+<br>
+
+::: {.r-fit-text}
+Visualize `pr` across time for the United States only
+:::
+
+::: notes
+
+A second option for tracking change across time is to focus on a single observation
+
+<br>
+
+- Filter the dataset to only include the US
+
+- geom_line()
+:::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, echo=TRUE, cache=TRUE, fig.align='center', fig.asp=0.618, fig.width=7}
+fh_US <- filter(fh, fh_country == "United States")
+
+ggplot(fh_US, aes(x = year, y = pr)) +
+  geom_line() +
+  scale_y_continuous(limits = c(1,7), breaks = 1:7) +
+  labs(x = "", y = "Political Rights (1-7)", 
+       caption = "Source: Freedom House (2024)", 
+       title = "Political Rights in the United States have been remarkably stable over time")
+```
+
+::: notes
+
+A fairly stable story over time, right?
+
+- Something weird happened in 2016...
+
+<br>
+
+Everybody try this again but find us a country with tons of yearly variation!
+
+<br>
+
+### Report back, what countries are basket cases per this measure?
+:::
+
+
+
+## Practice Exercises {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+1. Are countries getting richer over time? Make a stacked bar plot of `wb_income` across time
+
+2. Track the `gdp_per_capita` across time for the country you found with big variation in FH Political Rights
+
+::: notes
+
+Let's practice applying today's tools using the WDI data we've been exploring all week.
+
+- Make and polish me two plots!
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, echo=TRUE, cache=TRUE, fig.align='center', fig.asp=0.7, fig.width=7}
+data1$wb_income_f <- factor(data1$wb_income, 
+                            levels = c(NA, "High", "Upper-middle", 
+                                       "Lower-middle", "Low"))
+
+ggplot(data1, aes(x = year, fill = wb_income_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", 
+                               "pink", "red3"))
+```
+
+::: notes
+
+An alternative to brewer for color palettes is viridis.
+
+- Viridis is designed to be friendly to the color blind
+
+- They don't always look as good, but let's not forget we should be inclusive in our visualizations!
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center .smaller}
+
+```{r, cache=TRUE, fig.align='center', fig.asp=0.618, fig.width=9}
+# Identify biggest Std Devs in FH 'pr'
+# fh |>
+#   group_by(fh_country) |>
+#   summarize(sd = sd(pr)) |>
+#   arrange(desc(sd))
+
+# Plot GDP pc for top 10
+data1 |>
+  filter(country %in% c("Mongolia", "Bulgaria", "Ghana", "Romania", "Benin", "Chile", "Cabo Verde", "Poland", "Panama", "Mali")) |>
+  ggplot(aes(x = year, y = gdp_per_capita, color = country)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::dollar_format(scale = 1/1000, suffix = "k")) +
+  labs(x = "", y = "GDP per capita (current USD)", title = "Tracking wealth for the states with the least stable political rights in the world") +
+  scale_color_brewer(type = "qual", palette = 3)
+```
+
+::: notes
+
+As a programming process I first calculated the SD for each state across time
+
+- Big Std Dev = big changes year to year in political rights for that country
+
+<br>
+
+Then I filtered the WDI database for the ten states with the biggest SD in FH
+
+- Made a line plot for those ten and colored the lines
+
+<br>
+
+Super fascinating divide here between:
+
+- Mostly African countries where rights are unstable and growth is non-existent, and
+
+- European / C. American countries with erratice rights BUT economic growth!
+:::
