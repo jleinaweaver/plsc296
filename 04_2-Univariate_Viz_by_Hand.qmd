@@ -2,7 +2,7 @@
 format: revealjs
 ---
 
-## Today's Agenda {background-image="Images/background-data_blue_v3.png"}
+## Today's Agenda {background-image="Images/background-data_blue_v3.png" .center}
 
 ```{r}
 library(tidyverse)
@@ -13,13 +13,13 @@ library(modelsummary)
 
 <br>
 
-<br>
+::: {.r-fit-text}
 
 **Univariate Analyses**
 
 - Building univariate visualizations
 
-<br>
+:::
 
 <br>
 
@@ -30,7 +30,9 @@ Justin Leinaweaver (Spring 2025)
 ::: notes
 Prep for Class
 
-1. Bring paper and rulers to class.
+1. Bring paper and rulers to class
+
+2. Review Canvas submissions
 
 <br>
 
@@ -300,9 +302,9 @@ Here is our plan of attack for today.
 :::
 
 ::: {.column width="55%"}
-```{r, fig.align = 'center'}
-knitr::include_graphics("Images/03_1-Johnson-Bar_plot.png")
-```
+
+![](Images/03_1-Johnson-Bar_plot.png)
+
 :::
 ::::
 
@@ -338,9 +340,13 @@ Drawing a bar plot is super easy:
 
 **By hand**, draw a bar plot of drive train levels (drv) for the 234 cars in the mpg dataset.
 
-<br>
+1. Count the levels
 
-Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars
+2. Draw X axis with labels
+
+3. Draw Y axis to max height
+
+4. Add the bars
 
 ::: notes
 
@@ -360,16 +366,17 @@ Everybody make us this bar plot
 :::
 
 
+
 ## {background-image="Images/background-slate_v2.png" .center}
 
 ::: {.r-fit-text}
 **Categorical Variable: Make a Bar Plot**
 :::
 
-<br>
+```{r, echo=TRUE}
+table(mpg$drv)
+```
 
-:::: {.columns}
-::: {.column width="55%"}
 ```{r, fig.width=4, fig.asp=1, fig.align='center'}
 mpg |>
   ggplot(aes(x = drv)) +
@@ -380,19 +387,6 @@ mpg |>
   scale_x_discrete(limits = c("r", "4", "f"), labels = c("Rear Wheel\n Drive", "4 Wheel\n Drive", "Front Wheel\n Drive")) +
   geom_hline(yintercept = seq(25, 100, 25), color = "white")
 ```
-:::
-
-::: {.column width="45%"}
-
-<br>
-
-<br>
-
-```{r, echo=TRUE}
-table(mpg$drv)
-```
-:::
-::::
 
 ::: notes
 **How did we do?**
@@ -417,9 +411,13 @@ Let's practice this one more time!
 
 **By hand**, draw a bar plot of **the proportion** of parties that have controlled the presidency since 1953 in the presidential data set.
 
-<br>
+1. Count the levels
 
-Process: 1) Count the levels, 2) Draw X axis with labels, 3) Draw Y axis to max height, 4) Add the bars
+2. Draw X axis with labels
+
+3. Draw Y axis to max height
+
+4. Add the bars
 
 ::: notes
 
@@ -517,6 +515,10 @@ Everybody try it!
 
 <br>
 
+```{r, echo=FALSE}
+options(width = 105)
+```
+
 ```{r, echo=TRUE}
 table(midwest$poptotal)
 ```
@@ -526,17 +528,18 @@ table(midwest$poptotal)
 In the realm of numerical data there may not be any overlap in numbers in the data set!
 
 - This means we get a table of almost all '1's 
+
     - e.g. the odds of two cities having exactly 18,409 people are pretty darn low.
     
 - That's, arguably, less informative than just giving someone the actual data.
 
 <br>
 
-### Make sense?
+**Make sense?**
 
 <br>
 
-### So, what do we do?
+**So, what do we do?**
 :::
     
 
@@ -584,21 +587,22 @@ Let's practice building a histogram to see if that helps drive the intuition hom
 
 ::: {.r-fit-text}
 **Numerical Variable: Make a Histogram**
-:::
 
 <br>
 
-1. Make a binned table of city fuel economy (mpg data set)
+1. Make a binned table of city fuel economy (mpg dataset)
     - Bin 1: 0 - 10
     - Bin 2: 11 - 20
     - Bin 3: 21 - 30
     - Bin 4: 31 - 40
 
 2. Make a bar plot of these bins
+:::
 
 ::: notes
 
 1. Run the table function on the cty fuel economy variable
+
     - The add together the totals in each bin
     
 2. THEN draw the bars for the new groups!
@@ -628,8 +632,8 @@ Everybody make us this histogram (e.g. a bar plot of bins)
 :::
 
 :::: {.columns}
-::: {.column width="50%"}
-```{r, fig.width=4, fig.asp=1}
+::: {.column width="60%"}
+```{r, fig.width=4, fig.asp=1, fig.align='center'}
 mpg |>
   mutate(
     cty2 = case_when(
@@ -646,7 +650,7 @@ mpg |>
 ```
 :::
 
-::: {.column width="50%"}
+::: {.column width="40%"}
 
 <br>
 
@@ -748,9 +752,9 @@ So, a histogram is a binned bar plot and it attempts to show us the shape of the
 :::
 
 ::: {.column width="50%"}
-```{r, echo = FALSE, fig.align = 'center'}
-knitr::include_graphics("Images/03_1-Johnson-Box_plot.png")
-```
+
+![](Images/03_1-Johnson-Box_plot.png)
+
 :::
 ::::
 
@@ -982,6 +986,7 @@ economics |>
   geom_line() +
   geom_point() +
   theme_bw() +
+  scale_x_date(date_breaks = "month", date_labels = "%b %y") +
   labs(x = "", y = "Unemployment (thousands)",
        caption = "Source: St Louis Federal Reserve")
 ```
@@ -1014,13 +1019,18 @@ Line plots super easy, no?
 :::
 
 
-## For Next Class {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-slate_v2.png" .center}
+
+::: {.r-fit-text}
+**For Next Class**
 
 <br>
 
 1. Review ALL notes and code from today
 
 2. Healy (2019) [Sections 3.1 - 3.4](https://socviz.co/makeplot.html)
+
+:::
 
 ::: notes
 
