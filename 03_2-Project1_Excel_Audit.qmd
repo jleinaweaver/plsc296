@@ -7,8 +7,15 @@ format: revealjs
 ```{r}
 library(tidyverse)
 library(readxl)
-library(kableExtra)
-library(modelsummary)
+
+#library(kableExtra)
+#library(modelsummary)
+
+# Input the data
+d24 <- read_excel("../Data_in_Class/Reporters_Without_Borders/Website-Copy_Paste/RSF-Website_Data-2024.xlsx", na="NA")
+
+d <- read_excel("../Data_in_Class/Reporters_Without_Borders/Website-Copy_Paste/RSF-Website_Data-2015-2024.xlsx", na="NA")
+
 ```
 
 <br>
@@ -116,7 +123,7 @@ Today's work is the logical extension of our codebook analyses.
 
 <br>
 
-**Did anybody consult the links in the syllabus for advice on manipulating data in Excel?**
+**Which of the links on Canvas for advice on manipulating data in Excel were helpful?**
 
 <br>
 
@@ -220,6 +227,10 @@ This means:
 
 3. Each cell as a separate data point.
 
+4. You have audited the data to make sure it is "clean"
+    
+    - e.g. there are no transcription errors in the data, no autoformatting errors, etc
+
 <br>
 
 This is our goal. Take messy data and get it into this format.
@@ -279,7 +290,12 @@ Freedom House produces measures of "freedom" around the world.
 ![](Images/01_2-tidy_fh2.png)
 
 ::: notes
-**Make sense?**
+
+Delete the extra header row and we're all good
+
+- **Make sense?**
+
+<br>
 
 1. Each column is now a separate variable
 
@@ -300,7 +316,7 @@ Freedom House produces measures of "freedom" around the world.
 
 ::: notes
 
-Now, if what you want is historical Freedom House data you get this.
+Freedom House also offers for download a history of its scores over time
 
 - All of the information is useful but this is definitely not tidy.
 
@@ -360,19 +376,27 @@ Now, if what you want is historical Freedom House data you get this.
 
 ## 2. Tidy your data before exploring it {background-image="Images/background-data_blue_v3.png" .center}
 
-Show class dataset to tidy
+![](Images/03_2-World_Press2024.png){style="display: block; margin: 0 auto"}
 
 ::: notes
 
 One of your jobs for Friday will be to take our current dataset and tidy it!
 
-<br>
-
-**Questions on that task?**
+- **What needs to be done to this data?**
 
 <br>
 
-*optional: Let the class brainstorm how to do this*
+Nothing!
+
+- The organizing part of this was easy as RSF provides tables in tidy format
+
+- But the auditing was a MESS.
+
+- We'll discuss that in a second...
+
+<br>
+
+**SLIDE**: On to the next principal!
 
 :::
 
@@ -399,6 +423,7 @@ This chart represents some of the most common ways you can organize data by its 
 Each type can then be broken down further
 
 - Numerical can be continuous or discrete
+
     - And technically the continuous can be broken into subcategories too (ratio vs interval)
 
 - Categorical outcomes can be ordered or not
@@ -604,7 +629,10 @@ There are so many examples...
 
 <br>
 
+This story highlights so many of the ways that Excel is a TERRIBLE tool
+
 1. Each cell of the data can be edited (intentionally or by accident) and those changes don't get recorded or flagged anywhere.
+
     - A finger slip can completely transform your records and you would never know it!
     
 2. The sort features are confusing and sometimes lead to sorting only one column rather than the whole sheet which breaks the data at the observation level.
@@ -616,6 +644,64 @@ There are so many examples...
 Bottom line, doing "science" requires being transparent in your choices and creating a record of them for others to review.
 
 - Excel is a total failure at this and that is why it is completely inappropriate for doing science.
+
+- And THAT is why we won't be using it in this class for our analyses!
+:::
+
+
+
+
+## For Today {background-image="Images/background-data_blue_v3.png" .center}
+
+<br>
+
+### Dig into our first data project using Excel and find us THREE interesting, puzzling or surprising things about the world of this dataset
+
+::: notes
+
+For today I asked each of you to explore the datset using Excel and to find us "things" that were of interest, that puzzled you or that seemed interesting.
+
+<br>
+
+I really like this assignment as a kicking off point for our data analysis work:
+
+1. I need you to get comfortable looking at data and thinking about real world problems in terms of data
+
+    - Data should not be scary and you should see this spreadsheet as an invitation to mess around
+    
+2. Trying to wrap your head around a big collection of data should help you understand why statistics exists
+
+    - I am not here to teach you math for the sake of math or college credit, I am here to show you how statistics can help you play with data and extract meaning from it
+    
+    
+3. I also need you to get comfortable thinking about this specific project in terms of data
+
+    - e.g. HOW precisely do these researchers measure the concept of interest (press freedom)
+
+<br>
+
+So, let's dig in!
+
+- TABLES: Each of you share one of your findings with the rest of the table
+
+- Make sure everyone at your table can replicate your analysis and understands what you found interesting, puzzling, etc.
+
+- Go!
+
+<br>
+
+Report back to me, what stood out as most interesting or intriguing in the dataset?
+
+- *You follow along on the screen*
+
+```{r}
+d24 |> select(Global:Security) |> summary()
+```
+
+<br>
+
+**SLIDE**: Apply to methodology analysis
+
 :::
 
 
@@ -638,9 +724,9 @@ Bottom line, doing "science" requires being transparent in your choices and crea
 
 ::: notes
 
-For the rest of today I want to discuss what you found in the data and how you found it.
+Let's go back to the second section of the report.
 
-- Keep in mind, this exercise is meant to help us begin exploring the data AND is absolutely a continuation of our codebook investigation
+- Keep in mind, this exercise today was ALSO a continuation of our investigation of the methodology of this project
 
 <br>
 
@@ -652,17 +738,37 @@ Getting a sense of the data using a spreadsheet is the next step in evaluating t
 
 <br>
 
-**Does that make sense?**
+**So, based on your hands-on analyses today what can we add to our work last class analyzing the methodology of this project?**
+
+- **Key strengths and weaknesses to add?**
 
 <br>
 
-Big Picture Questions:
+Now is a good time to mention my struggles to tidy the data on the RSF website
 
-1. **How are the observations organized?**
+- Country name is weirdly identified: "Rank N-1" (but even this is inconsistent as some are English and some are French...)
+
+- "Political Context" and "Rank_Pol" are reversed
+
+- "Social Context" and "Rank_Soc" are reversed
+
+- also appears to be some mistakes in rank columns so I deleted those
+
+- Also some of the downloaded scores gave countries values above 100, which is supposed to be impossible
+
+- **Should these errors in the downloadable files make their way into your discussion of the strengths and weaknesses of the methodology? Why or why not?**
 
 <br>
 
-2. **Can you connect each variable here with its measurement tool in the codebook?**
+**What do we learn about the strengths and weaknesses of the survey questions now that you've examined the data on the countries themselves?**
+
+<br>
+
+<br>
+
+*SAVE IN CASE FUTURE SEMESTERS NEED THIS*
+
+**Can you connect each variable here with its measurement tool in the codebook?**
 
 - **Examples: Give me a variable in the spreadsheet and the page number in the codebook for the tool**
 
@@ -674,46 +780,17 @@ Big Picture Questions:
 
 - Get ready to report back on what you find from this comparison
 
-- Any unexpected values? Cray outliers? Missing Data?
-
-<br>
-
-*REPORT BACK and DISCUSS each*
+- Any unexpected values? Crazy outliers? Missing Data?
 
 <br>
 
 **How do these actual observations help us think critically about the codebook?**
 
 - **In other words, what can we take from this review that would be useful in Section 2 of your reports?**
-:::
-
-
-
-## For Today {background-image="Images/background-data_blue_v3.png" .center}
 
 <br>
 
-### What did you find in your pre-class explorations?
-
-::: notes
-
-Ok, let's discuss what you found in your pre-class explorations?
-
-- I'd like each of you to take a turn introducing one of your findings and explaining to us the process you used to reach it.
-
-<br>
-
-**Questions on what I'm asking?**
-
-- Take a sec to prep and then let's go!
-
-<br>
-
-As each person presents, your job in the audience is to follow the steps they suggest and make sure you can recreate their finding.
-
-- **Make sense?**
-
-- Go!
+*REPORT BACK and DISCUSS each*
 
 :::
 
@@ -725,7 +802,7 @@ As each person presents, your job in the audience is to follow the steps they su
 
 ::: {.r-fit-text}
 
-1. Tidy our new dataset
+1. Tidy our new dataset (if needed)
 
 2. Long and Teetor (2019) Sections 1.1 and 1.2
 
