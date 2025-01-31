@@ -621,8 +621,7 @@
 <p><br></p>
 <p>Let’s use this strategy but expand it for all years!</p>
 <ul>
-<li><p>To start, everybody make a bar plot of <code>year</code> in the World Bank data</p></li>
-<li><p>(<strong>SLIDE</strong>)</p></li>
+<li><strong>SLIDE</strong>: Let’s start with a bar plot of <code>year</code> in the World Bank data</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -639,13 +638,15 @@
 <section id="section-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Observations counted across time</span></span>
-<span id="cb1-2"><a href=""></a><span class="fu">ggplot</span>(data1, <span class="fu">aes</span>(<span class="at">x =</span> year)) <span class="sc">+</span></span>
-<span id="cb1-3"><a href=""></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">ggplot</span>(data1, <span class="fu">aes</span>(<span class="at">x =</span> year)) <span class="sc">+</span></span>
+<span id="cb1-2"><a href=""></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
-<p><strong>Ok, what did you just make? What do these bars represent?</strong></p>
+<p>Ok, interpret this bar plot for me.</p>
+<ul>
+<li><strong>What do these bars represent?</strong></li>
+</ul>
 <p><br></p>
 <p>Each bar is a count of observations for each year in the dataset</p>
 <ul>
@@ -682,10 +683,12 @@
 <p><br></p>
 <p><strong>Did everybody make this?</strong></p>
 <p><br></p>
-<p>One problem here is that the levels in our status variable are not in a logical order</p>
+<p><strong>What do we need to fix to make this plot more logical?</strong></p>
 <ul>
-<li><strong>SLIDE</strong>: Let’s fix it</li>
+<li>(The levels in our status variable are not in a logical order)</li>
 </ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s fix it</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -734,7 +737,7 @@
 <section id="section-6" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="co"># Add colors</span></span>
+<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="4,5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="co"># Add colors</span></span>
 <span id="cb4-2"><a href=""></a><span class="fu">ggplot</span>(data1, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> wb_income_f)) <span class="sc">+</span></span>
 <span id="cb4-3"><a href=""></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb4-4"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"deepskyblue4"</span>, <span class="st">"deepskyblue1"</span>, </span>
@@ -750,7 +753,7 @@
 <p><br></p>
 <p><strong>Back to the visualization, what do we learn from this about the world?</strong></p>
 <p><br></p>
-<p><strong>SLIDE</strong>: One more tweak possible here…</p>
+<p><strong>SLIDE</strong>: Let’s practice all our skills on new data!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -763,48 +766,11 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-7" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="co"># Convert the counts to proportions</span></span>
-<span id="cb5-2"><a href=""></a><span class="fu">ggplot</span>(data1, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> wb_income_f)) <span class="sc">+</span></span>
-<span id="cb5-3"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb5-4"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"deepskyblue4"</span>, <span class="st">"deepskyblue1"</span>, </span>
-<span id="cb5-5"><a href=""></a>                               <span class="st">"pink"</span>, <span class="st">"red3"</span>)) <span class="sc">+</span></span>
-<span id="cb5-6"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
-<p>Position = ‘fill’ asks the bar plot to convert itself into proportions on the y axis</p>
-<ul>
-<li>Think of this like using the proportions() function</li>
-</ul>
-<p><br></p>
-<p><strong>How does this change our conclusions?</strong></p>
-<p><br></p>
-<p><strong>Why is this SUPER risky?</strong></p>
-<ul>
-<li><p>Completely hides the change in the number of countries per year</p></li>
-<li><p>Assumes changes in % are the same when there are 149 countries vs 210…</p></li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s practice this!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-8" class="slide level2 center" data-background-image="Images/05_2-Freedom_House1.png">
+<section id="section-7" class="slide level2 center" data-background-image="Images/05_2-Freedom_House1.png">
 <h2></h2>
 <aside class="notes">
 <p>Today we practice our univariate analysis tools by examining some of the data produced by Freedom House.</p>
+<p><br></p>
 <p><strong>In very broad strokes, what is the purpose of the measures produced by Freedom House?</strong></p>
 <ul>
 <li><strong>What are they trying to measure?</strong></li>
@@ -846,22 +812,54 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="exercise-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Exercise 1</h2>
+<section id="the-freedom-house-data" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>The Freedom House Data</h2>
 <p><br></p>
-<h3 id="how-is-global-freedom-changing-across-time">How is global freedom changing across time?</h3>
-<p><br></p>
-<h3 id="visualize-fh-status-in-1972-and-2023">Visualize FH <code>status</code> in 1972 and 2023</h3>
-<aside class="notes">
-<p>Alright, let’s crunch some data!</p>
+<div class="r-fit-text">
+<p><strong>How is global freedom changing across time?</strong></p>
 <ul>
-<li>Answer my question with two visualizations!</li>
+<li>Stacked bar plot of FH <code>status</code> across time</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Alright, let’s crunch some new data!</p>
+<ul>
+<li><p>Make sure to reorder the levels (if needed!)</p></li>
+<li><p>Go!</p></li>
 </ul>
 <p><br></p>
-<p><strong>What’s the answer to our question?</strong></p>
+<p>(<strong>SLIDE</strong>: My version)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-8" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="co"># Create a new variable using factor()</span></span>
+<span id="cb5-2"><a href=""></a>fh<span class="sc">$</span>status_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(fh<span class="sc">$</span>status, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"PF"</span>, <span class="st">"NF"</span>))</span>
+<span id="cb5-3"><a href=""></a></span>
+<span id="cb5-4"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> status_f)) <span class="sc">+</span></span>
+<span id="cb5-5"><a href=""></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb5-6"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"cornflowerblue"</span>, <span class="st">"pink"</span>, <span class="st">"red3"</span>)) <span class="sc">+</span></span>
+<span id="cb5-7"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">fill =</span> <span class="st">""</span>, </span>
+<span id="cb5-8"><a href=""></a>       <span class="at">caption =</span> <span class="st">"Source: Freedom House (2024)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<p><strong>Did everybody get this?</strong></p>
+<p><br></p>
+<p>I’m willing to say most readers who haven’t explored Freedom House won’t know what these levels represent</p>
 <ul>
-<li><p><strong>How did you get to that answer?</strong></p></li>
-<li><p>(<strong>SLIDE</strong>)</p></li>
+<li><strong>SLIDE</strong>: Let’s make it clearer!</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -877,32 +875,27 @@
 </section>
 <section id="section-9" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
-<div class="r-fit-text">
-<p><strong>How is global freedom changing across time?</strong></p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co"># Create a new variable using factor()</span></span>
+<span id="cb6-2"><a href=""></a>fh<span class="sc">$</span>status_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(fh<span class="sc">$</span>status, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"PF"</span>, <span class="st">"NF"</span>),</span>
+<span id="cb6-3"><a href=""></a>                      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Free"</span>, <span class="st">"Partly Free"</span>, <span class="st">"Not Free"</span>))</span>
+<span id="cb6-4"><a href=""></a></span>
+<span id="cb6-5"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> status_f)) <span class="sc">+</span></span>
+<span id="cb6-6"><a href=""></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb6-7"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"cornflowerblue"</span>, <span class="st">"pink"</span>, <span class="st">"red3"</span>)) <span class="sc">+</span></span>
+<span id="cb6-8"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">fill =</span> <span class="st">""</span>, </span>
+<span id="cb6-9"><a href=""></a>       <span class="at">caption =</span> <span class="st">"Source: Freedom House (2024)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-13-1.png" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-14-1.png" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-<aside class="notes">
+<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<p><strong>So, how is freedom in the world changing over time?</strong></p>
+<p><br></p>
+<ul>
+<li><p>(Missing data in 1981)</p></li>
+<li><p>(Spike in 1991 as USSR collapses so maybe some new countries were more free?)</p></li>
+<li><p>(Not as sure about that spike in 2023)</p></li>
+</ul>
+<p><br></p>
 <p>A big problem for us in interpreting these counts is that the number of countries being studied increased DRAMATICALLY between the two ends of our dataset</p>
 <ul>
 <li><p>1972 obs: 149</p></li>
@@ -910,14 +903,7 @@
 <li><p>+40.9%</p></li>
 </ul>
 <p><br></p>
-<p>Key lesson: IF the sample changes across time, then counts and proportions are very dangerous to interpret!</p>
-<ul>
-<li>We really can’t tell from this if states are becoming more free or if new states are more likely to be free</li>
-</ul>
-<p><br></p>
-<p><strong>Make sense?</strong></p>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s try some alternative analyses to see if we can unpack what is happening here.</p>
+<p><strong>SLIDE</strong>: Let’s try a different style of stacked bar plot to see if that helps our analysis in this case.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -932,21 +918,46 @@
 </section>
 <section id="section-10" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
-<div class="r-fit-text">
-<p><strong>How is global freedom changing across time?</strong></p>
-<p><br></p>
-<ul>
-<li>Make a bar plot of <code>year</code></li>
-</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="co"># Make bar plot of proportions (not counts)</span></span>
+<span id="cb7-2"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> status_f)) <span class="sc">+</span></span>
+<span id="cb7-3"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb7-4"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"cornflowerblue"</span>, <span class="st">"pink"</span>, <span class="st">"red3"</span>)) <span class="sc">+</span></span>
+<span id="cb7-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">fill =</span> <span class="st">""</span>, </span>
+<span id="cb7-6"><a href=""></a>       <span class="at">caption =</span> <span class="st">"Source: Freedom House (2024)"</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
-<aside class="notes">
-<p>To start, everybody make me a bar plot of the number of countries in each year in the full dataset</p>
+<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<p>Two tweaks to our code here:</p>
+<ol type="1">
+<li><p>Position = ‘fill’ asks the bar plot to convert itself into proportions on the y axis</p>
 <ul>
-<li><p>We’re going to treat <code>year</code> as a categorical variable</p></li>
-<li><p>So, our aim is to count countries in each year</p></li>
+<li>Think of this like using the proportions() function on a table</li>
+</ul></li>
+<li><p>The scale_y_continuous argument lets us label the Y axis with %s</p></li>
+</ol>
+<p><br></p>
+<p><strong>How does this change our conclusions?</strong></p>
+<p><br></p>
+<p><strong>Why is this SUPER risky?</strong></p>
+<ul>
+<li><p>Completely hides the change in the number of countries per year</p></li>
+<li><p>Assumes changes in % are the same when there are 149 countries vs 210…</p></li>
 </ul>
 <p><br></p>
-<p>(<strong>SLIDE</strong>)</p>
+<p><strong>In what ways is this a better plot for answering our question?</strong></p>
+<p><br></p>
+<p><strong>In what ways is this a worse approach?</strong></p>
+<p><br></p>
+<p>Key lesson: IF the sample changes across time, then counts and proportions are very dangerous to interpret!</p>
+<ul>
+<li>We really can’t tell from this if states are becoming more free or if new states are more likely to be free</li>
+</ul>
+<p><br></p>
+<p><strong>Make sense?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s use this approach one more time</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -961,175 +972,13 @@
 </section>
 <section id="section-11" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co"># Observations counted across time</span></span>
-<span id="cb6-2"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year)) <span class="sc">+</span></span>
-<span id="cb6-3"><a href=""></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
-<p><strong>What do we learn from this about the world and about Freedom House?</strong></p>
-<ul>
-<li><p>(Spike in 1991 as USSR collapses so maybe some new countries were more free?)</p></li>
-<li><p>(Not as sure about that spike in 2023)</p></li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: Now, we can also take this one step further by tracking the count of each type of country in this plot.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-12" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="co"># Counts of one variable across time</span></span>
-<span id="cb7-2"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> status)) <span class="sc">+</span></span>
-<span id="cb7-3"><a href=""></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
-<p>Kind of cool, right?</p>
-<ul>
-<li><p>Think of this like what you’ve been doing all semester to “fill” in the bars with color</p></li>
-<li><p>This tells R to “fill” in the bars with a different variable!</p></li>
-</ul>
-<p><br></p>
-<p><strong>Did everybody make this?</strong></p>
-<p><br></p>
-<p>One problem here is that the levels in our status variable are not in a logical order</p>
-<ul>
-<li><p>Should probably go NF, PF to F on top</p></li>
-<li><p><strong>SLIDE</strong></p></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-13" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="co"># Create a new variable using factor()</span></span>
-<span id="cb8-2"><a href=""></a>fh<span class="sc">$</span>status_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(fh<span class="sc">$</span>status, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"F"</span>, <span class="st">"PF"</span>, <span class="st">"NF"</span>))</span>
-<span id="cb8-3"><a href=""></a></span>
-<span id="cb8-4"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> status_f)) <span class="sc">+</span></span>
-<span id="cb8-5"><a href=""></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
-<p><em>Talk them through creating a new variable</em></p>
-<ul>
-<li><p>Don’t overwrite your variables, make new ones!</p></li>
-<li><p>The levels represents the order you want</p></li>
-</ul>
-<p><br></p>
-<p><strong>Everybody get this?</strong></p>
-<p><br></p>
-<p><strong>SLIDE</strong>: Before we analyze, let’s fix the colors</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-14" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="co"># Add colors</span></span>
-<span id="cb9-2"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> status_f)) <span class="sc">+</span></span>
-<span id="cb9-3"><a href=""></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb9-4"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"cornflowerblue"</span>, <span class="st">"pink"</span>, <span class="st">"red3"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
-<p>Scale fill manual lets you specify colors by the fill categories.</p>
-<ul>
-<li><p>You can then enter certain color names using hexadecimal codes or some words</p></li>
-<li><p>I put an R color cheatsheet on our Canvas Modules page</p></li>
-</ul>
-<p><br></p>
-<p><strong>Back to the visualization, what do we learn from this about the world and about Freedom House?</strong></p>
-<p><br></p>
-<p><strong>SLIDE</strong>: One more tweak possible here…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-15" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2></h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="co"># Convert the counts to proportions</span></span>
-<span id="cb10-2"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> status_f)) <span class="sc">+</span></span>
-<span id="cb10-3"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb10-4"><a href=""></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"cornflowerblue"</span>, <span class="st">"pink"</span>, <span class="st">"red3"</span>)) <span class="sc">+</span></span>
-<span id="cb10-5"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
-<p>Position = ‘fill’ asks the bar plot to convert itself into proportions on the y axis</p>
-<ul>
-<li>Think of this like using the proportions() function</li>
-</ul>
-<p><br></p>
-<p><strong>How does this change our conclusions?</strong></p>
-<p><br></p>
-<p><strong>Why is this SUPER risky?</strong></p>
-<ul>
-<li><p>Completely hides the change in the number of countries per year</p></li>
-<li><p>Assumes changes in % are the same when there are 149 countries vs 210…</p></li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s practice this!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-16" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2></h2>
 <div class="r-fit-text">
 <p><strong>How are political rights changing across time?</strong></p>
 </div>
 <p><br></p>
 <ul>
 <li><p>Make a stacked bar plot of <code>year</code> and <code>pr</code></p></li>
-<li><p>Use <code>fill = factor(pr)</code> to tell R to treat it as a categorical variable</p></li>
+<li><p>Use <code>fill = factor(pr)</code> to tell R to treat <code>pr</code> as a categorical variable</p></li>
 </ul>
 <aside class="notes">
 <p>(<strong>SLIDE</strong>: My version)</p>
@@ -1145,18 +994,18 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-17" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<section id="section-12" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> <span class="fu">factor</span>(pr, <span class="at">levels =</span> <span class="dv">7</span><span class="sc">:</span><span class="dv">1</span>))) <span class="sc">+</span></span>
-<span id="cb11-2"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb11-3"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
-<span id="cb11-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">title =</span> <span class="st">"Political Rights Across Time"</span>,</span>
-<span id="cb11-5"><a href=""></a>       <span class="at">caption =</span> <span class="st">"Source: Freedom House (2024)"</span>, <span class="at">fill =</span> <span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb11-6"><a href=""></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">type =</span> <span class="st">"div"</span>, <span class="at">palette =</span> <span class="st">"RdYlBu"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> <span class="fu">factor</span>(pr, <span class="at">levels =</span> <span class="dv">7</span><span class="sc">:</span><span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb8-2"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb8-3"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb8-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">title =</span> <span class="st">"Political Rights Across Time"</span>,</span>
+<span id="cb8-5"><a href=""></a>       <span class="at">caption =</span> <span class="st">"Source: Freedom House (2024)"</span>, <span class="at">fill =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb8-6"><a href=""></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">type =</span> <span class="st">"div"</span>, <span class="at">palette =</span> <span class="st">"RdYlBu"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
 <p>Two new bits of code here.</p>
 <ul>
 <li><p>Rather than manually specify the colors I’m using a built-in tool called R Color Brewer</p></li>
@@ -1185,18 +1034,18 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-18" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<section id="section-13" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> <span class="fu">factor</span>(cl, <span class="at">levels =</span> <span class="dv">7</span><span class="sc">:</span><span class="dv">1</span>))) <span class="sc">+</span></span>
-<span id="cb12-2"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb12-3"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
-<span id="cb12-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">title =</span> <span class="st">"Civil Liberties Across Time"</span>,</span>
-<span id="cb12-5"><a href=""></a>       <span class="at">caption =</span> <span class="st">"Source: Freedom House (2024)"</span>, <span class="at">fill =</span> <span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb12-6"><a href=""></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">type =</span> <span class="st">"div"</span>, <span class="at">palette =</span> <span class="st">"RdYlBu"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">ggplot</span>(fh, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> <span class="fu">factor</span>(cl, <span class="at">levels =</span> <span class="dv">7</span><span class="sc">:</span><span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb9-2"><a href=""></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb9-3"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb9-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">""</span>, <span class="at">title =</span> <span class="st">"Civil Liberties Across Time"</span>,</span>
+<span id="cb9-5"><a href=""></a>       <span class="at">caption =</span> <span class="st">"Source: Freedom House (2024)"</span>, <span class="at">fill =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb9-6"><a href=""></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">type =</span> <span class="st">"div"</span>, <span class="at">palette =</span> <span class="st">"RdYlBu"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
 <p><strong>What do we learn from this?</strong></p>
 <p><br></p>
 <p><strong>Everybody feeling pretty comfortable making stacked bar plots?</strong></p>
@@ -1214,7 +1063,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-19" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<section id="section-14" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="r-fit-text">
 <p><strong>How is freedom changing in the US across time?</strong></p>
@@ -1244,19 +1093,19 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-20" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<section id="section-15" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>fh_US <span class="ot">&lt;-</span> <span class="fu">filter</span>(fh, fh_country <span class="sc">==</span> <span class="st">"United States"</span>)</span>
-<span id="cb13-2"><a href=""></a></span>
-<span id="cb13-3"><a href=""></a><span class="fu">ggplot</span>(fh_US, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> fh_total)) <span class="sc">+</span></span>
-<span id="cb13-4"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb13-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Freedom House Total Score (1-14)"</span>, </span>
-<span id="cb13-6"><a href=""></a>       <span class="at">caption =</span> <span class="st">"Source: Freedom House (2024)"</span>) <span class="sc">+</span></span>
-<span id="cb13-7"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">7</span>), <span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>fh_US <span class="ot">&lt;-</span> <span class="fu">filter</span>(fh, fh_country <span class="sc">==</span> <span class="st">"United States"</span>)</span>
+<span id="cb10-2"><a href=""></a></span>
+<span id="cb10-3"><a href=""></a><span class="fu">ggplot</span>(fh_US, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> fh_total)) <span class="sc">+</span></span>
+<span id="cb10-4"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb10-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Freedom House Total Score (1-14)"</span>, </span>
+<span id="cb10-6"><a href=""></a>       <span class="at">caption =</span> <span class="st">"Source: Freedom House (2024)"</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">14</span>), <span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<img data-src="05_3-Practice_Univariate_Analyses3_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
 <p>A fairly stable story over time, right?</p>
 <ul>
 <li>Something weird happened in 2016…</li>
@@ -1265,6 +1114,47 @@
 <p>Everybody try this again but find us a country with tons of yearly variation!</p>
 <p><br></p>
 <p><strong>Report back, what countries are basket cases per this measure?</strong></p>
+<ul>
+<li><em>You make those too!</em></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-16" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Report 1</strong></p>
+<p><strong>Analyzing our Outcome Variable(s)</strong></p>
+</div>
+<p><br></p>
+<div class="r-fit-text">
+<ol type="1">
+<li><p>Why is this project important?</p></li>
+<li><p>How confident should we be in the methodology?</p></li>
+<li><p>What do the measures currently show us?</p></li>
+<li><p>How are these measures changing across time?</p></li>
+</ol>
+</div>
+<aside class="notes">
+<p>Our class time next week is focused on completing the first report</p>
+<ul>
+<li><p>We’ll primarily work on Sections 3 and 4 in class</p></li>
+<li><p>That means you need to have Sections 1 and 2 completed on your own</p></li>
+</ul>
+<p><br></p>
+<p>Your completed draft is due at the end of next week</p>
+<ul>
+<li>So, please take some time this weekend to move forward on this project!</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

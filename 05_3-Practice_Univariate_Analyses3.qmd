@@ -291,9 +291,7 @@ data1 |>
 
 Let's use this strategy but expand it for all years!
 
-- To start, everybody make a bar plot of `year` in the World Bank data
-
-- (**SLIDE**)
+- **SLIDE**: Let's start with a bar plot of `year` in the World Bank data
 
 :::
 
@@ -305,14 +303,15 @@ Let's use this strategy but expand it for all years!
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
-# Observations counted across time
 ggplot(data1, aes(x = year)) +
   geom_bar()
 ```
 
 ::: notes
 
-**Ok, what did you just make? What do these bars represent?**
+Ok, interpret this bar plot for me.
+
+- **What do these bars represent?**
 
 <br>
 
@@ -349,9 +348,13 @@ Kind of cool, right?
 
 <br>
 
-One problem here is that the levels in our status variable are not in a logical order
+**What do we need to fix to make this plot more logical?**
 
-- **SLIDE**: Let's fix it
+- (The levels in our status variable are not in a logical order)
+
+<br>
+
+**SLIDE**: Let's fix it
 :::
 
 
@@ -389,6 +392,8 @@ ggplot(data1, aes(x = year, fill = wb_income_f)) +
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+#| code-line-numbers: "4,5"
+
 # Add colors
 ggplot(data1, aes(x = year, fill = wb_income_f)) +
   geom_bar() +
@@ -410,88 +415,9 @@ Scale fill manual lets you specify colors by the fill categories.
 
 <br>
 
-**SLIDE**: One more tweak possible here...
+**SLIDE**: Let's practice all our skills on new data!
+
 :::
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
-# Convert the counts to proportions
-ggplot(data1, aes(x = year, fill = wb_income_f)) +
-  geom_bar(position = "fill") +
-  scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", 
-                               "pink", "red3")) +
-  scale_y_continuous(labels = scales::percent_format())
-```
-
-::: notes
-
-Position = 'fill' asks the bar plot to convert itself into proportions on the y axis
-
-- Think of this like using the proportions() function
-
-<br>
-
-**How does this change our conclusions?**
-
-<br>
-
-**Why is this SUPER risky?**
-
-- Completely hides the change in the number of countries per year
-
-- Assumes changes in % are the same when there are 149 countries vs 210...
-
-<br>
-
-**SLIDE**: Let's practice this!
-:::
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -500,6 +426,8 @@ Position = 'fill' asks the bar plot to convert itself into proportions on the y 
 ::: notes
 
 Today we practice our univariate analysis tools by examining some of the data produced by Freedom House.
+
+<br>
 
 **In very broad strokes, what is the purpose of the measures produced by Freedom House?**
 
@@ -541,67 +469,86 @@ Our focus today is to practice our univariate analyses so we'll set methodology 
 
 
 
-## Exercise 1 {background-image="Images/background-data_blue_v4.png" .center}
+## The Freedom House Data {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-### How is global freedom changing across time?
+::: {.r-fit-text}
+**How is global freedom changing across time?**
 
-<br>
-
-### Visualize FH `status` in 1972 and 2023
-
+- Stacked bar plot of FH `status` across time
+:::
 ::: notes
 
-Alright, let's crunch some data!
+Alright, let's crunch some new data!
 
-- Answer my question with two visualizations!
+- Make sure to reorder the levels (if needed!)
+
+- Go!
 
 <br>
 
-**What's the answer to our question?**
+(**SLIDE**: My version)
 
-- **How did you get to that answer?**
-
-- (**SLIDE**)
 :::
+
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-**How is global freedom changing across time?**
-:::
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"))
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.85, fig.width=5}
-fh |>
-  filter(year == 1972) |>
-  ggplot(aes(x = status)) +
-  geom_bar(fill = c("cornflowerblue", "red3", "pink")) +
-  labs(title = "Freedom House Status (1972)", x = "", y = "Countries",
-       caption = "Source: Freedom House (2024)") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
-  ylim(0, 85)
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "Count", fill = "", 
+       caption = "Source: Freedom House (2024)")
 ```
-:::
-
-::: {.column width="50%"}
-```{r, cache=TRUE, fig.retina=3, out.width='100%', fig.asp=0.85, fig.width=5}
-fh |>
-  filter(year == 2023) |>
-  ggplot(aes(x = status)) +
-  geom_bar(fill = c("cornflowerblue", "red3", "pink")) +
-  labs(title = "Freedom House Status (2023)", x = "", y = "Countries",
-       caption = "Source: Freedom House (2024)") +
-  scale_x_discrete(limits = c("NF", "PF", "F"), labels = c("Not Free", "Partly Free", "Free")) +
-  ylim(0, 85)
-```
-:::
-::::
 
 ::: notes
+
+**Did everybody get this?**
+
+<br>
+
+I'm willing to say most readers who haven't explored Freedom House won't know what these levels represent
+
+- **SLIDE**: Let's make it clearer!
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"),
+                      labels = c("Free", "Partly Free", "Not Free"))
+
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "Count", fill = "", 
+       caption = "Source: Freedom House (2024)")
+```
+
+::: notes
+
+**So, how is freedom in the world changing over time?**
+
+<br>
+
+- (Missing data in 1981)
+
+- (Spike in 1991 as USSR collapses so maybe some new countries were more free?)
+
+- (Not as sure about that spike in 2023)
+
+<br>
 
 A big problem for us in interpreting these counts is that the number of countries being studied increased DRAMATICALLY between the two ends of our dataset
 
@@ -613,17 +560,7 @@ A big problem for us in interpreting these counts is that the number of countrie
 
 <br>
 
-Key lesson: IF the sample changes across time, then counts and proportions are very dangerous to interpret!
-
-- We really can't tell from this if states are becoming more free or if new states are more likely to be free
-
-<br>
-
-**Make sense?**
-
-<br>
-
-**SLIDE**: Let's try some alternative analyses to see if we can unpack what is happening here.
+**SLIDE**: Let's try a different style of stacked bar plot to see if that helps our analysis in this case.
 
 :::
 
@@ -631,154 +568,25 @@ Key lesson: IF the sample changes across time, then counts and proportions are v
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-**How is global freedom changing across time?**
-
-<br>
-
-- Make a bar plot of `year`
-:::
-
-::: notes
-
-To start, everybody make me a bar plot of the number of countries in each year in the full dataset
-
-- We're going to treat `year` as a categorical variable
-
-- So, our aim is to count countries in each year
-
-<br>
-
-(**SLIDE**)
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
-# Observations counted across time
-ggplot(fh, aes(x = year)) +
-  geom_bar()
-```
-
-::: notes
-**What do we learn from this about the world and about Freedom House?**
-
-- (Spike in 1991 as USSR collapses so maybe some new countries were more free?)
-
-- (Not as sure about that spike in 2023)
-
-<br>
-
-**SLIDE**: Now, we can also take this one step further by tracking the count of each type of country in this plot.
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
-# Counts of one variable across time
-ggplot(fh, aes(x = year, fill = status)) +
-  geom_bar()
-```
-
-::: notes
-
-Kind of cool, right?
-
-- Think of this like what you've been doing all semester to "fill" in the bars with color
-
-- This tells R to "fill" in the bars with a different variable!
-
-<br>
-
-**Did everybody make this?**
-
-<br>
-
-One problem here is that the levels in our status variable are not in a logical order
-
-- Should probably go NF, PF to F on top
-
-- **SLIDE**
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
-# Create a new variable using factor()
-fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"))
-
-ggplot(fh, aes(x = year, fill = status_f)) +
-  geom_bar()
-```
-
-::: notes
-
-*Talk them through creating a new variable*
-
-- Don't overwrite your variables, make new ones!
-
-- The levels represents the order you want
-
-<br>
-
-**Everybody get this?**
-
-<br>
-
-**SLIDE**: Before we analyze, let's fix the colors
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
-# Add colors
-ggplot(fh, aes(x = year, fill = status_f)) +
-  geom_bar() +
-  scale_fill_manual(values = c("cornflowerblue", "pink", "red3"))
-```
-
-::: notes
-
-Scale fill manual lets you specify colors by the fill categories.
-
-- You can then enter certain color names using hexadecimal codes or some words
-
-- I put an R color cheatsheet on our Canvas Modules page
-
-<br>
-
-**Back to the visualization, what do we learn from this about the world and about Freedom House?**
-
-<br>
-
-**SLIDE**: One more tweak possible here...
-:::
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
-# Convert the counts to proportions
+```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618}
+# Make bar plot of proportions (not counts)
 ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar(position = "fill") +
   scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "", fill = "", 
+       caption = "Source: Freedom House (2024)") +
   scale_y_continuous(labels = scales::percent_format())
 ```
 
 ::: notes
 
-Position = 'fill' asks the bar plot to convert itself into proportions on the y axis
+Two tweaks to our code here:
 
-- Think of this like using the proportions() function
+1. Position = 'fill' asks the bar plot to convert itself into proportions on the y axis
+
+    - Think of this like using the proportions() function on a table
+
+2. The scale_y_continuous argument lets us label the Y axis with %s
 
 <br>
 
@@ -794,7 +602,26 @@ Position = 'fill' asks the bar plot to convert itself into proportions on the y 
 
 <br>
 
-**SLIDE**: Let's practice this!
+**In what ways is this a better plot for answering our question?**
+
+<br>
+
+**In what ways is this a worse approach?**
+
+<br>
+
+Key lesson: IF the sample changes across time, then counts and proportions are very dangerous to interpret!
+
+- We really can't tell from this if states are becoming more free or if new states are more likely to be free
+
+<br>
+
+**Make sense?**
+
+<br>
+
+**SLIDE**: Let's use this approach one more time
+
 :::
 
 
@@ -809,7 +636,7 @@ Position = 'fill' asks the bar plot to convert itself into proportions on the y 
 
 - Make a stacked bar plot of `year` and `pr`
 
-- Use `fill = factor(pr)` to tell R to treat it as a categorical variable
+- Use `fill = factor(pr)` to tell R to treat `pr` as a categorical variable
 
 ::: notes
 
@@ -917,7 +744,7 @@ ggplot(fh_US, aes(x = year, y = fh_total)) +
   geom_line() +
   labs(x = "", y = "Freedom House Total Score (1-14)", 
        caption = "Source: Freedom House (2024)") +
-  scale_y_continuous(limits = c(1,7), breaks = 1:7)
+  scale_y_continuous(limits = c(1,14), breaks = 1:14)
 ```
 
 ::: notes
@@ -934,53 +761,48 @@ Everybody try this again but find us a country with tons of yearly variation!
 
 **Report back, what countries are basket cases per this measure?**
 
-```{r}
-# Find cases with conflicting CL and PR
-# fh |> 
-#   group_by(fh_country) %>% 
-#   summarize(
-#     cor = cor(pr, cl, use="pairwise")
-#   ) |>
-#   arrange(cor) |>
-#   print(n = 250)
-# 
-# # Italy?
-# fh_1 <- filter(fh, fh_country == "Israel")
-# 
-# print(fh_1, n=50)
-# 
-# ggplot(fh_US, aes(x = year, y = pr)) +
-#   geom_line() +
-#   labs(x = "", y = "Political Rights (1-7)", 
-#        caption = "Source: Freedom House (2024)") +
-#   scale_y_continuous(limits = c(1,7), breaks = 1:7)
-
-```
+- *You make those too!*
 
 :::
 
 
 
 
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Report 1**
+
+**Analyzing our Outcome Variable(s)**
+:::
+
+<br>
+
+::: {.r-fit-text}
+1) Why is this project important?
+
+2) How confident should we be in the methodology?
+
+3) What do the measures currently show us?
+
+4) How are these measures changing across time?
+:::
+
+::: notes
+
+Our class time next week is focused on completing the first report
+
+- We'll primarily work on Sections 3 and 4 in class
+
+- That means you need to have Sections 1 and 2 completed on your own
+
+<br>
+
+Your completed draft is due at the end of next week
+
+- So, please take some time this weekend to move forward on this project!
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+:::
 
 
