@@ -302,7 +302,14 @@ Let's use this strategy but expand it for all years!
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+ggplot(data1, aes(x = year)) +
+  geom_bar()
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 ggplot(data1, aes(x = year)) +
   geom_bar()
 ```
@@ -328,7 +335,15 @@ Each bar is a count of observations for each year in the dataset
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Counts of one variable across time
+ggplot(data1, aes(x = year, fill = wb_income)) +
+  geom_bar()
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Counts of one variable across time
 ggplot(data1, aes(x = year, fill = wb_income)) +
   geom_bar()
@@ -361,7 +376,19 @@ Kind of cool, right?
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Create a new variable using factor()
+data1$wb_income_f <- factor(data1$wb_income, 
+    levels = c(NA, "High", "Upper-middle", 
+               "Lower-middle", "Low"))
+
+ggplot(data1, aes(x = year, fill = wb_income_f)) +
+  geom_bar()
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Create a new variable using factor()
 data1$wb_income_f <- factor(data1$wb_income, 
     levels = c(NA, "High", "Upper-middle", "Lower-middle", "Low"))
@@ -391,9 +418,17 @@ ggplot(data1, aes(x = year, fill = wb_income_f)) +
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
-#| code-line-numbers: "4,5"
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Add colors
+ggplot(data1, aes(x = year, fill = wb_income_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", 
+                               "pink", "red3"))
+```
+:::::
 
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Add colors
 ggplot(data1, aes(x = year, fill = wb_income_f)) +
   geom_bar() +
@@ -496,7 +531,20 @@ Alright, let's crunch some new data!
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"))
+
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "Count", fill = "", 
+       caption = "Source: Freedom House (2024)")
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Create a new variable using factor()
 fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"))
 
@@ -524,7 +572,23 @@ I'm willing to say most readers who haven't explored Freedom House won't know wh
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, 
+                      levels = c("F", "PF", "NF"),
+                      labels = c("Free", "Partly Free", 
+                                 "Not Free"))
+
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "Count", fill = "", 
+       caption = "Source: Freedom House (2024)")
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Create a new variable using factor()
 fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"),
                       labels = c("Free", "Partly Free", "Not Free"))
@@ -568,7 +632,19 @@ A big problem for us in interpreting these counts is that the number of countrie
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=0.618}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Make bar plot of proportions (not counts)
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar(position = "fill") +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "", fill = "", 
+       caption = "Source: Freedom House (2024)") +
+  scale_y_continuous(labels = scales::percent_format())
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Make bar plot of proportions (not counts)
 ggplot(fh, aes(x = year, fill = status_f)) +
   geom_bar(position = "fill") +
@@ -648,7 +724,18 @@ Key lesson: IF the sample changes across time, then counts and proportions are v
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+ggplot(fh, aes(x = year, fill = factor(pr, levels = 7:1))) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "", y = "", title = "Political Rights Across Time",
+       caption = "Source: Freedom House (2024)", fill = "") +
+  scale_fill_brewer(type = "div", palette = "RdYlBu")
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 ggplot(fh, aes(x = year, fill = factor(pr, levels = 7:1))) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent_format()) +
@@ -685,7 +772,18 @@ Everybody now repeat this exact code but do it for the civil liberties variable 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, cache=TRUE, echo=TRUE, fig.align='center', fig.asp=0.618}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+ggplot(fh, aes(x = year, fill = factor(cl, levels = 7:1))) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "", y = "", title = "Civil Liberties Across Time",
+       caption = "Source: Freedom House (2024)", fill = "") +
+  scale_fill_brewer(type = "div", palette = "RdYlBu")
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 ggplot(fh, aes(x = year, fill = factor(cl, levels = 7:1))) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent_format()) +
@@ -737,7 +835,19 @@ A second option for tracking change across time is to focus on a single observat
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE, cache=TRUE, fig.align='center', fig.asp=0.618, fig.width=7}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+fh_US <- filter(fh, fh_country == "United States")
+
+ggplot(fh_US, aes(x = year, y = fh_total)) +
+  geom_line() +
+  labs(x = "", y = "Freedom House Total Score (1-14)", 
+       caption = "Source: Freedom House (2024)") +
+  scale_y_continuous(limits = c(1,14), breaks = 1:14)
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 fh_US <- filter(fh, fh_country == "United States")
 
 ggplot(fh_US, aes(x = year, y = fh_total)) +

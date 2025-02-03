@@ -67,9 +67,13 @@ For today I asked you to practice our coding skills and descriptive stats from l
 
 **What proportion of US presidents since 1953 have been Republicans?**
 
+<br>
+
+::: {.r-fit-text}
 ```{r, echo=TRUE}
 proportions(table(presidential$party))
 ```
+:::
 
 ::: notes
 **Everybody get this?**
@@ -83,15 +87,17 @@ proportions(table(presidential$party))
 
 **Why are the mean and median total populations in the midwest so different from each other?**
 
-```{r, echo=TRUE}
-summary(midwest$poptotal)
-```
-
 <br>
 
-```{r, echo=TRUE, eval=TRUE}
+::: {.r-fit-text}
+
+```{r, echo=TRUE}
+summary(midwest$poptotal)
+
 sd(midwest$poptotal)
 ```
+
+:::
 
 ::: notes
 **So, what's your answer to this question?**
@@ -112,15 +118,16 @@ On average, the cities in the midwest differ from the mean by nearly 300k!
 
 **How many hours per day do you have to sleep to sleep longer than 75% of studied mammals?**
 
-```{r, echo=TRUE, eval=TRUE}
-summary(msleep$sleep_total)
-```
-
 <br>
 
+::: {.r-fit-text}
+
 ```{r, echo=TRUE, eval=TRUE}
+summary(msleep$sleep_total)
+
 quantile(msleep$sleep_total, probs = .75)
 ```
+:::
 
 ::: notes
 
@@ -371,11 +378,11 @@ Everybody make us this bar plot
 
 ::: {.r-fit-text}
 **Categorical Variable: Make a Bar Plot**
-:::
 
 ```{r, echo=TRUE}
 table(mpg$drv)
 ```
+:::
 
 ```{r, fig.width=4, fig.asp=1, fig.align='center'}
 mpg |>
@@ -448,7 +455,8 @@ Everybody make us this bar plot
 <br>
 
 :::: {.columns}
-::: {.column width="50%"}
+::: {.column width="45%"}
+
 ```{r, fig.width=5, fig.asp=1}
 presidential |>
   count(party) |>
@@ -463,18 +471,24 @@ presidential |>
   scale_y_continuous(labels = scales::percent_format()) +
   geom_hline(yintercept = seq(.2, .6, .2), color = "white")
 ```
+
 :::
 
-::: {.column width="50%"}
+::: {.column width="55%"}
 
 <br>
 
 <br>
+
+::: {.r-fit-text}
 
 ```{r, echo=TRUE, fig.retina=3}
 proportions(table(presidential$party))
 ```
 :::
+
+:::
+
 ::::
 
 ::: notes
@@ -511,17 +525,12 @@ Everybody try it!
 
 ::: {.r-fit-text}
 **Numerical Variable: Make a Bar Plot?**
-:::
-
-<br>
-
-```{r, echo=FALSE}
-options(width = 105)
-```
 
 ```{r, echo=TRUE}
 table(midwest$poptotal)
 ```
+
+:::
 
 ::: notes
 
@@ -790,7 +799,9 @@ By hand, everybody draw me a box plot of city fuel economy in the mpg data set.
 :::
 
 :::: {.columns}
-::: {.column width="60%"}
+::: {.column width="65%"}
+
+::::: {.r-fit-text}
 ```{r, echo=TRUE}
 # Summary stats
 summary(mpg$cty)
@@ -801,16 +812,13 @@ summary(mpg$cty)
 ```{r, echo=TRUE}
 # Calculate the tails
 quantile(mpg$cty, probs = .25) - IQR(mpg$cty)*1.5
-```
 
-<br>
-
-```{r, echo=TRUE}
 quantile(mpg$cty, probs = .75) + IQR(mpg$cty)*1.5
 ```
+:::::
 :::
 
-::: {.column width="40%"}
+::: {.column width="35%"}
 ```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=1, out.width='100%', fig.align='center'}
 mpg |>
   ggplot(aes(y = 1, x = cty)) +

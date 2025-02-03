@@ -409,7 +409,17 @@ KEY TAKEAWAY: Analysis often requires context and benchmarks are one very useful
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=5}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Use scale_x_discrete to reorder bars in bar plot
+ggplot(data2021, aes(x = wb_income)) +
+  geom_bar(fill = "green3") +
+  scale_x_discrete(limits = c("Low", "Lower-middle",
+                              "Upper-middle", "High", NA))
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Use scale_x_discrete to reorder bars in bar plot
 ggplot(data2021, aes(x = wb_income)) +
   geom_bar(fill = "green3") +
@@ -516,7 +526,17 @@ Whereas the benchmark approach required a number as context
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=7}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+ggplot(data2021, aes(x = death_rate)) +
+  geom_histogram(bins = 15) +
+  annotate("text", x = 10.1, y = 38, label = "US") +
+  annotate("segment", x = 10.1, xend = 10.1, y = 35, 
+           yend = 25, arrow = arrow())
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 ggplot(data2021, aes(x = death_rate)) +
   geom_histogram(bins = 15) +
   annotate("text", x = 10.1, y = 38, label = "US") +
@@ -555,7 +575,17 @@ Test it out.
 
 **Analysis Option 3: Snapshots Across Time**
 
-```{r, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=7}
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Subset the data by one year
+data1985 <- filter(data1, year == 1985)
+
+ggplot(data1985, aes(x = measles_immunizations_pct)) +
+  geom_histogram(bins = 15, fill = "blue", color = "white")
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Subset the data by one year
 data1985 <- filter(data1, year == 1985)
 
@@ -630,6 +660,7 @@ data1 |>
 **Analysis Option 3: Snapshots Across Time**
 :::
 
+::::: {.r-fit-text}
 ```{r, echo=TRUE, eval=FALSE}
 # Install the animation packages (one time)
 install.packages("gifski")
@@ -643,8 +674,10 @@ library(gganimate)
 ggplot(data1, aes(x = measles_immunizations_pct)) +
   geom_histogram(bins = 30) +
   transition_time(year) +
-  labs(title = "Measles Immunizations ({as.integer(frame_time)})")
+  labs(y = "Count", x = "Measles Immunizations",
+  title = "Year: {as.integer(frame_time)}")
 ```
+:::::
 
 ::: notes
 
@@ -673,7 +706,7 @@ data1 |>
   ggplot(aes(x = measles_immunizations_pct)) +
   geom_histogram(bins = 30, fill = "blue", color = "white") +
   transition_time(year) +
-  labs(title = "Measles Immunizations ({as.integer(frame_time)})",
+  labs(title = "Year: {as.integer(frame_time)}",
        x = "Measles Immunizations (% under 2 years)", y = "Countries",
        caption = "Source: WDI (2024)")
 ```
