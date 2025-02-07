@@ -345,7 +345,7 @@ Drawing a bar plot is super easy:
 
 <br>
 
-**By hand**, draw a bar plot of drive train levels (drv) for the 234 cars in the mpg dataset.
+**By hand**, draw a bar plot of drive train levels (drv) for the cars in the mpg dataset.
 
 1. Count the levels
 
@@ -418,7 +418,7 @@ Let's practice this one more time!
 
 **By hand**, draw a bar plot of **the proportion** of parties that have controlled the presidency since 1953 in the presidential data set.
 
-1. Count the levels
+1. Count the levels and convert to proportions
 
 2. Draw X axis with labels
 
@@ -741,7 +741,7 @@ So, a histogram is a binned bar plot and it attempts to show us the shape of the
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Histogram**
+**Numerical Variable: Make a Box Plot**
 :::
 
 :::: {.columns}
@@ -777,17 +777,40 @@ An alternative to the histogram is the box plot.
 
 <br>
 
-### Any questions on the components of a box plot?
+**Any questions on the components of a box plot?**
 
 <br>
 
-Let's practice!
+**SLIDE**: Let's practice!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Box Plot**
+:::
 
 <br>
 
-By hand, everybody draw me a box plot of city fuel economy in the mpg data set.
+**By hand**, draw a box plot of city fuel economy in the mpg data set
 
-- Remember, the summary() function gets you everything you need.
+1. Calculate the median, the 25th and 75th percentiles
+
+2. Draw X axis to include the full range of values
+
+3. Draw the median as a small line
+
+4. Draw the box around the IQR
+
+5. Add the whiskers (1.5x the IQR)
+
+::: notes
+
+Remember, the summary() function gets you everything you need.
+
 :::
 
 
@@ -795,7 +818,7 @@ By hand, everybody draw me a box plot of city fuel economy in the mpg data set.
 ## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Histogram**
+**Numerical Variable: Make a Box Plot**
 :::
 
 :::: {.columns}
@@ -973,9 +996,6 @@ knitr::include_graphics("Images/03_1-Johnson-Line_plot.png")
 
 Draw a line plot of US unemployment (`unemploy`) for the most recent 12 months in the `economics` data set.
 
-::: notes
-
-:::
 
 
 
@@ -985,9 +1005,25 @@ Draw a line plot of US unemployment (`unemploy`) for the most recent 12 months i
 **Numeric Variables Across Time: Line Plots**
 :::
 
-<br>
+:::: {.columns}
 
-```{r, fig.width=7, fig.asp=0.618, fig.align='center'}
+::: {.column width="50%"}
+```{r, fig.width=6, fig.asp=.8, fig.align='center'}
+economics |>
+  slice_tail(n = 12) |>
+  ggplot(aes(x = date, y = unemploy)) +
+  geom_line() +
+  geom_point() +
+  theme_bw() +
+  scale_x_date(date_breaks = "month", date_labels = "%b %y") +
+  labs(x = "", y = "Unemployment (thousands)",
+       caption = "Source: St Louis Federal Reserve") +
+  scale_y_continuous(limits = c(0, 10000))
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.width=6, fig.asp=.8, fig.align='center'}
 economics |>
   slice_tail(n = 12) |>
   ggplot(aes(x = date, y = unemploy)) +
@@ -998,11 +1034,15 @@ economics |>
   labs(x = "", y = "Unemployment (thousands)",
        caption = "Source: St Louis Federal Reserve")
 ```
+:::
+
+::::
 
 ::: notes
+
 **Everybody make this?**
 
-Line plots super easy, no?
+- Line plots super easy, no?
 
 :::
 
