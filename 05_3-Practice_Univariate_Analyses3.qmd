@@ -379,21 +379,20 @@ Kind of cool, right?
 ::::: {.r-fit-text}
 ```{r, echo=TRUE, eval=FALSE}
 # Create a new variable using factor()
-data1$wb_income_f <- factor(data1$wb_income, 
-    levels = c(NA, "High", "Upper-middle", 
-               "Lower-middle", "Low"))
+data1$income2 <- factor(data1$wb_income, levels = c(NA, "High",
+                "Upper-middle", "Lower-middle", "Low"))
 
-ggplot(data1, aes(x = year, fill = wb_income_f)) +
+ggplot(data1, aes(x = year, fill = income2)) +
   geom_bar()
 ```
 :::::
 
 ```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Create a new variable using factor()
-data1$wb_income_f <- factor(data1$wb_income, 
+data1$income2 <- factor(data1$wb_income, 
     levels = c(NA, "High", "Upper-middle", "Lower-middle", "Low"))
 
-ggplot(data1, aes(x = year, fill = wb_income_f)) +
+ggplot(data1, aes(x = year, fill = income2)) +
   geom_bar()
 ```
 
@@ -421,7 +420,7 @@ ggplot(data1, aes(x = year, fill = wb_income_f)) +
 ::::: {.r-fit-text}
 ```{r, echo=TRUE, eval=FALSE}
 # Add colors
-ggplot(data1, aes(x = year, fill = wb_income_f)) +
+ggplot(data1, aes(x = year, fill = income2)) +
   geom_bar() +
   scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", 
                                "pink", "red3"))
@@ -430,7 +429,7 @@ ggplot(data1, aes(x = year, fill = wb_income_f)) +
 
 ```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 # Add colors
-ggplot(data1, aes(x = year, fill = wb_income_f)) +
+ggplot(data1, aes(x = year, fill = income2)) +
   geom_bar() +
   scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", 
                                "pink", "red3"))
@@ -624,79 +623,7 @@ A big problem for us in interpreting these counts is that the number of countrie
 
 <br>
 
-**SLIDE**: Let's try a different style of stacked bar plot to see if that helps our analysis in this case.
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::::: {.r-fit-text}
-```{r, echo=TRUE, eval=FALSE}
-# Make bar plot of proportions (not counts)
-ggplot(fh, aes(x = year, fill = status_f)) +
-  geom_bar(position = "fill") +
-  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
-  labs(x = "", y = "", fill = "", 
-       caption = "Source: Freedom House (2024)") +
-  scale_y_continuous(labels = scales::percent_format())
-```
-:::::
-
-```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
-# Make bar plot of proportions (not counts)
-ggplot(fh, aes(x = year, fill = status_f)) +
-  geom_bar(position = "fill") +
-  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
-  labs(x = "", y = "", fill = "", 
-       caption = "Source: Freedom House (2024)") +
-  scale_y_continuous(labels = scales::percent_format())
-```
-
-::: notes
-
-Two tweaks to our code here:
-
-1. Position = 'fill' asks the bar plot to convert itself into proportions on the y axis
-
-    - Think of this like using the proportions() function on a table
-
-2. The scale_y_continuous argument lets us label the Y axis with %s
-
-<br>
-
-**How does this change our conclusions?**
-
-<br>
-
-**Why is this SUPER risky?**
-
-- Completely hides the change in the number of countries per year
-
-- Assumes changes in % are the same when there are 149 countries vs 210...
-
-<br>
-
-**In what ways is this a better plot for answering our question?**
-
-<br>
-
-**In what ways is this a worse approach?**
-
-<br>
-
-Key lesson: IF the sample changes across time, then counts and proportions are very dangerous to interpret!
-
-- We really can't tell from this if states are becoming more free or if new states are more likely to be free
-
-<br>
-
-**Make sense?**
-
-<br>
-
-**SLIDE**: Let's use this approach one more time
+**SLIDE**: Let's practice!
 
 :::
 
@@ -726,9 +653,11 @@ Key lesson: IF the sample changes across time, then counts and proportions are v
 
 ::::: {.r-fit-text}
 ```{r, echo=TRUE, eval=FALSE}
-ggplot(fh, aes(x = year, fill = factor(pr, levels = 7:1))) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = scales::percent_format()) +
+# A new tool for colors!
+fh$pr_f <- factor(fh$pr, levels = c(7, 6, 5, 4, 3, 2, 1))
+
+ggplot(fh, aes(x = year, fill = pr_f)) +
+  geom_bar() +
   labs(x = "", y = "", title = "Political Rights Across Time",
        caption = "Source: Freedom House (2024)", fill = "") +
   scale_fill_brewer(type = "div", palette = "RdYlBu")
@@ -736,12 +665,16 @@ ggplot(fh, aes(x = year, fill = factor(pr, levels = 7:1))) +
 :::::
 
 ```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
-ggplot(fh, aes(x = year, fill = factor(pr, levels = 7:1))) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = scales::percent_format()) +
+#
+#RColorBrewer::brewer.pal(7, name = "RdYlBu")
+
+fh$pr_f <- factor(fh$pr, levels = c(7, 6, 5, 4, 3, 2, 1))
+
+ggplot(fh, aes(x = year, fill = pr_f)) +
+  geom_bar() +
   labs(x = "", y = "", title = "Political Rights Across Time",
        caption = "Source: Freedom House (2024)", fill = "") +
-  scale_fill_brewer(type = "div", palette = "RdYlBu")
+  scale_fill_manual(values = c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4"))
 ```
 
 ::: notes
@@ -774,9 +707,10 @@ Everybody now repeat this exact code but do it for the civil liberties variable 
 
 ::::: {.r-fit-text}
 ```{r, echo=TRUE, eval=FALSE}
-ggplot(fh, aes(x = year, fill = factor(cl, levels = 7:1))) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = scales::percent_format()) +
+fh$cl_f <- factor(fh$cl, levels = c(7, 6, 5, 4, 3, 2, 1))
+
+ggplot(fh, aes(x = year, fill = cl_f)) +
+  geom_bar() +
   labs(x = "", y = "", title = "Civil Liberties Across Time",
        caption = "Source: Freedom House (2024)", fill = "") +
   scale_fill_brewer(type = "div", palette = "RdYlBu")
@@ -784,9 +718,10 @@ ggplot(fh, aes(x = year, fill = factor(cl, levels = 7:1))) +
 :::::
 
 ```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
-ggplot(fh, aes(x = year, fill = factor(cl, levels = 7:1))) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = scales::percent_format()) +
+fh$cl_f <- factor(fh$cl, levels = c(7, 6, 5, 4, 3, 2, 1))
+
+ggplot(fh, aes(x = year, fill = cl_f)) +
+  geom_bar() +
   labs(x = "", y = "", title = "Civil Liberties Across Time",
        caption = "Source: Freedom House (2024)", fill = "") +
   scale_fill_brewer(type = "div", palette = "RdYlBu")

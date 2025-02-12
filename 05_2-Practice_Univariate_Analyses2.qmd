@@ -179,32 +179,9 @@ As we discussed last class, we will produce high quality data visualizations in 
 
 <br>
 
-*Encourage this discussion*
+*Encourage this discussion, Get different answers!*
 
-- *Get different answers!*
-
-- *SLIDE: Celebrate some of the great submissions!*
-
-<br>
-
-```{r, echo=TRUE}
-summary(data2021$gdp_per_capita)
-summary(data2021$measles_immunizations_pct)
-table(data2021$measles_herd_immunity)
-summary(data2021$measles_immunizations_pct)
-summary(data2021$birth_rate)
-summary(data2021$death_rate)
-```
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-![]()
-
-::: notes
+- *Summary stats at bottom*
 
 <br>
 
@@ -219,6 +196,17 @@ Ultimately, one of the challenges for us as data scientists is in trying to answ
 So, how do we give the reader the context they need to understand what we see in the data?
 
 - **SLIDE**: Today I want to talk through some of the options you have to do this
+
+<br>
+
+```{r, echo=TRUE}
+summary(data2021$gdp_per_capita)
+summary(data2021$measles_immunizations_pct)
+table(data2021$measles_herd_immunity)
+summary(data2021$measles_immunizations_pct)
+summary(data2021$birth_rate)
+summary(data2021$death_rate)
+```
 
 :::
 
@@ -366,9 +354,11 @@ data2021 |>
 
 ::: notes
 
-**How do these benchmarks help us analyze the distribution?**
+I'll give you the code to reorder the bars in a bar plot in one sec, but first...
 
-- **Talk me through why you think we need both visualizations**
+- **Which of these is the "better" answer to the question, what is the state of global development in 2021?**
+
+- **In other words, which is the more "accurate" takeaway? Is most of the world "rich" or "poor"?**
 
 <br>
 
@@ -387,12 +377,6 @@ data2021 |>
 **How are we doing with this?**
 
 - **Is everybody clear on the difference between describing the plot and analyzing it?**
-
-<br>
-
-**Just curious, if you had to pick just one, which do you think is the "better" picture for showing someone the distribution of wealth in our world? Why?**
-
-- **In other words, which is the more "accurate" takeaway? Is most of the world "rich" or "poor"?**
 
 <br>
 
@@ -453,13 +437,15 @@ To keep the code readable on the slide I added space between upper-middle and hi
 
 ```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.618, out.width="68%", fig.width=7}
 d_us <- data2021 |> filter(country == "United States")
+d_china <- data2021 |> filter(country == "China")
 
 data2021 |>
   ggplot(aes(x = gdp_per_capita)) +
   geom_histogram(bins = 15, fill = "green3", color = "white") +
-  labs(x = "GDP per Capita", y = "Countries", title = "Global Wealth (2021)") +
-  annotate("segment", x = 67000, xend = 67000, y = 35, yend = 13, arrow = arrow(length = unit(0.5, "cm"))) +
-  annotate("text", x = 67000, y = 39, label = "US") +
+  labs(x = "GDP per Capita", y = "Countries", title = "Global Wealth (2021): China vs the US") +
+  #annotate("segment", x = 67000, xend = 67000, y = 35, yend = 13, arrow = arrow(length = unit(0.5, "cm"))) +
+  annotate("text", x = 67000, y = 12, label = "US") +
+  annotate("text", x = 17000, y = 48, label = "CHN") +
   scale_x_continuous(labels = scales::dollar_format(scale = 1/1000, suffix = "k"))
 ```
 
@@ -469,34 +455,10 @@ data2021 |>
 data2021 |>
   ggplot(aes(x = birth_rate)) +
   geom_histogram(bins = 15, fill = "red3", color = "white") +
-  labs(x = "Birth Rate (per 1,000)", y = "Countries", title = "Global Opportunity (2021)") +
+  labs(x = "Birth Rate (per 1,000)", y = "Countries", title = "Global Development (2021): China vs the US") +
   ylim(0, 60) +
-  annotate("segment", x = 11.5, xend = 11.5, y = 58, yend = 50, arrow = arrow(length = unit(0.5, "cm"))) +
-  annotate("text", x = 11.5, y = 60, label = "US")
-```
-
-### Deaths
-
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.618, out.width="68%", fig.width=7}
-data2021 |>
-  ggplot(aes(x = death_rate)) +
-  geom_histogram(bins = 15, fill = "red3", color = "white") +
-  labs(x = "Death Rate (per 1,000)", y = "Countries", title = "Global Opportunity (2021)") +
-  ylim(0, 65) +
-  annotate("segment", x = 10.2, xend = 10.2, y = 35, yend = 25, arrow = arrow(length = unit(0.5, "cm"))) +
-  annotate("text", x = 10.2, y = 38, label = "US")
-```
-
-### Measles
-
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.618, out.width="68%", fig.width=7}
-data2021 |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2021)") +
-  ylim(0, 55) +
-  annotate("segment", x = 92.5, xend = 92.5, y = 52, yend = 45, arrow = arrow(length = unit(0.5, "cm"))) +
-  annotate("text", x = 92.5, y = 54, label = "US")
+  annotate("text", x = 11.5, y = 52, label = "US") +
+  annotate("text", x = 8.5, y = 34, label = "CHN")
 ```
 
 :::
@@ -507,7 +469,7 @@ Another option is to label specific observations
 
 - For an American audience I can imagine this helping us think about the world relative to our own experiences.
 
-- *Show each of the four plots*
+- *Show each of the two plots*
 
 <br>
 
@@ -519,7 +481,7 @@ Whereas the benchmark approach required a number as context
 
 <br>
 
-**SLIDE**: Code for adding an arrow to a plot
+**SLIDE**: Code for adding text to a plot
 :::
 
 
@@ -528,33 +490,26 @@ Whereas the benchmark approach required a number as context
 
 ::::: {.r-fit-text}
 ```{r, echo=TRUE, eval=FALSE}
+# Adding text to a plot
 ggplot(data2021, aes(x = death_rate)) +
   geom_histogram(bins = 15) +
-  annotate("text", x = 10.1, y = 38, label = "US") +
-  annotate("segment", x = 10.1, xend = 10.1, y = 35, 
-           yend = 25, arrow = arrow())
+  annotate("text", x = 10.3, y = 25, label = "US")
 ```
 :::::
 
 ```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
 ggplot(data2021, aes(x = death_rate)) +
   geom_histogram(bins = 15) +
-  annotate("text", x = 10.1, y = 38, label = "US") +
-  annotate("segment", x = 10.1, xend = 10.1, y = 35, yend = 25, 
-           arrow = arrow())
+  annotate("text", x = 10.3, y = 25, label = "US")
 ```
 
 ::: notes
 
-Here is the code you need to:
+Here is the code you need to add text to any plot
 
-1. Add text to any plot, AND
+- Specify you are adding "text"
 
-2. Add an arrow (which is done with a line segment)
-
-<br>
-
-*Walk them through the code arguments for each*
+- Pinpoint the spot using x and y coordinates
 
 <br>
 
