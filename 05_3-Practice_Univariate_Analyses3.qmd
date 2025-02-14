@@ -171,37 +171,43 @@ I'm using benchmarks from a research organization called Child Trends
 :::
 
 :::: {.columns}
-::: {.column width="45%"}
-```{r, cache=TRUE, fig.asp=0.618, fig.width=6}
+::: {.column width="50%"}
+```{r, cache=TRUE, fig.asp=1, fig.width=6}
 # Snapshot bar plots
+# Which countries have increased from "low" to other categories?
+# data1 |>
+#   filter(year %in% c(1985, 2021)) |>
+#   select(year, country, wb_income) |>
+#   pivot_wider(names_from = year, values_from = wb_income) |>
+#   View()
+# Albania: low to upper-mid; India to low-mid; sudan low to low
+# S. Korea low-mid to high, S. Africa low-mid to upper-mid
+
 data1 |>
-  filter(year == 1985) |>
+  filter(year == 1985) |> 
   ggplot(aes(x = wb_income)) +
   geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
-  labs(x = "", y = "Countries", title = "World Bank Income Categories (1985)", caption = "Source: WDI (2024)") + 
-  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (1985)", caption = "Source: The World Bank's WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA)) +
+  annotate("text", x = 1, y = c(10, 25), label = c("Sudan", "India"), color = "white", size = 5) +
+  annotate("text", x = 2, y = c(10, 25), label = c("S. Korea", "S. Africa"), color = "white", size = 5)
+```
 
+:::
+
+::: {.column width="50%"}
+
+```{r, cache=TRUE, fig.asp=1, fig.width=6}
 data1 |>
   filter(year == 2021) |>
   ggplot(aes(x = wb_income)) +
   geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
   labs(x = "", y = "Countries", title = "World Bank Income Categories (2021)", caption = "Source: The World Bank's WDI (2024)") + 
-  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
-```
-:::
-
-::: {.column width="55%"}
-
-<br>
-
-```{r, cache=TRUE, fig.asp=0.8, fig.width=6}
-data1 |>
-  count(year, wb_income) |>
-  ggplot(aes(x = wb_income, y = n)) +
-  geom_col(fill = rep(c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey"), 37)) +
-  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High")) +
-  labs(title = "World Bank Income Categories ({as.integer(frame_time)})",
-       x = "", y = "Countries", caption = "Source: The World Bank's WDI (2024)") + transition_time(year) 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA)) +
+  annotate("text", x = 1, y = 10, label = "Sudan", color = "white", size = 5) +
+  annotate("text", x = 2, y = 10, label = "India", color = "white", size = 5) +
+  annotate("text", x = 3, y = 10, label = "S. Africa", color = "white", size = 5) +
+  annotate("text", x = 4, y = 10, label = "S. Korea", color = "white", size = 5)
 ```
 :::
 ::::
@@ -211,6 +217,59 @@ data1 |>
 **So, is the world getting richer or more unequal over time?**
 
 - **What was your argument? Why?**
+
+<br>
+
+**SLIDE**: We have a serious problem with missing data here!
+
+:::
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Is the world getting richer or more unequal?**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, cache=TRUE, fig.asp=1, fig.width=6}
+# Remove missing data observations
+missing1 <- data1 |>
+  filter(year == 1985, is.na(wb_income)) |>
+  select(country)
+
+anti_join(data1, missing1, by = "country") |>
+  filter(year == 1985) |> 
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3")) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (1985)", caption = "Source: The World Bank's WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High")) 
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r, cache=TRUE, fig.asp=1, fig.width=6}
+anti_join(data1, missing1, by = "country") |>
+  filter(year == 2021) |>
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3")) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (2021)", caption = "Source: The World Bank's WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High"))
+```
+:::
+::::
+
+::: notes
+
+To make these plots I removed all of the countries from the dataset that were missing data in 1985
+
+- Now we can compare the bar plots more easily!
+
+<br>
+
+**Does omitting the missing sample change our conclusions? Why or why not?**
 
 <br>
 
@@ -633,14 +692,14 @@ A big problem for us in interpreting these counts is that the number of countrie
 
 ::: {.r-fit-text}
 **How are political rights changing across time?**
-:::
 
 <br>
 
-- Make a stacked bar plot of `year` and `pr`
+1. Convert `pr` into a factor variable `pr_f`
 
-- Use `fill = factor(pr)` to tell R to treat `pr` as a categorical variable
+2. Make a stacked bar plot of `year` and `pr_f`
 
+:::
 ::: notes
 
 (**SLIDE**: My version)
