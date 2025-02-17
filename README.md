@@ -31,11 +31,11 @@ Data, slides and errata for my class at Drury University (PLSC 296: Data Analysi
 
 05_3-Practice_Univariate_Analyses3.html
 
-06_1-Report1_Work1.html
+06_1-Report1-Planning.html
 
-06_2-Report1_Work2.html
+06_2-Report1-Analyzing.html
 
-06_3-Report1_Work3.html
+06_3-Report1-Polishing.html
 
 07_1-Presentation_Report1.html
 
