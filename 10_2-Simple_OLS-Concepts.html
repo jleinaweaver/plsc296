@@ -390,14 +390,13 @@
     <div class="slides">
 
 
-<section>
-<section id="todays-agenda" class="title-slide slide level1 center" data-background-image="Images/background-data_blue_v3.png">
-<h1>Today’s Agenda</h1>
+<section id="todays-agenda" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Today’s Agenda</h2>
 <p><br></p>
 <div class="r-fit-text">
 <p><strong>Ordinary Least Squares (OLS) Regression</strong></p>
 <ul>
-<li>The concepts and tools</li>
+<li>Interpreting and evaluating OLS regressions</li>
 </ul>
 </div>
 <p><br></p>
@@ -407,21 +406,19 @@
 <aside class="notes">
 <p>Prep for Class</p>
 <ol type="1">
-<li>Update presidential results (if needed)</li>
+<li><p>Check Canvas submissions</p></li>
+<li><p>Update presidential results (if needed)</p></li>
 </ol>
 <p><br></p>
-<p>Today we begin exploring regressions: A powerful and common tool used by scientists of all stripes for estimating relationships</p>
+<p>Today we move from our general intuitions of summarizing a relationship with a line to the more nuts and bolts of OLS regression</p>
 <p><br></p>
-<p><strong>IMPORTANT</strong>: You have to keep up with the assigned readings</p>
+<p><strong>IMPORTANT</strong>: You have to keep up with the assigned readings!</p>
 <ul>
-<li><p>Today’s class SHOULD NOT be your intro to regression!</p></li>
-<li><p>Everything today will make so much more sense if you already have been exposed to basic elements</p></li>
+<li><p>Today’s class SHOULD NOT be your intro to OLS regression!</p></li>
+<li><p>In fact, this should be your THIRD journey into OLS counting the Wheelan reading, the reading for today and our work in class on Monday</p></li>
 </ul>
 <p><br></p>
-<p>Regression, to the uninitiated, will appear confusing.</p>
-<ul>
-<li>BUT I promise that each time you go through the material it will make more sense</li>
-</ul>
+<p>If you do the work, I promise that each time you go through the material it will make more sense.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -434,18 +431,96 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="the-line-of-best-fit" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>The Line of Best Fit?</h2>
+
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<p>For today I challenged each of you to draw us a line of best fit using only a ruler.</p>
+<ul>
+<li><strong>How did that go?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>What’s the smallest RSS anybody in class came up with?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: The actual line of best fit</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-line-of-best-fit-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>The Line of Best Fit</h2>
+
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<p>Using some simple math I can tell you this is the line of best fit for this data.</p>
+<ul>
+<li><strong>So, how did you do? How close did you get with eye-balling it?</strong></li>
+</ul>
+<p><br></p>
+<p>This line is a HUGE improvement over the three we tried in class on Monday</p>
+<ul>
+<li><p>RSS dropped from 6.75 to 6 to 4.5 and now all the way down to 2.7!</p></li>
+<li><p>The residuals are all similar in size and distributed above and below the line</p></li>
+<li><p><strong>Does all of that make sense?</strong></p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Why go to all this trouble?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="r-fit-text">
-<p><strong>Part 1 </strong></p>
-<p><br></p>
-<p><strong>Why do scientists use regressions?</strong></p>
+<p><strong>How are changes in X associated with changes in Y?</strong></p>
 </div>
+<p><br></p>
+<p><strong>Y = 1.4 + 0.5 X</strong></p>
+<ul>
+<li><p>On average…</p>
+<ul>
+<li><p>When X equals zero, Y equals 1.4</p></li>
+<li><p>Each one unit increase in X is associated with a 0.5 increase in Y</p></li>
+<li><p>When X equals 10, Y equals 6.4</p></li>
+</ul></li>
+</ul>
 <aside class="notes">
-<p>Big picture:</p>
+<p>Keep in mind, regression analysis is fundamentally like all the rest of statistics</p>
 <ul>
-<li><p>What is a “regression”?</p></li>
-<li><p>And why do we need it?</p></li>
+<li>A tool meant to summarize data.</li>
+</ul>
+<p><br></p>
+<p>So, rather than showing someone a scatter plot of 50,000 data points you can communicate that relationship using this formula for a line</p>
+<ul>
+<li><p>This simple line summarizes all of that data and let’s us answer the question with specificity</p></li>
+<li><p>Every one unit increase in X is associated with a .5 increase in Y</p></li>
+</ul>
+<p><br></p>
+<p>This could be:</p>
+<ul>
+<li><p>measures of government spending and economic growth</p></li>
+<li><p>time spent studying and scores on the LSAT</p></li>
+<li><p>OR an answer to our class research question!</p></li>
+</ul>
+<p><br></p>
+<p>The regression line is the next big step in you learning how to answer substantial and important questions with data.</p>
+<ul>
+<li><strong>SLIDE</strong>: It turns out that in addition to giving us specific answers to our questions, regression analysis offers other improvements on our bivariate analyses</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -459,219 +534,9 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><aside class="notes">
-<p>Let’s start by looking at some data you are now pretty familiar with from last week.</p>
-<ul>
-<li>The diamonds dataset includes details on 53k+ diamonds in terms of their characteristics and estimated prices</li>
-</ul>
-<p><br></p>
-<h3 id="what-conclusions-can-we-draw-based-on-the-visualization-and-the-correlation">What conclusions can we draw based on the visualization and the correlation?</h3>
-<ul>
-<li><p>(Bigger diamonds are typically more expensive)</p></li>
-<li><p>(There is a strong linear correlation between the two variables)</p></li>
-</ul>
-<p><br></p>
-<p>As a matter of description these two data summaries are very useful.</p>
-<ul>
-<li>Thanks to these we have a much better sense of what the world of diamonds actually looks like</li>
-</ul>
-<p><br></p>
-<p>HOWEVER, this approach is also incredibly limited for helping us understand HOW and WHY these two things are related</p>
-<p><br></p>
-<p><strong>SLIDE</strong>: I think these limitations are most evident when we try to answer specific questions with our summaries</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>How much more should we expect to pay in order to move from a 1.5 carat to a 2.5 carat diamond?</strong></p>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><aside class="notes">
-<p>Now that we have access to real diamond prices for 53k examples, it MUST be possible to answer simple questions like this.</p>
-<p><br></p>
-<p><strong>Based on your tools to this point in the class, what kind of answer could we provide to this question?</strong></p>
-<ul>
-<li><strong>What tools could you use to provide an answer to this question?</strong></li>
-</ul>
-<p><br></p>
-<ul>
-<li>(<strong>SLIDE</strong>: Results)</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="using-descriptive-statistics" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Using Descriptive Statistics</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Make subsets</span></span>
-<span id="cb1-2"><a href=""></a>diamonds1_5 <span class="ot">&lt;-</span> <span class="fu">filter</span>(diamonds, carat <span class="sc">==</span> <span class="fl">1.5</span>)</span>
-<span id="cb1-3"><a href=""></a>diamonds2_5 <span class="ot">&lt;-</span> <span class="fu">filter</span>(diamonds, carat <span class="sc">==</span> <span class="fl">2.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><br></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="co"># Summarize</span></span>
-<span id="cb2-2"><a href=""></a><span class="fu">summary</span>(diamonds1_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   2964    8044    9817   10057   11863   18691 </code></pre>
-</div>
-</div>
-<p><br></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">summary</span>(diamonds2_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   7854   13278   14652   14255   16955   18447 </code></pre>
-</div>
-</div>
-<aside class="notes">
-<p><strong>What answer could we give using these descriptive stats?</strong></p>
-<p><br></p>
-<p><strong>Is this a good answer? Why or why not?</strong></p>
-<ul>
-<li><strong>In other words, why not just answer the question by comparing the prices of 1.5 and 2.5 carat diamonds in the dataset?</strong></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="the-limits-of-descriptive-statistics" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>The Limits of Descriptive Statistics</h2>
-<p><br></p>
 <div class="r-fit-text">
-<p><strong>1. Choosing a point of comparison is somewhat arbitrary</strong></p>
-</div>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
-<p>Quick Aside: These are density curves</p>
-<ul>
-<li><p>Think of them like a smoothed version of a histogram.</p></li>
-<li><p>Useful because you don’t have to play with bin sizes and and its easier to overlay two distributions on top of each other</p></li>
-</ul>
-<p><br></p>
-<p>Back to the point! The FIRST big problem with trying to answer our question with descriptive stats is that our choice of comparison is somewhat arbitrary</p>
-<ul>
-<li><p>There isn’t really a robust way to defend our choice of which descriptive stats to compare</p></li>
-<li><p>e.g.&nbsp;compare means, medians, IQRs?</p></li>
-</ul>
-<p><br></p>
-<p>In this case comparing the means and medians shows an increase in price with weight, but comparing the maximums doesn’t</p>
-<ul>
-<li><p>Is one of these more “true” or “correct” than the others?</p></li>
-<li><p>What if you have one of the super expensive small diamonds? You could upgrade and get money back!</p></li>
-</ul>
-<p><br></p>
-<p>This is why descriptive stats are important for helping the reader see your data but not necessarily for answering specific questions on their own.</p>
-<ul>
-<li>These stats give us a sense of the distribution, but the distribution isn’t the same as a sense of any single diamond chosen at random</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="the-limits-of-descriptive-statistics-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>The Limits of Descriptive Statistics</h2>
-<p><br></p>
-<p><strong>2. Hard to quantify uncertainty</strong></p>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
-<p><strong>REVEAL</strong>: The SECOND big problem is that this approach doesn’t give us an easy way to describe our uncertainty in the comparisons</p>
-<ul>
-<li><p>These descriptive stats don’t include any caveats for sample size or precision</p></li>
-<li><p>In other words, how confident should we be in these estimates of the mean or median?</p></li>
-</ul>
-<p><br></p>
-<p>We have the standard deviation for the mean, but nothing exactly comparable for the other comparisons.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="the-limits-of-descriptive-statistics-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>The Limits of Descriptive Statistics</h2>
-<p><br></p>
-<p><strong>3. Sample size matters (and may be hidden)!</strong></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co"># Count the observations</span></span>
-<span id="cb6-2"><a href=""></a><span class="fu">nrow</span>(diamonds1_5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 793</code></pre>
-</div>
-</div>
-<p><br></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">nrow</span>(diamonds2_5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 17</code></pre>
-</div>
-</div>
-<aside class="notes">
-<p>THIRD big problem, the descriptive statistics approach can mislead you if the subsets of the data are small!</p>
-<ul>
-<li><p>Out of 53k diamonds in this dataset only 793 have exactly 1.5 carats (e.g.&nbsp;1%)</p></li>
-<li><p>Out of 53k diamonds in this dataset only 17 have exactly 2.5 carats (e.g.&nbsp;.03%)</p></li>
-<li><p>We probably shouldn’t be confident drawing conclusions about the relationship between diamond weight and value using 1% of the sample!</p></li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: Regression can help us with all three issues!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="part-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Part 1</h2>
 <p><strong>Why do scientists use regressions?</strong></p>
 <p><br></p>
 <ol type="1">
@@ -679,11 +544,14 @@
 <li><p>Produces estimates based on ALL of the data</p></li>
 <li><p>Produces estimates with measures of uncertainty</p></li>
 </ol>
+</div>
 <aside class="notes">
-<p>Let’s now talk through these characteristics to make sure we’re clear on the intutions underpinning regression</p>
+<p>First things first, I want to reinforce the usefulness of regression analysis by highlighting these three points</p>
 <ul>
-<li><strong>SLIDE</strong></li>
+<li>I want you coming away from our work convinced that regression is a powerful tool for doing science that you WANT to better understand.</li>
 </ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s start with the first one</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -696,29 +564,75 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="regression-to-the-mean" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="regression-to-the-mean" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>‘Regression to the mean’</h2>
 
-<img data-src="Images/11_1-Galtons-rate_regression-diagram.png" class="quarto-figure quarto-figure-center r-stretch" style="width:66.0%"><aside class="notes">
-<p>The answer to that question, and the word “regression” itself comes from the work of a 19th century statistician, Sir Francis Galton.</p>
+<img data-src="Images/11_1-Galtons-rate_regression-diagram.png" style="display: block; margin: 0 auto" class="r-stretch"><aside class="notes">
+<p>Asking about “regression to the mean” means exploring the work of the 19th century statistician, Sir Francis Galton.</p>
 <p><br></p>
-<p>In 1886 he ran a now very famous experiment in which he gathered the heights of 930 children and their parents.</p>
+<p>The results of a famous 1886 experiment</p>
 <ul>
-<li><p>The horizontal line here is the average height of the sample</p></li>
-<li><p>Dots below the line are shorter than average, above the line taller</p></li>
-<li><p>The average parent heights are on one line and their kids on the other</p></li>
+<li><p>Gathers the heights of 930 children and their parents</p></li>
+<li><p>The horizontal line here is the average height of the sample and the y-axis labels on the right show the differences to the average</p></li>
 </ul>
 <p><br></p>
-<p>Generally, what Galton found was:</p>
-<ol type="1">
-<li><p>The children of tall parents tended to be taller than average, BUT were shorter than their parents</p></li>
-<li><p>The children of short parents were taller than their parents but still shorter than average</p></li>
-</ol>
-<p><br></p>
-<p>Galton described this as “regression to the mean”</p>
+<p>The x-axis is organized by the heights of the parents</p>
 <ul>
-<li><p>In short, across tons of different processes in nature we typically see extreme observations followed by less extreme observations</p></li>
-<li><p>For example, a football player with a long career of being average may put up an all star year, but the odds are that next year they go back to their averages</p></li>
+<li><p>So, the shortest parents are on the left of the line marked “A” and the tallest build to the right</p></li>
+<li><p>The children of those parents are plotted on the C line</p></li>
+</ul>
+<p><br></p>
+<p>Galton observed that:</p>
+<ul>
+<li><p>Parents shorter than average had children taller than them but also still shorter than average</p></li>
+<li><p>Parents taller than average had children shorter than them, but still taller than average</p></li>
+</ul>
+<p><br></p>
+<p>Galton explained this finding as “regression to the mean”</p>
+<ul>
+<li><strong>Can everybody see this in the plot?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Why does height show this regression to the mean?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="regression-to-the-mean-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>‘Regression to the mean’</h2>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><br></p>
+<p><strong>Determinants of Height</strong></p>
+<ul>
+<li><p>Polygenic inheritance</p></li>
+<li><p>Environmental influences</p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="Images/11_1-Galtons-rate_regression-diagram.png"></p>
+</div></div>
+<aside class="notes">
+<p>Qualities like your height are actually the result of adding together a bunch of different factors (<a href="https://www.sciencedirect.com/science/article/abs/pii/S1570677X09000793">Link1</a>, <a href="https://www.nature.com/articles/s41598-020-64883-8">Link2</a>)</p>
+<p><br></p>
+<p>Scientists estimate as much as 80% of height is genetic, HOWEVER</p>
+<ul>
+<li><p>Height is considered a polygenic trait, meaning many genes, each with a small effect, contribute to overall height rather than a single gene controlling it.</p></li>
+<li><p>That also leaves as much as 20% of the variation explained by environmental factors</p></li>
+</ul>
+<p><br></p>
+<p>Extreme values of height, being MUCH taller than average or shorter, require all of these different factors to point the exact same way</p>
+<ul>
+<li><p>The odds are that your kids will share many, if not most, of your same factors but a few will likely be different just by chance</p></li>
+<li><p>Those few differences pull their height away from yours</p></li>
 </ul>
 <p><br></p>
 <p><strong>SLIDE</strong>: Let me clarify this with a simulation</p>
@@ -734,7 +648,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="lets-simulate-an-experiment" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="lets-simulate-an-experiment" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Let’s Simulate an Experiment!</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -742,7 +656,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -752,7 +666,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -766,8 +680,8 @@
 <li><p>Each person gets a fair coin</p></li>
 <li><p>We will ask each person to flip the coin</p>
 <ul>
-<li>Heads take one step to the right (+1)</li>
-<li>Tails take one step to the left (-1)</li>
+<li><p>Heads take one step to the right (+1)</p></li>
+<li><p>Tails take one step to the left (-1)</p></li>
 </ul></li>
 </ul>
 <p><br></p>
@@ -794,7 +708,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="coin-flip-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="coin-flip-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Coin Flip 1</h2>
 <p><br></p>
 <div class="columns">
@@ -803,7 +717,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -813,7 +727,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -833,7 +747,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="coin-flip-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="coin-flip-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Coin Flip 2</h2>
 <p><br></p>
 <div class="columns">
@@ -842,7 +756,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -852,7 +766,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -872,7 +786,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="coin-flip-3" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="coin-flip-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Coin Flip 3</h2>
 <p><br></p>
 <div class="columns">
@@ -881,7 +795,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -891,7 +805,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -915,7 +829,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="coin-flip-3-possible-paths" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="coin-flip-3-possible-paths" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Coin Flip 3: Possible Paths</h2>
 <p><br></p>
 <div class="columns">
@@ -924,7 +838,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -966,7 +880,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="coin-flip-4-possible-paths" class="slide level2 center smaller" data-background-image="Images/background-slate_v2.png">
+<section id="coin-flip-4-possible-paths" class="slide level2 center smaller" data-background-image="Images/background-data_blue_v4.png">
 <h2>Coin Flip 4: Possible Paths</h2>
 <p><br></p>
 <div class="columns">
@@ -975,7 +889,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -1027,7 +941,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="coin-flip-4" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="coin-flip-4" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Coin Flip 4</h2>
 <p><br></p>
 <div class="columns">
@@ -1036,7 +950,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -1046,7 +960,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -1071,7 +985,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="coin-flip-10" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="coin-flip-10" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Coin Flip 10</h2>
 <p><br></p>
 <div class="columns">
@@ -1080,7 +994,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -1090,7 +1004,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -1119,7 +1033,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="regression-to-the-mean-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="regression-to-the-mean-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>‘Regression to the mean’</h2>
 
 <img data-src="Images/11_1-Galtons-rate_regression-diagram.png" class="quarto-figure quarto-figure-center r-stretch" style="width:66.0%"><aside class="notes">
@@ -1130,14 +1044,15 @@
 <li><p>HENCE, short parents more likely to have kids taller than them</p></li>
 </ul>
 <p><br></p>
-<p>THIS is the power of regression.</p>
+<p>Across tons of different processes in nature we typically see extreme observations followed by less extreme observations</p>
 <ul>
-<li>When trying to represent a relationship why not use the means since the world conspires to reach the averages?</li>
+<li><p>THIS is the power of regression.</p></li>
+<li><p>When trying to represent a relationship why not use the mean since the world works so hard to push us to the average?</p></li>
 </ul>
 <p><br></p>
-<h3 id="any-questions-on-the-intuition-of-why-predicting-the-average-is-frequently-useful-for-us">Any questions on the intuition of why predicting the average is frequently useful for us?</h3>
+<p><strong>Any questions on the intuition of why predicting the average is frequently useful for us?</strong></p>
 <p><br></p>
-<p><strong>SLIDE</strong>: Time to talk about what regression produces, how to interpret it and how to fit them in R</p>
+<p><strong>SLIDE</strong>: For the second and third reason scientists use regressions will take us back to our diamonds data</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1150,68 +1065,752 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-3" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
-<p>Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.</p>
+
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><aside class="notes">
+<p>As you well know, the diamonds dataset includes details on 53k+ diamonds in terms of their characteristics and estimated prices</p>
+<p><br></p>
+<p>From our bivariate analyses last week we discovered that:</p>
+<ul>
+<li><p>Bigger diamonds are typically more expensive, and</p></li>
+<li><p>There is a strong linear correlation between the two variables</p></li>
+</ul>
+<p><br></p>
+<p>While these two conclusions are useful, they are also quite limited in a practical sense</p>
+<ul>
+<li><strong>SLIDE</strong>: Let’s get more specific</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>How much more should we expect to pay in order to move from a 1.5 carat to a 2.5 carat diamond?</strong></p>
+
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><aside class="notes">
+<p>Now that we have access to real diamond prices for 53k examples, it MUST be possible to answer simple questions like this.</p>
+<p><br></p>
+<p><strong>Based on your tools to this point in the class, what kind of answer could we provide to this question?</strong></p>
+<ul>
+<li><strong>What tools could you use to provide an answer to this question?</strong></li>
+</ul>
+<p><br></p>
+<ul>
+<li>(<strong>SLIDE</strong>: Results)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="using-descriptive-statistics" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Using Descriptive Statistics</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Make subsets</span></span>
+<span id="cb1-2"><a href=""></a>diamonds1_5 <span class="ot">&lt;-</span> <span class="fu">filter</span>(diamonds, carat <span class="sc">==</span> <span class="fl">1.5</span>)</span>
+<span id="cb1-3"><a href=""></a>diamonds2_5 <span class="ot">&lt;-</span> <span class="fu">filter</span>(diamonds, carat <span class="sc">==</span> <span class="fl">2.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="co"># Summarize</span></span>
+<span id="cb2-2"><a href=""></a><span class="fu">summary</span>(diamonds1_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2964    8044    9817   10057   11863   18691 </code></pre>
+</div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">summary</span>(diamonds2_5<span class="sc">$</span>price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   7854   13278   14652   14255   16955   18447 </code></pre>
+</div>
+</div>
+<aside class="notes">
+<p><strong>What answer could we give using these descriptive stats?</strong></p>
+<p><br></p>
+<p><strong>Is this a good answer? Why or why not?</strong></p>
+<ul>
+<li><strong>In other words, why not just answer the question by comparing the prices of 1.5 and 2.5 carat diamonds in the dataset?</strong></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-limits-of-descriptive-statistics" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>The Limits of Descriptive Statistics</h2>
+<p><br></p>
+<div class="r-fit-text">
+<p><strong>1. Choosing a summary point to compare is arbitrary</strong></p>
+</div>
+
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<p>The FIRST big problem with trying to answer our question with descriptive stats is that our choice of comparison is somewhat arbitrary</p>
+<ul>
+<li><p>There isn’t really a robust way to defend our choice of which descriptive stats to compare</p></li>
+<li><p>e.g.&nbsp;compare means, medians, IQRs?</p></li>
+</ul>
+<p><br></p>
+<p>In this case comparing the means and medians shows an increase in price with weight, but comparing the maximums doesn’t</p>
+<ul>
+<li><p>Is one of these more “true” or “correct” than the others?</p></li>
+<li><p>What if you have one of the super expensive small diamonds? You could upgrade and get money back!</p></li>
+</ul>
+<p><br></p>
+<p>This is why descriptive stats are important for helping the reader see your data but not necessarily for answering specific questions on their own.</p>
+<ul>
+<li>These stats give us a sense of the distribution, but the distribution isn’t the same as a sense of any single diamond chosen at random</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-limits-of-descriptive-statistics-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>The Limits of Descriptive Statistics</h2>
+<p><br></p>
+<div class="r-fit-text">
+<p><strong>2. It is hard to describe our uncertainty</strong></p>
+</div>
+
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<p><strong>REVEAL</strong>: The SECOND big problem is that this approach doesn’t give us an easy way to describe our uncertainty in the comparisons</p>
+<ul>
+<li><p>These descriptive stats don’t include any caveats for sample size or precision</p></li>
+<li><p>In other words, how confident should we be in these estimates of the mean or median?</p></li>
+</ul>
+<p><br></p>
+<p>We have the standard deviation for the mean, but nothing exactly comparable for the other comparisons.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-limits-of-descriptive-statistics-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>The Limits of Descriptive Statistics</h2>
+<p><br></p>
+<div class="r-fit-text">
+<p><strong>3. Sample size matters (and may be hidden)!</strong></p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co"># Count the observations</span></span>
+<span id="cb6-2"><a href=""></a><span class="fu">nrow</span>(diamonds1_5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 793</code></pre>
+</div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">nrow</span>(diamonds2_5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 17</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>THIRD big problem, the descriptive statistics approach can mislead you if the subsets of the data are small!</p>
+<ul>
+<li><p>Out of 53k diamonds in this dataset only 793 have exactly 1.5 carats (e.g.&nbsp;1%)</p></li>
+<li><p>Out of 53k diamonds in this dataset only 17 have exactly 2.5 carats (e.g.&nbsp;.03%)</p></li>
+<li><p>We probably shouldn’t be confident drawing conclusions about the relationship between diamond weight and value using 1% of the sample!</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Regression can help us with all three issues!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-4" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>An OLS Regression Analysis of Diamond Prices</strong></p>
+</div>
 <p><br></p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-27-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
-</figure>
-</div>
-</div>
-</div>
+<p><img data-src="Images/10_2-diamonds_OLS.gif" style="display: block; margin: 0 auto"></p>
 </div><div class="column" style="width:50%;">
-<p><br></p>
-<div class="r-fit-text">
-<p>Y = <span class="math inline">\(\alpha\)</span> + <span class="math inline">\(\beta\)</span> X</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="nzjxorntqq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nzjxorntqq table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#nzjxorntqq thead, #nzjxorntqq tbody, #nzjxorntqq tfoot, #nzjxorntqq tr, #nzjxorntqq td, #nzjxorntqq th {
+  border-style: none;
+}
+
+#nzjxorntqq p {
+  margin: 0;
+  padding: 0;
+}
+
+#nzjxorntqq .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#nzjxorntqq .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#nzjxorntqq .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#nzjxorntqq .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#nzjxorntqq .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#nzjxorntqq .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#nzjxorntqq .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#nzjxorntqq .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#nzjxorntqq .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#nzjxorntqq .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#nzjxorntqq .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#nzjxorntqq .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#nzjxorntqq .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#nzjxorntqq .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#nzjxorntqq .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nzjxorntqq .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#nzjxorntqq .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#nzjxorntqq .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#nzjxorntqq .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nzjxorntqq .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#nzjxorntqq .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nzjxorntqq .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#nzjxorntqq .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nzjxorntqq .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nzjxorntqq .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nzjxorntqq .gt_left {
+  text-align: left;
+}
+
+#nzjxorntqq .gt_center {
+  text-align: center;
+}
+
+#nzjxorntqq .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#nzjxorntqq .gt_font_normal {
+  font-weight: normal;
+}
+
+#nzjxorntqq .gt_font_bold {
+  font-weight: bold;
+}
+
+#nzjxorntqq .gt_font_italic {
+  font-style: italic;
+}
+
+#nzjxorntqq .gt_super {
+  font-size: 65%;
+}
+
+#nzjxorntqq .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#nzjxorntqq .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#nzjxorntqq .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#nzjxorntqq .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#nzjxorntqq .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#nzjxorntqq .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#nzjxorntqq .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#nzjxorntqq .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#nzjxorntqq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="Diamond-Value" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Diamond Value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Size (carats)</td>
+<td class="gt_row gt_center" headers="Diamond Value" style="background-color: #FFFFFF; font-size: large">7756.43*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="Diamond Value" style="background-color: #FFFFFF; font-size: large">(14.07)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Constant</td>
+<td class="gt_row gt_center" headers="Diamond Value" style="background-color: #FFFFFF; font-size: large">-2256.36*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="Diamond Value" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(13.06)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="Diamond Value" style="background-color: #FFFFFF; font-size: large">53940</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2</td>
+<td class="gt_row gt_center" headers="Diamond Value" style="background-color: #FFFFFF; font-size: large">0.849</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="Diamond Value" style="background-color: #FFFFFF; font-size: large">0.849</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">RMSE</td>
+<td class="gt_row gt_center" headers="Diamond Value" style="background-color: #FFFFFF; font-size: large">1548.53</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
 </div>
 </div></div>
 <aside class="notes">
-<p>So, a simple regression estimates the relationship between two numeric variables with a straight line.</p>
+<p>As we worked on last class, regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.</p>
 <ul>
-<li>This means it generates an estimate of the relationship between weight and price based on ALL of the data and not just two subsets</li>
+<li><p>It usefully summarizes the relationship using a simple formula that we can use to make predictions</p></li>
+<li><p>AND it generates this line while accounting for ALL of the observations in the dataset!</p></li>
 </ul>
 <p><br></p>
-<p>And reaching back to your old math classes, and the readings for today, the formula for a line represents this relationship</p>
+<p>On the right I’m showing you a regression table</p>
 <ul>
-<li><p>The ‘Y’ is the outcome of interest (e.g.&nbsp;diamond price)</p></li>
-<li><p>The ‘X’ is the predictor (e.g.&nbsp;diamond weight)</p></li>
-<li><p>The ‘alpha’ is the y-intercept (e.g.&nbsp;where the line crosses the y-axis)</p></li>
-<li><p>The ‘beta’ is the slope term and that represents the relationship between the two variables</p></li>
+<li><p>This should be incredibly familiar to you if you’ve read any quantitative academic literature</p></li>
+<li><p>This is the standard way that regressions are communicated in academic journals</p></li>
+<li><p><em>Show them the alpha and beta but leave the rest for later</em></p></li>
 </ul>
 <p><br></p>
-<p><strong>With me so far?</strong></p>
-<p><br></p>
-<p>So, we want to draw a line that represents the relationship between two numeric variables.</p>
+<p>Remind me how I interpret this formula</p>
 <ul>
-<li>The next question is, “how”?</li>
+<li><p><strong>What does an alpha of -2256 mean?</strong></p>
+<ul>
+<li>(A 0 carat diamond is worth negative dollars!)</li>
+</ul></li>
+<li><p><strong>What does a beta of 7,756 mean?</strong></p>
+<ul>
+<li>(On average, each one carat increase in diamond size is associated with a price increase of nearly $8k!)</li>
+</ul></li>
 </ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-4" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-28-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>Back to the diamonds!</p>
 <p><br></p>
-<p>Let’s draw a line using the logic of regression to the mean</p>
+<p>Let’s use this line to answer our question about 1.5 vs 2.5 carat diamonds</p>
 <ul>
-<li>And that means starting by identifying the mean of the sample</li>
+<li><p><strong>What is the predicted price of a 1.5 carat diamond?</strong></p></li>
+<li><p>(<strong>SLIDE</strong>)</p></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1225,133 +1824,13 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-5" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-29-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:96.0%"><aside class="notes">
-<p>That gives us our first point in our model.</p>
-<ul>
-<li>However, we need two points to make a line.</li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s keep following the logic of regression to the mean</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-6" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-30-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:96.0%"><aside class="notes">
-<p>The model line should follow the data, so let’s divide the plot into four quadrants split around the mean values.</p>
-<p><br></p>
-<p>Once we have our quadrants we can focus on the one with the most observations.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-7" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-31-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:96.0%"><aside class="notes">
-<p>The mean values in quadrant three give us a second point!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="two-point-line" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Two-Point Line</h2>
-<p><strong>Price = -2,203 + 7,689 (Carats)</strong></p>
-<p><br></p>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-32-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:82.0%"><aside class="notes">
-<p>Interpret this formula of the line for me.</p>
-<ul>
-<li><strong>What does the slope indicate in terms of diamond weight and price?</strong></li>
-</ul>
-<p><br></p>
-<p><strong>What is the big weakness of this estimate of the line?</strong></p>
-<ul>
-<li>(Big weakness is that this line fits only two estimates of the mean, NOT all the data!)</li>
-</ul>
-<p><br></p>
-<p>Crucial for us is that we can improve the fit of our model using Ordinary Least Squares (OLS).</p>
-<p><strong>Per the readings, how does OLS fit a line to the data using ALL of the data?</strong></p>
-<ul>
-<li>(<strong>SLIDE</strong>)</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="ols" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>OLS</h2>
-<p><strong>Price = -2,256 + 7,756 (Carats)</strong></p>
-<p><br></p>
-
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-33-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:82.0%"><aside class="notes">
-<p>OLS finds the line that minimizes the squared residuals of ALL THE POINTS.</p>
-<ul>
-<li>e.g.&nbsp;the line of “best fit”</li>
-</ul>
-<p><br></p>
-<p><strong>How do I interpret the slope of this line?</strong></p>
-<p><br></p>
-<p><strong>Using this formula, what is our predicted price for a diamond that weighs 1.5 carats?</strong></p>
-<ul>
-<li>(<strong>SLIDE</strong>)</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-8" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-5" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="r-fit-text">
 <p><strong>What is the predicted price of a 1.5 carat diamond?</strong></p>
 </div>
 
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-34-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"><p><strong>Price = -2,256.36 + 7,756.43 x 1.5</strong></p>
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-30-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"><p><strong>Price = -2,256.36 + 7,756.43 x 1.5</strong></p>
 <ul>
 <li><p>Price = $9,378.29</p></li>
 <li><p>(95% confidence interval: $9,354 - $9,401)</p></li>
@@ -1359,7 +1838,7 @@
 <aside class="notes">
 <p><strong>Make sense?</strong></p>
 <p><br></p>
-<p>We’ll get to confidence intervals shortly, but I want you to see that this should always be provided when you make a prediction with an OLS regression.</p>
+<p>We’ll get to confidence intervals down the road, but I want you to see that this should always be provided when you make a prediction with an OLS regression.</p>
 <p><br></p>
 <p>Practice time!</p>
 <ul>
@@ -1377,13 +1856,13 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-9" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-6" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="r-fit-text">
 <p><strong>What is the predicted price of a 2.5 carat diamond?</strong></p>
 </div>
 
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-35-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"><p><strong>Price = -2,256.36 + 7,756.43 x 2.5</strong></p>
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-31-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"><p><strong>Price = -2,256.36 + 7,756.43 x 2.5</strong></p>
 <ul>
 <li><p>Price = $17,134.72</p></li>
 <li><p>(95% confidence interval: $17,085 - $17,183) ]</p></li>
@@ -1412,10 +1891,10 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-10" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-7" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-36-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"><aside class="notes">
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-32-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"><aside class="notes">
 <p><strong>Why is this prediction nonsense?</strong></p>
 <ul>
 <li><p>The biggest diamond in our dataset is only 5 carats so our model has ZERO idea of what bigger diamonds should cost</p></li>
@@ -1428,6 +1907,12 @@
 </ul>
 <p><br></p>
 <p><strong>Make sense?</strong></p>
+<p><br></p>
+<p>Alright, let’s build this line of best fit</p>
+<ul>
+<li><p><strong>According to the readings, how does OLS find the line of best fit?</strong></p></li>
+<li><p>(<strong>SLIDE</strong>)</p></li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1440,7 +1925,34 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="why-use-ols-regressions" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="ols-minimizes-the-rss" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>OLS Minimizes the RSS</h2>
+
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-33-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>OLS finds the line that minimizes the squared residuals of ALL THE POINTS.</p>
+<ul>
+<li>The name is in the acronym: ordinary least squares</li>
+</ul>
+<p><br></p>
+<p>You can think of this like a process in which the computer repeatedly draws a line, calculates the RSS, and then repeats its action until it finds a line with the lowest RSS</p>
+<ul>
+<li>Technically, it actually uses matrix algebra to calculate the OLS line…</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: summarize the “why” we use regression</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-use-ols-regressions" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Why use OLS regressions?</h2>
 <p><br></p>
 <p><strong>Basics</strong></p>
@@ -1449,31 +1961,20 @@
 <li><p>Uses ALL of the data</p></li>
 <li><p>Can be used to make predictions with estimates of uncertainty</p></li>
 </ul>
-<div class="fragment">
 <p><strong>Future Weeks</strong></p>
 <ul>
 <li>Can be adjusted for confounders (e.g.&nbsp;control variables), nonlinear relationships and different data structures</li>
 </ul>
-</div>
-</section>
-<section id="part-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Part 2</h2>
-<h3 id="evaluating-the-fit-of-an-ols-regression">Evaluating the Fit of an OLS Regression</h3>
-<p><br></p>
-<ol type="1">
-<li><p>Missing data problems?</p></li>
-<li><p>Are the coefficients significant?</p></li>
-<li><p>What does the R<sup>2</sup> indicate?</p></li>
-<li><p>Any problems in the residuals plot?</p></li>
-</ol>
 <aside class="notes">
+<p><strong>Any questions on these intuitions?</strong></p>
+<p><br></p>
+<p>Let’s now talk about the four steps I want you to use to evaluate the fit of a regression line to the data</p>
+<p><br></p>
 <p>Everybody TAKE NOTES on these as we go!</p>
 <ul>
 <li><p>These are the four parts to making an argument that your OLS regression is useful</p></li>
 <li><p>In other words, you will need to make these four arguments in future reports that include an OLS regression</p></li>
 </ul>
-<p><br></p>
-<p>Let’s go back to our diamond size models from last class.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1486,15 +1987,15 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluate-the-fit" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluate the Fit</h2>
+<section id="evaluating-an-ols-regression" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Evaluating an OLS Regression</h2>
 <p><strong>1. Missing data problems?</strong></p>
 <div class="columns">
 <div class="column" style="width:60%;">
 <p><br></p>
 <p>“Missing Not At Random” (MNAR)</p>
 <ul>
-<li><p>Survey Bias</p></li>
+<li><p>Survey Bias (Social-desirability and Non-response)</p></li>
 <li><p>Lack of infrastructure</p></li>
 <li><p>Inaccessibility</p></li>
 <li><p>Governmental Interference</p></li>
@@ -1502,23 +2003,23 @@
 </div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="fbdyxiaxfl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#fbdyxiaxfl table {
+<div id="xayghamjze" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xayghamjze table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#fbdyxiaxfl thead, #fbdyxiaxfl tbody, #fbdyxiaxfl tfoot, #fbdyxiaxfl tr, #fbdyxiaxfl td, #fbdyxiaxfl th {
+#xayghamjze thead, #xayghamjze tbody, #xayghamjze tfoot, #xayghamjze tr, #xayghamjze td, #xayghamjze th {
   border-style: none;
 }
 
-#fbdyxiaxfl p {
+#xayghamjze p {
   margin: 0;
   padding: 0;
 }
 
-#fbdyxiaxfl .gt_table {
+#xayghamjze .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1544,12 +2045,12 @@
   border-left-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_caption {
+#xayghamjze .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#fbdyxiaxfl .gt_title {
+#xayghamjze .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1561,7 +2062,7 @@
   border-bottom-width: 0;
 }
 
-#fbdyxiaxfl .gt_subtitle {
+#xayghamjze .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1573,7 +2074,7 @@
   border-top-width: 0;
 }
 
-#fbdyxiaxfl .gt_heading {
+#xayghamjze .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1585,13 +2086,13 @@
   border-right-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_bottom_border {
+#xayghamjze .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_col_headings {
+#xayghamjze .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1606,7 +2107,7 @@
   border-right-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_col_heading {
+#xayghamjze .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1626,7 +2127,7 @@
   overflow-x: hidden;
 }
 
-#fbdyxiaxfl .gt_column_spanner_outer {
+#xayghamjze .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1638,15 +2139,15 @@
   padding-right: 4px;
 }
 
-#fbdyxiaxfl .gt_column_spanner_outer:first-child {
+#xayghamjze .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#fbdyxiaxfl .gt_column_spanner_outer:last-child {
+#xayghamjze .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#fbdyxiaxfl .gt_column_spanner {
+#xayghamjze .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1658,11 +2159,11 @@
   width: 100%;
 }
 
-#fbdyxiaxfl .gt_spanner_row {
+#xayghamjze .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#fbdyxiaxfl .gt_group_heading {
+#xayghamjze .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1688,7 +2189,7 @@
   text-align: left;
 }
 
-#fbdyxiaxfl .gt_empty_group_heading {
+#xayghamjze .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1703,15 +2204,15 @@
   vertical-align: middle;
 }
 
-#fbdyxiaxfl .gt_from_md > :first-child {
+#xayghamjze .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#fbdyxiaxfl .gt_from_md > :last-child {
+#xayghamjze .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#fbdyxiaxfl .gt_row {
+#xayghamjze .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1730,7 +2231,7 @@
   overflow-x: hidden;
 }
 
-#fbdyxiaxfl .gt_stub {
+#xayghamjze .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1743,7 +2244,7 @@
   padding-right: 5px;
 }
 
-#fbdyxiaxfl .gt_stub_row_group {
+#xayghamjze .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1757,15 +2258,15 @@
   vertical-align: top;
 }
 
-#fbdyxiaxfl .gt_row_group_first td {
+#xayghamjze .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#fbdyxiaxfl .gt_row_group_first th {
+#xayghamjze .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#fbdyxiaxfl .gt_summary_row {
+#xayghamjze .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1775,16 +2276,16 @@
   padding-right: 5px;
 }
 
-#fbdyxiaxfl .gt_first_summary_row {
+#xayghamjze .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_first_summary_row.thick {
+#xayghamjze .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#fbdyxiaxfl .gt_last_summary_row {
+#xayghamjze .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1794,7 +2295,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_grand_summary_row {
+#xayghamjze .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1804,7 +2305,7 @@
   padding-right: 5px;
 }
 
-#fbdyxiaxfl .gt_first_grand_summary_row {
+#xayghamjze .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1814,7 +2315,7 @@
   border-top-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_last_grand_summary_row_top {
+#xayghamjze .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1824,11 +2325,11 @@
   border-bottom-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_striped {
+#xayghamjze .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#fbdyxiaxfl .gt_table_body {
+#xayghamjze .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1837,7 +2338,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_footnotes {
+#xayghamjze .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1851,7 +2352,7 @@
   border-right-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_footnote {
+#xayghamjze .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1860,7 +2361,7 @@
   padding-right: 5px;
 }
 
-#fbdyxiaxfl .gt_sourcenotes {
+#xayghamjze .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1874,7 +2375,7 @@
   border-right-color: #D3D3D3;
 }
 
-#fbdyxiaxfl .gt_sourcenote {
+#xayghamjze .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1882,72 +2383,72 @@
   padding-right: 5px;
 }
 
-#fbdyxiaxfl .gt_left {
+#xayghamjze .gt_left {
   text-align: left;
 }
 
-#fbdyxiaxfl .gt_center {
+#xayghamjze .gt_center {
   text-align: center;
 }
 
-#fbdyxiaxfl .gt_right {
+#xayghamjze .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#fbdyxiaxfl .gt_font_normal {
+#xayghamjze .gt_font_normal {
   font-weight: normal;
 }
 
-#fbdyxiaxfl .gt_font_bold {
+#xayghamjze .gt_font_bold {
   font-weight: bold;
 }
 
-#fbdyxiaxfl .gt_font_italic {
+#xayghamjze .gt_font_italic {
   font-style: italic;
 }
 
-#fbdyxiaxfl .gt_super {
+#xayghamjze .gt_super {
   font-size: 65%;
 }
 
-#fbdyxiaxfl .gt_footnote_marks {
+#xayghamjze .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#fbdyxiaxfl .gt_asterisk {
+#xayghamjze .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#fbdyxiaxfl .gt_indent_1 {
+#xayghamjze .gt_indent_1 {
   text-indent: 5px;
 }
 
-#fbdyxiaxfl .gt_indent_2 {
+#xayghamjze .gt_indent_2 {
   text-indent: 10px;
 }
 
-#fbdyxiaxfl .gt_indent_3 {
+#xayghamjze .gt_indent_3 {
   text-indent: 15px;
 }
 
-#fbdyxiaxfl .gt_indent_4 {
+#xayghamjze .gt_indent_4 {
   text-indent: 20px;
 }
 
-#fbdyxiaxfl .gt_indent_5 {
+#xayghamjze .gt_indent_5 {
   text-indent: 25px;
 }
 
-#fbdyxiaxfl .katex-display {
+#xayghamjze .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#fbdyxiaxfl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#xayghamjze div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2012,28 +2513,21 @@
 </div>
 </div></div>
 <aside class="notes">
-<p>Important note: R will omit observations with missing data and it’s up to YOU to check for problems!</p>
+<p>Your first job is to examine the regression for missing data problems</p>
+<ul>
+<li>If your regression is being fit on less than ALL the data in your sample it’s up to you to make an argument that the missing data isn’t a serious problem for your analyses</li>
+</ul>
 <p><br></p>
-<p>If your regression is being fit on less than ALL the data in your sample it’s up to you to investigate why and to look for patterns in the missing data.</p>
+<p>If your missing data is truly random, then it isn’t as big a problem</p>
 <ul>
 <li>The key is to identify any Missing Not At Random (MNAR) problems</li>
 </ul>
 <p><br></p>
-<p>Surveys deal with tons of biases</p>
-<ol type="1">
-<li>Social-desirability bias: The tendency of survey respondents to answer questions in a manner that will be viewed favorably by others.
+<p>Examples</p>
 <ul>
-<li>e.g.&nbsp;over-reporting “good” behavior or under-reporting “bad” behavior.</li>
-</ul></li>
-<li>Non-response bias is currently a massive problem for political polling in this country.
-<ul>
-<li>Trump voters have simply been less likely to participate in phone polls than Democratic voters in the last few cycles.</li>
-</ul></li>
-<li>Language Barriers: How do you word a survey question so it will have the same meaning across different languages? Across different cultures?</li>
-</ol>
-<p><br></p>
-<p>Collecting observational data faces it’s own serious challenges</p>
-<ul>
+<li><p>Social-desirability bias: The tendency of survey respondents to answer questions in a manner that will be viewed favorably by others.</p></li>
+<li><p>Non-response bias: Trump voters have simply been less likely to participate in phone polls than Democratic voters in the last few cycles.</p></li>
+<li><p>Language Barriers: How do you word a survey question so it will have the same meaning across different languages? Across different cultures?</p></li>
 <li><p>Lack of infrastructure: I’m guessing South Sudan lacks the infrastructure needed to develop high quality GDP figures</p></li>
 <li><p>Inaccessibility: Studies examining things like the effects of poverty, war or gender discrimination often cannot get reliable data from those places where these lived experiences are hardest.</p></li>
 <li><p>Governmental Interference: If I have to hear one more idiotic report of “polling data” from Russia showing Putin’s sky-high approval ratings I will lose it.</p></li>
@@ -2056,29 +2550,29 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluate-the-fit-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluate the Fit</h2>
+<section id="evaluating-an-ols-regression-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Evaluating an OLS Regression</h2>
 <p><strong>2. Are the coefficients significant?</strong></p>
 <p><br></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="ojzvtrwmgh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ojzvtrwmgh table {
+<div id="rftqxdkjzb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rftqxdkjzb table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ojzvtrwmgh thead, #ojzvtrwmgh tbody, #ojzvtrwmgh tfoot, #ojzvtrwmgh tr, #ojzvtrwmgh td, #ojzvtrwmgh th {
+#rftqxdkjzb thead, #rftqxdkjzb tbody, #rftqxdkjzb tfoot, #rftqxdkjzb tr, #rftqxdkjzb td, #rftqxdkjzb th {
   border-style: none;
 }
 
-#ojzvtrwmgh p {
+#rftqxdkjzb p {
   margin: 0;
   padding: 0;
 }
 
-#ojzvtrwmgh .gt_table {
+#rftqxdkjzb .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2104,12 +2598,12 @@
   border-left-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_caption {
+#rftqxdkjzb .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ojzvtrwmgh .gt_title {
+#rftqxdkjzb .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2121,7 +2615,7 @@
   border-bottom-width: 0;
 }
 
-#ojzvtrwmgh .gt_subtitle {
+#rftqxdkjzb .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2133,7 +2627,7 @@
   border-top-width: 0;
 }
 
-#ojzvtrwmgh .gt_heading {
+#rftqxdkjzb .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2145,13 +2639,13 @@
   border-right-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_bottom_border {
+#rftqxdkjzb .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_col_headings {
+#rftqxdkjzb .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2166,7 +2660,7 @@
   border-right-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_col_heading {
+#rftqxdkjzb .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2186,7 +2680,7 @@
   overflow-x: hidden;
 }
 
-#ojzvtrwmgh .gt_column_spanner_outer {
+#rftqxdkjzb .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2198,15 +2692,15 @@
   padding-right: 4px;
 }
 
-#ojzvtrwmgh .gt_column_spanner_outer:first-child {
+#rftqxdkjzb .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ojzvtrwmgh .gt_column_spanner_outer:last-child {
+#rftqxdkjzb .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ojzvtrwmgh .gt_column_spanner {
+#rftqxdkjzb .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2218,11 +2712,11 @@
   width: 100%;
 }
 
-#ojzvtrwmgh .gt_spanner_row {
+#rftqxdkjzb .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ojzvtrwmgh .gt_group_heading {
+#rftqxdkjzb .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2248,7 +2742,7 @@
   text-align: left;
 }
 
-#ojzvtrwmgh .gt_empty_group_heading {
+#rftqxdkjzb .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2263,15 +2757,15 @@
   vertical-align: middle;
 }
 
-#ojzvtrwmgh .gt_from_md > :first-child {
+#rftqxdkjzb .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ojzvtrwmgh .gt_from_md > :last-child {
+#rftqxdkjzb .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ojzvtrwmgh .gt_row {
+#rftqxdkjzb .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2290,7 +2784,7 @@
   overflow-x: hidden;
 }
 
-#ojzvtrwmgh .gt_stub {
+#rftqxdkjzb .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2303,7 +2797,7 @@
   padding-right: 5px;
 }
 
-#ojzvtrwmgh .gt_stub_row_group {
+#rftqxdkjzb .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2317,15 +2811,15 @@
   vertical-align: top;
 }
 
-#ojzvtrwmgh .gt_row_group_first td {
+#rftqxdkjzb .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ojzvtrwmgh .gt_row_group_first th {
+#rftqxdkjzb .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ojzvtrwmgh .gt_summary_row {
+#rftqxdkjzb .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2335,16 +2829,16 @@
   padding-right: 5px;
 }
 
-#ojzvtrwmgh .gt_first_summary_row {
+#rftqxdkjzb .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_first_summary_row.thick {
+#rftqxdkjzb .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ojzvtrwmgh .gt_last_summary_row {
+#rftqxdkjzb .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2354,7 +2848,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_grand_summary_row {
+#rftqxdkjzb .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2364,7 +2858,7 @@
   padding-right: 5px;
 }
 
-#ojzvtrwmgh .gt_first_grand_summary_row {
+#rftqxdkjzb .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2374,7 +2868,7 @@
   border-top-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_last_grand_summary_row_top {
+#rftqxdkjzb .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2384,11 +2878,11 @@
   border-bottom-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_striped {
+#rftqxdkjzb .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ojzvtrwmgh .gt_table_body {
+#rftqxdkjzb .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2397,7 +2891,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_footnotes {
+#rftqxdkjzb .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2411,7 +2905,7 @@
   border-right-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_footnote {
+#rftqxdkjzb .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2420,7 +2914,7 @@
   padding-right: 5px;
 }
 
-#ojzvtrwmgh .gt_sourcenotes {
+#rftqxdkjzb .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2434,7 +2928,7 @@
   border-right-color: #D3D3D3;
 }
 
-#ojzvtrwmgh .gt_sourcenote {
+#rftqxdkjzb .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2442,72 +2936,72 @@
   padding-right: 5px;
 }
 
-#ojzvtrwmgh .gt_left {
+#rftqxdkjzb .gt_left {
   text-align: left;
 }
 
-#ojzvtrwmgh .gt_center {
+#rftqxdkjzb .gt_center {
   text-align: center;
 }
 
-#ojzvtrwmgh .gt_right {
+#rftqxdkjzb .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ojzvtrwmgh .gt_font_normal {
+#rftqxdkjzb .gt_font_normal {
   font-weight: normal;
 }
 
-#ojzvtrwmgh .gt_font_bold {
+#rftqxdkjzb .gt_font_bold {
   font-weight: bold;
 }
 
-#ojzvtrwmgh .gt_font_italic {
+#rftqxdkjzb .gt_font_italic {
   font-style: italic;
 }
 
-#ojzvtrwmgh .gt_super {
+#rftqxdkjzb .gt_super {
   font-size: 65%;
 }
 
-#ojzvtrwmgh .gt_footnote_marks {
+#rftqxdkjzb .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ojzvtrwmgh .gt_asterisk {
+#rftqxdkjzb .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ojzvtrwmgh .gt_indent_1 {
+#rftqxdkjzb .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ojzvtrwmgh .gt_indent_2 {
+#rftqxdkjzb .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ojzvtrwmgh .gt_indent_3 {
+#rftqxdkjzb .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ojzvtrwmgh .gt_indent_4 {
+#rftqxdkjzb .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ojzvtrwmgh .gt_indent_5 {
+#rftqxdkjzb .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ojzvtrwmgh .katex-display {
+#rftqxdkjzb .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ojzvtrwmgh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#rftqxdkjzb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2583,7 +3077,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-is-statistical-significance" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="what-is-statistical-significance" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>What is Statistical Significance?</h2>
 <p><br></p>
 <p>H<sub>A</sub> = Larger diamonds are more expensive than smaller ones</p>
@@ -2616,7 +3110,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-is-statistical-significance-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="what-is-statistical-significance-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>What is Statistical Significance?</h2>
 <p><br></p>
 <p>H<sub>A</sub> = Greater levels of education lead to high voter turnout</p>
@@ -2649,7 +3143,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-is-statistical-significance-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="what-is-statistical-significance-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>What is Statistical Significance?</h2>
 <p><br></p>
 <div class="columns">
@@ -2658,7 +3152,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-42-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-39-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -2668,7 +3162,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-43-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-40-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -2708,7 +3202,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-is-statistical-significance-3" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="what-is-statistical-significance-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>What is Statistical Significance?</h2>
 <p><br></p>
 <div class="columns">
@@ -2717,7 +3211,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-44-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-41-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -2725,23 +3219,23 @@
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="xwmlhsvebp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xwmlhsvebp table {
+<div id="jivvfjjrib" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#jivvfjjrib table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#xwmlhsvebp thead, #xwmlhsvebp tbody, #xwmlhsvebp tfoot, #xwmlhsvebp tr, #xwmlhsvebp td, #xwmlhsvebp th {
+#jivvfjjrib thead, #jivvfjjrib tbody, #jivvfjjrib tfoot, #jivvfjjrib tr, #jivvfjjrib td, #jivvfjjrib th {
   border-style: none;
 }
 
-#xwmlhsvebp p {
+#jivvfjjrib p {
   margin: 0;
   padding: 0;
 }
 
-#xwmlhsvebp .gt_table {
+#jivvfjjrib .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2767,12 +3261,12 @@
   border-left-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_caption {
+#jivvfjjrib .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#xwmlhsvebp .gt_title {
+#jivvfjjrib .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2784,7 +3278,7 @@
   border-bottom-width: 0;
 }
 
-#xwmlhsvebp .gt_subtitle {
+#jivvfjjrib .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2796,7 +3290,7 @@
   border-top-width: 0;
 }
 
-#xwmlhsvebp .gt_heading {
+#jivvfjjrib .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2808,13 +3302,13 @@
   border-right-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_bottom_border {
+#jivvfjjrib .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_col_headings {
+#jivvfjjrib .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2829,7 +3323,7 @@
   border-right-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_col_heading {
+#jivvfjjrib .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2849,7 +3343,7 @@
   overflow-x: hidden;
 }
 
-#xwmlhsvebp .gt_column_spanner_outer {
+#jivvfjjrib .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2861,15 +3355,15 @@
   padding-right: 4px;
 }
 
-#xwmlhsvebp .gt_column_spanner_outer:first-child {
+#jivvfjjrib .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xwmlhsvebp .gt_column_spanner_outer:last-child {
+#jivvfjjrib .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xwmlhsvebp .gt_column_spanner {
+#jivvfjjrib .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2881,11 +3375,11 @@
   width: 100%;
 }
 
-#xwmlhsvebp .gt_spanner_row {
+#jivvfjjrib .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#xwmlhsvebp .gt_group_heading {
+#jivvfjjrib .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2911,7 +3405,7 @@
   text-align: left;
 }
 
-#xwmlhsvebp .gt_empty_group_heading {
+#jivvfjjrib .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2926,15 +3420,15 @@
   vertical-align: middle;
 }
 
-#xwmlhsvebp .gt_from_md > :first-child {
+#jivvfjjrib .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xwmlhsvebp .gt_from_md > :last-child {
+#jivvfjjrib .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xwmlhsvebp .gt_row {
+#jivvfjjrib .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2953,7 +3447,7 @@
   overflow-x: hidden;
 }
 
-#xwmlhsvebp .gt_stub {
+#jivvfjjrib .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2966,7 +3460,7 @@
   padding-right: 5px;
 }
 
-#xwmlhsvebp .gt_stub_row_group {
+#jivvfjjrib .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2980,15 +3474,15 @@
   vertical-align: top;
 }
 
-#xwmlhsvebp .gt_row_group_first td {
+#jivvfjjrib .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xwmlhsvebp .gt_row_group_first th {
+#jivvfjjrib .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#xwmlhsvebp .gt_summary_row {
+#jivvfjjrib .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2998,16 +3492,16 @@
   padding-right: 5px;
 }
 
-#xwmlhsvebp .gt_first_summary_row {
+#jivvfjjrib .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_first_summary_row.thick {
+#jivvfjjrib .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xwmlhsvebp .gt_last_summary_row {
+#jivvfjjrib .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3017,7 +3511,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_grand_summary_row {
+#jivvfjjrib .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3027,7 +3521,7 @@
   padding-right: 5px;
 }
 
-#xwmlhsvebp .gt_first_grand_summary_row {
+#jivvfjjrib .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3037,7 +3531,7 @@
   border-top-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_last_grand_summary_row_top {
+#jivvfjjrib .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3047,11 +3541,11 @@
   border-bottom-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_striped {
+#jivvfjjrib .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xwmlhsvebp .gt_table_body {
+#jivvfjjrib .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3060,7 +3554,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_footnotes {
+#jivvfjjrib .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3074,7 +3568,7 @@
   border-right-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_footnote {
+#jivvfjjrib .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3083,7 +3577,7 @@
   padding-right: 5px;
 }
 
-#xwmlhsvebp .gt_sourcenotes {
+#jivvfjjrib .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3097,7 +3591,7 @@
   border-right-color: #D3D3D3;
 }
 
-#xwmlhsvebp .gt_sourcenote {
+#jivvfjjrib .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3105,72 +3599,72 @@
   padding-right: 5px;
 }
 
-#xwmlhsvebp .gt_left {
+#jivvfjjrib .gt_left {
   text-align: left;
 }
 
-#xwmlhsvebp .gt_center {
+#jivvfjjrib .gt_center {
   text-align: center;
 }
 
-#xwmlhsvebp .gt_right {
+#jivvfjjrib .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xwmlhsvebp .gt_font_normal {
+#jivvfjjrib .gt_font_normal {
   font-weight: normal;
 }
 
-#xwmlhsvebp .gt_font_bold {
+#jivvfjjrib .gt_font_bold {
   font-weight: bold;
 }
 
-#xwmlhsvebp .gt_font_italic {
+#jivvfjjrib .gt_font_italic {
   font-style: italic;
 }
 
-#xwmlhsvebp .gt_super {
+#jivvfjjrib .gt_super {
   font-size: 65%;
 }
 
-#xwmlhsvebp .gt_footnote_marks {
+#jivvfjjrib .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#xwmlhsvebp .gt_asterisk {
+#jivvfjjrib .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xwmlhsvebp .gt_indent_1 {
+#jivvfjjrib .gt_indent_1 {
   text-indent: 5px;
 }
 
-#xwmlhsvebp .gt_indent_2 {
+#jivvfjjrib .gt_indent_2 {
   text-indent: 10px;
 }
 
-#xwmlhsvebp .gt_indent_3 {
+#jivvfjjrib .gt_indent_3 {
   text-indent: 15px;
 }
 
-#xwmlhsvebp .gt_indent_4 {
+#jivvfjjrib .gt_indent_4 {
   text-indent: 20px;
 }
 
-#xwmlhsvebp .gt_indent_5 {
+#jivvfjjrib .gt_indent_5 {
   text-indent: 25px;
 }
 
-#xwmlhsvebp .katex-display {
+#jivvfjjrib .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#xwmlhsvebp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#jivvfjjrib div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3253,7 +3747,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-11" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-8" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="r-fit-text">
 <p><strong>Are deeper diamonds more expensive?</strong></p>
@@ -3265,7 +3759,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-46-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-43-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -3802,12 +4296,12 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluate-the-fit-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluate the Fit:</h2>
+<section id="evaluating-an-ols-regression-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Evaluating an OLS Regression</h2>
 <p><strong>3. What does the R<sup>2</sup> indicate?</strong></p>
 <p><br></p>
 
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-48-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-45-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>Your third step in evaluating a regression model is to consider the R2 value</p>
 <ul>
 <li>In our simple OLS terms, the R-squared is the square of the correlation coefficient</li>
@@ -3837,8 +4331,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluate-the-fit-3" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluate the Fit</h2>
+<section id="evaluating-an-ols-regression-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Evaluating an OLS Regression</h2>
 <p><strong>3. What does the R<sup>2</sup> indicate?</strong></p>
 <p><br></p>
 <div class="columns">
@@ -4351,7 +4845,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-50-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-47-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -4382,8 +4876,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluate-the-fit-4" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluate the Fit</h2>
+<section id="evaluating-an-ols-regression-4" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Evaluating an OLS Regression</h2>
 <p><strong>3. What does the R<sup>2</sup> indicate?</strong></p>
 <p><br></p>
 <div class="columns">
@@ -4896,7 +5390,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-52-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-49-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -4923,7 +5417,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="be-careful-interpreting-the-r2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="be-careful-interpreting-the-r2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Be Careful Interpreting the R<sup>2</sup></h2>
 <p><br></p>
 <div class="columns">
@@ -4976,12 +5470,12 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluate-the-fit-5" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluate the Fit:</h2>
+<section id="evaluating-an-ols-regression-5" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Evaluating an OLS Regression</h2>
 <p><strong>4. Evaluate the Residuals</strong></p>
 <p><br></p>
 
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-55-1.png" class="quarto-figure quarto-figure-center r-stretch" width="864"><aside class="notes">
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-52-1.png" class="quarto-figure quarto-figure-center r-stretch" width="864"><aside class="notes">
 <p>A residuals plot for fake data.</p>
 <ul>
 <li><p>x-axis are all the predictions from your model</p></li>
@@ -5013,12 +5507,12 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluate-the-fit-6" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluate the Fit:</h2>
+<section id="evaluating-an-ols-regression-6" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Evaluating an OLS Regression</h2>
 <p><strong>4. Evaluate the Residuals</strong></p>
 <p><br></p>
 
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-56-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-53-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>Heteroskedastic Errors are Bad</p>
 <ul>
 <li><p>Heteroskedasticity means that the variance of the errors is not constant across observations.</p></li>
@@ -5042,8 +5536,8 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluate-the-fit-7" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluate the Fit:</h2>
+<section id="evaluating-an-ols-regression-7" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Evaluating an OLS Regression</h2>
 <p><strong>4. Evaluate the Residuals</strong></p>
 <p><br></p>
 
@@ -5071,12 +5565,12 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluate-the-fit-8" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluate the Fit:</h2>
+<section id="evaluating-an-ols-regression-8" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Evaluating an OLS Regression</h2>
 <p><strong>4. Evaluate the Residuals</strong></p>
 <p><br></p>
 
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-58-1.png" class="quarto-figure quarto-figure-center r-stretch" width="864"><aside class="notes">
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-55-1.png" class="quarto-figure quarto-figure-center r-stretch" width="864"><aside class="notes">
 <p>This is what you want a residuals plot to look like</p>
 <ol type="1">
 <li><p>Homoskedastic errors</p></li>
@@ -5099,7 +5593,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-12" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-9" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="co"># Fit the OLS</span></span>
@@ -5109,7 +5603,7 @@
 <span id="cb12-5"><a href=""></a><span class="fu">plot</span>(model3, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-59-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-56-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
 <p>Here’s the code you need to check the residuals plot.</p>
 <ul>
 <li>My diamonds regression is named model3.</li>
@@ -5148,7 +5642,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluating-the-fit-of-an-ols-regression-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="evaluating-the-fit-of-an-ols-regression" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Evaluating the Fit of an OLS Regression</h2>
 <p><br></p>
 <ol type="1">
@@ -5173,10 +5667,10 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-13" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-10" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 
-<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-60-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-57-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.8463344</code></pre>
@@ -5198,7 +5692,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-14" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-11" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -5207,7 +5701,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-62-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-59-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
 </figure>
 </div>
 </div>
@@ -5720,7 +6214,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-64-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+<p><img data-src="10_2-Simple_OLS-Concepts_files/figure-revealjs/unnamed-chunk-61-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
@@ -5744,7 +6238,7 @@
 
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 

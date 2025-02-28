@@ -40,7 +40,7 @@ Readings:
 
 
 
-## Reserach question TBD {background-image="Images/background-data_blue_v4.png" .center}
+## Research question TBD {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -308,7 +308,7 @@ proportions(table(mpg$class, mpg$drv))
 
 
 
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, echo=TRUE}
 # Proportions by Row
@@ -527,10 +527,6 @@ The aggregate function looks a little different from what we've done so far
 **Bivariate Analyses: Categorical x Numeric**
 :::
 
-<br>
-
-The Aggregate Function
-
 ```{r}
 options(width = 80)
 ```
@@ -540,54 +536,18 @@ aggregate(data = mpg, cty ~ drv, FUN = mean)
 ```
 
 ```{r, echo=TRUE}
-aggregate(data = mpg, cty ~ drv, FUN = median)
-```
-
-```{r, echo=TRUE}
 aggregate(data = mpg, cty ~ drv, FUN = sd)
-```
-
-::: notes
-
-**Handy, right?**
-
-<br>
-
-**SLIDE**: You can directly use summary this way too
-
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Categorical x Numeric**
-
-<br>
-
-The Aggregate Function
-
-```{r}
-options(width = 80)
 ```
 
 ```{r, echo=TRUE}
 aggregate(data = mpg, cty ~ drv, FUN = summary)
 ```
 
-<br>
-
-::: {.fragment}
-**Practice: Redo the above for highway fuel economy (`hwy`)**
-:::
-
 ::: notes
 
-So, this code asks R to summarize city fuel economy separately for each type of drive train
+**Handy, right?**
 
-<br>
-
-**Questions on this new function?**
+- **Questions on this new function?**
 
 <br>
 
@@ -597,9 +557,12 @@ Interpret these results for me
 
 <br>
 
-As practice, repeat this analysis but for highway fuel economy!
+Let's practice
 
-- **SLIDE**
+- Everybody re-run this code for the highway fuel economy variable (`hwy`)
+
+- (**SLIDE**)
+
 :::
 
 
@@ -816,9 +779,11 @@ Ok, everybody now use aggregate on our new displacement variable!
 
 
 
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
+::: {.r-fit-text}
 **Numeric x Numeric (Convert it into Categorical)**
+:::
 
 <br>
 
@@ -874,9 +839,11 @@ Practice time!
 
 
 
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
+::: {.r-fit-text}
 **Numeric x Numeric (Convert it into Categorical)**
+:::
 
 <br>
 
@@ -943,20 +910,26 @@ Last practice of this technique
 ```{r, echo=TRUE}
 # Check the quantiles
 summary(mpg$displ)
+```
 
+<br>
+
+```{r, echo=TRUE}
 # Recode the variable
 mpg$displ4 <- cut(x = mpg$displ, 
                   breaks = c(0, 2.4, 3.472, 4.6, 8), 
                   labels = c("1st Q", "2nd Q", "3rd Q", "4th Q"))
+```
 
-# Check the observations
-table(mpg$displ4)
+<br>
 
+```{r, echo=TRUE}
 # Calculate the result
 aggregate(data = mpg, cty ~ displ4, FUN = summary)
 ```
 
 ::: notes
+
 **Did everybody get these results?**
 
 <br>
@@ -980,8 +953,8 @@ So, your first option for calculating descriptive statistics using two numeric v
 set.seed(134)
 
 mpg |>
-  select(-displ2) |>
-  slice_sample(n = 7) |>
+  select(-displ2, -displ3, -displ4) |>
+  slice_sample(n = 10) |>
   kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
   column_spec(c(3, 8), background = "pink") |>
   kableExtra::kable_styling(font_size = 21)
@@ -1161,6 +1134,14 @@ d |>
   labs(x = "", y = "")
 ```
 
+::: notes
+
+**Which of the four relationships has the largest correlation?**
+
+- (**SLIDE**)
+
+:::
+
 
 
 
@@ -1236,7 +1217,7 @@ cor(mpg$cty, mpg$hwy)
 <br>
 
 ```{r, echo=TRUE}
-# Test of Correlation (Pearsons)
+# Test the significance of the correlation (Pearsons)
 cor.test(mpg$cty, mpg$hwy)
 ```
 

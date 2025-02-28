@@ -2,12 +2,12 @@
 format: revealjs
 ---
 
-# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r}
 library(tidyverse)
 library(readxl)
-library(kableExtra)
+# library(kableExtra)
 library(modelsummary)
 library(modelr)
 library(ggeffects)
@@ -19,7 +19,7 @@ library(ggeffects)
 
 **Ordinary Least Squares (OLS) Regression**
 
-- The concepts and tools
+- Interpreting and evaluating OLS regressions
 
 :::
 
@@ -32,314 +32,192 @@ Justin Leinaweaver (Spring 2025)
 ::: notes
 Prep for Class
 
-1. Update presidential results (if needed)
+1. Check Canvas submissions
+
+2. Update presidential results (if needed)
 
 <br>
 
-Today we begin exploring regressions: A powerful and common tool used by scientists of all stripes for estimating relationships
+Today we move from our general intuitions of summarizing a relationship with a line to the more nuts and bolts of OLS regression
 
 <br>
 
-**IMPORTANT**: You have to keep up with the assigned readings
+**IMPORTANT**: You have to keep up with the assigned readings!
 
-- Today's class SHOULD NOT be your intro to regression!
+- Today's class SHOULD NOT be your intro to OLS regression!
 
-- Everything today will make so much more sense if you already have been exposed to basic elements
+- In fact, this should be your THIRD journey into OLS counting the Wheelan reading, the reading for today and our work in class on Monday
 
 <br>
 
-Regression, to the uninitiated, will appear confusing.
+If you do the work, I promise that each time you go through the material it will make more sense.
 
-- BUT I promise that each time you go through the material it will make more sense
 :::
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## The Line of Best Fit? {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7, cache=TRUE}
+d_test <- tibble(
+  x1 = c(2, 3, 4, 5, 6),
+  y1 = c(3, 2, 4, 3, 5)
+)
+
+set.seed(345)
+
+d_random <- tibble(
+  slope1 = rnorm(n = 10, mean = .5, sd = .02),
+  intercept1 = rnorm(n = 10, mean = 1.3, sd = .25),
+)
+
+ggplot(data = d_test, aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  #geom_abline(data = d_random, aes(slope = slope1, intercept = intercept1), color = "darkgrey") +
+  geom_abline(data = d_random, aes(slope = slope1, intercept = intercept1), color = RColorBrewer::brewer.pal(n = 10, name = "Set3")) +
+  scale_x_continuous(limits = c(.25, 9), breaks = 0:9) +
+  scale_y_continuous(limits = c(.25, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("text", x = .5, y = seq(6.8, 3.5, length.out = 5), hjust = 0, label = paste0("Y = ", round(d_random$intercept1[1:5], 2), " + ", round(d_random$slope1[1:5], 2), "?"), size = 4) +
+  annotate("text", x = 7.5, y = seq(4, .7, length.out = 5), hjust = 0, label = paste0("Y = ", round(d_random$intercept1[6:10], 2), " + ", round(d_random$slope1[6:10], 2), "?"), size = 4)
+```
+
+::: notes
+
+For today I challenged each of you to draw us a line of best fit using only a ruler.
+
+- **How did that go?**
+
+<br>
+
+**What's the smallest RSS anybody in class came up with?**
+
+<br>
+
+**SLIDE**: The actual line of best fit
+
+:::
+
+
+
+## The Line of Best Fit {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7, cache=TRUE}
+d_test <- tibble(
+  x1 = c(2, 3, 4, 5, 6),
+  y1 = c(3, 2, 4, 3, 5)
+)
+
+res1 <- lm(data = d_test, y1 ~ x1)
+
+d_preds <- tibble(
+  x1 = 0:9
+) |>
+  add_predictions(res1)
+
+d_test2 <- d_test |>
+  add_predictions(res1) |>
+  add_residuals(res1)
+
+# d_test2 |>
+#   summarize(
+#     RSS = sum(resid^2)
+#   )
+
+ggplot(data = d_test2, aes(x = x1, y = y1)) + 
+  geom_line(data = d_preds, aes(x = x1, y = pred), color = "darkblue") +
+  annotate("segment", x = d_test2$x1, xend = d_test2$x1, y = d_test2$y1, yend = d_test2$pred, color = "red") +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = 0:9) +
+  scale_y_continuous(limits = c(.25, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("text", x = .5, y = 6.5, hjust = 0, label = "Y = 1.4 + 0.5 X", color = "darkblue", size = 6) +
+  annotate("text", x = .5, y = 5.5, hjust = 0, label = "RSS = 2.7", color = "red", size = 6) +
+  annotate("text", x = 1.7:5.7, y = c(2.6, 2.4, 3.6, 3.4, 4.6), label = round(d_test2$resid, 1), color = "red")
+```
+
+::: notes
+
+Using some simple math I can tell you this is the line of best fit for this data.
+
+- **So, how did you do? How close did you get with eye-balling it?**
+
+<br>
+
+This line is a HUGE improvement over the three we tried in class on Monday
+
+- RSS dropped from 6.75 to 6 to 4.5 and now all the way down to 2.7!
+
+- The residuals are all similar in size and distributed above and below the line
+
+- **Does all of that make sense?**
+
+<br>
+
+**SLIDE**: Why go to all this trouble?
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Part 1 **
+**How are changes in X associated with changes in Y?**
+:::
 
 <br>
 
-**Why do scientists use regressions?**
-:::
+**Y = 1.4 + 0.5 X**
 
-::: notes
-Big picture:
+- On average...
 
-- What is a "regression"?
-
-- And why do we need it?
-:::
-
-
-
-## {background-image="Images/background-slate_v2.png" .center}
-
-```{r, fig.align = 'center', fig.asp=.7, fig.width = 6, cache=TRUE}
-diamonds |>
-  slice_sample(prop = .1) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price",
-       title = str_c("The correlation of diamond weight to price is ", round(cor(diamonds$carat, diamonds$price), 2))) +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  coord_cartesian(xlim = c(0,4))
-```
+    - When X equals zero, Y equals 1.4
+    
+    - Each one unit increase in X is associated with a 0.5 increase in Y
+    
+    - When X equals 10, Y equals 6.4
 
 ::: notes
 
-Let's start by looking at some data you are now pretty familiar with from last week.
+Keep in mind, regression analysis is fundamentally like all the rest of statistics
 
-- The diamonds dataset includes details on 53k+ diamonds in terms of their characteristics and estimated prices
-
-<br>
-
-### What conclusions can we draw based on the visualization and the correlation?
-
-- (Bigger diamonds are typically more expensive)
-
-- (There is a strong linear correlation between the two variables)
+- A tool meant to summarize data.
 
 <br>
 
-As a matter of description these two data summaries are very useful.
+So, rather than showing someone a scatter plot of 50,000 data points you can communicate that relationship using this formula for a line
 
-- Thanks to these we have a much better sense of what the world of diamonds actually looks like
+- This simple line summarizes all of that data and let's us answer the question with specificity
 
-<br>
-
-HOWEVER, this approach is also incredibly limited for helping us understand HOW and WHY these two things are related
+- Every one unit increase in X is associated with a .5 increase in Y
 
 <br>
 
-**SLIDE**: I think these limitations are most evident when we try to answer specific questions with our summaries
-:::
+This could be:
 
+- measures of government spending and economic growth
 
+- time spent studying and scores on the LSAT
 
-## {background-image="Images/background-slate_v2.png" .center}
-
-**How much more should we expect to pay in order to move from a 1.5 carat to a 2.5 carat diamond?**
-
-```{r, fig.align = 'center', fig.asp=.7, fig.width = 6, cache=TRUE}
-range1 <- range(diamonds$price[diamonds$carat == 1.5])
-range2 <- range(diamonds$price[diamonds$carat == 2.5])
-
-diamonds |>
-  slice_sample(prop = .1) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price") +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  coord_cartesian(xlim = c(0,4)) +
-  annotate("segment", x = 1.5, xend = 1.5, y = range1[1], yend = range1[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both")) +
-  annotate("segment", x = 2.5, xend = 2.5, y = range2[1], yend = range2[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both"))
-```
-
-::: notes
-
-Now that we have access to real diamond prices for 53k examples, it MUST be possible to answer simple questions like this.
+- OR an answer to our class research question!
 
 <br>
 
-**Based on your tools to this point in the class, what kind of answer could we provide to this question?**
+The regression line is the next big step in you learning how to answer substantial and important questions with data.
 
-- **What tools could you use to provide an answer to this question?**
-
-<br>
-
-- (**SLIDE**: Results)
-:::
-
-
-
-## Using Descriptive Statistics {background-image="Images/background-slate_v2.png" .center}
-
-```{r, echo=TRUE}
-# Make subsets
-diamonds1_5 <- filter(diamonds, carat == 1.5)
-diamonds2_5 <- filter(diamonds, carat == 2.5)
-```
-
-<br>
-
-```{r, echo=TRUE}
-# Summarize
-summary(diamonds1_5$price)
-```
-
-<br>
-
-```{r, echo=TRUE}
-summary(diamonds2_5$price)
-```
-
-::: notes
-
-**What answer could we give using these descriptive stats?**
-
-<br>
-
-**Is this a good answer? Why or why not?**
-
-- **In other words, why not just answer the question by comparing the prices of 1.5 and 2.5 carat diamonds in the dataset?**
+- **SLIDE**: It turns out that in addition to giving us specific answers to our questions, regression analysis offers other improvements on our bivariate analyses
 
 :::
 
 
 
-## The Limits of Descriptive Statistics {background-image="Images/background-slate_v2.png" .center}
 
-<br>
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**1. Choosing a point of comparison is somewhat arbitrary**
-:::
-
-```{r, echo=FALSE, fig.align='center', fig.asp=.618, cache=TRUE}
-# Overlapping densities
-diamonds |>
-  mutate(
-    class2 = case_when(
-      carat == 1.5 ~ "1.5 carats",
-      carat == 2.5 ~ "2.5 carats",
-      TRUE ~ NA_character_
-    )
-  ) |>
-  na.omit() |>
-  ggplot(aes(x = price, fill = class2)) +
-  geom_density(alpha = .5) +
-  theme_bw() +
-  scale_x_continuous(labels = scales::dollar_format()) +
-  labs(x = "Diamond Prices", y = "Density", fill = "")
-
-# diamonds |>
-#   mutate(
-#     class2 = case_when(
-#       carat == 1.5 ~ "1.5 carats",
-#       carat == 2.5 ~ "2.5 carats",
-#       TRUE ~ NA_character_
-#     )
-#   ) |>
-#   na.omit() |>
-#   ggplot(aes(x = price)) +
-#   #geom_histogram(bins = 20) +
-#   geom_density() +
-#   theme_bw() +
-#   facet_wrap(~class2, ncol = 1, scales = "free_y")
-```
-
-::: notes
-Quick Aside: These are density curves
-
-- Think of them like a smoothed version of a histogram.
-
-- Useful because you don't have to play with bin sizes and and its easier to overlay two distributions on top of each other
-
-<br>
-
-Back to the point! The FIRST big problem with trying to answer our question with descriptive stats is that our choice of comparison is somewhat arbitrary
-
-- There isn't really a robust way to defend our choice of which descriptive stats to compare
-
-- e.g. compare means, medians, IQRs?
-
-<br>
-
-In this case comparing the means and medians shows an increase in price with weight, but comparing the maximums doesn't
-
-- Is one of these more "true" or "correct" than the others?
-
-- What if you have one of the super expensive small diamonds? You could upgrade and get money back!
-
-<br>
-
-This is why descriptive stats are important for helping the reader see your data but not necessarily for answering specific questions on their own.
-
-- These stats give us a sense of the distribution, but the distribution isn't the same as a sense of any single diamond chosen at random
-
-:::
-
-
-## The Limits of Descriptive Statistics {background-image="Images/background-slate_v2.png" .center}
-
-<br>
-
-**2. Hard to quantify uncertainty**
-
-```{r, echo=FALSE, fig.align='center', fig.asp=.618, cache=TRUE}
-# Overlapping densities
-diamonds |>
-  mutate(
-    class2 = case_when(
-      carat == 1.5 ~ "1.5 carats",
-      carat == 2.5 ~ "2.5 carats",
-      TRUE ~ NA_character_
-    )
-  ) |>
-  na.omit() |>
-  ggplot(aes(x = price, fill = class2)) +
-  geom_boxplot() +
-  theme_bw() +
-  scale_x_continuous(labels = scales::dollar_format()) +
-  labs(x = "Diamond Prices", y = "Density", fill = "")
-```
-
-::: notes
-
-**REVEAL**: The SECOND big problem is that this approach doesn't give us an easy way to describe our uncertainty in the comparisons
-
-- These descriptive stats don't include any caveats for sample size or precision
-
-- In other words, how confident should we be in these estimates of the mean or median?
-
-<br>
-
-We have the standard deviation for the mean, but nothing exactly comparable for the other comparisons.
-
-:::
-
-
-
-## The Limits of Descriptive Statistics {background-image="Images/background-slate_v2.png" .center}
-
-<br>
-
-**3. Sample size matters (and may be hidden)!**
-
-```{r, echo=TRUE}
-# Count the observations
-nrow(diamonds1_5)
-```
-
-<br>
-
-```{r, echo=TRUE}
-nrow(diamonds2_5)
-```
-
-::: notes
-
-THIRD big problem, the descriptive statistics approach can mislead you if the subsets of the data are small!
-
-- Out of 53k diamonds in this dataset only 793 have exactly 1.5 carats (e.g. 1%)
-
-- Out of 53k diamonds in this dataset only 17 have exactly 2.5 carats (e.g. .03%)
-
-- We probably shouldn't be confident drawing conclusions about the relationship between diamond weight and value using 1% of the sample!
-
-<br>
-
-**SLIDE**: Regression can help us with all three issues!
-:::
-
-
-
-## Part 1 {background-image="Images/background-slate_v2.png" .center}
 
 **Why do scientists use regressions?**
 
@@ -351,58 +229,122 @@ THIRD big problem, the descriptive statistics approach can mislead you if the su
 
 3. Produces estimates with measures of uncertainty
 
+:::
+
 ::: notes
 
-Let's now talk through these characteristics to make sure we're clear on the intutions underpinning regression
+First things first, I want to reinforce the usefulness of regression analysis by highlighting these three points
 
-- **SLIDE**
+- I want you coming away from our work convinced that regression is a powerful tool for doing science that you WANT to better understand.
+
+<br>
+
+**SLIDE**: Let's start with the first one
+
 :::
 
 
 
-## 'Regression to the mean' {background-image="Images/background-slate_v2.png" .center}
+## 'Regression to the mean' {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '66%'}
-knitr::include_graphics("Images/11_1-Galtons-rate_regression-diagram.png")
-```
+![](Images/11_1-Galtons-rate_regression-diagram.png){style="display: block; margin: 0 auto"}
 
 ::: notes
 
-The answer to that question, and the word "regression" itself comes from the work of a 19th century statistician, Sir Francis Galton.
+Asking about "regression to the mean" means exploring the work of the 19th century statistician, Sir Francis Galton.
 
 <br>
 
-In 1886 he ran a now very famous experiment in which he gathered the heights of 930 children and their parents.
+The results of a famous 1886 experiment
 
-- The horizontal line here is the average height of the sample
+- Gathers the heights of 930 children and their parents
 
-- Dots below the line are shorter than average, above the line taller
-
-- The average parent heights are on one line and their kids on the other
+- The horizontal line here is the average height of the sample and the y-axis labels on the right show the differences to the average
 
 <br>
 
-Generally, what Galton found was:
+The x-axis is organized by the heights of the parents
 
-1. The children of tall parents tended to be taller than average, BUT were shorter than their parents
+- So, the shortest parents are on the left of the line marked "A" and the tallest build to the right
 
-2. The children of short parents were taller than their parents but still shorter than average
+- The children of those parents are plotted on the C line
 
 <br>
 
-Galton described this as "regression to the mean"
+Galton observed that:
 
-- In short, across tons of different processes in nature we typically see extreme observations followed by less extreme observations
+- Parents shorter than average had children taller than them but also still shorter than average
 
-- For example, a football player with a long career of being average may put up an all star year, but the odds are that next year they go back to their averages
+- Parents taller than average had children shorter than them, but still taller than average
+
+<br>
+
+Galton explained this finding as "regression to the mean"
+
+- **Can everybody see this in the plot?**
+
+<br>
+
+**SLIDE**: Why does height show this regression to the mean?
+
+:::
+
+
+
+## 'Regression to the mean' {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<br>
+
+**Determinants of Height**
+
+- Polygenic inheritance
+
+- Environmental influences
+
+:::
+
+::: {.column width="50%"}
+
+![](Images/11_1-Galtons-rate_regression-diagram.png)
+
+:::
+
+::::
+
+::: notes
+
+Qualities like your height are actually the result of adding together a bunch of different factors ([Link1](https://www.sciencedirect.com/science/article/abs/pii/S1570677X09000793), [Link2](https://www.nature.com/articles/s41598-020-64883-8))
+
+<br>
+
+Scientists estimate as much as 80% of height is genetic, HOWEVER
+
+- Height is considered a polygenic trait, meaning many genes, each with a small effect, contribute to overall height rather than a single gene controlling it.
+
+- That also leaves as much as 20% of the variation explained by environmental factors
+
+<br>
+
+Extreme values of height, being MUCH taller than average or shorter, require all of these different factors to point the exact same way
+
+- The odds are that your kids will share many, if not most, of your same factors but a few will likely be different just by chance
+
+- Those few differences pull their height away from yours
 
 <br>
 
 **SLIDE**: Let me clarify this with a simulation
+
 :::
 
 
-## Let's Simulate an Experiment! {background-image="Images/background-slate_v2.png" .center}
+## Let's Simulate an Experiment! {background-image="Images/background-data_blue_v4.png" .center}
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -455,7 +397,9 @@ Imagine we line up 100 people on the 50 yard line of a football field
 - Each person gets a fair coin
 
 - We will ask each person to flip the coin
+
     - Heads take one step to the right (+1)
+
     - Tails take one step to the left (-1)
 
 <br>
@@ -482,7 +426,7 @@ Let's collect some guesses about the outcome of this experiment
 
 
 
-## Coin Flip 1 {background-image="Images/background-slate_v2.png" .center}
+## Coin Flip 1 {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -522,7 +466,7 @@ After the first flip EVERYONE has moved away from the 50 yard line by one random
 :::
 
 
-## Coin Flip 2 {background-image="Images/background-slate_v2.png" .center}
+## Coin Flip 2 {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -568,7 +512,7 @@ After two random steps we have about half the sample two steps away from the 50 
 :::
 
 
-## Coin Flip 3 {background-image="Images/background-slate_v2.png" .center}
+## Coin Flip 3 {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -623,7 +567,7 @@ Again, random flips have moved some further away from the 50 and a number have a
 :::
 
 
-## Coin Flip 3: Possible Paths {background-image="Images/background-slate_v2.png" .center}
+## Coin Flip 3: Possible Paths {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -669,7 +613,7 @@ So, apply these percentages to any group of subjects and our expectation is that
 
 
 
-## Coin Flip 4: Possible Paths {background-image="Images/background-slate_v2.png" .center .smaller}
+## Coin Flip 4: Possible Paths {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 <br>
 
@@ -737,7 +681,7 @@ Here we see the 16 ways a person could flip a coin four times.
 :::
 
 
-## Coin Flip 4 {background-image="Images/background-slate_v2.png" .center}
+## Coin Flip 4 {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -776,7 +720,7 @@ And here we see the results of our experiment after flip 4.
 
 
 
-## Coin Flip 10 {background-image="Images/background-slate_v2.png" .center}
+## Coin Flip 10 {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -832,7 +776,7 @@ The key observation: When you add a bunch of small differences together there ar
 
 
 
-## 'Regression to the mean'{background-image="Images/background-slate_v2.png" .center}
+## 'Regression to the mean'{background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, echo = FALSE, fig.align = 'center', out.width = '66%'}
 knitr::include_graphics("Images/11_1-Galtons-rate_regression-diagram.png")
@@ -850,343 +794,478 @@ THIS is what Galton found with his research into parent-child heights.
 
 <br>
 
-THIS is the power of regression.
+Across tons of different processes in nature we typically see extreme observations followed by less extreme observations
 
-- When trying to represent a relationship why not use the means since the world conspires to reach the averages?
+- THIS is the power of regression.
 
-<br>
-
-### Any questions on the intuition of why predicting the average is frequently useful for us?
+- When trying to represent a relationship why not use the mean since the world works so hard to push us to the average?
 
 <br>
 
-**SLIDE**: Time to talk about what regression produces, how to interpret it and how to fit them in R
+**Any questions on the intuition of why predicting the average is frequently useful for us?**
+
+<br>
+
+**SLIDE**: For the second and third reason scientists use regressions will take us back to our diamonds data
+
 :::
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.
-
-<br>
-
-::::: {.columns}
-:::: {.column width="50%"}
-```{r, fig.align = 'center', fig.asp=.8, fig.width = 6, cache=TRUE}
+```{r, fig.align = 'center', fig.asp=.7, fig.width = 6, cache=TRUE}
 diamonds |>
   slice_sample(prop = .1) |>
   ggplot(aes(x = carat, y = price)) +
   geom_point(alpha = .05) +
-  geom_smooth(method = "lm", se = FALSE) +
   theme_bw() +
   labs(x = "Carats", y = "Price",
        title = str_c("The correlation of diamond weight to price is ", round(cor(diamonds$carat, diamonds$price), 2))) +
-  scale_y_continuous(labels = scales::dollar_format())
+  scale_y_continuous(labels = scales::dollar_format()) +
+  coord_cartesian(xlim = c(0,4))
 ```
-::::
 
-:::: {.column width="50%"}
+::: notes
+
+As you well know, the diamonds dataset includes details on 53k+ diamonds in terms of their characteristics and estimated prices
+
+<br>
+
+From our bivariate analyses last week we discovered that:
+
+- Bigger diamonds are typically more expensive, and
+
+- There is a strong linear correlation between the two variables
+
+<br>
+
+While these two conclusions are useful, they are also quite limited in a practical sense
+
+- **SLIDE**: Let's get more specific
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**How much more should we expect to pay in order to move from a 1.5 carat to a 2.5 carat diamond?**
+
+```{r, fig.align = 'center', fig.asp=.7, fig.width = 6, cache=TRUE}
+range1 <- range(diamonds$price[diamonds$carat == 1.5])
+range2 <- range(diamonds$price[diamonds$carat == 2.5])
+
+diamonds |>
+  slice_sample(prop = .1) |>
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  theme_bw() +
+  labs(x = "Carats", y = "Price") +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  coord_cartesian(xlim = c(0,4)) +
+  annotate("segment", x = 1.5, xend = 1.5, y = range1[1], yend = range1[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both")) +
+  annotate("segment", x = 2.5, xend = 2.5, y = range2[1], yend = range2[2], color = "blue", arrow = arrow(angle = 90, length = unit(0.1, "inches"), ends = "both"))
+```
+
+::: notes
+
+Now that we have access to real diamond prices for 53k examples, it MUST be possible to answer simple questions like this.
+
+<br>
+
+**Based on your tools to this point in the class, what kind of answer could we provide to this question?**
+
+- **What tools could you use to provide an answer to this question?**
+
+<br>
+
+- (**SLIDE**: Results)
+:::
+
+
+
+## Using Descriptive Statistics {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE}
+# Make subsets
+diamonds1_5 <- filter(diamonds, carat == 1.5)
+diamonds2_5 <- filter(diamonds, carat == 2.5)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Summarize
+summary(diamonds1_5$price)
+```
+
+<br>
+
+```{r, echo=TRUE}
+summary(diamonds2_5$price)
+```
+
+::: notes
+
+**What answer could we give using these descriptive stats?**
+
+<br>
+
+**Is this a good answer? Why or why not?**
+
+- **In other words, why not just answer the question by comparing the prices of 1.5 and 2.5 carat diamonds in the dataset?**
+
+:::
+
+
+
+## The Limits of Descriptive Statistics {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
 ::: {.r-fit-text}
-Y = $\alpha$ + $\beta$ X
+**1. Choosing a summary point to compare is arbitrary**
+:::
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.618, cache=TRUE}
+# Overlapping densities
+diamonds |>
+  mutate(
+    class2 = case_when(
+      carat == 1.5 ~ "1.5 carats",
+      carat == 2.5 ~ "2.5 carats",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  na.omit() |>
+  ggplot(aes(x = price, fill = class2)) +
+  geom_density(alpha = .5) +
+  theme_bw() +
+  scale_x_continuous(labels = scales::dollar_format()) +
+  labs(x = "Diamond Prices", y = "Density", fill = "")
+
+# diamonds |>
+#   mutate(
+#     class2 = case_when(
+#       carat == 1.5 ~ "1.5 carats",
+#       carat == 2.5 ~ "2.5 carats",
+#       TRUE ~ NA_character_
+#     )
+#   ) |>
+#   na.omit() |>
+#   ggplot(aes(x = price)) +
+#   #geom_histogram(bins = 20) +
+#   geom_density() +
+#   theme_bw() +
+#   facet_wrap(~class2, ncol = 1, scales = "free_y")
+```
+
+::: notes
+
+The FIRST big problem with trying to answer our question with descriptive stats is that our choice of comparison is somewhat arbitrary
+
+- There isn't really a robust way to defend our choice of which descriptive stats to compare
+
+- e.g. compare means, medians, IQRs?
+
+<br>
+
+In this case comparing the means and medians shows an increase in price with weight, but comparing the maximums doesn't
+
+- Is one of these more "true" or "correct" than the others?
+
+- What if you have one of the super expensive small diamonds? You could upgrade and get money back!
+
+<br>
+
+This is why descriptive stats are important for helping the reader see your data but not necessarily for answering specific questions on their own.
+
+- These stats give us a sense of the distribution, but the distribution isn't the same as a sense of any single diamond chosen at random
+
+:::
+
+
+## The Limits of Descriptive Statistics {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+**2. It is hard to describe our uncertainty**
+:::
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.618, cache=TRUE}
+# Overlapping densities
+diamonds |>
+  mutate(
+    class2 = case_when(
+      carat == 1.5 ~ "1.5 carats",
+      carat == 2.5 ~ "2.5 carats",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  na.omit() |>
+  ggplot(aes(x = price, fill = class2)) +
+  geom_boxplot() +
+  theme_bw() +
+  scale_x_continuous(labels = scales::dollar_format()) +
+  labs(x = "Diamond Prices", y = "Density", fill = "")
+```
+
+::: notes
+
+**REVEAL**: The SECOND big problem is that this approach doesn't give us an easy way to describe our uncertainty in the comparisons
+
+- These descriptive stats don't include any caveats for sample size or precision
+
+- In other words, how confident should we be in these estimates of the mean or median?
+
+<br>
+
+We have the standard deviation for the mean, but nothing exactly comparable for the other comparisons.
+
+:::
+
+
+
+## The Limits of Descriptive Statistics {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+**3. Sample size matters (and may be hidden)!**
+:::
+
+```{r, echo=TRUE}
+# Count the observations
+nrow(diamonds1_5)
+```
+
+<br>
+
+```{r, echo=TRUE}
+nrow(diamonds2_5)
+```
+
+::: notes
+
+THIRD big problem, the descriptive statistics approach can mislead you if the subsets of the data are small!
+
+- Out of 53k diamonds in this dataset only 793 have exactly 1.5 carats (e.g. 1%)
+
+- Out of 53k diamonds in this dataset only 17 have exactly 2.5 carats (e.g. .03%)
+
+- We probably shouldn't be confident drawing conclusions about the relationship between diamond weight and value using 1% of the sample!
+
+<br>
+
+**SLIDE**: Regression can help us with all three issues!
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**An OLS Regression Analysis of Diamond Prices**
+:::
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+![](Images/10_2-diamonds_OLS.gif){style="display: block; margin: 0 auto"}
+:::
+
+::: {.column width="50%"}
+```{r}
+model1 <- lm(data = diamonds, price ~ carat)
+predictions1 <- ggpredict(model1, terms = "carat")
+
+modelsummary(list("Diamond Value" = model1), output = "gt",
+             fmt = 2, 
+             stars = c('*' = .05), 
+             gof_omit = "IC|Log|F",
+             coef_map = c("carat"= "Size (carats)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
 :::
 
 ::::
-:::::
-
-::: notes
-So, a simple regression estimates the relationship between two numeric variables with a straight line.
-
-- This means it generates an estimate of the relationship between weight and price based on ALL of the data and not just two subsets
-
-<br>
-
-And reaching back to your old math classes, and the readings for today, the formula for a line represents this relationship
-
-- The 'Y' is the outcome of interest (e.g. diamond price)
-
-- The 'X' is the predictor (e.g. diamond weight)
-
-- The 'alpha' is the y-intercept (e.g. where the line crosses the y-axis)
-
-- The 'beta' is the slope term and that represents the relationship between the two variables
-
-<br>
-
-**With me so far?**
-
-<br>
-
-So, we want to draw a line that represents the relationship between two numeric variables.
-
-- The next question is, "how"?
-:::
 
 
+```{r, fig.align = 'center', fig.asp=.75, fig.width = 8, eval=TRUE}
+res1 <- lm(data = diamonds, price ~ carat)
+# summary(res1)
+# res1
 
+# diamonds |>
+#   slice_sample(prop = .1) |>
+#   ggplot(aes(x = carat, y = price)) +
+#   geom_point(alpha = 1) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   theme_bw() +
+#   labs(x = "Carats", y = "Price") +
+#   scale_y_continuous(labels = scales::dollar_format()) +
+#   annotate("text", x = .5, y = 27500, hjust = 0, label = paste0("Price = ", round(coef(res1)[[1]], 2), " + ", round(coef(res1)[[2]], 2), " X"), size = 5)
+# 
+# ## What would an animated version look like?
+# 
+# set.seed(345)
+# 
+# diamonds2 <- diamonds |>
+#   slice_sample(prop = .1)
+# 
+# diamonds2 |>
+#   ggplot(aes(x = carat, y = price)) +
+#   geom_point(alpha = 1) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   theme_bw() +
+#   labs(x = "Carats", y = "Price") +
+#   scale_y_continuous(labels = scales::dollar_format()) +
+#   annotate("text", x = .5, y = 27500, hjust = 0, label = paste0("Price = ", round(coef(res1)[[1]], 2), " + ", round(coef(res1)[[2]], 2), " X"), size = 5)
+# 
+# ggsave(filename = "Images/10_2-gifpart1.png", dpi = 320, width = 2400, height = 1600, units = "px")
+# 
+# diamonds2 |>
+#   ggplot(aes(x = carat, y = price)) +
+#   geom_point(alpha = .5) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   theme_bw() +
+#   labs(x = "Carats", y = "Price") +
+#   scale_y_continuous(labels = scales::dollar_format()) +
+#   annotate("text", x = .5, y = 27500, hjust = 0, label = paste0("Price = ", round(coef(res1)[[1]], 2), " + ", round(coef(res1)[[2]], 2), " X"), size = 5)
+# 
+# ggsave(filename = "Images/10_2-gifpart2.png", dpi = 320, width = 2400, height = 1600, units = "px")
+# 
+# diamonds2 |>
+#   ggplot(aes(x = carat, y = price)) +
+#   geom_point(alpha = .25) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   theme_bw() +
+#   labs(x = "Carats", y = "Price") +
+#   scale_y_continuous(labels = scales::dollar_format()) +
+#   annotate("text", x = .5, y = 27500, hjust = 0, label = paste0("Price = ", round(coef(res1)[[1]], 2), " + ", round(coef(res1)[[2]], 2), " X"), size = 5)
+# 
+# ggsave(filename = "Images/10_2-gifpart3.png", dpi = 320, width = 2400, height = 1600, units = "px")
+# 
+# diamonds2 |>
+#   ggplot(aes(x = carat, y = price)) +
+#   geom_point(alpha = .125) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   theme_bw() +
+#   labs(x = "Carats", y = "Price") +
+#   scale_y_continuous(labels = scales::dollar_format()) +
+#   annotate("text", x = .5, y = 27500, hjust = 0, label = paste0("Price = ", round(coef(res1)[[1]], 2), " + ", round(coef(res1)[[2]], 2), " X"), size = 5)
+# 
+# ggsave(filename = "Images/10_2-gifpart4.png", dpi = 320, width = 2400, height = 1600, units = "px")
+# 
+# diamonds2 |>
+#   ggplot(aes(x = carat, y = price)) +
+#   geom_point(alpha = .06) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   theme_bw() +
+#   labs(x = "Carats", y = "Price") +
+#   scale_y_continuous(labels = scales::dollar_format()) +
+#   annotate("text", x = .5, y = 27500, hjust = 0, label = paste0("Price = ", round(coef(res1)[[1]], 2), " + ", round(coef(res1)[[2]], 2), " X"), size = 5)
+# 
+# ggsave(filename = "Images/10_2-gifpart5.png", dpi = 320, width = 2400, height = 1600, units = "px")
+# 
+# diamonds2 |>
+#   ggplot(aes(x = carat, y = price)) +
+#   geom_point(alpha = .03) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   theme_bw() +
+#   labs(x = "Carats", y = "Price") +
+#   scale_y_continuous(labels = scales::dollar_format()) +
+#   annotate("text", x = .5, y = 27500, hjust = 0, label = paste0("Price = ", round(coef(res1)[[1]], 2), " + ", round(coef(res1)[[2]], 2), " X"), size = 5)
+# 
+# ggsave(filename = "Images/10_2-gifpart6.png", dpi = 320, width = 2400, height = 1600, units = "px")
+# 
+# diamonds2 |>
+#   ggplot(aes(x = carat, y = price)) +
+#   geom_point(alpha = .015) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   theme_bw() +
+#   labs(x = "Carats", y = "Price") +
+#   scale_y_continuous(labels = scales::dollar_format()) +
+#   annotate("text", x = .5, y = 27500, hjust = 0, label = paste0("Price = ", round(coef(res1)[[1]], 2), " + ", round(coef(res1)[[2]], 2), " X"), size = 5)
+# 
+# ggsave(filename = "Images/10_2-gifpart7.png", dpi = 320, width = 2400, height = 1600, units = "px")
+# 
+# diamonds2 |>
+#   ggplot(aes(x = carat, y = price)) +
+#   geom_point(alpha = 0) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   theme_bw() +
+#   labs(x = "Carats", y = "Price") +
+#   scale_y_continuous(labels = scales::dollar_format()) +
+#   annotate("text", x = .5, y = 27500, hjust = 0, label = paste0("Price = ", round(coef(res1)[[1]], 2), " + ", round(coef(res1)[[2]], 2), " X"), size = 5)
+# 
+# ggsave(filename = "Images/10_2-gifpart8.png", dpi = 320, width = 2400, height = 1600, units = "px")
+# 
+# library(gifski)
+# 
+# gifski(png_files = c("Images/10_2-gifpart1.png","Images/10_2-gifpart2.png","Images/10_2-gifpart3.png","Images/10_2-gifpart4.png","Images/10_2-gifpart5.png","Images/10_2-gifpart6.png","Images/10_2-gifpart7.png","Images/10_2-gifpart8.png"), gif_file = "Images/10_2-diamonds_OLS.gif", width = 1000, height = 800, delay = 1)
 
-## {background-image="Images/background-slate_v2.png" .center}
-
-```{r, fig.retina=3, fig.align='center', fig.width=8, fig.asp=0.618, cache=TRUE}
-diamonds |>
-  slice_sample(prop = .4) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 3) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price") +
-  coord_cartesian(xlim = c(0,4)) +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  annotate("text", x = 3, y = 5000, label = str_c("mean(Carats) = ", round(mean(diamonds$carat), 2)), size = 5) +
-  annotate("text", x = 3, y = 2500, label = str_c("mean(Price) = ", round(mean(diamonds$price), 2)), size = 5)
 ```
 
 ::: notes
 
-Back to the diamonds!
+As we worked on last class, regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line.
+
+- It usefully summarizes the relationship using a simple formula that we can use to make predictions
+
+- AND it generates this line while accounting for ALL of the observations in the dataset!
 
 <br>
 
-Let's draw a line using the logic of regression to the mean
+On the right I'm showing you a regression table
 
-- And that means starting by identifying the mean of the sample
+- This should be incredibly familiar to you if you've read any quantitative academic literature
 
-:::
+- This is the standard way that regressions are communicated in academic journals
 
-
-
-## {background-image="Images/background-slate_v2.png" .center}
-
-```{r, fig.retina=3, fig.align='center', out.width='96%', fig.width=8, fig.asp=0.618, cache=TRUE}
-## Add line guesses
-x1 <- .798
-y1 <- 3933
-x2 <- 0
-y2 <- 0
-x3 <- .25
-y3 <- 500
-x4 <- .5
-y4 <- 500
-
-b1 <- (y2-y1)/(x2-x1)
-a1 <- y1 - b1*x1
-
-b2 <- (y3-y1)/(x3-x1)
-a2 <- y1 - b2*x1
-
-b3 <- (y4-y1)/(x4-x1)
-a3 <- y1 - b3*x1
-
-
-diamonds |>
-  slice_sample(prop = .4) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  geom_abline(slope = b1, intercept = a1, color = "green", size = 1.1) +
-  geom_abline(slope = b2, intercept = a2, color = "orange", size = 1.1) +
-  geom_abline(slope = b3, intercept = a3, color = "purple", size = 1.1) +
-  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 3) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price") +
-  coord_cartesian(xlim = c(0,4)) +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  annotate("text", x = 3, y = 5000, label = str_c("mean(Carats) = ", round(mean(diamonds$carat), 2)), size = 5) +
-  annotate("text", x = 3, y = 2500, label = str_c("mean(Price) = ", round(mean(diamonds$price), 2)), size = 5)
-```
-
-::: notes
-That gives us our first point in our model.
-
-- However, we need two points to make a line.
+- *Show them the alpha and beta but leave the rest for later*
 
 <br>
 
-**SLIDE**: Let's keep following the logic of regression to the mean
-:::
+Remind me how I interpret this formula
 
+- **What does an alpha of -2256 mean?** 
 
+    - (A 0 carat diamond is worth negative dollars!)
 
-## {background-image="Images/background-slate_v2.png" .center}
+- **What does a beta of 7,756 mean?** 
 
-```{r, fig.retina=3, fig.align='center', out.width='96%', fig.width=8, fig.asp=0.618, cache=TRUE}
-# Quadrant Counts
-quad_counts <- diamonds |>
-  mutate(
-    Quadrants = case_when(
-      carat < mean(diamonds$carat) & price > mean(diamonds$price) ~ "1",
-      carat < mean(diamonds$carat) & price < mean(diamonds$price) ~ "3",
-      carat > mean(diamonds$carat) & price > mean(diamonds$price) ~ "2",
-      carat > mean(diamonds$carat) & price < mean(diamonds$price) ~ "4"
-    )
-  ) |> 
-  count(Quadrants)
-
-diamonds |>
-  slice_sample(prop = .1) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 2) +
-  geom_vline(xintercept = mean(diamonds$carat), color = "red", linetype = "dashed") +
-  geom_hline(yintercept = mean(diamonds$price), color = "red", linetype = "dashed") +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price ($)") +
-  annotate("text", x = c(0, 1, 0, 1), y = c(17000, 17000, 500, 500), label = c("1", "2", "3", "4"), size = 7, color = "red") +
-  coord_cartesian(xlim = c(0,4)) +
-  annotate("text", x = 3, y = c(16000, 14000, 12000, 10000), 
-           label = c(str_c("Quadrant 1: ", scales::comma(quad_counts$n[1])),
-                     str_c("Quadrant 2: ", scales::comma(quad_counts$n[2])),
-                     str_c("Quadrant 3: ", scales::comma(quad_counts$n[3])),
-                     str_c("Quadrant 4: ", scales::comma(quad_counts$n[4]))), 
-           size = 5, hjust = 0)
-```
-
-::: notes
-The model line should follow the data, so let's divide the plot into four quadrants split around the mean values.
-
+    - (On average, each one carat increase in diamond size is associated with a price increase of nearly $8k!)
+    
 <br>
 
-Once we have our quadrants we can focus on the one with the most observations.
-:::
+Let's use this line to answer our question about 1.5 vs 2.5 carat diamonds
 
-
-
-## {background-image="Images/background-slate_v2.png" .center}
-
-```{r, fig.retina=3, fig.align='center', out.width='96%', fig.width=8, fig.asp=0.618, cache=TRUE}
-# Quadrant 3 stats
-quad3 <- diamonds |>
-  filter(carat < mean(diamonds$carat), price < mean(diamonds$price)) |>
-  pivot_longer(cols = c(carat, price), names_to = "Variable", values_to = "Values") |>
-  group_by(Variable) |>
-  summarize(
-    Mean = round(mean(Values), 2)
-  ) |>
-  mutate(
-    Group = "Quadrant 3"
-  ) |>
-  select(Group, everything())
-
-diamonds |>
-  slice_sample(prop = .1) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 4) +
-  geom_vline(xintercept = mean(diamonds$carat), color = "red", linetype = "dashed") +
-  geom_hline(yintercept = mean(diamonds$price), color = "red", linetype = "dashed") +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price ($)") +
-  annotate("text", x = c(0, 1, 0, 1), y = c(17000, 17000, 500, 500), label = c("1", "2", "3", "4"), size = 7, color = "red") +
-  coord_cartesian(xlim = c(0,4)) +
-  annotate("point", x = .4631, y = 1358, color = "red", size = 4) +
-  annotate("text", x = 2.8, y = 15000, label = "Quadrant 3 Only", hjust=0, size = 5) +
-  annotate("text", x = 2.8, y = 13000, label = str_c("mean(Price)= ", quad3$Mean[2]), hjust=0, size = 5) +
-  annotate("text", x = 2.8, y = 11000, label = str_c("mean(Carat)= ", quad3$Mean[1]), hjust=0, size = 5)
-```
-
-::: notes
-The mean values in quadrant three give us a second point!
-:::
-
-
-## Two-Point Line {background-image="Images/background-slate_v2.png" .center}
-
-**Price = -2,203 + 7,689 (Carats)**
-
-<br>
-
-```{r, fig.retina=3, fig.align='center', out.width='82%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
-diamonds |>
-  slice_sample(prop = .1) |>
-  ggplot(aes(x = carat, y = price)) +
-  geom_point(alpha = .05) +
-  annotate("point", x = mean(diamonds$carat), y = mean(diamonds$price), color = "red", size = 2) +
-  annotate("point", x = .4631, y = 1358, color = "red", size = 2) +
-  theme_bw() +
-  labs(x = "Carats", y = "Price ($)") +
-  geom_abline(slope = 7689.65, intercept = -2203.0767779328, color = "red") +
-  coord_cartesian(xlim = c(0,4)) +
-  scale_y_continuous(labels = scales::dollar_format())
-```
-
-::: notes
-Interpret this formula of the line for me.
-
-- **What does the slope indicate in terms of diamond weight and price?**
-
-<br>
-
-**What is the big weakness of this estimate of the line?**
-
-- (Big weakness is that this line fits only two estimates of the mean, NOT all the data!) 
-
-<br>
-
-Crucial for us is that we can improve the fit of our model using Ordinary Least Squares (OLS).
-
-**Per the readings, how does OLS fit a line to the data using ALL of the data?**
+- **What is the predicted price of a 1.5 carat diamond?**
 
 - (**SLIDE**)
-:::
 
-
-## OLS {background-image="Images/background-slate_v2.png" .center}
-
-**Price = -2,256 + 7,756 (Carats)**
-
-<br>
-
-```{r, fig.retina=3, fig.align='center', out.width='82%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
-model1 <- lm(data = diamonds, price ~ carat)
-preds1 <- ggeffects::ggpredict(model1, "carat")
-
-set.seed(277)
-d2 <- diamonds |>
-  slice_sample(prop = .002)
-
-d2 |>
-  modelr::add_predictions(model1) |> 
-  ggplot(aes(x = carat)) +
-  geom_point(aes(y = price)) +
-  geom_ribbon(data = preds1, aes(x = x, ymin = conf.low, ymax = conf.high), fill = "lightblue") +
-  geom_line(data = preds1, aes(x = x, y = predicted), color = "royalblue1", size = 1.2) +
-  geom_segment(aes(xend = carat, y = price, yend = pred), color = "red") +
-  theme_bw() +
-  labs(x = "Carats", y = "Price") +
-  coord_cartesian(ylim = c(0, 19000), xlim = c(0,4)) +
-  scale_y_continuous(labels = scales::dollar_format())
-```
-
-::: notes
-
-OLS finds the line that minimizes the squared residuals of ALL THE POINTS.
-
-- e.g. the line of "best fit"
-
-<br>
-
-**How do I interpret the slope of this line?**
-
-<br>
-
-**Using this formula, what is our predicted price for a diamond that weighs 1.5 carats?**
-
-- (**SLIDE**)
 :::
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **What is the predicted price of a 1.5 carat diamond?**
 :::
 
 ```{r, fig.retina=3, fig.align='center', out.width='50%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
+model1 <- lm(data = diamonds, price ~ carat)
+preds1 <- ggeffects::ggpredict(model1, "carat")
+
 diamonds |>
   ggplot(aes(x = carat)) +
   geom_point(alpha = .05, aes(y = price)) +
@@ -1212,7 +1291,7 @@ diamonds |>
 
 <br>
 
-We'll get to confidence intervals shortly, but I want you to see that this should always be provided when you make a prediction with an OLS regression.
+We'll get to confidence intervals down the road, but I want you to see that this should always be provided when you make a prediction with an OLS regression.
 
 <br>
 
@@ -1223,7 +1302,7 @@ Practice time!
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **What is the predicted price of a 2.5 carat diamond?**
@@ -1270,7 +1349,7 @@ You can produce an estimate for any diamond using our OLS regression formula.
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.retina=3, fig.align='center', out.width='50%', fig.width=6.5, fig.asp=0.618, cache=TRUE}
 diamonds |>
@@ -1305,10 +1384,62 @@ A linear model will assume an infinite line
 
 **Make sense?**
 
+<br>
+
+Alright, let's build this line of best fit
+
+- **According to the readings, how does OLS find the line of best fit?**
+
+- (**SLIDE**)
 :::
 
 
-## Why use OLS regressions? {background-image="Images/background-slate_v2.png" .center}
+
+
+## OLS Minimizes the RSS {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.align='center', fig.width=8, fig.asp=0.618, cache=TRUE}
+model1 <- lm(data = diamonds, price ~ carat)
+preds1 <- ggeffects::ggpredict(model1, "carat")
+
+set.seed(7)
+d2 <- diamonds |>
+  slice_sample(prop = .005)
+
+d2 |>
+  modelr::add_predictions(model1) |> 
+  ggplot(aes(x = carat)) +
+  geom_point(aes(y = price)) +
+  geom_ribbon(data = preds1, aes(x = x, ymin = conf.low, ymax = conf.high), fill = "lightblue") +
+  geom_line(data = preds1, aes(x = x, y = predicted), color = "royalblue1", size = 1.2) +
+  geom_segment(aes(xend = carat, y = price, yend = pred), color = "red") +
+  theme_bw() +
+  labs(x = "Carats", y = "Price") +
+  coord_cartesian(ylim = c(0, 19000), xlim = c(0,4)) +
+  scale_y_continuous(labels = scales::dollar_format())
+```
+
+::: notes
+
+OLS finds the line that minimizes the squared residuals of ALL THE POINTS.
+
+- The name is in the acronym: ordinary least squares
+
+<br>
+
+You can think of this like a process in which the computer repeatedly draws a line, calculates the RSS, and then repeats its action until it finds a line with the lowest RSS
+
+- Technically, it actually uses matrix algebra to calculate the OLS line...
+
+<br>
+
+**SLIDE**: summarize the "why" we use regression
+
+:::
+
+
+
+## Why use OLS regressions? {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -1320,31 +1451,19 @@ A linear model will assume an infinite line
 
 - Can be used to make predictions with estimates of uncertainty
 
-::: {.fragment}
-
 **Future Weeks**
 
 - Can be adjusted for confounders (e.g. control variables), nonlinear relationships and different data structures
 
-:::
+::: notes
 
-
-
-## Part 2 {background-image="Images/background-slate_v2.png" .center}
-
-### Evaluating the Fit of an OLS Regression
+**Any questions on these intuitions?**
 
 <br>
 
-1. Missing data problems?
+Let's now talk about the four steps I want you to use to evaluate the fit of a regression line to the data
 
-2. Are the coefficients significant?
-
-3. What does the R<sup>2</sup> indicate? 
-
-4. Any problems in the residuals plot?
-
-::: notes
+<br>
 
 Everybody TAKE NOTES on these as we go!
 
@@ -1352,13 +1471,12 @@ Everybody TAKE NOTES on these as we go!
 
 - In other words, you will need to make these four arguments in future reports that include an OLS regression
 
-<br>
-
-Let's go back to our diamond size models from last class.
 :::
 
 
-## Evaluate the Fit {background-image="Images/background-slate_v2.png" .center}
+
+
+## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 
 **1. Missing data problems?**
 
@@ -1369,7 +1487,7 @@ Let's go back to our diamond size models from last class.
 
 "Missing Not At Random" (MNAR)
 
-- Survey Bias
+- Survey Bias (Social-desirability and Non-response)
 
 - Lack of infrastructure
 
@@ -1403,29 +1521,26 @@ nrow(diamonds)
 ::::
 
 ::: notes
-Important note: R will omit observations with missing data and it's up to YOU to check for problems!
+
+Your first job is to examine the regression for missing data problems
+
+- If your regression is being fit on less than ALL the data in your sample it's up to you to make an argument that the missing data isn't a serious problem for your analyses
 
 <br>
 
-If your regression is being fit on less than ALL the data in your sample it's up to you to investigate why and to look for patterns in the missing data.
+If your missing data is truly random, then it isn't as big a problem
 
 - The key is to identify any Missing Not At Random (MNAR) problems
 
 <br>
 
-Surveys deal with tons of biases
+Examples
 
-1. Social-desirability bias: The tendency of survey respondents to answer questions in a manner that will be viewed favorably by others.
-    - e.g. over-reporting "good" behavior or under-reporting "bad" behavior.
+- Social-desirability bias: The tendency of survey respondents to answer questions in a manner that will be viewed favorably by others.
 
-2. Non-response bias is currently a massive problem for political polling in this country.
-    - Trump voters have simply been less likely to participate in phone polls than Democratic voters in the last few cycles.
-    
-3. Language Barriers: How do you word a survey question so it will have the same meaning across different languages? Across different cultures?
-    
-<br>
+- Non-response bias: Trump voters have simply been less likely to participate in phone polls than Democratic voters in the last few cycles.
 
-Collecting observational data faces it's own serious challenges
+- Language Barriers: How do you word a survey question so it will have the same meaning across different languages? Across different cultures?
 
 - Lack of infrastructure: I'm guessing South Sudan lacks the infrastructure needed to develop high quality GDP figures
 
@@ -1440,10 +1555,11 @@ Collecting observational data faces it's own serious challenges
 - This will be very relevant for us as we work on our project.
 
 - **Ultimately, it is your job to make an argument that the missing data isn't a problem for the conclusions you are drawing from the regression results.**
+
 :::
 
 
-## Evaluate the Fit {background-image="Images/background-slate_v2.png" .center}
+## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 
 **2. Are the coefficients significant?**
 
@@ -1476,7 +1592,7 @@ Statistical significance aka does the coefficient have a '*'?
 
 
 
-## What is Statistical Significance? {background-image="Images/background-slate_v2.png" .center}
+## What is Statistical Significance? {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -1512,7 +1628,7 @@ For every alternative hypothesis we can also describe the null hypothesis as the
 
 
 
-## What is Statistical Significance? {background-image="Images/background-slate_v2.png" .center}
+## What is Statistical Significance? {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -1548,7 +1664,7 @@ Let's be honest, this is probably the biggest weakness of testing hypotheses for
 :::
 
 
-## What is Statistical Significance? {background-image="Images/background-slate_v2.png" .center}
+## What is Statistical Significance? {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -1617,7 +1733,7 @@ As we did last class, we prefer a line that minimizes the error
 
 
 
-## What is Statistical Significance? {background-image="Images/background-slate_v2.png" .center}
+## What is Statistical Significance? {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -1675,7 +1791,7 @@ Lots of problems with this, not least of which is, the null hypothesis is never 
 :::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Are deeper diamonds more expensive?**
@@ -1746,7 +1862,7 @@ Our Takeaway: A model with significance stars is preferred because it fits the d
 
 
 
-## Evaluate the Fit: {background-image="Images/background-slate_v2.png" .center}
+## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 
 **3. What does the R<sup>2</sup> indicate?**
 
@@ -1806,7 +1922,7 @@ The takeaway is that, all things equal, we prefer models that explain more of th
 
 
 
-## Evaluate the Fit {background-image="Images/background-slate_v2.png" .center}
+## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 
 **3. What does the R<sup>2</sup> indicate?**
 
@@ -1862,7 +1978,7 @@ So, our model that focuses entirely on the size of a diamond explains 85% of the
 
 
 
-## Evaluate the Fit {background-image="Images/background-slate_v2.png" .center}
+## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 
 **3. What does the R<sup>2</sup> indicate?**
 
@@ -1913,7 +2029,7 @@ And here we see the OLS results from the regression with the non-significant coe
 
 
 
-## Be Careful Interpreting the R<sup>2</sup> {background-image="Images/background-slate_v2.png" .center}
+## Be Careful Interpreting the R<sup>2</sup> {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -1957,7 +2073,7 @@ So, a model focused on just one of those will certainly have a small R^2 BUT mig
 :::
 
 
-## Evaluate the Fit: {background-image="Images/background-slate_v2.png" .center}
+## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 **4. Evaluate the Residuals**
 
 <br>
@@ -2010,7 +2126,7 @@ This is what we would describe as a good result, e.g. homoscedastic errors
 :::
 
 
-## Evaluate the Fit: {background-image="Images/background-slate_v2.png" .center}
+## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 
 **4. Evaluate the Residuals**
 
@@ -2067,7 +2183,7 @@ In this hypothetical case our model makes much more accurate predictions at the 
 
 
 
-## Evaluate the Fit: {background-image="Images/background-slate_v2.png" .center}
+## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 **4. Evaluate the Residuals**
 
 <br>
@@ -2094,7 +2210,7 @@ The good news is that you can alter your regression to solve these kinds of prob
 :::
 
 
-## Evaluate the Fit: {background-image="Images/background-slate_v2.png" .center}
+## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 **4. Evaluate the Residuals**
 
 <br>
@@ -2124,7 +2240,7 @@ This is what you want a residuals plot to look like
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, echo=TRUE, fig.align = 'center', fig.asp = 0.618, fig.width = 10, cache=TRUE}
 # Fit the OLS
@@ -2171,7 +2287,7 @@ SECOND, there is a clear non-linear trend
 
 
 
-## Evaluating the Fit of an OLS Regression {background-image="Images/background-slate_v2.png" .center}
+## Evaluating the Fit of an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -2193,7 +2309,7 @@ Let's practice as a group...
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.retina=3, fig.asp=.65, fig.align='center'}
 # President 2 party vote share ~ Incumbent party approval 
@@ -2242,7 +2358,7 @@ But what is the specific relationship?
 :::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 :::: {.columns}
 

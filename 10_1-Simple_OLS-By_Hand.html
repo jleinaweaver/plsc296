@@ -28,71 +28,6 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      { color: #003b4f; background-color: #f1f3f5; }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span { color: #003b4f; } /* Normal */
-    code span.al { color: #ad0000; } /* Alert */
-    code span.an { color: #5e5e5e; } /* Annotation */
-    code span.at { color: #657422; } /* Attribute */
-    code span.bn { color: #ad0000; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #20794d; } /* Char */
-    code span.cn { color: #8f5902; } /* Constant */
-    code span.co { color: #5e5e5e; } /* Comment */
-    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-    code span.dt { color: #ad0000; } /* DataType */
-    code span.dv { color: #ad0000; } /* DecVal */
-    code span.er { color: #ad0000; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #ad0000; } /* Float */
-    code span.fu { color: #4758ab; } /* Function */
-    code span.im { color: #00769e; } /* Import */
-    code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
-    code span.op { color: #5e5e5e; } /* Operator */
-    code span.ot { color: #003b4f; } /* Other */
-    code span.pp { color: #ad0000; } /* Preprocessor */
-    code span.sc { color: #5e5e5e; } /* SpecialChar */
-    code span.ss { color: #20794d; } /* SpecialString */
-    code span.st { color: #20794d; } /* String */
-    code span.va { color: #111111; } /* Variable */
-    code span.vs { color: #20794d; } /* VerbatimString */
-    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="10_1-Simple_OLS-By_Hand_files/libs/revealjs/dist/theme/quarto.css">
   <link href="10_1-Simple_OLS-By_Hand_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -384,8 +319,6 @@
       margin-right: 0; 
     }
   </style>
-  <script src="10_1-Simple_OLS-By_Hand_files/libs/kePrint-0.0.1/kePrint.js"></script>
-  <link href="10_1-Simple_OLS-By_Hand_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -393,13 +326,13 @@
 
 
 <section>
-<section id="todays-agenda" class="title-slide slide level1 center" data-background-image="Images/background-data_blue_v3.png">
+<section id="todays-agenda" class="title-slide slide level1 center" data-background-image="Images/background-data_blue_v4.png">
 <h1>Today’s Agenda</h1>
 <p><br></p>
 <div class="r-fit-text">
 <p><strong>Ordinary Least Squares (OLS) Regression</strong></p>
 <ul>
-<li>The intuitions</li>
+<li>Developing our intuitions about regression</li>
 </ul>
 </div>
 <p><br></p>
@@ -409,71 +342,14 @@
 <aside class="notes">
 <p>Prep for Class</p>
 <ol type="1">
-<li>Printing sheets for “best fit” line practice in class (one per student) AND rulers for all
+<li><p>Print sheets for “best fit” line practice in class (one per student) AND rulers for all</p>
 <ul>
 <li>Graph paper with axes printed on them so everyone using same reference points</li>
-<li>Pencils and rulers too?</li>
 </ul></li>
+<li><p>Bring rulers to class</p></li>
 </ol>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="part-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Part 2</h2>
 <p><br></p>
-<h3 id="lets-practice-by-hand">Let’s practice by hand!</h3>
-<aside class="notes">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-2-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y1 ~ x1, data = d_test)
-
-Residuals:
-   1    2    3    4    5 
- 0.6 -0.9  0.6 -0.9  0.6 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept)    1.400      1.273   1.100    0.352
-x1             0.500      0.300   1.667    0.194
-
-Residual standard error: 0.9487 on 3 degrees of freedom
-Multiple R-squared:  0.4808,    Adjusted R-squared:  0.3077 
-F-statistic: 2.778 on 1 and 3 DF,  p-value: 0.1942</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   1    2    3    4    5 
- 0.6 -0.9  0.6 -0.9  0.6 </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   1    2    3    4    5 
- 0.6 -0.9  0.6 -0.9  0.6 </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  1   2   3   4   5 
-2.4 2.9 3.4 3.9 4.4 </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.7</code></pre>
-</div>
-</div>
+<p><strong>SLIDE</strong>: Our focus of the semester remains on answering a research question with data!</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -486,573 +362,79 @@ F-statistic: 2.778 on 1 and 3 DF,  p-value: 0.1942</code></pre>
           display:block!important;
       }</style></aside>
 </section>
-<section id="for-next-class-fit-interpret-and-make-predictions-using-ols" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>For next class, fit, interpret and make predictions using OLS:</h2>
+<section id="research-question-tbd" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Research question TBD</h2>
+<p><br></p>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>In the first half of the semester we used univariate analyses to examine each of these measurements on their own</p>
+<p><br></p>
+<p>the second half of our semester shifts our focse from univariate to bivariate and multivariate analyses</p>
+<ul>
+<li>In short, that means moving from describing the variation in one variable to describing the relationship between the variables</li>
+</ul>
+<p><br></p>
+<p>Our ultimate goal is to use all of our tools to answer this question</p>
+<ul>
+<li><p>And the heart of this question is an effort to explain a single outcome</p></li>
+<li><p><em>Restate question as: What explains the variation in our DV?</em></p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Last week</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bivariate-analyses" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Bivariate Analyses</h2>
 <p><br></p>
 <ol type="1">
-<li><p>Regress city fuel economy (<code>cty</code>) on engine displacement (<code>displ</code>) in the <code>mpg</code> datatset</p></li>
-<li><p>Regress percent of people below the poverty line (<code>percbelowpoverty</code>) on the percent college educated (<code>percollege</code>) in the <code>midwest</code> datatset</p></li>
+<li>Descriptive Statistics by Group
+<ul>
+<li>Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations</li>
+</ul></li>
+<li>Visualizations
+<ul>
+<li>Bar plots (stacked, side-by-side, proportions), box plots and scatter plots</li>
+</ul></li>
 </ol>
 <aside class="notes">
-<p><strong>How did this go?</strong></p>
-<p><br></p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="city-fuel-economy-and-engine-size" class="slide level2 center smaller" data-background-image="Images/background-slate_v2.png">
-<h2>City Fuel Economy and Engine Size</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><br></p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="jzssoxouby" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#jzssoxouby table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#jzssoxouby thead, #jzssoxouby tbody, #jzssoxouby tfoot, #jzssoxouby tr, #jzssoxouby td, #jzssoxouby th {
-  border-style: none;
-}
-
-#jzssoxouby p {
-  margin: 0;
-  padding: 0;
-}
-
-#jzssoxouby .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#jzssoxouby .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#jzssoxouby .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#jzssoxouby .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#jzssoxouby .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#jzssoxouby .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#jzssoxouby .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#jzssoxouby .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#jzssoxouby .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#jzssoxouby .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#jzssoxouby .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#jzssoxouby .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#jzssoxouby .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#jzssoxouby .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#jzssoxouby .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jzssoxouby .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#jzssoxouby .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#jzssoxouby .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#jzssoxouby .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jzssoxouby .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#jzssoxouby .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jzssoxouby .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#jzssoxouby .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jzssoxouby .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#jzssoxouby .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jzssoxouby .gt_left {
-  text-align: left;
-}
-
-#jzssoxouby .gt_center {
-  text-align: center;
-}
-
-#jzssoxouby .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#jzssoxouby .gt_font_normal {
-  font-weight: normal;
-}
-
-#jzssoxouby .gt_font_bold {
-  font-weight: bold;
-}
-
-#jzssoxouby .gt_font_italic {
-  font-style: italic;
-}
-
-#jzssoxouby .gt_super {
-  font-size: 65%;
-}
-
-#jzssoxouby .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#jzssoxouby .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#jzssoxouby .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#jzssoxouby .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#jzssoxouby .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#jzssoxouby .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#jzssoxouby .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#jzssoxouby .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#jzssoxouby div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="Fuel-Economy-(City)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Fuel Economy (City)</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Engine Size</td>
-<td class="gt_row gt_center" headers="Fuel Economy (City)" style="background-color: #FFFFFF; font-size: x-large">-2.63*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Fuel Economy (City)" style="background-color: #FFFFFF; font-size: x-large">(0.13)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="Fuel Economy (City)" style="background-color: #FFFFFF; font-size: x-large">25.99*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Fuel Economy (City)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.48)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="Fuel Economy (City)" style="background-color: #FFFFFF; font-size: x-large">234</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="Fuel Economy (City)" style="background-color: #FFFFFF; font-size: x-large">0.638</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="Fuel Economy (City)" style="background-color: #FFFFFF; font-size: x-large">0.636</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="Fuel Economy (City)" style="background-color: #FFFFFF; font-size: x-large">2.56</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># Predicted values of cty
-
-displ | Predicted |       95% CI
---------------------------------
- 1.50 |     22.05 | 21.44, 22.65
- 2.00 |     20.73 | 20.23, 21.23
- 3.00 |     18.10 | 17.75, 18.45
- 3.50 |     16.78 | 16.45, 17.12
- 4.00 |     15.47 | 15.11, 15.83
- 5.00 |     12.84 | 12.33, 13.35
- 5.50 |     11.52 | 10.91, 12.14
- 7.00 |      7.58 |  6.61,  8.54</code></pre>
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p>As you think about including OLS tables in reports, think about polishing them!</p>
+<p>Last week we practiced some of the tools of bivariate analysis</p>
 <ul>
-<li><p>Variable names should be in plain english</p></li>
-<li><p>Model name should be the dependent variable</p></li>
+<li><strong>Any questions on these tools?</strong></li>
 </ul>
 <p><br></p>
-<p>This table makes clear that this regression focuses on engine size as a predictor of fuel economy.</p>
+<p>Given our work on Friday I’d imagine you are developing an early answer to our research question</p>
 <ul>
-<li><strong>Make sense?</strong></li>
+<li><strong>What are we seeing so far in the relationship between our predictor and outcome variables?</strong></li>
+</ul>
+<p><br></p>
+<p>Over the next two weeks we are going to add regressions to your statistical toolbox</p>
+<ul>
+<li><p>These are an INCREDIBLY useful, but often misunderstood tool, so we need to dedicate some time to this</p></li>
+<li><p>You have to make sure to keep up with the readings and take notes during class!</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Speaking of the readings, let’s draw out our big picture goals using the Wheelan chapter!</p>
+<p>Today we begin exploring regressions: A powerful and common tool used by scientists of all stripes for estimating relationships</p>
+<p><br></p>
+<p><strong>IMPORTANT</strong>: You have to keep up with the assigned readings</p>
+<ul>
+<li><p>Today’s class SHOULD NOT be your intro to regression!</p></li>
+<li><p>Everything today will make so much more sense if you already have been exposed to basic elements</p></li>
+</ul>
+<p><br></p>
+<p>Regression, to the uninitiated, will appear confusing.</p>
+<ul>
+<li>BUT I promise that each time you go through the material it will make more sense</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1066,710 +448,129 @@ displ | Predicted |       95% CI
           display:block!important;
       }</style></aside>
 </section>
-<section id="college-education-and-poverty" class="slide level2 center smaller" data-background-image="Images/background-slate_v2.png">
-<h2>College Education and Poverty</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
+<section id="regression-analysis" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Regression Analysis</h2>
+
+<img data-src="Images/10_2-Wheelan_Cover.jpg" style="display: block; margin: 0 auto" class="r-stretch"><aside class="notes">
+<p><strong>According to Wheelan, what is the purpose of regression analysis?</strong></p>
+<ul>
+<li>(p186: “Specifically, regression analysis allows us to quantify the relationship between a particular variable and an outcome that we care about while <em>controlling for other factors.</em>”)</li>
+</ul>
 <p><br></p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="ejxrqbclnd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ejxrqbclnd table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#ejxrqbclnd thead, #ejxrqbclnd tbody, #ejxrqbclnd tfoot, #ejxrqbclnd tr, #ejxrqbclnd td, #ejxrqbclnd th {
-  border-style: none;
-}
-
-#ejxrqbclnd p {
-  margin: 0;
-  padding: 0;
-}
-
-#ejxrqbclnd .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#ejxrqbclnd .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#ejxrqbclnd .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#ejxrqbclnd .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#ejxrqbclnd .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#ejxrqbclnd .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#ejxrqbclnd .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#ejxrqbclnd .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#ejxrqbclnd .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#ejxrqbclnd .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#ejxrqbclnd .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#ejxrqbclnd .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#ejxrqbclnd .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#ejxrqbclnd .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#ejxrqbclnd .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ejxrqbclnd .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#ejxrqbclnd .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#ejxrqbclnd .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#ejxrqbclnd .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ejxrqbclnd .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#ejxrqbclnd .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ejxrqbclnd .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#ejxrqbclnd .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ejxrqbclnd .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#ejxrqbclnd .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ejxrqbclnd .gt_left {
-  text-align: left;
-}
-
-#ejxrqbclnd .gt_center {
-  text-align: center;
-}
-
-#ejxrqbclnd .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#ejxrqbclnd .gt_font_normal {
-  font-weight: normal;
-}
-
-#ejxrqbclnd .gt_font_bold {
-  font-weight: bold;
-}
-
-#ejxrqbclnd .gt_font_italic {
-  font-style: italic;
-}
-
-#ejxrqbclnd .gt_super {
-  font-size: 65%;
-}
-
-#ejxrqbclnd .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#ejxrqbclnd .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#ejxrqbclnd .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#ejxrqbclnd .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#ejxrqbclnd .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#ejxrqbclnd .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#ejxrqbclnd .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#ejxrqbclnd .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#ejxrqbclnd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="Below-Poverty-(%)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Below Poverty (%)</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">College Educated (%)</td>
-<td class="gt_row gt_center" headers="Below Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">-0.23*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Below Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">(0.04)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="Below Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">16.74*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Below Poverty (%)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.73)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="Below Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">437</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="Below Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">0.079</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="Below Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">0.077</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="Below Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">4.94</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># Predicted values of percbelowpoverty
-
-percollege | Predicted |       95% CI
--------------------------------------
-         0 |     16.74 | 15.30, 18.18
-        10 |     14.43 | 13.65, 15.20
-        20 |     12.11 | 11.63, 12.59
-        30 |      9.80 |  8.81, 10.78
-        40 |      7.48 |  5.80,  9.16
-        50 |      5.17 |  2.76,  7.57</code></pre>
-</div>
-</div>
-</div></div>
+<p>In other words, regression will enable us to estimate more specific answers to our research question</p>
+<ul>
+<li>e.g.&nbsp;by how much does increasing X increase Y</li>
+</ul>
+<p><br></p>
+<p>I want to reinforce Wheelan’s big warnings before we get started</p>
+<p><br></p>
+<p>FIRST, thanks to computers, fitting a regression is TOO easy (p187).</p>
+<ul>
+<li><p>You will be able to quickly fit and use regressions thanks to R</p></li>
+<li><p>In most cases, R will let you fit a regression even if the variables you are using are not appropriate for the tool</p></li>
+<li><p>The hard part is learning WHEN and HOW to use these regressions</p></li>
+</ul>
+<p><br></p>
+<p>SECOND, the answers produced by regression are estimates, not truth!</p>
+<ul>
+<li><p>Regressions are useful because thye help us measure the uncertainty in our answers</p></li>
+<li><p>BUT there is WAY more uncertainty than even the computer will identify</p>
+<ul>
+<li><p>How was the data measured?</p></li>
+<li><p>Is the sample representative of the population?</p></li>
+<li><p>Is time a complicating factor?</p></li>
+</ul></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Those warnings in mind, let’s get to work reinforcing some of the intuitions you need to develop about regression</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="exploring-movie-box-office-returns" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Exploring Movie Box Office Returns</h2>
-<p><br></p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table caption-top" data-quarto-postprocess="true" style="font-size: 22px; margin-left: auto; margin-right: auto;">
+<section id="the-intuitions-of-ols-regression" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>The Intuitions of OLS Regression</h2>
+<ol type="1">
+<li><p>Take a piece of prepared graph paper and a ruler</p></li>
+<li><p>Plot the following (X, Y) coordinates</p></li>
+</ol>
+<table class="caption-top">
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th" style="text-align: center; background-color: lightblue !important;">year</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; background-color: lightblue !important;">title</th>
-<th data-quarto-table-cell-role="th" style="text-align: center; background-color: lightblue !important;">budget_millions</th>
-<th data-quarto-table-cell-role="th" style="text-align: center; background-color: lightblue !important;">boxoffice_millions</th>
+<th>X</th>
+<th>Y</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center; background-color: white !important;">2004</td>
-<td style="text-align: left; background-color: white !important;">Sky Captain and the World of Tomorrow</td>
-<td style="text-align: center; background-color: white !important;">86.32</td>
-<td style="text-align: center; background-color: white !important;">107.89</td>
+<td>2</td>
+<td>3</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; background-color: white !important;">2004</td>
-<td style="text-align: left; background-color: white !important;">Troy</td>
-<td style="text-align: center; background-color: white !important;">184.98</td>
-<td style="text-align: center; background-color: white !important;">761.45</td>
+<td>3</td>
+<td>2</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; background-color: white !important;">2009</td>
-<td style="text-align: left; background-color: white !important;">Up</td>
-<td style="text-align: center; background-color: white !important;">190.00</td>
-<td style="text-align: center; background-color: white !important;">1112.38</td>
+<td>4</td>
+<td>4</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; background-color: white !important;">2004</td>
-<td style="text-align: left; background-color: white !important;">The Whole Ten Yards</td>
-<td style="text-align: center; background-color: white !important;">37.00</td>
-<td style="text-align: center; background-color: white !important;">52.59</td>
+<td>5</td>
+<td>3</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; background-color: white !important;">2005</td>
-<td style="text-align: left; background-color: white !important;">AEon Flux</td>
-<td style="text-align: center; background-color: white !important;">65.62</td>
-<td style="text-align: center; background-color: white !important;">88.06</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: white !important;">2002</td>
-<td style="text-align: left; background-color: white !important;">Rabbit-Proof Fence</td>
-<td style="text-align: center; background-color: white !important;">9.07</td>
-<td style="text-align: center; background-color: white !important;">29.88</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: white !important;">2012</td>
-<td style="text-align: left; background-color: white !important;">Amour</td>
-<td style="text-align: center; background-color: white !important;">9.84</td>
-<td style="text-align: center; background-color: white !important;">33.13</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: white !important;">2011</td>
-<td style="text-align: left; background-color: white !important;">Real Steel</td>
-<td style="text-align: center; background-color: white !important;">113.93</td>
-<td style="text-align: center; background-color: white !important;">392.22</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: white !important;">2009</td>
-<td style="text-align: left; background-color: white !important;">Br&amp;uuml;no</td>
-<td style="text-align: center; background-color: white !important;">45.60</td>
-<td style="text-align: center; background-color: white !important;">207.20</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: white !important;">2013</td>
-<td style="text-align: left; background-color: white !important;">The Hobbit: The Desolation of Smaug</td>
-<td style="text-align: center; background-color: white !important;">250.00</td>
-<td style="text-align: center; background-color: white !important;">1194.80</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: white !important;">2007</td>
-<td style="text-align: left; background-color: white !important;">Superbad</td>
-<td style="text-align: center; background-color: white !important;">19.66</td>
-<td style="text-align: center; background-color: white !important;">327.32</td>
-</tr>
-<tr class="even">
-<td style="text-align: center; background-color: white !important;">2005</td>
-<td style="text-align: left; background-color: white !important;">Fun with Dick and Jane</td>
-<td style="text-align: center; background-color: white !important;">167.02</td>
-<td style="text-align: center; background-color: white !important;">372.64</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center; background-color: white !important;">2000</td>
-<td style="text-align: left; background-color: white !important;">Meet the Parents</td>
-<td style="text-align: center; background-color: white !important;">74.41</td>
-<td style="text-align: center; background-color: white !important;">636.98</td>
+<td>6</td>
+<td>5</td>
 </tr>
 </tbody>
 </table>
-
-
-</div>
-</div>
 <aside class="notes">
-<p>Everybody grab the data file on Canvas modules for today</p>
-<ul>
-<li>Movie_Box_Office_Data-538.xlsx</li>
-</ul>
+<p><em>Distribute paper and rulers</em></p>
 <p><br></p>
-<p>This dataset includes a sample of movies selected from the IMDB between 1970 and 2013 by 538</p>
-<ul>
-<li>Each film comes with its budget and box office total converted into millions of 2013 US dollars</li>
-</ul>
-<p><br></p>
-<p>Everybody make a scatterplot of budget and box office for all the movies in the dataset</p>
-<ul>
-<li>(<strong>SLIDE</strong>)</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="exploring-movie-box-office-returns-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Exploring Movie Box Office Returns</h2>
-
-<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="864"><aside class="notes">
-<p><strong>Any surprises on this scatterplot?</strong></p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>Can we make useful predictions of movie earnings (<code>boxoffice_millions</code>) using a regression on budget (<code>budget_millions</code>)?</strong></p>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
+<p>My advice:</p>
 <ol type="1">
-<li><p>Missing data problems?</p></li>
-<li><p>Are the coefficients significant?</p></li>
-<li><p>What does the R<sup>2</sup> indicate?</p></li>
-<li><p>Any problems in the residuals plot?</p></li>
-</ol>
-</div></div>
-<aside class="notes">
-<p>Let’s now practice regression</p>
+<li><p>Do your own page, BUT help each other</p></li>
+<li><p>Remember the old advice: measure twice, cut once</p>
 <ul>
-<li>Everybody regress box office returns on movie budgets and evaluate the results with our four steps</li>
+<li>Use a pencil and THINK before you mark the paper!</li>
+</ul></li>
+</ol>
+<p><br></p>
+<p><strong>SLIDE</strong>: The set-up</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<p><strong>Everybody have this?</strong></p>
+<p><br></p>
+<p>Thus far, we have been using bivariate analyses to describe the relationship between two variables</p>
+<ul>
+<li><strong>Describe this relationship for me. How would you describe the relationship between X and Y here?</strong></li>
+</ul>
+<p><br></p>
+<p>Simple OLS regression is also a bivariate tool meant to help us describe the relationship between two variables USING A LINE</p>
+<ul>
+<li><p><strong>Does everybody remember the formula for a line from the reading (or other classes)?</strong></p></li>
+<li><p>(<strong>SLIDE</strong>)</p></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1783,2618 +584,558 @@ percollege | Predicted |       95% CI
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
-<p><strong>1. Missing data problems?</strong></p>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<p>Wheelan p191-192 explains the formula for a line</p>
+<ul>
+<li><p>Note that Wheelan uses “a” for alpha and “b” for beta in the text</p></li>
+<li><p>You need to memorize and understand this formula DEEPLY in order to use regression analysis</p></li>
+<li><p><strong>Questions on this formula from the reading?</strong></p></li>
+</ul>
+<p><br></p>
+<p>You may have learned this formula in math as y = mx + c</p>
+<ul>
+<li><p>It’s the same thing but in stats we use the alpha and beta version here</p></li>
+<li><p>Unless you are a math major, memorize this one</p></li>
+</ul>
+<p><br></p>
+<p>So, regression generates a line that summarizes the relationship between two or more variables</p>
+<ul>
+<li><p>This line version of a summary is incredibly useful because it allows us to ask directional questions</p></li>
+<li><p>The regression line directly estimates how changes in X, the predictor, are associated with changes in Y, the outcome.</p></li>
+</ul>
+<p><br></p>
+<p>I think the best way to approach this is to draw some lines by hand and interpret them</p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s take a step back now and focus just on Y for a moment</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-outcome-to-be-explained" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>The Outcome to be Explained</h2>
 <p><br></p>
 <div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div id="dzgjuiurhs" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#dzgjuiurhs table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+<div class="column" style="width:20%;">
 
-#dzgjuiurhs thead, #dzgjuiurhs tbody, #dzgjuiurhs tfoot, #dzgjuiurhs tr, #dzgjuiurhs td, #dzgjuiurhs th {
-  border-style: none;
-}
-
-#dzgjuiurhs p {
-  margin: 0;
-  padding: 0;
-}
-
-#dzgjuiurhs .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#dzgjuiurhs .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#dzgjuiurhs .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#dzgjuiurhs .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#dzgjuiurhs .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#dzgjuiurhs .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#dzgjuiurhs .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#dzgjuiurhs .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#dzgjuiurhs .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#dzgjuiurhs .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#dzgjuiurhs .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#dzgjuiurhs .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#dzgjuiurhs .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#dzgjuiurhs .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#dzgjuiurhs .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#dzgjuiurhs .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#dzgjuiurhs .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#dzgjuiurhs .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#dzgjuiurhs .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#dzgjuiurhs .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#dzgjuiurhs .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#dzgjuiurhs .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#dzgjuiurhs .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#dzgjuiurhs .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#dzgjuiurhs .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#dzgjuiurhs .gt_left {
-  text-align: left;
-}
-
-#dzgjuiurhs .gt_center {
-  text-align: center;
-}
-
-#dzgjuiurhs .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#dzgjuiurhs .gt_font_normal {
-  font-weight: normal;
-}
-
-#dzgjuiurhs .gt_font_bold {
-  font-weight: bold;
-}
-
-#dzgjuiurhs .gt_font_italic {
-  font-style: italic;
-}
-
-#dzgjuiurhs .gt_super {
-  font-size: 65%;
-}
-
-#dzgjuiurhs .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#dzgjuiurhs .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#dzgjuiurhs .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#dzgjuiurhs .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#dzgjuiurhs .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#dzgjuiurhs .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#dzgjuiurhs .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#dzgjuiurhs .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#dzgjuiurhs div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+</div><div class="column" style="width:30%;">
+<table class="caption-top">
 <thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="Box-Office-(millions)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Box Office (millions)</th>
+<tr class="header">
+<th>Y</th>
 </tr>
 </thead>
-<tbody class="gt_table_body">
+<tbody>
 <tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Budget (millions)</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">4.12*</td>
+<td>3</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">(0.14)</td>
+<td>2</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">63.67*</td>
+<td>4</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(11.30)</td>
+<td>3</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">1776</td>
+<td>5</td>
 </tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">0.315</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">0.315</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">333.76</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
+</tbody>
 </table>
-
-</div>
-</div>
-</div>
 </div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="co"># Count the observations</span></span>
-<span id="cb8-2"><a href=""></a><span class="fu">nrow</span>(d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1776</code></pre>
-</div>
-</div>
+<p><img data-src="Images/10_1-small_bag.png"></p>
 </div></div>
-</section>
-<section id="section-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>2. Are the coefficients significant?</strong></p>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div id="jtjpdythmp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#jtjpdythmp table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#jtjpdythmp thead, #jtjpdythmp tbody, #jtjpdythmp tfoot, #jtjpdythmp tr, #jtjpdythmp td, #jtjpdythmp th {
-  border-style: none;
-}
-
-#jtjpdythmp p {
-  margin: 0;
-  padding: 0;
-}
-
-#jtjpdythmp .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#jtjpdythmp .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#jtjpdythmp .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#jtjpdythmp .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#jtjpdythmp .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#jtjpdythmp .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#jtjpdythmp .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#jtjpdythmp .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#jtjpdythmp .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#jtjpdythmp .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#jtjpdythmp .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#jtjpdythmp .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#jtjpdythmp .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#jtjpdythmp .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#jtjpdythmp .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jtjpdythmp .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#jtjpdythmp .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#jtjpdythmp .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#jtjpdythmp .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jtjpdythmp .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#jtjpdythmp .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jtjpdythmp .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#jtjpdythmp .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jtjpdythmp .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#jtjpdythmp .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jtjpdythmp .gt_left {
-  text-align: left;
-}
-
-#jtjpdythmp .gt_center {
-  text-align: center;
-}
-
-#jtjpdythmp .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#jtjpdythmp .gt_font_normal {
-  font-weight: normal;
-}
-
-#jtjpdythmp .gt_font_bold {
-  font-weight: bold;
-}
-
-#jtjpdythmp .gt_font_italic {
-  font-style: italic;
-}
-
-#jtjpdythmp .gt_super {
-  font-size: 65%;
-}
-
-#jtjpdythmp .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#jtjpdythmp .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#jtjpdythmp .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#jtjpdythmp .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#jtjpdythmp .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#jtjpdythmp .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#jtjpdythmp .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#jtjpdythmp .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#jtjpdythmp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="Box-Office-(millions)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Box Office (millions)</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Budget (millions)</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFA500; font-size: x-large">4.12*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">(0.14)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFA500; font-size: x-large">63.67*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(11.30)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">1776</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">0.315</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">0.315</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">333.76</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="section-3" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>3. What does the R<sup>2</sup> indicate?</strong></p>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div id="odsygbylgp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#odsygbylgp table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#odsygbylgp thead, #odsygbylgp tbody, #odsygbylgp tfoot, #odsygbylgp tr, #odsygbylgp td, #odsygbylgp th {
-  border-style: none;
-}
-
-#odsygbylgp p {
-  margin: 0;
-  padding: 0;
-}
-
-#odsygbylgp .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#odsygbylgp .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#odsygbylgp .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#odsygbylgp .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#odsygbylgp .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#odsygbylgp .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#odsygbylgp .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#odsygbylgp .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#odsygbylgp .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#odsygbylgp .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#odsygbylgp .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#odsygbylgp .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#odsygbylgp .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#odsygbylgp .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#odsygbylgp .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#odsygbylgp .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#odsygbylgp .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#odsygbylgp .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#odsygbylgp .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#odsygbylgp .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#odsygbylgp .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#odsygbylgp .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#odsygbylgp .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#odsygbylgp .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#odsygbylgp .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#odsygbylgp .gt_left {
-  text-align: left;
-}
-
-#odsygbylgp .gt_center {
-  text-align: center;
-}
-
-#odsygbylgp .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#odsygbylgp .gt_font_normal {
-  font-weight: normal;
-}
-
-#odsygbylgp .gt_font_bold {
-  font-weight: bold;
-}
-
-#odsygbylgp .gt_font_italic {
-  font-style: italic;
-}
-
-#odsygbylgp .gt_super {
-  font-size: 65%;
-}
-
-#odsygbylgp .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#odsygbylgp .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#odsygbylgp .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#odsygbylgp .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#odsygbylgp .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#odsygbylgp .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#odsygbylgp .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#odsygbylgp .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#odsygbylgp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="Box-Office-(millions)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Box Office (millions)</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Budget (millions)</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">4.12*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">(0.14)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">63.67*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(11.30)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">1776</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFA500; font-size: x-large">0.315</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFA500; font-size: x-large">0.315</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">333.76</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="section-4" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>4. Any problems in the residuals plot?</strong></p>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div id="ncleyorqhz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ncleyorqhz table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#ncleyorqhz thead, #ncleyorqhz tbody, #ncleyorqhz tfoot, #ncleyorqhz tr, #ncleyorqhz td, #ncleyorqhz th {
-  border-style: none;
-}
-
-#ncleyorqhz p {
-  margin: 0;
-  padding: 0;
-}
-
-#ncleyorqhz .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#ncleyorqhz .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#ncleyorqhz .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#ncleyorqhz .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#ncleyorqhz .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#ncleyorqhz .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#ncleyorqhz .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#ncleyorqhz .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#ncleyorqhz .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#ncleyorqhz .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#ncleyorqhz .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#ncleyorqhz .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#ncleyorqhz .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#ncleyorqhz .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#ncleyorqhz .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ncleyorqhz .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#ncleyorqhz .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#ncleyorqhz .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#ncleyorqhz .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ncleyorqhz .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#ncleyorqhz .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ncleyorqhz .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#ncleyorqhz .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ncleyorqhz .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#ncleyorqhz .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#ncleyorqhz .gt_left {
-  text-align: left;
-}
-
-#ncleyorqhz .gt_center {
-  text-align: center;
-}
-
-#ncleyorqhz .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#ncleyorqhz .gt_font_normal {
-  font-weight: normal;
-}
-
-#ncleyorqhz .gt_font_bold {
-  font-weight: bold;
-}
-
-#ncleyorqhz .gt_font_italic {
-  font-style: italic;
-}
-
-#ncleyorqhz .gt_super {
-  font-size: 65%;
-}
-
-#ncleyorqhz .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#ncleyorqhz .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#ncleyorqhz .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#ncleyorqhz .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#ncleyorqhz .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#ncleyorqhz .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#ncleyorqhz .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#ncleyorqhz .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#ncleyorqhz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="Box-Office-(millions)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Box Office (millions)</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Budget (millions)</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">4.12*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">(0.14)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">63.67*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(11.30)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">1776</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">0.315</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">0.315</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">333.76</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="section-5" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<p><strong>Can we make useful predictions of movie earnings (<code>boxoffice_millions</code>) using a regression on budget (<code>budget_millions</code>)?</strong></p>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div id="hgrtxnlgws" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#hgrtxnlgws table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#hgrtxnlgws thead, #hgrtxnlgws tbody, #hgrtxnlgws tfoot, #hgrtxnlgws tr, #hgrtxnlgws td, #hgrtxnlgws th {
-  border-style: none;
-}
-
-#hgrtxnlgws p {
-  margin: 0;
-  padding: 0;
-}
-
-#hgrtxnlgws .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#hgrtxnlgws .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#hgrtxnlgws .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#hgrtxnlgws .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#hgrtxnlgws .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#hgrtxnlgws .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#hgrtxnlgws .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#hgrtxnlgws .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#hgrtxnlgws .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#hgrtxnlgws .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#hgrtxnlgws .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#hgrtxnlgws .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#hgrtxnlgws .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#hgrtxnlgws .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#hgrtxnlgws .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#hgrtxnlgws .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#hgrtxnlgws .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#hgrtxnlgws .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#hgrtxnlgws .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#hgrtxnlgws .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#hgrtxnlgws .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#hgrtxnlgws .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#hgrtxnlgws .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#hgrtxnlgws .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#hgrtxnlgws .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#hgrtxnlgws .gt_left {
-  text-align: left;
-}
-
-#hgrtxnlgws .gt_center {
-  text-align: center;
-}
-
-#hgrtxnlgws .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#hgrtxnlgws .gt_font_normal {
-  font-weight: normal;
-}
-
-#hgrtxnlgws .gt_font_bold {
-  font-weight: bold;
-}
-
-#hgrtxnlgws .gt_font_italic {
-  font-style: italic;
-}
-
-#hgrtxnlgws .gt_super {
-  font-size: 65%;
-}
-
-#hgrtxnlgws .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#hgrtxnlgws .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#hgrtxnlgws .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#hgrtxnlgws .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#hgrtxnlgws .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#hgrtxnlgws .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#hgrtxnlgws .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#hgrtxnlgws .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#hgrtxnlgws div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="Box-Office-(millions)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Box Office (millions)</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Budget (millions)</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">4.12*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">(0.14)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">63.67*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(11.30)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">1776</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">0.315</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">0.315</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="Box Office (millions)" style="background-color: #FFFFFF; font-size: x-large">333.76</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="for-next-class-evaluate-the-fit-of-both-regressions-all-four-steps" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>For next class, evaluate the fit of both regressions (all four steps):</h2>
-<p><br></p>
-<ol type="1">
-<li><p>Regress city fuel economy on engine displacement (‘mpg’ datatset)</p></li>
-<li><p>Regress percent of people below the poverty line (<code>percbelowpoverty</code>) on the percent college educated (<code>percollege</code>) in the <code>midwest</code> datatset</p></li>
-</ol>
 <aside class="notes">
+<p>Imagine each of these five observations is written on a small ball and placed into a bag.</p>
+<ul>
+<li>In a moment you will reach your hand in the bag and pull out one of the balls.</li>
+</ul>
+<p><br></p>
+<p><strong>What is your best guess for the value of the ball you will pull out? Why?</strong></p>
+<ul>
+<li><p>(Probability: 2/5 balls are “3” so that’s a 40% chance vs 1/5 for “2”, “4” and “5” or a 20% chance)</p></li>
+<li><p>(Median: 3)</p></li>
+<li><p>(Mean: 3.4)</p></li>
+</ul>
+<p><br></p>
+<p>Certainly seems like a bunch of reasons to predict the number 3!</p>
+<ul>
+<li>SO, if you had NO other information about the bag or the balls themselves, three seems like a guess</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s go back to our plot</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 1: Ignoring the X variable</strong></p>
+</div>
 
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<p>In a sense, this is our null hypothesis</p>
+<ul>
+<li>Meaning a prediction based on no information beyond the outcome variable</li>
+</ul>
+<p><br></p>
+<p>Everybody take a second and think about this for me before you say or draw anything.</p>
+<ul>
+<li><p>What would a line look like on your plot that predicts a Y value of 3 for EVERY value of X</p></li>
+<li><p>Put your ruler on your plot where you think the line would go</p></li>
+</ul>
+<p><br></p>
+<p><em>Walk around and check them</em></p>
+<p><br></p>
+<p>Ok, draw those lines!</p>
+<p><br></p>
+<p><strong>SLIDE</strong>: represent using formula</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 1: Ignoring the X variable</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<p><strong>Everybody has this line drawn, yes?</strong></p>
+<p><br></p>
+<p>Now take a second and think about this for me before you say anything.</p>
+<ul>
+<li><p><strong>What is the formula for this line?</strong></p></li>
+<li><p><strong>In other words, a line that predicts the outcome will be 3 NO MATTER the value of X</strong></p></li>
+<li><p>Don’t say it out loud, just write it down</p></li>
+</ul>
+<p><br></p>
+<p>(<strong>SLIDE</strong>)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-4" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 1: Ignoring the X variable</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p><strong>Everybody comfortable matching this formula to this line?</strong></p>
+<ul>
+<li><p><strong>Why is the alpha set to 3?</strong> (The y-intercept of the line)</p></li>
+<li><p><strong>Why is the beta set to zero?</strong> (The slope of the line does not increase or decrease)</p></li>
+</ul>
+<p><br></p>
+<p>Alright, let’s use this summary of the relationship to make predictions!</p>
+<ul>
+<li><p><strong>Use some basic algebra to tell me, if X = 4 then what is your prediction for Y?</strong> (3!)</p></li>
+<li><p><strong>And if X = 150 million, what is your prediction for Y?</strong> (3!)</p></li>
+<li><p>Just checking…</p></li>
+</ul>
+<p><br></p>
+<p>Before we use this regression line as an answer to any question, we need to evaluate how well it fits the data</p>
+<ul>
+<li><p>Let’s start with just your sense of this.</p></li>
+<li><p><strong>In what ways is this a “good” fit and in what ways a “bad” fit?</strong></p></li>
+</ul>
+<p><br></p>
+<p>The first MASSIVE problem with this summary of the relationship is that it makes NO attempt to model the actual relationship!</p>
+<ul>
+<li><p>This line completely ignores all the information in X!</p></li>
+<li><p>As an answer to the question, does X explain the variation in Y this is not getting the job done.</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Second big problem</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-5" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 1: Ignoring the X variable</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>The second MASSIVE problem with this summary of the relationship is, in reality, Y varies from two up to five but our line only ever predicts 3</p>
+<ul>
+<li>This means our summary line is incredibly unhelpful in achieving the main purpose of explaining the outcome</li>
+</ul>
+<p><br></p>
+<p><strong>Do these two problems with this line make sense at an intuitive level?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s try to actually measure the error in this summary line</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-6" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 1: Ignoring the X variable</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>The “error” here is how far off our summary line is from the actual outcomes we are interested in explaining.</p>
+<ul>
+<li><p>We call these the residuals</p></li>
+<li><p>The higher the error, the worse the line fits the data</p></li>
+<li><p><strong>Make sense?</strong></p></li>
+</ul>
+<p><br></p>
+<p>Everybody use your ruler to measure these five residuals in inches</p>
+<ul>
+<li>Round to tenths of an inch</li>
+</ul>
+<p><br></p>
+<p>(<strong>SLIDE</strong>)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-7" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 1: Ignoring the X variable</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p><strong>Everybody come close to these?</strong></p>
+<p><br></p>
+<p><strong>Per Wheelan, how do we combine these residuals to find the error in the line?</strong></p>
+<ul>
+<li>(Sum of the squared errors!)</li>
+</ul>
+<p><br></p>
+<p>So, square each value and then add them all together</p>
+<ul>
+<li><p>We square the residuals so the negative and positive values don’t erase each other</p></li>
+<li><p>Go!</p></li>
+</ul>
+<p><br></p>
+<p><strong>What did you get?</strong></p>
+<ul>
+<li><p>Sum of squared residuals: (6)</p></li>
+<li><p>(<strong>SLIDE</strong>)</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-8" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 1: Ignoring the X variable</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>The sum of squared residuals is also known as the RSS or Residual Sum of Squares</p>
+<p><br></p>
+<p>We will primarily use the RSS to compare different lines to each other</p>
+<ul>
+<li><p>Generally speaking we prefer regression lines with less error to those with more error</p></li>
+<li><p>HOWEVER, in an absolute sense this value of “6” doesn’t hold a lot of meaning</p></li>
+</ul>
+<p><br></p>
+<p>The other thing we check for with the errors is if we see any patterns to them</p>
+<ul>
+<li><p>In this case, there are more errors above the line than below, AND</p></li>
+<li><p>The errors above the line are bigger than those below</p></li>
+<li><p>This tells me we should be able to draw a line that fits this data better!</p></li>
+</ul>
+<p><br></p>
+<p><strong>How are we doing so far? Any questions?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Alright let’s practice all of this and generate a better summary line!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-9" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 2: Adapt the line for two observations</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>Let’s summarize this relationship again but now we add some of the information in X</p>
+<ul>
+<li><p>To start we’ll consider some of the information provided by the X variable</p></li>
+<li><p>Everybody use your ruler to draw a straight line through these two observations (Points: 3,2 and 5,3)</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Result and assignment</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-10" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 2: Adapt the line for two observations</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p><strong>Did everybody draw this line?</strong></p>
+<p><br></p>
+<p><strong>Alright, everybody convert this line into the formula for a line</strong></p>
+<ul>
+<li><p>Remember the alpha is the y-intercept, and</p></li>
+<li><p>The beta is the rise/run or the change in y divided by the change in x between any two points</p></li>
+</ul>
+<p><br></p>
+<p>(<strong>SLIDE</strong>)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-11" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 2: Adapt the line for two observations</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p><strong>Did everybody get this formula?</strong></p>
+<ul>
+<li><p><strong>Why is the alpha 0.5?</strong></p></li>
+<li><p><strong>Why is the beta 0.5?</strong></p></li>
+</ul>
+<p><br></p>
+<p>Let’s now use this line to make predictions</p>
+<p><br></p>
+<p><strong>What does our line predict is the value of Y when X = 1?</strong></p>
+<ul>
+<li>(x = 1 then y = 1)</li>
+</ul>
+<p><br></p>
+<p><strong>What does our line predict is the value of Y when X = 7?</strong></p>
+<ul>
+<li>(x = 7 then y = 4)</li>
+</ul>
+<p><br></p>
+<p>So, that’s our new summary of this relationship.</p>
+<ul>
+<li><p>Now I want each of you to evaluate how well this line fits the data</p></li>
+<li><p>Calculate the residual sum of squares and evaluate the line</p></li>
+<li><p>Go!</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-12" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 2: Adapt the line for two observations</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p><strong>Ok, is this line a better summary of the relationship between X and Y than our naive prediction?</strong></p>
+<p><br></p>
+<p>Pro:</p>
+<ul>
+<li><p>Actually predicts values of Y across the actual range (2-5)!</p></li>
+<li><p>Includes more information from the world (two observations of X)</p></li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li><p>RSS is higher (6.75 &gt; 6)</p></li>
+<li><p>Almost all of the errors are above the line (bad pattern)</p></li>
+</ul>
+<p><br></p>
+<p><strong>Ok, check in, how are we doing?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s do it again!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-13" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 3: Adapt the line for three observations</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>Alright, draw a new line through these three observations then evaluate this line as a summary of the relationship</p>
+<ul>
+<li><p>Estimate the formula and evaluate the line</p></li>
+<li><p>Go!</p></li>
+</ul>
+<p><br></p>
+<p>(<strong>SLIDE</strong>)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-14" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Relationship Summary 3: Adapt the line for three observations</strong></p>
+</div>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p><strong>Ok, is this line a better summary of the relationship between X and Y than our prior two attempts?</strong></p>
+<p><br></p>
+<p>Pro:</p>
+<ul>
+<li><p>Actually predicts values of Y across the actual range (2-5)!</p></li>
+<li><p>Includes more information from the world (THREE observations of X)</p></li>
+<li><p>Lower RSS! (4.5 &lt; 6 &lt; 6.75)</p></li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Almost all of the errors are below the line (bad pattern)</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: For next class</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="for-next-class" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>For Next Class</h2>
+
+<img data-src="10_1-Simple_OLS-By_Hand_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<p>For next class:</p>
+<ol type="1">
+<li><p>Read Huntington-Klein (2022) chapter 4</p></li>
+<li><p>Draw YOUR eyeballed line of best fit!</p>
+<ul>
+<li><p>Estimate the formula for a line and evaluate using all steps.</p></li>
+<li><p>Smallest error with a straight line gets EC</p></li>
+</ul></li>
+<li><p>Submit to Canvas the formula for the line and your calculated RSS</p></li>
+</ol>
+<p><br></p>
+<p><strong>Questions on the assignment?</strong></p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

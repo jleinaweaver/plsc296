@@ -306,7 +306,14 @@ Ah yes, our old friend the bar plot!
 
 <br>
 
-**SLIDE**: Let's now put these two figures together!
+Previously we used stacked bar plots to examine changes in the trend of a categorical variable across time
+
+- What I want to show you now is that a stacked bar plot works for visualizing the relationship between any two categorical variables
+
+<br>
+
+**SLIDE**: The first type of bivariate bar plot is what we call a side-by-side plot
+
 :::
 
 
@@ -337,39 +344,50 @@ By default geom_bar adjusts the width of the bars so each x label takes up the s
 
 ## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=TRUE, `code-line-numbers`="1,3"}
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=TRUE}
 # Side-by-side bar plots
 ggplot(mpg, aes(x = class, fill = drv)) +
   geom_bar(position = position_dodge(preserve = "single"))
 ```
 
 ::: notes
+
 **What do we learn from this? What does the relationship appear to be between class and drive train?**
 
 <br>
 
-Now swap the 'x' and 'fill' variables in this plot.
+Practice for me
 
 - I want you to get a sense of what happens when you change which variable goes on the x axis and which is the fill.
+
+- Swap the 'x' and 'fill' variables in this code
+
+<br>
+
+**SLIDE**: Result
 :::
 
 
-## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 <br>
 
 :::: {.columns}
 ::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=TRUE}
+```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.width=5, fig.asp=.9, cache=TRUE}
 ggplot(mpg, aes(x = class, fill = drv)) +
-  geom_bar(position = position_dodge(preserve = "single"))
+  geom_bar(position = position_dodge(preserve = "single")) +
+  labs(title = "x = class, fill = drv") +
+  scale_fill_brewer(type = "qual", palette = 2)
 ```
 :::
 
 ::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=TRUE}
+```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.width=5, fig.asp=.9, cache=TRUE}
 ggplot(mpg, aes(x = drv, fill = class)) +
-  geom_bar(position = position_dodge(preserve = "single"))
+  geom_bar(position = position_dodge(preserve = "single")) +
+  labs(title = "x = drv, fill = class") +
+  scale_fill_brewer(type = "qual", palette = 2)
 ```
 :::
 ::::
@@ -448,29 +466,23 @@ Clearly makes comparisons and summary easier, BUT...
 
 <br>
 
-**SLIDE**: Let's tweak a couple of key elements of the proportionate stacked bar plot
+**SLIDE**: Let's tweak the y-axis labels to match the proportions
+
 :::
 
 
 
 ## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, cache=TRUE, `code-line-numbers`="3,4,5"}
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, cache=TRUE}
 ggplot(mpg, aes(x = class, fill = drv)) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent_format()) +
-  labs(x = "Class", y = "", fill = "Drive Train") +
-  scale_fill_manual(values = c("tan", "slategray3", "sandybrown"))
+  labs(x = "", y = "")
 ```
 
 ::: notes
-The new-ish tweaks here:
-
-1. The y-axis is converted to proportions so we can tweak the labels along the tick marks
-
-2. You can change the label of the legend in the labs() function by specifying a name for the "fill"
-
-3. We can alter the colors
+The y-axis is converted to proportions so we can tweak the labels along the tick marks
 
 <br>
 
@@ -484,15 +496,15 @@ The new-ish tweaks here:
 
 :::: {.columns}
 ::: {.column width="50%"}
-```{r, echo=FALSE, fig.asp=.85, fig.align='center', cache=TRUE}
+```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=.85, fig.align='center', cache=TRUE}
 ggplot(mpg, aes(x = cty)) +
-  geom_histogram(bins = 15) +
+  geom_histogram(bins = 15, color = "white") +
   theme_bw()
 ```
 :::
 
 ::: {.column width="50%"}
-```{r, echo=FALSE, fig.asp=.85, fig.align='center', cache=TRUE}
+```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=.85, fig.align='center', cache=TRUE}
 ggplot(mpg, aes(x = drv)) +
   geom_bar(fill = "darkblue") +
   theme_bw()
@@ -772,19 +784,21 @@ cor.test(mpg$displ, mpg$cty)
 :::
 
 
-## For next class be ready to present your "best" visualizations {background-image="Images/background-data_blue_v4.png" .center}
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-1. 'cut' and 'clarity'
+### Submit your "best" visualization of the relationship between:
 
-2. 'cut' and 'price'
+::: {.r-fit-text}
 
-3. 'carat' and 'price'
+1. The style (`cut`) and clarity (`clarity`) of the diamonds
 
-<br>
+2. The style (`cut`) and the cost (`price`) of the diamonds
 
-**Source:** 'diamonds' dataset in tidyverse
+3. The size (`carat`) and the cost (`price`) of the diamonds
+
+:::
 
 ::: notes
 Your job is to come up with the best version of each that you can.
