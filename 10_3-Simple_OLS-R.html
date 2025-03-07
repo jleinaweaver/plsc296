@@ -384,22 +384,19 @@
       margin-right: 0; 
     }
   </style>
-  <script src="10_3-Simple_OLS-R_files/libs/kePrint-0.0.1/kePrint.js"></script>
-  <link href="10_3-Simple_OLS-R_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 
-<section>
-<section id="todays-agenda" class="title-slide slide level1 center" data-background-image="Images/background-data_blue_v3.png">
-<h1>Today’s Agenda</h1>
+<section id="todays-agenda" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Today’s Agenda</h2>
 <p><br></p>
 <div class="r-fit-text">
 <p><strong>Ordinary Least Squares (OLS) Regression</strong></p>
 <ul>
-<li>Time to code!</li>
+<li>Using R to fit and evaluate a regression</li>
 </ul>
 </div>
 <p><br></p>
@@ -409,20 +406,12 @@
 <aside class="notes">
 <p>Prep for Class</p>
 <ol type="1">
-<li>…</li>
+<li>Check Canvas submissions</li>
 </ol>
 <p><br></p>
-<p>Ok, based on our work this week I think it is safe to say that we all need some more practice with simple OLS regressions</p>
-<ul>
-<li>THEREFORE, I am postponing the deadline for Report 3 by one week</li>
-</ul>
+<p>Today we learn to fit OLS regressions in R</p>
 <p><br></p>
-<p>Today we’ll take a breather from your project and focus on practicing fitting, interpreting and evaluating simple OLS regressions</p>
-<p><br></p>
-<p>So, what is a regression and how does it fit into the work we’ve been doing all semester?</p>
-<ul>
-<li><strong>SLIDE</strong></li>
-</ul>
+<p><strong>SLIDE</strong>: But first, let’s review your assignment for today</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -435,595 +424,40 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="how-much-more-expensive-are-larger-diamonds-than-smaller-ones" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>How much more expensive are larger diamonds than smaller ones?</h2>
-<aside class="notes">
-<p>Someone comes to you with a question to answer.</p>
-<p><br></p>
-<p>You are a social scientist so you decide to collect a bunch of data…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
+<section id="section" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-<p><br></p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p><strong>Sizes (carats)</strong></p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>  [1] 0.23 0.21 0.23 0.29 0.31 0.24
-  [7] 0.24 0.26 0.22 0.23 0.30 0.23
- [13] 0.22 0.31 0.20 0.32 0.30 0.30
- [19] 0.30 0.30 0.30 0.23 0.23 0.31
- [25] 0.31 0.23 0.24 0.30 0.23 0.23
- [31] 0.23 0.23 0.23 0.23 0.23 0.23
- [37] 0.23 0.31 0.26 0.33 0.33 0.33
- [43] 0.26 0.26 0.32 0.29 0.32 0.32
- [49] 0.25 0.29 0.24 0.23 0.32 0.22
- [55] 0.22 0.30 0.30 0.30 0.30 0.30
- [61] 0.35 0.30 0.30 0.30 0.42 0.28
- [67] 0.32 0.31 0.31 0.24 0.24 0.30
- [73] 0.30 0.30 0.30 0.26 0.26 0.26
- [79] 0.26 0.26 0.26 0.26 0.26 0.38
- [85] 0.26 0.24 0.24 0.24 0.24 0.32
- [91] 0.70 0.86 0.70 0.71 0.78 0.70
- [97] 0.70 0.96 0.73 0.80 0.75 0.75
-[103] 0.74 0.75 0.80 0.75 0.80 0.74
-[109] 0.81 0.59 0.80 0.74 0.90 0.74
-[115] 0.73 0.73 0.80 0.71 0.70 0.80
-[121] 0.71 0.74 0.70 0.70 0.70 0.70
-[127] 0.91 0.61 0.91 0.91 0.77 0.71
-[133] 0.71 0.70 0.77 0.63 0.71 0.71
-[139] 0.76 0.64 0.71 0.71 0.70 0.70
-[145] 0.71 0.70 0.71 0.73 0.70 0.70</code></pre>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<p><strong>Prices ($)</strong></p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>  [1]  326  326  327  334  335  336
-  [7]  336  337  337  338  339  340
- [13]  342  344  345  345  348  351
- [19]  351  351  351  352  353  353
- [25]  353  354  355  357  357  357
- [31]  402  402  402  402  402  402
- [37]  402  402  403  403  403  403
- [43]  403  403  403  403  403  403
- [49]  404  404  404  404  404  404
- [55]  404  405  405  405  405  405
- [61]  552  552  552  552  552  553
- [67]  553  553  553  553  553  554
- [73]  554  554  554  554  554  554
- [79]  554  554  554  554  554  554
- [85]  554  554  554  554  554  554
- [91] 2757 2757 2757 2759 2759 2759
- [97] 2759 2759 2760 2760 2760 2760
-[103] 2760 2760 2760 2760 2760 2761
-[109] 2761 2761 2761 2761 2761 2762
-[115] 2762 2762 2762 2762 2762 2762
-[121] 2762 2762 2762 2762 2762 2762
-[127] 2763 2763 2763 2763 2763 2764
-[133] 2764 2765 2765 2765 2765 2765
-[139] 2765 2766 2766 2766 2767 2767
-[145] 2767 2767 2768 2768 2768 2768</code></pre>
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p>You get your hands on a sample of 54k diamonds from a large database of diamond sellers</p>
 <p><br></p>
-<p>Here we see 54k diamond observations in terms of their sizes and prices</p>
-<ul>
-<li>A long, long, long list of numbers is definitely not a useful answer to the question</li>
-</ul>
-<p><br></p>
-<p>So, you reach into your bag of statistical tools because you know that, at its heart, statistics is a set of tools designed for simplifying and summarizing the world</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><strong>Sizes (carats)</strong></p>
-<div class="cell" data-layout-align="left">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-left">
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-left" width="624"></p>
+<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="cell-output-display">
-<table class="table caption-top" data-quarto-postprocess="true" style="font-size: 25px; margin-left: auto; margin-right: auto;">
-<thead>
-<tr class="header">
-<th style="text-align: right;" data-quarto-table-cell-role="th">Min</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Median</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Max</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">0.2</td>
-<td style="text-align: right;">0.7</td>
-<td style="text-align: right;">5.01</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
 </div>
 </div><div class="column" style="width:50%;">
-<p><strong>Prices ($)</strong></p>
-<div class="cell" data-layout-align="left">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-left">
-<figure>
-<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-left" width="624"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<table class="table caption-top" data-quarto-postprocess="true" style="font-size: 25px; margin-left: auto; margin-right: auto;">
-<thead>
-<tr class="header">
-<th style="text-align: right;" data-quarto-table-cell-role="th">Min</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Median</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Max</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">326</td>
-<td style="text-align: right;">2401</td>
-<td style="text-align: right;">18823</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p>First you analyze each variable on its own to get a sense of the distribution</p>
-<ul>
-<li>This means visualizations and descriptive statistics</li>
-</ul>
-<p><br></p>
-<p>From this you see considerable variation in both the predictor and the outcome</p>
-<ul>
-<li><p>This means your sample includes large and small diamonds, AND</p></li>
-<li><p>Your sample includes cheap and expensive diamonds</p></li>
-</ul>
-<p><br></p>
-<p>If there is variation in both variables, then it is worth checking to see if there is evidence of a relationship</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>Here we visualize the relationship and calculate a statistic, the correlation, that aims to summarize what we are seeing</p>
-<p><br></p>
-<p>This scatterplot and correlation suggest a strong positive correlation</p>
-<ul>
-<li>Larger diamonds do tend to be more expensive</li>
-</ul>
-<p><br></p>
-<p>BUT, the question is, HOW MUCH more expensive?</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-3" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line</p>
-<ul>
-<li>Y = <span class="math inline">\(\alpha\)</span> + <span class="math inline">\(\beta\)</span> X</li>
-</ul>
-<p><br></p>
-<p>Here that line is the price of a diamond is equal to the intercept plus the size of the diamond times its slope coefficient</p>
-<p><br></p>
-<p>As we have discussed, and the readings explain, OLS draws this line through the data points by minimizing the sum of the squared residuals</p>
-<ul>
-<li>e.g.&nbsp;finding a line that best fits the “middle” of the data points</li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: And the result of this work is…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-4" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>In purely technical terms, OLS regression is a method for summarizing the relationship between two variables using a line</p>
-<ul>
-<li>That’s it.</li>
-</ul>
-<p><br></p>
-<p>Rather than show someone a cloud of observations and asking them to intuit the relationship, we provide a single line that summarizes it!</p>
-<ul>
-<li>So much cleaner, right?</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-5" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
-<p>The summary using a line technique is useful because we can use it to make predictions for any value of the predictor</p>
-<ul>
-<li>Again, this summary allows us to answer specific questions in a way we cannot do with a cloud of 54k observations</li>
-</ul>
-<p><br></p>
-<p>Our model predicts that a 1 carat diamond, on average, costs around $5k</p>
-<ul>
-<li><p>And the ggpredict function estimates a confidence interval of approximately +- $14</p></li>
-<li><p>Given the huge number of observations at the 1 carat level our regression is quite confident about its predictions!</p></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-6" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
-<p>Jumping to the bigger diamonds, our model predicts that a 3 carat diamond, on average, costs around $20k</p>
-<ul>
-<li><p>With fewer cases at this level the CI increases to approximately +- $62!</p></li>
-<li><p>Still very confident!</p></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-7" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
-<p>With these predictions we can also estimate differences along the line</p>
-<ul>
-<li>This lets us say with some confidence that moving from a 1 to 3 carat diamond will cost you, on average, some $15k!</li>
-</ul>
-<p><br></p>
-<p>More useful than a scatterplot or a correlation coefficient!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="why-do-we-use-ols-regressions" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Why do we use OLS regressions?</h2>
-<p><br></p>
-<div class="r-fit-text">
-<ul>
-<li><p>Quantifies the relationship between variables</p></li>
-<li><p>Uses <strong>ALL</strong> of the data</p></li>
-<li><p>Makes predictions with estimates of uncertainty</p></li>
-<li><p>Gives us criteria for evaluating the fit of the line</p></li>
-</ul>
-</div>
-<aside class="notes">
-<p>Bottom line, OLS is simply an extension of everything we’ve been doing this semester to summarize data</p>
-<ul>
-<li>A regression simply summarizes the relationship between two variables using a line</li>
-</ul>
-<p><br></p>
-<p><strong>Questions on the intuitions?</strong></p>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s practice!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="part-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Part 2</h2>
-<p><br></p>
-<p><strong>How do we fit a regression, output a table and make predictions in R?</strong></p>
-<aside class="notes">
-<p>Three tools for your proverbial toolbox</p>
-<ol type="1">
-<li><p>Fitting regressions with lm()</p></li>
-<li><p>Making regression tables with modelsummary()</p></li>
-<li><p>Making predictions with ggeffect</p></li>
-</ol>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="fitting-ols-regressions-in-r" class="slide level2" data-background-image="Images/background-slate_v2.png">
-<h2>Fitting OLS Regressions in R</h2>
-<p><br></p>
-<div class="r-fit-text">
-<p>lm(data = dataset, outcome ~ predictor)</p>
-</div>
-<p><img data-src="Images/10_1-lm_help_file.png" class="absolute" style="left: 150px; bottom: 100px; width: 70%; "></p>
-<aside class="notes">
-<p>We use the lm function to fit simple linear models in R</p>
-<p><br></p>
-<p>While the help file shows you can do a ton of stuff with the lm() function, we’ll be starting with just these three elements</p>
-<ul>
-<li><p>Specify the dataset,</p></li>
-<li><p>The outcome variable, and</p></li>
-<li><p>The predictor</p></li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: Applied example</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="fitting-ols-regressions-in-r-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Fitting OLS Regressions in R</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="co"># Regress `price` on `carat` in the `diamonds` dataset</span></span>
-<span id="cb3-2"><a href=""></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> carat)</span>
-<span id="cb3-3"><a href=""></a></span>
-<span id="cb3-4"><a href=""></a><span class="co"># Check the Results</span></span>
-<span id="cb3-5"><a href=""></a><span class="fu">summary</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = price ~ carat, data = diamonds)
-
-Residuals:
-     Min       1Q   Median 
--18585.3   -804.8    -18.9 
-      3Q      Max 
-   537.4  12731.7 
-
-Coefficients:
-            Estimate Std. Error
-(Intercept) -2256.36      13.06
-carat        7756.43      14.07
-            t value Pr(&gt;|t|)    
-(Intercept)  -172.8   &lt;2e-16 ***
-carat         551.4   &lt;2e-16 ***
----
-Signif. codes:  
-  0 '***' 0.001 '**' 0.01 '*'
-  0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 1549 on 53938 degrees of freedom
-Multiple R-squared:  0.8493,    Adjusted R-squared:  0.8493 
-F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<div class="fragment">
-<div class="r-fit-text">
-<p>Price = -2,256.36 + 7,756.43 x Carats</p>
-</div>
-</div>
-<aside class="notes">
-<p><strong>Everybody get these results?</strong></p>
-<p><br></p>
-<p><strong>REVEAL</strong>: The estimates here in the middle is the main element we’ve been working with today</p>
-<ul>
-<li>These are your alpha and beta in the formula for a line</li>
-</ul>
-<p><br></p>
-<p><strong>Questions on this code?</strong></p>
-<p><br></p>
-<p><strong>Everybody clear on how to pull the estimates from the summary results to the formula for a line?</strong></p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="formatting-regression-tables-in-r" class="slide level2" data-background-image="Images/background-slate_v2.png">
-<h2>Formatting Regression Tables in R</h2>
-<p><img data-src="Images/10_1-Jensen2011_Example_Regression.png" class="absolute" style="left: 170px; bottom: 0px; width: 65%; "></p>
-<aside class="notes">
-<p>Let’s talk about reporting regression results in professional situations (presentations and reports)</p>
-<p><br></p>
-<p>This example comes from a paper by Jensen and Spoon that tries to explain why some countries met their climate change targets from the Kyoto Protocol and others did not.</p>
-<p><br></p>
-<p>This is essentially the standard you should see in basically every quantitative research paper you read</p>
-<ul>
-<li><p>Each column represents a different run of the model (or different models)</p></li>
-<li><p>Each row is labelled to explain what it is and then gives the results from the regression</p></li>
-<li><p>The top of the table leads with the predictors in the model, the bottom of the table gives the model fit stats we’ll explore next class</p></li>
-<li><p>Each predictor specifies its coefficient estimate with the standard error below it</p></li>
-<li><p>After the variables come the model fit statistics which we’ll discuss next class</p></li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: The good news is that we can make this using code in R</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="formatting-regression-tables-in-r-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Formatting Regression Tables in R</h2>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:60%;">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="co"># Fit the regression</span></span>
-<span id="cb5-2"><a href=""></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> diamonds, </span>
-<span id="cb5-3"><a href=""></a>             price <span class="sc">~</span> carat)</span>
-<span id="cb5-4"><a href=""></a></span>
-<span id="cb5-5"><a href=""></a><span class="co"># Formatting a regression table</span></span>
-<span id="cb5-6"><a href=""></a><span class="co"># (install package 'modelsummary')</span></span>
-<span id="cb5-7"><a href=""></a><span class="fu">library</span>(modelsummary)</span>
-<span id="cb5-8"><a href=""></a></span>
-<span id="cb5-9"><a href=""></a><span class="fu">modelsummary</span>(model1)</span>
-<span id="cb5-10"><a href=""></a></span>
-<span id="cb5-11"><a href=""></a><span class="co"># Use this one!</span></span>
-<span id="cb5-12"><a href=""></a><span class="fu">modelsummary</span>(model1, </span>
-<span id="cb5-13"><a href=""></a>             <span class="at">fmt =</span> <span class="dv">2</span>, </span>
-<span id="cb5-14"><a href=""></a>             <span class="at">stars =</span> <span class="fu">c</span>(<span class="st">'*'</span> <span class="ot">=</span> .<span class="dv">05</span>), </span>
-<span id="cb5-15"><a href=""></a>             <span class="at">gof_omit =</span> <span class="st">"IC|Log|F"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div><div class="column" style="width:40%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="twcaaqzjjt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#twcaaqzjjt table {
+<div id="sijmeuqqyk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sijmeuqqyk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#twcaaqzjjt thead, #twcaaqzjjt tbody, #twcaaqzjjt tfoot, #twcaaqzjjt tr, #twcaaqzjjt td, #twcaaqzjjt th {
+#sijmeuqqyk thead, #sijmeuqqyk tbody, #sijmeuqqyk tfoot, #sijmeuqqyk tr, #sijmeuqqyk td, #sijmeuqqyk th {
   border-style: none;
 }
 
-#twcaaqzjjt p {
+#sijmeuqqyk p {
   margin: 0;
   padding: 0;
 }
 
-#twcaaqzjjt .gt_table {
+#sijmeuqqyk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1049,12 +483,12 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_caption {
+#sijmeuqqyk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#twcaaqzjjt .gt_title {
+#sijmeuqqyk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1066,7 +500,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-bottom-width: 0;
 }
 
-#twcaaqzjjt .gt_subtitle {
+#sijmeuqqyk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1078,7 +512,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-top-width: 0;
 }
 
-#twcaaqzjjt .gt_heading {
+#sijmeuqqyk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1090,13 +524,13 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_bottom_border {
+#sijmeuqqyk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_col_headings {
+#sijmeuqqyk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1111,7 +545,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_col_heading {
+#sijmeuqqyk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1131,7 +565,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   overflow-x: hidden;
 }
 
-#twcaaqzjjt .gt_column_spanner_outer {
+#sijmeuqqyk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1143,15 +577,15 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 4px;
 }
 
-#twcaaqzjjt .gt_column_spanner_outer:first-child {
+#sijmeuqqyk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#twcaaqzjjt .gt_column_spanner_outer:last-child {
+#sijmeuqqyk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#twcaaqzjjt .gt_column_spanner {
+#sijmeuqqyk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1163,11 +597,11 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   width: 100%;
 }
 
-#twcaaqzjjt .gt_spanner_row {
+#sijmeuqqyk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#twcaaqzjjt .gt_group_heading {
+#sijmeuqqyk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1193,7 +627,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   text-align: left;
 }
 
-#twcaaqzjjt .gt_empty_group_heading {
+#sijmeuqqyk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1208,15 +642,15 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   vertical-align: middle;
 }
 
-#twcaaqzjjt .gt_from_md > :first-child {
+#sijmeuqqyk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#twcaaqzjjt .gt_from_md > :last-child {
+#sijmeuqqyk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#twcaaqzjjt .gt_row {
+#sijmeuqqyk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1235,7 +669,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   overflow-x: hidden;
 }
 
-#twcaaqzjjt .gt_stub {
+#sijmeuqqyk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1248,7 +682,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#twcaaqzjjt .gt_stub_row_group {
+#sijmeuqqyk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1262,15 +696,15 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   vertical-align: top;
 }
 
-#twcaaqzjjt .gt_row_group_first td {
+#sijmeuqqyk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#twcaaqzjjt .gt_row_group_first th {
+#sijmeuqqyk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#twcaaqzjjt .gt_summary_row {
+#sijmeuqqyk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1280,16 +714,16 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#twcaaqzjjt .gt_first_summary_row {
+#sijmeuqqyk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_first_summary_row.thick {
+#sijmeuqqyk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#twcaaqzjjt .gt_last_summary_row {
+#sijmeuqqyk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1299,7 +733,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_grand_summary_row {
+#sijmeuqqyk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1309,7 +743,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#twcaaqzjjt .gt_first_grand_summary_row {
+#sijmeuqqyk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1319,7 +753,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_last_grand_summary_row_top {
+#sijmeuqqyk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1329,11 +763,11 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_striped {
+#sijmeuqqyk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#twcaaqzjjt .gt_table_body {
+#sijmeuqqyk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1342,7 +776,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_footnotes {
+#sijmeuqqyk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1356,7 +790,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_footnote {
+#sijmeuqqyk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1365,7 +799,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#twcaaqzjjt .gt_sourcenotes {
+#sijmeuqqyk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1379,7 +813,7 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#twcaaqzjjt .gt_sourcenote {
+#sijmeuqqyk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1387,72 +821,981 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
   padding-right: 5px;
 }
 
-#twcaaqzjjt .gt_left {
+#sijmeuqqyk .gt_left {
   text-align: left;
 }
 
-#twcaaqzjjt .gt_center {
+#sijmeuqqyk .gt_center {
   text-align: center;
 }
 
-#twcaaqzjjt .gt_right {
+#sijmeuqqyk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#twcaaqzjjt .gt_font_normal {
+#sijmeuqqyk .gt_font_normal {
   font-weight: normal;
 }
 
-#twcaaqzjjt .gt_font_bold {
+#sijmeuqqyk .gt_font_bold {
   font-weight: bold;
 }
 
-#twcaaqzjjt .gt_font_italic {
+#sijmeuqqyk .gt_font_italic {
   font-style: italic;
 }
 
-#twcaaqzjjt .gt_super {
+#sijmeuqqyk .gt_super {
   font-size: 65%;
 }
 
-#twcaaqzjjt .gt_footnote_marks {
+#sijmeuqqyk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#twcaaqzjjt .gt_asterisk {
+#sijmeuqqyk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#twcaaqzjjt .gt_indent_1 {
+#sijmeuqqyk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#twcaaqzjjt .gt_indent_2 {
+#sijmeuqqyk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#twcaaqzjjt .gt_indent_3 {
+#sijmeuqqyk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#twcaaqzjjt .gt_indent_4 {
+#sijmeuqqyk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#twcaaqzjjt .gt_indent_5 {
+#sijmeuqqyk .gt_indent_5 {
   text-indent: 25px;
 }
 
-#twcaaqzjjt .katex-display {
+#sijmeuqqyk .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#twcaaqzjjt div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#sijmeuqqyk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" ">Agriculture Employment (%)</td>
+<td class="gt_row gt_center" headers="(1)">-0.27*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" "></td>
+<td class="gt_row gt_center" headers="(1)">(0.02)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" ">Constant</td>
+<td class="gt_row gt_center" headers="(1)">77.70*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000"></td>
+<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000">(0.56)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" ">Num.Obs.</td>
+<td class="gt_row gt_center" headers="(1)">187</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" ">R2</td>
+<td class="gt_row gt_center" headers="(1)">0.554</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" ">R2 Adj.</td>
+<td class="gt_row gt_center" headers="(1)">0.552</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" ">RMSE</td>
+<td class="gt_row gt_center" headers="(1)">5.19</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p><strong>How did this go?</strong></p>
+<p><br></p>
+<p>Questions from Canvas:</p>
+<p><br></p>
+<p><strong>Q1: Describe the relationship between life expectancy and the proportion of a country’s population employed in agricultural work according to this OLS line (e.g.&nbsp;interpret the main coefficient)</strong></p>
+<ul>
+<li><p>(On average, increases of 1% in population employed in agricultural work is associated with a decrease in life expectancy of .27 years)</p></li>
+<li><p>(So, a 4% increase in agriculture, reduces average life expectancy by 1 year!)</p></li>
+</ul>
+<p><br></p>
+<p><strong>Q2: Use the formula for a line to make a prediction: What is the predicted life expectancy in a country if 10% of the population works in agriculture?</strong></p>
+<ul>
+<li>(77.6959 + -0.2725 * 10 = 74.9709)</li>
+</ul>
+<p><br></p>
+<p><strong>Q3: Use the formula for a line to make a prediction: What is the predicted life expectancy in a country if 50% of the population works in agriculture?</strong></p>
+<ul>
+<li>(77.6959 + -0.2725 * 50 = 64.0709)</li>
+</ul>
+<p><br></p>
+<p><strong>Q4: Evaluate the fit of the model using the four criteria we discussed in class. How confident are you in that the results of this OLS regression usefully summarize the relationship between life expectancy and agricultural employment?</strong></p>
+<ul>
+<li><p>(Dataset has 217 observations so 30 countries missing)</p></li>
+<li><p>(Coefficients are significant)</p></li>
+<li><p>(R2 is pretty darn high given the effort to explain all of life expectancy, 55%)</p></li>
+<li><p>(Not terrible, but residuals unbalanced)</p>
+<ul>
+<li>u-shaped error, above the line at the low and high end, below the line for middle countries</li>
+</ul></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s learn how to do all of this in R</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>How do we perform regression analysis in R?</strong></p>
+<ol type="1">
+<li><p>Fitting a Regression: lm()</p></li>
+<li><p>Making a Regression Table: modelsummary()</p></li>
+<li><p>Visualizing the Residuals: plot()</p></li>
+<li><p>Making Predictions: ggpredict()</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Install these one time</span></span>
+<span id="cb1-2"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"modelsummary"</span>)</span>
+<span id="cb1-3"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"ggeffects"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>Three tools for your proverbial toolbox</p>
+<ul>
+<li>Write these down and install these two add-on packages</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="fitting-ols-regressions-in-r" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2>1. Fitting OLS Regressions in R</h2>
+<p><br></p>
+<div class="r-fit-text">
+<p>lm(data = dataset, outcome ~ predictor)</p>
+</div>
+<p><img data-src="Images/10_1-lm_help_file.png" class="absolute" style="left: 65px; bottom: 50px; width: 90%; "></p>
+<aside class="notes">
+<p>We use the lm function to fit simple linear models in R</p>
+<p><br></p>
+<p>While the help file shows you can do a ton of stuff with the lm() function, we’ll be starting with just these three elements</p>
+<ul>
+<li><p>Specify the dataset,</p></li>
+<li><p>The outcome variable, and</p></li>
+<li><p>The predictor</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Applied example</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="fitting-ols-regressions-in-r-1" class="slide level2 center smaller" data-background-image="Images/background-data_blue_v4.png">
+<h2>1. Fitting OLS Regressions in R</h2>
+<div class="r-fit-text">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="co"># Regress `price` on `carat` in the `diamonds` dataset</span></span>
+<span id="cb2-2"><a href=""></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> carat)</span>
+<span id="cb2-3"><a href=""></a></span>
+<span id="cb2-4"><a href=""></a><span class="co"># Check the Results</span></span>
+<span id="cb2-5"><a href=""></a><span class="fu">summary</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = price ~ carat, data = diamonds)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-18585.3   -804.8    -18.9    537.4  12731.7 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -2256.36      13.06  -172.8   &lt;2e-16 ***
+carat        7756.43      14.07   551.4   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1549 on 53938 degrees of freedom
+Multiple R-squared:  0.8493,    Adjusted R-squared:  0.8493 
+F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p><strong>Everybody get these results?</strong></p>
+<p><br></p>
+<p><strong>Questions on this code?</strong></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="formatting-regression-tables-in-r" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>2. Formatting Regression Tables in R</h2>
+<p><br></p>
+
+<img data-src="Images/10_3-modelsummary.png" class="r-stretch"><aside class="notes">
+<p>There are a bunch of packages that can do this, but recently I’ve been using modelsummary</p>
+<ul>
+<li>Makes a wide variety of elegant tables and the code isn’t too tough to tweak</li>
+</ul>
+<p><br></p>
+<p>Using this requires installing the modelsummary package</p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Basic output</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="formatting-regression-tables-in-r-1" class="slide level2 center smaller" data-background-image="Images/background-data_blue_v4.png">
+<h2>2. Formatting Regression Tables in R</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><br></p>
+<p><br></p>
+<div class="r-fit-text">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">library</span>(modelsummary)</span>
+<span id="cb4-2"><a href=""></a></span>
+<span id="cb4-3"><a href=""></a><span class="fu">modelsummary</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+ 
+
+  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tinytable_ro5gt9jzwwnqavlw7k6q</title>
+    <style>
+.table td.tinytable_css_16fb2mai2qv7kkn81ppj, .table th.tinytable_css_16fb2mai2qv7kkn81ppj {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_ssu9rghezhphdxymlwg2, .table th.tinytable_css_ssu9rghezhphdxymlwg2 {    text-align: left; }
+.table td.tinytable_css_s0acpjjhuzvxg42xcy66, .table th.tinytable_css_s0acpjjhuzvxg42xcy66 {    text-align: center; }
+.table td.tinytable_css_koyq5898oj6shf4phdba, .table th.tinytable_css_koyq5898oj6shf4phdba {    border-bottom: solid 0.05em black; }
+    </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+  
+
+  
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_ro5gt9jzwwnqavlw7k6q" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col"> </th>
+                <th scope="col">(1)</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>(Intercept)</td>
+                  <td>-2256.361  </td>
+                </tr>
+                <tr>
+                  <td>           </td>
+                  <td>(13.055)   </td>
+                </tr>
+                <tr>
+                  <td>carat      </td>
+                  <td>7756.426   </td>
+                </tr>
+                <tr>
+                  <td>           </td>
+                  <td>(14.067)   </td>
+                </tr>
+                <tr>
+                  <td>Num.Obs.   </td>
+                  <td>53940      </td>
+                </tr>
+                <tr>
+                  <td>R2         </td>
+                  <td>0.849      </td>
+                </tr>
+                <tr>
+                  <td>R2 Adj.    </td>
+                  <td>0.849      </td>
+                </tr>
+                <tr>
+                  <td>AIC        </td>
+                  <td>945466.5   </td>
+                </tr>
+                <tr>
+                  <td>BIC        </td>
+                  <td>945493.2   </td>
+                </tr>
+                <tr>
+                  <td>Log.Lik.   </td>
+                  <td>-472730.266</td>
+                </tr>
+                <tr>
+                  <td>F          </td>
+                  <td>304050.906 </td>
+                </tr>
+                <tr>
+                  <td>RMSE       </td>
+                  <td>1548.53    </td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function styleCell_tinytable_s2qui2a0p1o743tmdxtv(i, j, css_id) {
+        var table = document.getElementById("tinytable_ro5gt9jzwwnqavlw7k6q");
+        table.rows[i].cells[j].classList.add(css_id);
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_ro5gt9jzwwnqavlw7k6q');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_tinytable_s2qui2a0p1o743tmdxtv(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_ro5gt9jzwwnqavlw7k6q");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(0, 0, 'tinytable_css_16fb2mai2qv7kkn81ppj') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(0, 1, 'tinytable_css_16fb2mai2qv7kkn81ppj') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(0, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(1, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(2, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(3, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(4, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(5, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(6, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(7, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(8, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(9, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(10, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(11, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(12, 0, 'tinytable_css_ssu9rghezhphdxymlwg2') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(0, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(1, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(2, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(3, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(4, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(5, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(6, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(7, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(8, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(9, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(10, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(11, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(12, 1, 'tinytable_css_s0acpjjhuzvxg42xcy66') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(4, 0, 'tinytable_css_koyq5898oj6shf4phdba') })
+window.addEventListener('load', function () { styleCell_tinytable_s2qui2a0p1o743tmdxtv(4, 1, 'tinytable_css_koyq5898oj6shf4phdba') })
+    </script>
+
+  
+
+
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p>This is the default output you get if you run the function with no extra arguments</p>
+<p><br></p>
+<p><strong>Did everybody get this code to run?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s polish this table</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="formatting-regression-tables-in-r-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>2. Formatting Regression Tables in R</h2>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="co"># Polishing a Table - Minumum Required</span></span>
+<span id="cb5-2"><a href=""></a><span class="fu">modelsummary</span>(model1, </span>
+<span id="cb5-3"><a href=""></a>             <span class="at">fmt =</span> <span class="dv">2</span>, </span>
+<span id="cb5-4"><a href=""></a>             <span class="at">stars =</span> <span class="fu">c</span>(<span class="st">'*'</span> <span class="ot">=</span> .<span class="dv">05</span>), </span>
+<span id="cb5-5"><a href=""></a>             <span class="at">gof_omit =</span> <span class="st">"AIC|BIC|Log|F"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ssaxebmjpi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ssaxebmjpi table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ssaxebmjpi thead, #ssaxebmjpi tbody, #ssaxebmjpi tfoot, #ssaxebmjpi tr, #ssaxebmjpi td, #ssaxebmjpi th {
+  border-style: none;
+}
+
+#ssaxebmjpi p {
+  margin: 0;
+  padding: 0;
+}
+
+#ssaxebmjpi .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ssaxebmjpi .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ssaxebmjpi .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ssaxebmjpi .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ssaxebmjpi .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ssaxebmjpi .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ssaxebmjpi .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ssaxebmjpi .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ssaxebmjpi .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ssaxebmjpi .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ssaxebmjpi .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ssaxebmjpi .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ssaxebmjpi .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ssaxebmjpi .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ssaxebmjpi .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ssaxebmjpi .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ssaxebmjpi .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ssaxebmjpi .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ssaxebmjpi .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ssaxebmjpi .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ssaxebmjpi .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ssaxebmjpi .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ssaxebmjpi .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ssaxebmjpi .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ssaxebmjpi .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ssaxebmjpi .gt_left {
+  text-align: left;
+}
+
+#ssaxebmjpi .gt_center {
+  text-align: center;
+}
+
+#ssaxebmjpi .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ssaxebmjpi .gt_font_normal {
+  font-weight: normal;
+}
+
+#ssaxebmjpi .gt_font_bold {
+  font-weight: bold;
+}
+
+#ssaxebmjpi .gt_font_italic {
+  font-style: italic;
+}
+
+#ssaxebmjpi .gt_super {
+  font-size: 65%;
+}
+
+#ssaxebmjpi .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ssaxebmjpi .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ssaxebmjpi .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ssaxebmjpi .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ssaxebmjpi .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ssaxebmjpi .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ssaxebmjpi .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#ssaxebmjpi .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ssaxebmjpi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1508,28 +1851,598 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
-</div></div>
 <aside class="notes">
-<p>There are a bunch of packages that can do this, but recently I’ve been using modelsummary</p>
-<ul>
-<li>Makes a wide variety of elegant tables and the code isn’t too tough to tweak</li>
-</ul>
-<p><br></p>
-<p>Everyone will have to install the modelsummary package before they can use it</p>
-<p><br></p>
-<p>If you run line 8 you’ll get a HUGE table with all possible statistics included</p>
-<ul>
-<li>This is fine for rough and ready model testing but for reporting you don’t want to include unneccesary information</li>
-</ul>
-<p><br></p>
-<p>Our preferred version modifies three of the arguments in the modelsummary function</p>
+<p>This version modifies three of the arguments in the modelsummary function</p>
 <ul>
 <li><p>fmt is how many digits after the decimal (two is a good rule of thumb)</p></li>
 <li><p>I set the significance stars to one level (.05)</p></li>
-<li><p>I omitted a bunch of fit statistics we don’t need at the moment</p></li>
+<li><p>I omitted a bunch of fit statistics we don’t need at the moment</p>
+<ul>
+<li>Specifically I’m omitting the Akaike information criterion (AIC), Bayesian information criterion (BIC), the log likelihood and the F test</li>
+</ul></li>
 </ul>
 <p><br></p>
-<p>We’ll go through all of this on Wednesday.</p>
+<p><strong>Did everybody get this code to run?</strong></p>
+<p><br></p>
+<p>This is the minimum customization I want you to use</p>
+<ul>
+<li>This ensures the table is readable and focused</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: However, I want to encourage you to go further in polishing this table</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="formatting-regression-tables-in-r-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>2. Formatting Regression Tables in R</h2>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co"># Polishing a Table - The Goal</span></span>
+<span id="cb6-2"><a href=""></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(<span class="st">"Diamond Price"</span> <span class="ot">=</span> model1),</span>
+<span id="cb6-3"><a href=""></a>             <span class="at">fmt =</span> <span class="dv">2</span>, </span>
+<span id="cb6-4"><a href=""></a>             <span class="at">stars =</span> <span class="fu">c</span>(<span class="st">'*'</span> <span class="ot">=</span> .<span class="dv">05</span>), </span>
+<span id="cb6-5"><a href=""></a>             <span class="at">gof_omit =</span> <span class="st">"AIC|BIC|Log|F"</span>,</span>
+<span id="cb6-6"><a href=""></a>             <span class="at">coef_rename =</span> <span class="fu">c</span>(<span class="st">"carat"</span> <span class="ot">=</span> <span class="st">"Diamond Size (carats)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="vfjrjdntmo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vfjrjdntmo table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#vfjrjdntmo thead, #vfjrjdntmo tbody, #vfjrjdntmo tfoot, #vfjrjdntmo tr, #vfjrjdntmo td, #vfjrjdntmo th {
+  border-style: none;
+}
+
+#vfjrjdntmo p {
+  margin: 0;
+  padding: 0;
+}
+
+#vfjrjdntmo .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#vfjrjdntmo .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#vfjrjdntmo .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#vfjrjdntmo .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#vfjrjdntmo .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#vfjrjdntmo .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#vfjrjdntmo .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#vfjrjdntmo .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#vfjrjdntmo .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#vfjrjdntmo .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#vfjrjdntmo .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#vfjrjdntmo .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#vfjrjdntmo .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#vfjrjdntmo .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#vfjrjdntmo .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vfjrjdntmo .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#vfjrjdntmo .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#vfjrjdntmo .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#vfjrjdntmo .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vfjrjdntmo .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#vfjrjdntmo .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vfjrjdntmo .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#vfjrjdntmo .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vfjrjdntmo .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vfjrjdntmo .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vfjrjdntmo .gt_left {
+  text-align: left;
+}
+
+#vfjrjdntmo .gt_center {
+  text-align: center;
+}
+
+#vfjrjdntmo .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#vfjrjdntmo .gt_font_normal {
+  font-weight: normal;
+}
+
+#vfjrjdntmo .gt_font_bold {
+  font-weight: bold;
+}
+
+#vfjrjdntmo .gt_font_italic {
+  font-style: italic;
+}
+
+#vfjrjdntmo .gt_super {
+  font-size: 65%;
+}
+
+#vfjrjdntmo .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#vfjrjdntmo .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#vfjrjdntmo .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#vfjrjdntmo .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#vfjrjdntmo .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#vfjrjdntmo .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#vfjrjdntmo .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#vfjrjdntmo .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#vfjrjdntmo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="Diamond-Price" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Diamond Price</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">(Intercept)</td>
+<td class="gt_row gt_center" headers="Diamond Price" style="background-color: #FFFFFF; font-size: large">-2256.36*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="Diamond Price" style="background-color: #FFFFFF; font-size: large">(13.06)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Diamond Size (carats)</td>
+<td class="gt_row gt_center" headers="Diamond Price" style="background-color: #FFFFFF; font-size: large">7756.43*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="Diamond Price" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(14.07)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="Diamond Price" style="background-color: #FFFFFF; font-size: large">53940</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2</td>
+<td class="gt_row gt_center" headers="Diamond Price" style="background-color: #FFFFFF; font-size: large">0.849</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="Diamond Price" style="background-color: #FFFFFF; font-size: large">0.849</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">RMSE</td>
+<td class="gt_row gt_center" headers="Diamond Price" style="background-color: #FFFFFF; font-size: large">1548.53</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+<aside class="notes">
+<ol type="1">
+<li><p>Add the outcome variable as the column header using a named list</p></li>
+<li><p>Rename the coefficient to make it plain english instead of just the variable name</p></li>
+</ol>
+<p><br></p>
+<p><strong>Did everybody get this code to run?</strong></p>
+<p><br></p>
+<p>These extra steps are crucial if the aim is to share your regression table with a professional audience</p>
+<ul>
+<li>This version allows with any regression training to interpret your findings</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Next tool is the residuals plot</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="visualizing-the-residuals-in-r" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>3. Visualizing the Residuals in R</h2>
+<p><br></p>
+<div class="r-fit-text">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="co"># Making a residual plot using base R</span></span>
+<span id="cb7-2"><a href=""></a><span class="fu">plot</span>(<span class="at">x =</span> model1, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+
+<img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><aside class="notes">
+<p>The easiest way to make the residuals plot is to use the built-in plot function in R</p>
+<p><br></p>
+<p>Two things to keep in mind:</p>
+<ul>
+<li><p>“x” is the name of the regression object</p></li>
+<li><p>“which” is where you specify which diagnostic plot you want</p>
+<ul>
+<li>Plot type 1 is the residuals plot</li>
+</ul></li>
+</ul>
 <p><br></p>
 <p><strong>Did everybody get this code to run?</strong></p>
 <p><br></p>
@@ -1546,35 +2459,27 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
           display:block!important;
       }</style></aside>
 </section>
-<section id="making-predictions-in-r" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Making Predictions in R</h2>
-<p><br></p>
-<p><strong>Install the ggeffects package</strong></p>
-<p><br></p>
-<p>ggpredict(model, terms)</p>
+<section id="making-predictions-in-r" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>4. Making Predictions in R</h2>
+
+<img data-src="Images/10_3-ggeffects.png" class="r-stretch"><p>ggpredict(model, terms)</p>
 <ul>
 <li><p>“model” is the regression model you’ve already fit</p></li>
 <li><p>“terms” is the predictor you want to focus on</p></li>
 </ul>
 <aside class="notes">
-<p>You can always use the formula for a line to make predictions using your regression models</p>
+<p>This week we’ve been using algebra and the formula for a line to make predictions using our regression results</p>
 <ul>
-<li><p>However, ONCE YOU UNDERSTAND THAT PROCESS, automated methods are incredibly useful</p></li>
-<li><p>More precise, faster and can automatically calculate confidence intervals</p></li>
+<li>But, of course, R will do it for you!</li>
 </ul>
 <p><br></p>
-<p>Just as before, there are many packages that aim to help with this but I’ve found ggeffects the best of the current bunch.</p>
-<ul>
-<li>Make sure to install the package before you try to use it!</li>
-</ul>
-<p><br></p>
-<p>The key here is the ggpredict function</p>
+<p>Make sure you have the ggeffects package installed and loaded before you can use the ggpredict function</p>
 <ul>
 <li><p>It can do a TON but we’ll focus on just these two parts</p></li>
 <li><p>You have to tell ggpredict the name of your regression object and which predictor you want to use to make predictions</p></li>
 </ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: Example</p>
+<p><strong>SLIDE</strong>: Let’s use it on the diamonds data</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1587,33 +2492,17 @@ F-statistic: 3.041e+05 on 1 and 53938 DF,  p-value: &lt; 2.2e-16</code></pre>
           display:block!important;
       }</style></aside>
 </section>
-<section id="making-predictions-in-r-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Making Predictions in R</h2>
-<div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Code</a></li><li><a href="#tabset-1-2">Outputs</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1">
+<section id="making-predictions-in-r-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>4. Making Predictions in R</h2>
+<p><br></p>
+<div class="r-fit-text">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co"># Fit the regression</span></span>
-<span id="cb6-2"><a href=""></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> diamonds, price <span class="sc">~</span> carat)</span>
-<span id="cb6-3"><a href=""></a></span>
-<span id="cb6-4"><a href=""></a><span class="co"># Install one time: install.packages("ggeffects")</span></span>
-<span id="cb6-5"><a href=""></a><span class="fu">library</span>(ggeffects)</span>
-<span id="cb6-6"><a href=""></a></span>
-<span id="cb6-7"><a href=""></a><span class="co"># Make the Predictions</span></span>
-<span id="cb6-8"><a href=""></a>predictions1 <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(model1, <span class="at">terms =</span> <span class="st">"carat"</span>)</span>
-<span id="cb6-9"><a href=""></a></span>
-<span id="cb6-10"><a href=""></a><span class="co"># Output: Table</span></span>
-<span id="cb6-11"><a href=""></a>predictions1</span>
-<span id="cb6-12"><a href=""></a></span>
-<span id="cb6-13"><a href=""></a><span class="co"># Output: Marginal effects plot</span></span>
-<span id="cb6-14"><a href=""></a><span class="fu">plot</span>(predictions1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb8-2"><a href=""></a></span>
+<span id="cb8-3"><a href=""></a><span class="fu">ggpredict</span>(<span class="at">model =</span> model1, <span class="at">terms =</span> <span class="st">"carat"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<div id="tabset-1-2">
-<div class="columns">
-<div class="column" style="width:60%;">
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># Predicted values of price
 
@@ -1627,34 +2516,23 @@ carat | Predicted |             95% CI
     5 |  36525.77 | 36409.18, 36642.36</code></pre>
 </div>
 </div>
-</div><div class="column" style="width:40%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</div>
-</div>
-</div>
 <aside class="notes">
 <p>Our current regression model only has one predictor so we have only one choice for the ggpredict function</p>
 <ul>
-<li>This asks for predictions across the main integers of the carat variable in the dataset</li>
+<li>This code asks for predictions across the main levels of the carat variable in the dataset</li>
 </ul>
 <p><br></p>
-<p>The table shows the predicted value of a diamond at these six possible weights according to our model (plus CIs).</p>
-<p><br></p>
-<p>The visualization converts this table into a line plot</p>
+<p>The table shows the predicted value of a diamond at these six possible weights according to our model</p>
 <ul>
-<li>This will include the confidence interval, but the CI is so tight here you can’t see it</li>
+<li><p>In addition, this table gives us a 95% confidence interval around each prediction</p></li>
+<li><p>The CI is meant to convey our level of confidence in the predictions</p></li>
+<li><p>Large CIs mean we can’t be very certain with this data!</p></li>
+<li><p>These CIs are incredibly small because we have 53k observations which is a ton</p></li>
 </ul>
 <p><br></p>
-<p><strong>Questions on this code or these results?</strong></p>
+<p><strong>Did everybody get this code to run?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Visualize these predictions</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1667,52 +2545,107 @@ carat | Predicted |             95% CI
           display:block!important;
       }</style></aside>
 </section>
-<section id="evaluating-the-fit-of-the-regression" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Evaluating the “Fit” of the Regression</h2>
-<p>Pull slides from 10-2</p>
-</section>
-<section id="practice-1" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Practice 1</h2>
-<p>Regress presidential vote share (<code>vote_share</code>) on presidential approval rating (<code>approval_june</code>) in the datatset on Canvas</p>
-<ol type="1">
-<li><p>What is the estimated relationship?</p></li>
-<li><p>Is this a good model of the relationship? Why or why not?</p></li>
-</ol>
-</section>
-<section id="section-8" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><br></p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
+<section id="making-predictions-in-r-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>4. Making Predictions in R</h2>
+<div class="r-fit-text">
 <div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">plot</span>(<span class="fu">ggpredict</span>(<span class="at">model =</span> model1, <span class="at">terms =</span> <span class="st">"carat"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+
+<img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"><aside class="notes">
+<p>Just add the plot function around your ggpredict and get a nice visualization</p>
+<ul>
+<li>This will prove VERY helpful when we move to multiple regression in a few weeks</li>
+</ul>
+<p><br></p>
+<p><strong>Did everybody get this code to run?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Usefully you can tweak this visualization as if it were a ggplot function</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="making-predictions-in-r-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>4. Making Predictions in R</h2>
+<div class="r-fit-text">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">plot</span>(<span class="fu">ggpredict</span>(<span class="at">model =</span> model1, <span class="at">terms =</span> <span class="st">"carat"</span>)) <span class="sc">+</span></span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">dollar_format</span>()) <span class="sc">+</span></span>
+<span id="cb11-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Diamond Size (carats)"</span>, <span class="at">y =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+
+<img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"><aside class="notes">
+<p>Here I’m just making some simple ggplot tweaks</p>
+<ol type="1">
+<li><p>Formatting the y-axis in dollars</p></li>
+<li><p>Changing the axis labels</p></li>
+</ol>
+<p><br></p>
+<p><strong>Did everybody get this code to run?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Time to practice!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Practice 1</a></li><li><a href="#tabset-1-2">Table</a></li><li><a href="#tabset-1-3">Residuals</a></li><li><a href="#tabset-1-4">Predictions</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<p>Regress presidential vote share (<code>vote_share</code>) on presidential approval rating (<code>approval_june</code>) using the datatset on Canvas</p>
+<ul>
+<li><p>Fit the regression</p></li>
+<li><p>Format the table</p></li>
+<li><p>Make the residuals plot</p></li>
+<li><p>Make a predictions plot</p></li>
+</ul>
+</div>
+<div id="tabset-1-2">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>res1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> d, vote_share <span class="sc">~</span> approval_june)</span>
+<span id="cb12-2"><a href=""></a></span>
+<span id="cb12-3"><a href=""></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(<span class="st">"Vote Share"</span> <span class="ot">=</span> res1), </span>
+<span id="cb12-4"><a href=""></a>             <span class="at">output =</span> <span class="st">"gt"</span>, <span class="at">fmt =</span> <span class="dv">2</span>, </span>
+<span id="cb12-5"><a href=""></a>             <span class="at">stars =</span> <span class="fu">c</span>(<span class="st">'*'</span> <span class="ot">=</span> .<span class="dv">05</span>), <span class="at">gof_omit =</span> <span class="st">"IC|Log|F"</span>,</span>
+<span id="cb12-6"><a href=""></a>             <span class="at">coef_rename =</span> <span class="fu">c</span>(<span class="st">"approval_june"</span><span class="ot">=</span> <span class="st">"Approval in June (%)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="foghnperrr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#foghnperrr table {
+<div id="zuqsfmcapl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zuqsfmcapl table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#foghnperrr thead, #foghnperrr tbody, #foghnperrr tfoot, #foghnperrr tr, #foghnperrr td, #foghnperrr th {
+#zuqsfmcapl thead, #zuqsfmcapl tbody, #zuqsfmcapl tfoot, #zuqsfmcapl tr, #zuqsfmcapl td, #zuqsfmcapl th {
   border-style: none;
 }
 
-#foghnperrr p {
+#zuqsfmcapl p {
   margin: 0;
   padding: 0;
 }
 
-#foghnperrr .gt_table {
+#zuqsfmcapl .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1738,12 +2671,12 @@ carat | Predicted |             95% CI
   border-left-color: #D3D3D3;
 }
 
-#foghnperrr .gt_caption {
+#zuqsfmcapl .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#foghnperrr .gt_title {
+#zuqsfmcapl .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1755,7 +2688,7 @@ carat | Predicted |             95% CI
   border-bottom-width: 0;
 }
 
-#foghnperrr .gt_subtitle {
+#zuqsfmcapl .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1767,7 +2700,7 @@ carat | Predicted |             95% CI
   border-top-width: 0;
 }
 
-#foghnperrr .gt_heading {
+#zuqsfmcapl .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1779,13 +2712,13 @@ carat | Predicted |             95% CI
   border-right-color: #D3D3D3;
 }
 
-#foghnperrr .gt_bottom_border {
+#zuqsfmcapl .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#foghnperrr .gt_col_headings {
+#zuqsfmcapl .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1800,7 +2733,7 @@ carat | Predicted |             95% CI
   border-right-color: #D3D3D3;
 }
 
-#foghnperrr .gt_col_heading {
+#zuqsfmcapl .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1820,7 +2753,7 @@ carat | Predicted |             95% CI
   overflow-x: hidden;
 }
 
-#foghnperrr .gt_column_spanner_outer {
+#zuqsfmcapl .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1832,15 +2765,15 @@ carat | Predicted |             95% CI
   padding-right: 4px;
 }
 
-#foghnperrr .gt_column_spanner_outer:first-child {
+#zuqsfmcapl .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#foghnperrr .gt_column_spanner_outer:last-child {
+#zuqsfmcapl .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#foghnperrr .gt_column_spanner {
+#zuqsfmcapl .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1852,11 +2785,11 @@ carat | Predicted |             95% CI
   width: 100%;
 }
 
-#foghnperrr .gt_spanner_row {
+#zuqsfmcapl .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#foghnperrr .gt_group_heading {
+#zuqsfmcapl .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1882,7 +2815,7 @@ carat | Predicted |             95% CI
   text-align: left;
 }
 
-#foghnperrr .gt_empty_group_heading {
+#zuqsfmcapl .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1897,15 +2830,15 @@ carat | Predicted |             95% CI
   vertical-align: middle;
 }
 
-#foghnperrr .gt_from_md > :first-child {
+#zuqsfmcapl .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#foghnperrr .gt_from_md > :last-child {
+#zuqsfmcapl .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#foghnperrr .gt_row {
+#zuqsfmcapl .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1924,7 +2857,7 @@ carat | Predicted |             95% CI
   overflow-x: hidden;
 }
 
-#foghnperrr .gt_stub {
+#zuqsfmcapl .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1937,7 +2870,7 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#foghnperrr .gt_stub_row_group {
+#zuqsfmcapl .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1951,15 +2884,15 @@ carat | Predicted |             95% CI
   vertical-align: top;
 }
 
-#foghnperrr .gt_row_group_first td {
+#zuqsfmcapl .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#foghnperrr .gt_row_group_first th {
+#zuqsfmcapl .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#foghnperrr .gt_summary_row {
+#zuqsfmcapl .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1969,16 +2902,16 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#foghnperrr .gt_first_summary_row {
+#zuqsfmcapl .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#foghnperrr .gt_first_summary_row.thick {
+#zuqsfmcapl .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#foghnperrr .gt_last_summary_row {
+#zuqsfmcapl .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1988,7 +2921,7 @@ carat | Predicted |             95% CI
   border-bottom-color: #D3D3D3;
 }
 
-#foghnperrr .gt_grand_summary_row {
+#zuqsfmcapl .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1998,7 +2931,7 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#foghnperrr .gt_first_grand_summary_row {
+#zuqsfmcapl .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2008,7 +2941,7 @@ carat | Predicted |             95% CI
   border-top-color: #D3D3D3;
 }
 
-#foghnperrr .gt_last_grand_summary_row_top {
+#zuqsfmcapl .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2018,11 +2951,11 @@ carat | Predicted |             95% CI
   border-bottom-color: #D3D3D3;
 }
 
-#foghnperrr .gt_striped {
+#zuqsfmcapl .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#foghnperrr .gt_table_body {
+#zuqsfmcapl .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2031,7 +2964,7 @@ carat | Predicted |             95% CI
   border-bottom-color: #D3D3D3;
 }
 
-#foghnperrr .gt_footnotes {
+#zuqsfmcapl .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2045,7 +2978,7 @@ carat | Predicted |             95% CI
   border-right-color: #D3D3D3;
 }
 
-#foghnperrr .gt_footnote {
+#zuqsfmcapl .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2054,7 +2987,7 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#foghnperrr .gt_sourcenotes {
+#zuqsfmcapl .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2068,7 +3001,7 @@ carat | Predicted |             95% CI
   border-right-color: #D3D3D3;
 }
 
-#foghnperrr .gt_sourcenote {
+#zuqsfmcapl .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2076,72 +3009,72 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#foghnperrr .gt_left {
+#zuqsfmcapl .gt_left {
   text-align: left;
 }
 
-#foghnperrr .gt_center {
+#zuqsfmcapl .gt_center {
   text-align: center;
 }
 
-#foghnperrr .gt_right {
+#zuqsfmcapl .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#foghnperrr .gt_font_normal {
+#zuqsfmcapl .gt_font_normal {
   font-weight: normal;
 }
 
-#foghnperrr .gt_font_bold {
+#zuqsfmcapl .gt_font_bold {
   font-weight: bold;
 }
 
-#foghnperrr .gt_font_italic {
+#zuqsfmcapl .gt_font_italic {
   font-style: italic;
 }
 
-#foghnperrr .gt_super {
+#zuqsfmcapl .gt_super {
   font-size: 65%;
 }
 
-#foghnperrr .gt_footnote_marks {
+#zuqsfmcapl .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#foghnperrr .gt_asterisk {
+#zuqsfmcapl .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#foghnperrr .gt_indent_1 {
+#zuqsfmcapl .gt_indent_1 {
   text-indent: 5px;
 }
 
-#foghnperrr .gt_indent_2 {
+#zuqsfmcapl .gt_indent_2 {
   text-indent: 10px;
 }
 
-#foghnperrr .gt_indent_3 {
+#zuqsfmcapl .gt_indent_3 {
   text-indent: 15px;
 }
 
-#foghnperrr .gt_indent_4 {
+#zuqsfmcapl .gt_indent_4 {
   text-indent: 20px;
 }
 
-#foghnperrr .gt_indent_5 {
+#zuqsfmcapl .gt_indent_5 {
   text-indent: 25px;
 }
 
-#foghnperrr .katex-display {
+#zuqsfmcapl .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#foghnperrr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#zuqsfmcapl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2150,41 +3083,41 @@ carat | Predicted |             95% CI
 <thead>
 <tr class="header gt_col_headings">
 <th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
+<th id="Vote-Share" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Vote Share</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" ">(Intercept)</td>
+<td class="gt_row gt_center" headers="Vote Share">27.25*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" "></td>
+<td class="gt_row gt_center" headers="Vote Share">(4.87)</td>
+</tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers=" ">Approval in June (%)</td>
-<td class="gt_row gt_center" headers="(1)">0.47*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" "></td>
-<td class="gt_row gt_center" headers="(1)">(0.09)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" ">Constant</td>
-<td class="gt_row gt_center" headers="(1)">27.25*</td>
+<td class="gt_row gt_center" headers="Vote Share">0.47*</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000"></td>
-<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000">(4.87)</td>
+<td class="gt_row gt_center" headers="Vote Share" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000">(0.09)</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers=" ">Num.Obs.</td>
-<td class="gt_row gt_center" headers="(1)">12</td>
+<td class="gt_row gt_center" headers="Vote Share">12</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" ">R2</td>
-<td class="gt_row gt_center" headers="(1)">0.716</td>
+<td class="gt_row gt_center" headers="Vote Share">0.716</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers=" ">R2 Adj.</td>
-<td class="gt_row gt_center" headers="(1)">0.688</td>
+<td class="gt_row gt_center" headers="Vote Share">0.688</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" ">RMSE</td>
-<td class="gt_row gt_center" headers="(1)">3.81</td>
+<td class="gt_row gt_center" headers="Vote Share">3.81</td>
 </tr>
 </tbody><tfoot class="gt_sourcenotes">
 <tr class="odd">
@@ -2197,544 +3130,12 @@ carat | Predicted |             95% CI
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-1-3">
 <div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="practice-2" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Practice 2</h2>
-<p>Regress city fuel economy (<code>cty</code>) on engine displacement (<code>displ</code>) in the <code>mpg</code> datatset</p>
-<ol type="1">
-<li><p>What is the estimated relationship?</p></li>
-<li><p>Is this a good model of the relationship? Why or why not?</p></li>
-</ol>
-</section>
-<section id="section-9" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2></h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><br></p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div id="poqohkepyb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#poqohkepyb table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#poqohkepyb thead, #poqohkepyb tbody, #poqohkepyb tfoot, #poqohkepyb tr, #poqohkepyb td, #poqohkepyb th {
-  border-style: none;
-}
-
-#poqohkepyb p {
-  margin: 0;
-  padding: 0;
-}
-
-#poqohkepyb .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#poqohkepyb .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#poqohkepyb .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#poqohkepyb .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#poqohkepyb .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#poqohkepyb .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#poqohkepyb .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#poqohkepyb .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#poqohkepyb .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#poqohkepyb .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#poqohkepyb .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#poqohkepyb .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#poqohkepyb .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#poqohkepyb .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#poqohkepyb .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#poqohkepyb .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#poqohkepyb .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#poqohkepyb .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#poqohkepyb .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#poqohkepyb .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#poqohkepyb .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#poqohkepyb .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#poqohkepyb .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#poqohkepyb .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#poqohkepyb .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#poqohkepyb .gt_left {
-  text-align: left;
-}
-
-#poqohkepyb .gt_center {
-  text-align: center;
-}
-
-#poqohkepyb .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#poqohkepyb .gt_font_normal {
-  font-weight: normal;
-}
-
-#poqohkepyb .gt_font_bold {
-  font-weight: bold;
-}
-
-#poqohkepyb .gt_font_italic {
-  font-style: italic;
-}
-
-#poqohkepyb .gt_super {
-  font-size: 65%;
-}
-
-#poqohkepyb .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#poqohkepyb .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#poqohkepyb .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#poqohkepyb .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#poqohkepyb .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#poqohkepyb .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#poqohkepyb .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#poqohkepyb .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#poqohkepyb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers=" ">Engine Size</td>
-<td class="gt_row gt_center" headers="(1)">-2.63*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" "></td>
-<td class="gt_row gt_center" headers="(1)">(0.13)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" ">Constant</td>
-<td class="gt_row gt_center" headers="(1)">25.99*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000"></td>
-<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000">(0.48)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" ">Num.Obs.</td>
-<td class="gt_row gt_center" headers="(1)">234</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" ">R2</td>
-<td class="gt_row gt_center" headers="(1)">0.638</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" ">R2 Adj.</td>
-<td class="gt_row gt_center" headers="(1)">0.636</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" ">RMSE</td>
-<td class="gt_row gt_center" headers="(1)">2.56</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>res1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> d, vote_share <span class="sc">~</span> approval_june)</span>
+<span id="cb13-2"><a href=""></a></span>
+<span id="cb13-3"><a href=""></a><span class="fu">plot</span>(res1, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -2743,39 +3144,66 @@ carat | Predicted |             95% CI
 </div>
 </div>
 </div>
-</div></div>
-</section>
-<section id="for-next-class-fit-interpret-and-make-predictions-using-ols" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>For next class, fit, interpret and make predictions using OLS:</h2>
-<p><br></p>
-<p>Regress percent of people below the poverty line (<code>percbelowpoverty</code>) on the percent college educated (<code>percollege</code>) in the <code>midwest</code> datatset</p>
-<aside class="notes">
-<div class="cell">
+</div>
+<div id="tabset-1-4">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>res1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> d, vote_share <span class="sc">~</span> approval_june)</span>
+<span id="cb14-2"><a href=""></a></span>
+<span id="cb14-3"><a href=""></a><span class="fu">plot</span>(<span class="fu">ggpredict</span>(res1, <span class="at">terms =</span> <span class="st">"approval_june"</span>)) <span class="sc">+</span></span>
+<span id="cb14-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Presidential Approval in June (%)"</span>,</span>
+<span id="cb14-5"><a href=""></a>       <span class="at">y =</span> <span class="st">"Presidential Vote Share (%)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-25-1.png" width="960"></p>
+<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="section-3" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="panel-tabset">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Practice 2</a></li><li><a href="#tabset-2-2">Table</a></li><li><a href="#tabset-2-3">Residuals</a></li><li><a href="#tabset-2-4">Predictions</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1">
+<p>Regress city fuel economy (<code>cty</code>) on engine displacement (<code>displ</code>) in the <code>mpg</code> datatset</p>
+<ul>
+<li><p>Fit the regression</p></li>
+<li><p>Format the table</p></li>
+<li><p>Make the residuals plot</p></li>
+<li><p>Make a predictions plot</p></li>
+</ul>
+</div>
+<div id="tabset-2-2">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>res2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> mpg, cty <span class="sc">~</span> displ)</span>
+<span id="cb15-2"><a href=""></a></span>
+<span id="cb15-3"><a href=""></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(<span class="st">"Fuel Economy (City)"</span> <span class="ot">=</span> res2), </span>
+<span id="cb15-4"><a href=""></a>             <span class="at">output =</span> <span class="st">"gt"</span>, <span class="at">fmt =</span> <span class="dv">2</span>, </span>
+<span id="cb15-5"><a href=""></a>             <span class="at">stars =</span> <span class="fu">c</span>(<span class="st">'*'</span> <span class="ot">=</span> .<span class="dv">05</span>), <span class="at">gof_omit =</span> <span class="st">"IC|Log|F"</span>,</span>
+<span id="cb15-6"><a href=""></a>             <span class="at">coef_rename =</span> <span class="fu">c</span>(<span class="st">"displ"</span><span class="ot">=</span> <span class="st">"Engine Size"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="lmyykcjukd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lmyykcjukd table {
+<div id="nqcgmollzw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nqcgmollzw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lmyykcjukd thead, #lmyykcjukd tbody, #lmyykcjukd tfoot, #lmyykcjukd tr, #lmyykcjukd td, #lmyykcjukd th {
+#nqcgmollzw thead, #nqcgmollzw tbody, #nqcgmollzw tfoot, #nqcgmollzw tr, #nqcgmollzw td, #nqcgmollzw th {
   border-style: none;
 }
 
-#lmyykcjukd p {
+#nqcgmollzw p {
   margin: 0;
   padding: 0;
 }
 
-#lmyykcjukd .gt_table {
+#nqcgmollzw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2801,12 +3229,12 @@ carat | Predicted |             95% CI
   border-left-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_caption {
+#nqcgmollzw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lmyykcjukd .gt_title {
+#nqcgmollzw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2818,7 +3246,7 @@ carat | Predicted |             95% CI
   border-bottom-width: 0;
 }
 
-#lmyykcjukd .gt_subtitle {
+#nqcgmollzw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2830,7 +3258,7 @@ carat | Predicted |             95% CI
   border-top-width: 0;
 }
 
-#lmyykcjukd .gt_heading {
+#nqcgmollzw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2842,13 +3270,13 @@ carat | Predicted |             95% CI
   border-right-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_bottom_border {
+#nqcgmollzw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_col_headings {
+#nqcgmollzw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2863,7 +3291,7 @@ carat | Predicted |             95% CI
   border-right-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_col_heading {
+#nqcgmollzw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2883,7 +3311,7 @@ carat | Predicted |             95% CI
   overflow-x: hidden;
 }
 
-#lmyykcjukd .gt_column_spanner_outer {
+#nqcgmollzw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2895,15 +3323,15 @@ carat | Predicted |             95% CI
   padding-right: 4px;
 }
 
-#lmyykcjukd .gt_column_spanner_outer:first-child {
+#nqcgmollzw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lmyykcjukd .gt_column_spanner_outer:last-child {
+#nqcgmollzw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lmyykcjukd .gt_column_spanner {
+#nqcgmollzw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2915,11 +3343,11 @@ carat | Predicted |             95% CI
   width: 100%;
 }
 
-#lmyykcjukd .gt_spanner_row {
+#nqcgmollzw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lmyykcjukd .gt_group_heading {
+#nqcgmollzw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2945,7 +3373,7 @@ carat | Predicted |             95% CI
   text-align: left;
 }
 
-#lmyykcjukd .gt_empty_group_heading {
+#nqcgmollzw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2960,15 +3388,15 @@ carat | Predicted |             95% CI
   vertical-align: middle;
 }
 
-#lmyykcjukd .gt_from_md > :first-child {
+#nqcgmollzw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lmyykcjukd .gt_from_md > :last-child {
+#nqcgmollzw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lmyykcjukd .gt_row {
+#nqcgmollzw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2987,7 +3415,7 @@ carat | Predicted |             95% CI
   overflow-x: hidden;
 }
 
-#lmyykcjukd .gt_stub {
+#nqcgmollzw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3000,7 +3428,7 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#lmyykcjukd .gt_stub_row_group {
+#nqcgmollzw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3014,15 +3442,15 @@ carat | Predicted |             95% CI
   vertical-align: top;
 }
 
-#lmyykcjukd .gt_row_group_first td {
+#nqcgmollzw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lmyykcjukd .gt_row_group_first th {
+#nqcgmollzw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lmyykcjukd .gt_summary_row {
+#nqcgmollzw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3032,16 +3460,16 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#lmyykcjukd .gt_first_summary_row {
+#nqcgmollzw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_first_summary_row.thick {
+#nqcgmollzw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lmyykcjukd .gt_last_summary_row {
+#nqcgmollzw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3051,7 +3479,7 @@ carat | Predicted |             95% CI
   border-bottom-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_grand_summary_row {
+#nqcgmollzw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3061,7 +3489,7 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#lmyykcjukd .gt_first_grand_summary_row {
+#nqcgmollzw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3071,7 +3499,7 @@ carat | Predicted |             95% CI
   border-top-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_last_grand_summary_row_top {
+#nqcgmollzw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3081,11 +3509,11 @@ carat | Predicted |             95% CI
   border-bottom-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_striped {
+#nqcgmollzw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lmyykcjukd .gt_table_body {
+#nqcgmollzw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3094,7 +3522,7 @@ carat | Predicted |             95% CI
   border-bottom-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_footnotes {
+#nqcgmollzw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3108,7 +3536,7 @@ carat | Predicted |             95% CI
   border-right-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_footnote {
+#nqcgmollzw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3117,7 +3545,7 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#lmyykcjukd .gt_sourcenotes {
+#nqcgmollzw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3131,7 +3559,7 @@ carat | Predicted |             95% CI
   border-right-color: #D3D3D3;
 }
 
-#lmyykcjukd .gt_sourcenote {
+#nqcgmollzw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3139,72 +3567,72 @@ carat | Predicted |             95% CI
   padding-right: 5px;
 }
 
-#lmyykcjukd .gt_left {
+#nqcgmollzw .gt_left {
   text-align: left;
 }
 
-#lmyykcjukd .gt_center {
+#nqcgmollzw .gt_center {
   text-align: center;
 }
 
-#lmyykcjukd .gt_right {
+#nqcgmollzw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lmyykcjukd .gt_font_normal {
+#nqcgmollzw .gt_font_normal {
   font-weight: normal;
 }
 
-#lmyykcjukd .gt_font_bold {
+#nqcgmollzw .gt_font_bold {
   font-weight: bold;
 }
 
-#lmyykcjukd .gt_font_italic {
+#nqcgmollzw .gt_font_italic {
   font-style: italic;
 }
 
-#lmyykcjukd .gt_super {
+#nqcgmollzw .gt_super {
   font-size: 65%;
 }
 
-#lmyykcjukd .gt_footnote_marks {
+#nqcgmollzw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lmyykcjukd .gt_asterisk {
+#nqcgmollzw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lmyykcjukd .gt_indent_1 {
+#nqcgmollzw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lmyykcjukd .gt_indent_2 {
+#nqcgmollzw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lmyykcjukd .gt_indent_3 {
+#nqcgmollzw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lmyykcjukd .gt_indent_4 {
+#nqcgmollzw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lmyykcjukd .gt_indent_5 {
+#nqcgmollzw .gt_indent_5 {
   text-indent: 25px;
 }
 
-#lmyykcjukd .katex-display {
+#nqcgmollzw .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#lmyykcjukd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#nqcgmollzw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3213,41 +3641,41 @@ carat | Predicted |             95% CI
 <thead>
 <tr class="header gt_col_headings">
 <th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
+<th id="Fuel-Economy-(City)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Fuel Economy (City)</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers=" ">College Degree (%)</td>
-<td class="gt_row gt_center" headers="(1)">-0.23*</td>
+<td class="gt_row gt_left" headers=" ">(Intercept)</td>
+<td class="gt_row gt_center" headers="Fuel Economy (City)">25.99*</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" "></td>
-<td class="gt_row gt_center" headers="(1)">(0.04)</td>
+<td class="gt_row gt_center" headers="Fuel Economy (City)">(0.48)</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers=" ">Constant</td>
-<td class="gt_row gt_center" headers="(1)">16.74*</td>
+<td class="gt_row gt_left" headers=" ">Engine Size</td>
+<td class="gt_row gt_center" headers="Fuel Economy (City)">-2.63*</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000"></td>
-<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000">(0.73)</td>
+<td class="gt_row gt_center" headers="Fuel Economy (City)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000">(0.13)</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers=" ">Num.Obs.</td>
-<td class="gt_row gt_center" headers="(1)">437</td>
+<td class="gt_row gt_center" headers="Fuel Economy (City)">234</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" ">R2</td>
-<td class="gt_row gt_center" headers="(1)">0.079</td>
+<td class="gt_row gt_center" headers="Fuel Economy (City)">0.638</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers=" ">R2 Adj.</td>
-<td class="gt_row gt_center" headers="(1)">0.077</td>
+<td class="gt_row gt_center" headers="Fuel Economy (City)">0.636</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" ">RMSE</td>
-<td class="gt_row gt_center" headers="(1)">4.94</td>
+<td class="gt_row gt_center" headers="Fuel Economy (City)">2.56</td>
 </tr>
 </tbody><tfoot class="gt_sourcenotes">
 <tr class="odd">
@@ -3259,38 +3687,56 @@ carat | Predicted |             95% CI
 
 </div>
 </div>
+</div>
+</div>
+<div id="tabset-2-3">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>res2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> mpg, cty <span class="sc">~</span> displ)</span>
+<span id="cb16-2"><a href=""></a></span>
+<span id="cb16-3"><a href=""></a><span class="fu">plot</span>(res2, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-25-2.png" width="960"></p>
+<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-27-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
 </figure>
 </div>
 </div>
 </div>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
+</div>
+<div id="tabset-2-4">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>res2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> mpg, cty <span class="sc">~</span> displ)</span>
+<span id="cb17-2"><a href=""></a></span>
+<span id="cb17-3"><a href=""></a><span class="fu">plot</span>(<span class="fu">ggpredict</span>(res2, <span class="at">terms =</span> <span class="st">"displ"</span>)) <span class="sc">+</span></span>
+<span id="cb17-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Engine Size (displacement)"</span>,</span>
+<span id="cb17-5"><a href=""></a>       <span class="at">y =</span> <span class="st">"Fuel Economy (City)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="10_3-Simple_OLS-R_files/figure-revealjs/unnamed-chunk-28-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="next-class" class="slide level2 center" data-background-image="Images/background-slate_v2.png">
-<h2>Next Class</h2>
+<section id="for-next-class" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>For Next Class</h2>
 <p><br></p>
-<p><strong>Causal Inference Week</strong></p>
-<ul>
-<li>Huntington-Klein 2022 chapter 5 “The Challenge of Identification”</li>
-</ul>
+<h3 id="what-is-the-effect-of-college-completion-on-poverty-rates-in-midwest-cities">What is the effect of college completion on poverty rates in midwest cities?</h3>
+<ol type="1">
+<li>Fit the regression</li>
+<li>Submit a polished regression table, residuals plot and predictions plot</li>
+<li>Answer the question</li>
+<li>Evaluate the regression</li>
+</ol>
 <aside class="notes">
-<p>Next week we tackle some big, important ideas.</p>
+<p>Canvas assignment for next class will let us practice all these skills!</p>
 <ul>
-<li><p>Specifically, how do we make an argument about causality if all our methods so far have just been aimed at describing associations?</p></li>
-<li><p>Important material for social scientists AND for those heading off to Research Design and Senior Seminar!</p></li>
+<li><p>The assignment prompt has more details for each of these.</p></li>
+<li><p>Take a look and let me know if you have any questions</p></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -3308,7 +3754,7 @@ carat | Predicted |             95% CI
 
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 

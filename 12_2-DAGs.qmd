@@ -2,26 +2,30 @@
 format: revealjs
 ---
 
-# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r}
 library(tidyverse)
 library(readxl)
 library(kableExtra)
 library(modelsummary)
+library(ggeffects)
+
+# Input merged project data
+d <- read_excel("../Data_in_Class/Data-2024-EPI_RSF-Merged.xlsx", na = "NA")
 ```
 
 <br>
 
-<br>
+::: {.r-fit-text}
 
-**Huntington-Klein (2022) Chapters 6 & 7**
+**Thinking Carefully About Causal Inference**
 
 - Causal Diagrams
 
 - Directed Acyclic Graphs (DAGs)
 
-<br>
+:::
 
 <br>
 
@@ -39,12 +43,13 @@ Prep for Class
 Readings:
 
 1. Huntington-Klein 2022 chapter 6 "Causal Diagrams" [LINK](https://theeffectbook.net/ch-CausalDiagrams.html)
+
 2. Huntington-Klein 2022 chapter 7 "Drawing Causal Diagrams"[LINK](https://theeffectbook.net/ch-DrawingCausalDiagrams.html)
 :::
 
 
 
-## Building a Causal Argument {background-image="Images/background-slate_v2.png" .center}
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -85,21 +90,21 @@ In other words, we need to make an argument that changes in our chosen predictor
 :::
 
 
-## Building a Causal Argument {background-image="Images/background-slate_v2.png" .center}
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
 :::: {.columns}
 ::: {.column width="50%"}
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
-knitr::include_graphics("Images/13_1-classroom.jpg")
-```
+
+![](Images/13_1-classroom.jpg)
+
 :::
 
 ::: {.column width="50%"}
-```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
-knitr::include_graphics("Images/13_1-student_success2.png")
-```
+
+![](Images/13_1-student_success2.png)
+
 :::
 ::::
 
@@ -144,7 +149,7 @@ Last class we proposed a hypothetical research project.
 :::
 
 
-## Randomized Controlled Trials (RCTs) {background-image="Images/background-slate_v2.png" .center}
+## Randomized Controlled Trials (RCTs) {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -191,7 +196,7 @@ ggplot(data = d2, aes(x = x, y = y)) +
 :::
 
 
-## Randomized Controlled Trials (RCTs) {background-image="Images/background-slate_v2.png" .center}
+## Randomized Controlled Trials (RCTs) {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -230,7 +235,7 @@ ggplot(data = d3, aes(x = x, y = y)) +
 :::
 
 
-## Identification and the DGP {background-image="Images/background-slate_v2.png" .center}
+## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -251,7 +256,7 @@ The process proposed by HK (2022)
 
 
 
-## The Data Generating Process (DGP) {background-image="Images/background-slate_v2.png" .center}
+## The Data Generating Process (DGP) {background-image="Images/background-data_blue_v4.png" .center}
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -317,7 +322,7 @@ Let's recreate our lists from Monday!
 
 
 
-## Identification and the DGP {background-image="Images/background-slate_v2.png" .center}
+## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -339,7 +344,7 @@ I'll be honest here, this is NOT the clearest sentence I've ever read...
 :::
 
 
-## Identification and the DGP {background-image="Images/background-slate_v2.png" .center}
+## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -361,7 +366,7 @@ I propose that we revise Step 2 to focus on finding confounders.
 :::
 
 
-## Directed Acyclic Graphs (DAGs) {background-image="Images/background-slate_v2.png" .center}
+## Directed Acyclic Graphs (DAGs) {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -402,7 +407,7 @@ Understanding confounding is much easier with this style of graphical representa
 :::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
 ## Manual DAG
@@ -457,7 +462,7 @@ Two arguments required to establish a confounder:
 :::
 
 
-## Do ice cream sales create arsonists? {background-image="Images/background-slate_v2.png" .center}
+## Do ice cream sales create arsonists? {background-image="Images/background-data_blue_v4.png" .center}
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -501,7 +506,7 @@ Almost certainly "correlation, not causation", right?
 :::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
 ## Manual DAG
@@ -530,7 +535,7 @@ ggplot(data = d1, aes(x = x, y = y)) +
 :::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
 ## Manual DAG
@@ -576,7 +581,7 @@ This is what we call a spurious correlation, e.g. a fake relationship
 :::
 
 
-## Building a Causal Argument {background-image="Images/background-slate_v2.png" .center}
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -603,7 +608,7 @@ Basically, with observational data we suspect our comparison groups are not iden
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.retina = 3, fig.align = 'center', out.width='85%', fig.asp=.65}
 ## Manual DAG
@@ -657,7 +662,7 @@ Another way to think of this is as saying that a confounder is a variable that c
 :::
 
 
-## Identification and the DGP {background-image="Images/background-slate_v2.png" .center}
+## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -683,7 +688,7 @@ THIS represents your identification strategy.
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Is 'experience' a confounder in this mechanism?**
@@ -721,7 +726,7 @@ Unlike the ice cream example, I suspect that randomly assigning education levels
 :::
 
 
-## Do Not Control for Mediators {background-image="Images/background-slate_v2.png" .center}
+## Do Not Control for Mediators {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.align='center', fig.asp=.75, fig.width=9}
 ## Manual DAG
@@ -772,7 +777,7 @@ If you control for a mediator you will shrink the estimated effect size of inter
 
 
 
-## Do Not Control for Colliders {background-image="Images/background-slate_v2.png" .center}
+## Do Not Control for Colliders {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.align='center', fig.asp=.75, fig.width=9}
 ## Manual DAG
@@ -809,7 +814,7 @@ If you adjust your analyses to include a collider it will tend to create the ill
 
 
 
-## Do Not Control for Colliders {background-image="Images/background-slate_v2.png" .center}
+## Do Not Control for Colliders {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.align='center', fig.asp=.75, fig.width=9}
 ## Manual DAG
@@ -853,7 +858,7 @@ What happened?
 
 
 
-## Do Not Control for Colliders {background-image="Images/background-slate_v2.png" .center}
+## Do Not Control for Colliders {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.align='center', fig.asp=.75, fig.width=9}
 ## Manual DAG
@@ -909,7 +914,7 @@ The lesson here, as always, is to remember that data collection and measurement 
 :::
 
 
-## Classify our Options {background-image="Images/background-slate_v2.png" .center}
+## Classify our Options {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -962,7 +967,7 @@ Confounders:
 
 
 
-## Identification and the DGP {background-image="Images/background-slate_v2.png" .center}
+## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -994,7 +999,7 @@ Next week we'll learn techniques for doing step 3 here, e.g. adjusting our analy
 
 
 
-## For Today {.center background-image="Images/background-slate_v2.png"}
+## For Next Class {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -1002,9 +1007,9 @@ Next week we'll learn techniques for doing step 3 here, e.g. adjusting our analy
 
 2.  Brainstorm the DGP for our project (e.g. **SUBMIT** three separate lists of reasons why states would vary in):
 
-    - P3_Human_Rights
-    - CoW NMC CINC
-    - Your assigned indicator from CoW NMC
+    - Global Press Freedom (Press_Global)
+    - Environmental Quality (EPI.new)
+    - Your chosen indicator from the EPI
 
 ::: notes
 For class today you each submitted to Canvas DGPs for the main variables in our project.
@@ -1020,7 +1025,7 @@ For class today you each submitted to Canvas DGPs for the main variables in our 
 
 
 
-## For Next Class {background-image="Images/background-slate_v2.png" .center}
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -1028,11 +1033,12 @@ For class today you each submitted to Canvas DGPs for the main variables in our 
 
 Submit a DAG for our research project
 
-- CINC &#8594; P3_Human_Rights
+- Press Freedom &#8594; Environmental Quality
 
 :::
 
 ::: notes
+
 Submit your proposed DAG to Canvas before class
 
 - Give us a list of proposed confounders in this relationship

@@ -2,25 +2,32 @@
 format: revealjs
 ---
 
-# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r}
 library(tidyverse)
 library(readxl)
 library(kableExtra)
 library(modelsummary)
+library(modelr)
 library(ggeffects)
+
+# Input practice WDI data
+wdi <- read_excel("../Data_in_Class/Class11-1-Simple_OLS-WDI_LifeExpectancy/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+
+# Input Bechdel data
+d <- read_excel("../Data_in_Class/FiveThirtyEight-Movie_Box_Office/Movie_Box_Office_Data-538.xlsx", na = "NA")
 ```
 
 <br>
 
-<br>
+::: {.r-fit-text}
 
-**Working on Report 3**
+**Ordinary Least Squares (OLS) Regression**
 
-- Scatterplots, correlations and simple OLS regressions
+- Extending an OLS regression
 
-<br>
+:::
 
 <br>
 
@@ -31,422 +38,1023 @@ Justin Leinaweaver (Spring 2025)
 ::: notes
 Prep for Class
 
-1. TBD
-:::
-
-
-
-## Report 3 {background-image="Images/background-slate_v2.png" .center}
-
-**Bivariate Test of your Hypotheses**
+1. Check Canvas submissions
 
 <br>
 
-**Submission Requirements**
-
-- Submit a **pdf** to **Canvas** (due **Apr 5th**)
-
-- Include an **APA** formatted bibliography
-
-- Polish **all** included visualizations and tables
-
-- Lead with **arguments** NOT evidence
-
-::: notes
-
-Ok, this week we work on your second report.
-
-- The basic requirements same as last time
-
-- Late penalty (-10) points per day
-:::
-
-
-
-## Report 3 {background-image="Images/background-slate_v2.png" .center}
-
-**Bivariate Test of your Hypotheses**
-
-<br>
-
-**Are powerful states more likely to respect the human rights of their citizens?**
-
-1. Analyze the relationship between a country's `cinc` score (CoW NMC) and its measured level of respect for human rights and the rule of law (FFP) **using a scatter plot, a correlation and a simple OLS regression**. 
-
-2. Repeat the above using the CoW NMC **indicator you were assigned in Report 2** instead of the `cinc` score.
-
-::: notes
-Here's what we worked on last class
-
-- **Does everybody have these basic requirements completed (e.g. two scatter plots, correlations and OLS regressions)?**
-
-<br>
-
-In order to make an argument that answers the research question in this report you will need to turn to analyzing and interpreting the work you did last class.
-
-<br>
-
-**SLIDE**: Let's briefly start off today by discussing the elements of an effective quantitative argument
-:::
-
-
-
-## Making a Quantitative Argument {background-image="Images/background-slate_v2.png" .center}
-
-<br>
-
-::: {.r-fit-text}
-Write your report so that any interested reader can both:
-
-1. Understand your argument, and
-
-2. Get something of value from **EVERY** statistical tool you use
-:::
-
-::: notes
-
-Point 1 means it is your job to lead EVERY paragraph with your ideas, not the data
-
-- Topic sentences that explain conclusions are KEY to this exercise
-
-<br>
-
-Point 2 means it is your job, as the data analyst, to help the reader understand why these statistical tools are useful
-
-<br>
-
-**SLIDE**: Let's talk about how to do point 2 well
-:::
-
-
-
-
-## Making a Quantitative Argument {background-image="Images/background-slate_v2.png" .center}
-
-<br>
-
-1. You must explain the tools before using them
-
-```{r, fig.align='center', fig.asp=.7}
-tibble(
-  x1 = rnorm(1000, 0, 5)
-) |>
-  ggplot(aes(x = x1)) +
-  geom_histogram(color = "white") +
-  theme_bw() +
-  labs(x = "", y = "Count of Observations")
-```
-
-::: notes
-Include brief explanations of the tools you are using to support your argument BEFORE you use them to analyze the data
-
-<br>
-
-If I'm going to include a histogram then I need to BRIEFLY explain to the reader what it does and why it helps us.
-
-- **Speaking of, why do we need histograms? How do they help us?**
-
-<br>
-
-A histogram lets us see how a variable is distributed across the observations and that helps us understand what the world looks like!
-
-- Do all the observations have similar central values? Is this a case where the average is a useful summary of the data?
-
-- How spread out are the observations? Is this a variable that captures substantial variation in the world?
-
-- Any evidence of outliers?
-:::
-
-
-
-## Making a Quantitative Argument {background-image="Images/background-slate_v2.png" .center}
-
-<br>
-
-1. You must explain the tools before using them
-
-```{r, fig.align='center', fig.asp=.7}
-tibble(
-  x1 = rnorm(1000, 25, 5),
-  y1 = x1*2 + rnorm(1000, 0, 9)
-) |>
-  ggplot(aes(x = x1,y = y1)) +
-  geom_point() +
-  theme_bw() +
-  #geom_smooth(method = "lm") +
-  labs(x = "Predictor", y = "Outcome")
-  
-```
-
-::: notes
-
-If I'm going to include a scatterplot then I need to BRIEFLY explain to the reader what they do and why they help us.
-
-- **Speaking of, why do we need scatter plots? How do they help us?**
-
-<br>
-
-- See the relationship
-
-- Identify outliers
-
-- Look for trends and correlations
+**SLIDE**: Let's kick things off with your assignment for today
 
 :::
 
 
 
-## Making a Quantitative Argument {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png"}
+
+::::: {.columns}
+
+:::: {.column width="40%"}
 
 <br>
 
-1. You must explain the tools before using them
+```{r, echo=FALSE}
+res3 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, fig.align='center', fig.asp=.7}
-set.seed(72)
-x1 <- rnorm(1000, 25, 5)
-set.seed(120)
-y1 <- x1*3 + rnorm(1000, 0, 9)
-
-res1 <- lm(y1 ~ x1)
-
-modelsummary(res1, fmt = 2, stars = c("*" = .05), gof_omit = "Lik|IC|F", output = "gt") |>
+modelsummary(list("Life Expectancy" = res3),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "tobacco_use_pct" = "Tobacco Use (%)", "compulsory_education_yrs" = "Compulsory Education (years)")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
   ), locations = gt::cells_body())
 ```
-:::
 
-::: {.column width="50%"}
-```{r, fig.align='center', fig.asp=.7, fig.width=6}
-plot(ggpredict(res1))
-```
-:::
 ::::
 
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(ggpredict(res3, terms = "tobacco_use_pct")) +
+  labs(x = "Tobacco Use (%)",
+       y = "Life Expectancy (years)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res3, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
 ::: notes
-If I'm going to include a regression then I need to BRIEFLY explain to the reader what they do and why they help us.
 
-- **Why do we need OLS regressions? How do they help us?**
-
-<br>
-
-- Quantify the relationship
-
-- Create estimates of uncertainty
-
-- Make predictions about the future
+**Did everybody get these results for the tobacco regression?**
 
 <br>
 
-Bottom line on this first point, you must explain to the reader why you are doing what you are doing in the paper.
+**Interpret the coefficient for me**
+
+- As tobacco use in the adult population increases by 1%, average life expectancy increases by .2 years
+    
+    - So, add 5% more smokers and extend life expectancies by one year!
+
+<br>
+
+**What is obvious from this set of predictions?**
+
+- The effect is POSITIVE and we know, based on the science, that there must be a problem here
+
+<br>
+
+**So, how well does the regression line fit the data?**
+
+- **e.g. missing data, significance, R2, residuals**
+
+<br>
+
+- YES! Serious concerns with patterns in the residual
+
+    - Appears like the regression line is missing a clear non-linear effect
+
+- Also missing a ton of data!
+
+<br>
+
+I cannot emphasize enough the dangers of assuming a regression is a "good" summary of a relationship UNLESS you evaluate the fit of the line
+
+- Here the significance star is especially dangerous
+
+- Too many people see the star and think they've succeeded in finding truth!
+
+- Regression is a tool and ALL tools are imperfect
+
+<br>
+
+Today I want to introduce you to different ways we can extend an OLS regression to fit different kinds of variables and relationships between X and Y
+
+- **SLIDE**: Let's start with non-linearity
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+
+```{r, fig.align='center', fig.retina=3, fig.asp=.75, fig.width=7}
+d1 <- tibble(
+  x1 = 1:20,
+  x2 = x1^2,
+  #y1 = c(-1:10, 9:2)
+  y1 = c(-1, 0, 1, 1, 2, 3, 3, 4, 3, 4, 5, 5, 4, 3, 4, 2, 3, 2, 2, 3)
+)
+
+d1 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  theme_bw() +
+  scale_x_continuous(breaks = 1:20) +
+  scale_y_continuous(breaks = -5:10) +
+  labs(x = "Predictor (X)", y = "Outcome (Y)")
+```
+
+::: notes
+
+Let's imagine we have some data on two variables that we can visualize with a simple scatter plot
+
+<br>
+
+**What is the relationship between X and Y here?**
+
+- (As X increases from zero, Y steadily increases as well)
+
+- (HOWEVER, at a certain point further increases in X lead to serious declines in Y)
+
+<br>
+
+**SLIDE**: Let's fit a simple OLS regression to this data
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res1 <- lm(data = d1, y1 ~ x1)
+
+modelsummary(list("Outcome (Y)" = res1), 
+             output = "gt",
+             stars = c("*" = .05),
+             gof_omit = "IC|Log|F",
+             coef_rename = c("x1" = "Predictor (X)")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Scatterplot
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+d1 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw() +
+  scale_x_continuous(breaks = 1:20) +
+  scale_y_continuous(breaks = -5:10) +
+  labs(x = "Predictor (X)", y = "Outcome (Y)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(res1, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+Evaluate this regression for me.
+
+- **Is this a good summary of the relationship or not?**
+
+<br>
+
+Per the usual metrics in the regression table this looks pretty darn good!
+
+- HOWEVER, the residuals plot AND visualizing the data shows us there is a serious problem here
+
+- If your takeaway stopped here you might recommend someone increase X forever to increase Y but we know that isn't what is happening in the relationship.
+
+<br>
+
+Ideally, what we'd like to see is the slope on X be larger in the beginning, but then to turn and become negative at the end
+
+- **Anybody remember how to curve a line in algebra?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+
+##
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+
+![](Images/11_3-squared_functions.svg)
+
+::: notes
+
+Don't stress the math here, I just want you to remember that we can absolutely curve our lines using squared terms
+
+- Or make all kinds of curves with additional polynomials
+
+<br>
+
+Knowing how to tweak the line in this way allows us to model:
+
+1. exponential growth (e.g. the spread of a disease in a community)
+
+2. exponential declines (e.g. the collapse of a resource)
+
+3. effects that change across the levels of the predictor from positive to negative and back again (e.g. tobacco use and life expectancy!)
+
+<br>
+
+**SLIDE**: Applied to our fake data example
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res2 <- lm(data = d1, y1 ~ x1 + x2)
+
+modelsummary(list(res1, res2), 
+             output = "gt",
+             stars = c("*" = .05),
+             gof_omit = "IC|Log|F",
+             coef_rename = c("x1" = "Predictor (X)",
+                             "x2" = "Predictor Squared")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Scatterplot
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+d1 |>
+  add_predictions(res2) |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "darkgrey", linewidth = .5) +
+  geom_line(aes(x = x1, y = pred), color = "red") +
+  theme_bw() +
+  scale_x_continuous(breaks = 1:20) +
+  scale_y_continuous(breaks = -5:10) +
+  labs(x = "Predictor (X)", y = "Outcome (Y)") +
+  annotate("text", color = "red", x = 8, hjust = 0, y = 0, size = 7, label = paste0("Y = ", round(coef(res2)[1], 2), " + ", round(coef(res2)[2], 2), "(X) + ", round(coef(res2)[3], 2), "(X^2)"))
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res2, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+Focus just on the intuition here.
+
+- All I've done is include X twice in the regression
+
+- One time it enters normally and the second time squared
+
+- This allows the X variable to influence the prediction of the line in two ways
+
+- Each increase in X increases Y by 0.95, AND
+
+- Each increase in X^2 decreases Y by .04
+
+<br>
+
+Evaluate the fit of this new regression line for me
+
+- **Is this a good summary of the relationship?**
+
+- (We've improved on every one of the four evaluation steps, AND)
+
+- (We've made a line that actually fits the data!)
+
+<br>
+
+Practice this logic for me
+
+- **What does the regression predict for Y if X equals 3?**
+
+- = -1.71 + .95*3 - .04*3^2
+
+- = -1.71 + 2.85 - .36
+
+- = .78
+
+<br>
+
+It's the exact same formula for a line but now we let X have two separate effects
+
+- One time for each level of X, and
+
+- One time for each squared value of X
+
+- This allows the line to increase for a time and then eventually begin to fall
+
+<br>
+
+**Everybody with me here?**
+
+- **Questions on this?**
+
+<br>
+
+**SLIDE**: Let's apply this to the tobacco regression
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Does tobacco use extend your life expectancy?**
+:::
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res3 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
+
+modelsummary(list("Life Expectancy" = res3),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "tobacco_use_pct" = "Tobacco Use (%)", "compulsory_education_yrs" = "Compulsory Education (years)")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+<br>
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res3, which = 1)
+```
+
+::::
+
+:::::
+
+::: notes
+
+Here is what you produced in your assignment for today
+
+- **See anything suspicious in the residuals?**
+
+<br>
+
+**SLIDE**: Let's fix it!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+
+<br>
+
+The I() Function
+
+- Let's you modify a variable inside the lm() formula
+
+- Combine with "^2" to square the predictor variable
+
+<br>
+
+::: {.r-fit-text}
+
+```{r, echo=TRUE, eval=FALSE}
+res <- lm(data = wdi, 
+          life_expectancy_total ~ tobacco_use_pct + I(tobacco_use_pct^2))
+```
+
+:::
+
+::: notes
+
+Here's the code you need to add a squared term to the tobacco predictor variable inside the lm() function
+
+- **Does everybody understand the code on the slide?**
+
+<br>
+
+Ok, fit this new model, make the predictions and check the residuals!
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res3 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
+res4 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct + I(tobacco_use_pct^2))
+
+modelsummary(list(res3, res4),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("tobacco_use_pct" = "Tobacco Use (%)", "I(tobacco_use_pct^2)" = "Tobacco Use Squared")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(ggpredict(res4, terms = "tobacco_use_pct")) +
+  labs(x = "Tobacco Use (%)",
+       y = "Life Expectancy (years)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res4, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+Think of this like a preview of multiple regression
+
+- e.g. adding more variables to a regression
+
+<br>
+
+**Have we now improved the fit of the line to the data?**
+
+- **In other words, is this a better summary of the relationship?**
+
+- Added a significant coefficient, increased the R2 by a lot, reduced the error, fixed the nonlinear residuals!
+
+<br>
+
+**Ok, what is the story of this line?**
+
+- **How does tobacco use relate to life expectancy in our global sample?**
+
+<br>
+
+- At low levels of tobacco use the first coefficient is bigger than the second
+
+    - e.g. tobacco use extends life expectancies on average
+
+- HOWEVER, once you get beyond the mid-20s in tobacco use, the second coefficient starts to outweigh the increases
+
+    - So, even though the squared coefficient is tiny it gets added thousands of times at the high end of the scale
+
+<br>
+
+**Anybody want to take a stab at explaining why we might see this relationship in the real world?**
+
+- **Do we think tobacco use actually improves lives?**
+
+<br>
+
+(Definitely not. My guess is this is a proxy for wealth at the low end)
+
+- As income goes up from a very low point access to entertainment products like tobacco increases
+
+- BUT, at a certain point the effect of the tobacco use harms health and lowers life expectancies
+
+<br>
+
+Pretty cool, right?
+
+- **Questions on adding a squared predictor to curve the line?**
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Measuring Sexism at the Movies**
+:::
+
+![](Images/11_2-bechdel.png)
+
+::: notes
+
+Everybody grab the movie box office data on Canvas so we can explore this big question
+
+- This dataset was compiled by FiveThirtyEight a few years back
+
+<br>
+
+**Has anybody encountered the Bechdel Test before?**
+
+- **Can you describe the test for us?**
+
+<br>
+
+Watch a movie and ask three questions:
+
+1. Are there at least two named female characters?
+
+2. Do the two female characters talk to each other?
+
+3. Is the conversation about something other than a man?
+
+<br>
+
+ONLY if the movie answers yes to all three questions does it pass the test.
+
+<br>
+
+**What do you guys think of this as a test of sexism?**
+
+- **Is this a high bar or not?**
+
+<br>
+
+**SLIDE**: Univariate analyses time
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Measuring Sexism at the Movies**
+:::
+
+1. What years are included? (`year`)
+
+2. What proportion of movies passed the Bechdel Test? (`binary`)
+
+3. Which step in the test trips up most movies? (`clean_test`)
+
+::: notes
+
+Three questions as a warm-up!
+
+- Go!
+
+<br>
+
+**What years are included? (`year`)**
+
+```{r}
+range(d$year)
+```
+
+<br>
+
+**How many, and what proportion of, movies passed the Bechdel Test? (`binary`)**
+
+```{r}
+table(d$binary)
+proportions(table(d$binary))
+```
+
+<br>
+
+**Which step in the test trips up most movies? (`clean_test`)**
+
+- "nowomen" means there are not two named female characters
+
+- "notalk" means the female characters never have a conversation
+
+- "men" means they do tlak but only about men
+
+<br>
+
+```{r} 
+table(d$clean_test)
+proportions(table(d$clean_test))
+```
+
+<br>
+
+Time to go bivariate in our analyses
+
+- Thus far we've been fitting regressions with two numeric variables
+
+- **SLIDE**: Now let's see what happens when the predictor variable is categorical
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+**Do sexist movies make more money?**
+
+:::
+
+<br>
+
+1. Regress box office returns (`boxoffice_millions`) on the Bechdel Test (`binary`)
+
+2. Make the table and the predictions
+
+3. Evaluate the fit of the regression
+
+::: notes
+
+Everybody run this regression, interpret the results and check the fit of the line
+
+<br>
+
+(**SLIDE**: results)
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res4 <- lm(data = d, boxoffice_millions ~ binary)
+
+modelsummary(list("Box Office" = res4),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("binaryPASS" = "Passing the Bechdel Test")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(ggpredict(res4, terms = "binary")) +
+  labs(x = "The Bechdel Test",
+       y = "Box Office (Millions USD)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res4, which = 1)
+```
+
+### Other
+
+<br>
+
+```{r, echo=TRUE}
+aggregate(d$boxoffice_millions ~ d$binary, FUN = mean)
+```
+
+:::
+::::
+:::::
+
+::: {.r-fit-text}
+**Box Office = 330.95 - 83.22 (Passing the Bechdel Test)**
+:::
+
+::: notes
+
+I've written the result as the formula for a line to see if that helps us understand what we've made here.
+
+- In short, each level of the categorical variable gets its own coefficient
+
+- In this case, the intercept represents the average for movies that failed the test
+
+- **Make sense?**
+
+
+<br>
+
+**So, what is going on here?**
+
+- **What are these regression results telling us?**
+
+<br>
+
+*Step through all*
+
+- The coefficient represents the average change in box office for movies that pass the Bechdel Test
+
+- The intercept represents the average change in box office for movies that fail the Bechdel Test
+
+- SO, regression on a dummy variable estimates the group means (with confidence intervals)
+
+- Compare to group means in "Other" tab
+
+- Hard to interpret the residuals plot (what is the middle of a dummy variable?)
+
+<br>
+
+So, per this regression it appears that sexist movies make way more money on average than movies that treat women like real people!
+
+- **Does this make sense?**
+
+<br>
+
+**SLIDE**: Let's try this again but now using a categorical variable with more levels
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+**What kinds of movie sexism make the most money?**
+
+:::
+
+<br>
+
+1. Regress box office returns (`boxoffice_millions`) on the way some movies fail the Bechdel Test (`clean_test`)
+
+2. Make the table and the predictions
+
+3. Evaluate the fit of the regression
+
+::: notes
+
+Everybody run this regression, interpret the results and check the fit of the line
+
+<br>
+
+(**SLIDE**: results)
+
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res5 <- lm(data = d, boxoffice_millions ~ clean_test)
+
+modelsummary(list("Box Office" = res5),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("binaryPASS" = "Passing the Bechdel Test")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(ggpredict(res5, terms = "clean_test")) +
+  labs(x = "The Bechdel Test",
+       y = "Box Office (Millions USD)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res5, which = 1)
+```
+
+### Other
+
+<br>
+
+```{r, echo=TRUE}
+aggregate(d$boxoffice_millions ~ d$clean_test, FUN = mean)
+```
+
+:::
+::::
+:::::
+
+::: {.r-fit-text}
+**Box Office = 324.1 - 76.4 (Bechdel: Ok) - 17.4 (No Women) + 31.5 (No Talking) - 36.2 (Talk about Men)**
+:::
+
+::: notes
+
+I've written the result as the formula for a line to see if that helps us understand what we've made here.
+
+- Just like last time, each level of the categorical variable gets a coefficient except one of them which is represented by the intercept
+
+- Here the intercept represents the average box office for dubious movies (unclear Bechdel result)
 
 - **Make sense?**
 
 <br>
 
-**SLIDE**: Second piece of advice
+**So, what is going on here?**
+
+- **What are these regression results telling us?**
+
+<br>
+
+*Step through all*
+
+Only ONE of these predictors can be true at the same time so only ONE coefficient gets added to the intercept
+
+- Remember, the intercept represents the average box office for dubious movies (unclear Bechdel result)
+
+- Pass the test and subtract $76.4 million
+
+- Don't include named women and subtract $17 million
+
+- Have women but don't let them talk and ADD $31.5 million!
+
+- Have women but they only talk about men and subtract $36 million
+
+<br>
+
+SO, regression on a categorical variable estimates the group means (with confidence intervals)
+
+- Compare to group means in "Other" tab
+
+- Hard to interpret the residuals plot (what is the middle of a dummy variable?)
+
+<br>
+
+So, per this regression it appears that movies make the most money on average by having women but not letting them have a conversation
+
+- **Does this make sense?**
+
+<br>
+
+**SLIDE**: Wrap-up
+
 :::
 
 
 
-## Making a Quantitative Argument {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Extending the OLS Model**
 
 <br>
 
-2. Use specific examples to illustrate statistical tools
+1. Non-linear relationships
 
-```{r, fig.align='center', fig.asp=.7}
-set.seed(72)
-x1 <- rnorm(1000, 25, 5)
-set.seed(120)
-y1 <- x1*3 + rnorm(1000, 0, 9)
+    - Use squared predictors (or other polynomials)
 
-tibble(
-  x1 = x1,
-  y1 = y1
-) |>
-  ggplot(aes(x = x1,y = y1)) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Predictor", y = "Outcome") +
-  #geom_smooth(method = "lm") +
-  annotate("text", x = 38, y = 140, label = "United\nStates", color = "blue2") +
-  annotate("point", x = 38.5, y = 132, color = "blue", size = 3.5) +
-  annotate("text", x = 10, y = 23, label = "Russia", color = "red") +
-  annotate("point", x = 10.3, y = 30, color = "red", size = 3.5)
-```
+2. Regression on categorical variables
 
-::: notes
-Related to the idea of explaining the tools you are using is the necessity of translating your findings into more digestible terms.
+    - Group means represented by separate coefficents
 
-<br>
-
-For those trying to get their heads around a scatterplot, identifying specific observations can help immeasurably
-
-- Reminds the reader what your observations are and provides context for each axis scale
-
-<br>
-
-Do this whenever possible.
-
-- Try to ensure that the reader can quickly get to grips with what is being shown to them and why
-
-- This is also why I require informative figure titles and captions!
-
-
-<br>
-
-**Make sense?**
 :::
-
-
-
-## Making a Quantitative Argument {background-image="Images/background-slate_v2.png" .center}
-
-<br>
-
-2. Use specific examples to illustrate statistical tools
-
-```{r, fig.align='center', fig.asp=.7}
-set.seed(72)
-x1 <- rnorm(1000, 25, 5)
-set.seed(120)
-y1 <- x1*3 + rnorm(1000, 0, 9)
-
-tibble(
-  x1 = x1,
-  y1 = y1
-) |>
-  ggplot(aes(x = x1,y = y1)) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Predictor", y = "Outcome") +
-  geom_smooth(method = "lm") +
-  annotate("text", x = 38, y = 140, label = "United\nStates", color = "blue2") +
-  annotate("point", x = 38.5, y = 132, color = "blue", size = 3.5) +
-  annotate("text", x = 10, y = 23, label = "Russia", color = "red") +
-  annotate("point", x = 10.3, y = 30, color = "red", size = 3.5)
-```
-
-::: notes
-This goes doubly for understanding regression coefficients!
-
-- You should definitely report the slope of the line as that's vital, BUT
-
-- You should also present that in the terms of the actual variables, e.g. as the predictor increases by one the outcome increases by three!
-
-<br>
-
-Even better, use observation examples to help the reader understand
-
-- If Russia here at the bottom of the plot increased its predictor to the average (approximately 25), they would increase their outcome by X
-
-- Always present stat results in human terms!
-
-<br>
-
-**Make sense?**
-
-<br>
-
-**SLIDE**: Last one...
-:::
-
-
-
-
-## Making a Quantitative Argument {background-image="Images/background-slate_v2.png" .center}
-
-<br>
-
-3. Help the reader understand the uncertainty
-
-:::: {.columns}
-::: {.column width="40%"}
-```{r, fig.align='center', fig.asp=.7}
-res1 <- lm(y1 ~ x1)
-
-modelsummary(res1, fmt = 2, stars = c("*" = .05), gof_omit = "Lik|IC|F", output = "gt") |>
-  gt::tab_style(style = list(
-                  gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "x-large")
-  ), locations = gt::cells_body())
-```
-:::
-
-::: {.column width="60%"}
-```{r, fig.align='center', fig.asp=.7}
-plot(res1, which = 1)
-```
-:::
-::::
 
 ::: notes
 
-Remember, a big part of your job as the analyst is to help the reader understand the uncertainty in the data.
+**Any questions on our work from today?**
 
 <br>
 
-In other words, how confident are you in the answer you are providing to the big question in the report? 
+**SLIDE**: Assignment for next class
 
-- What aspects of the research design and the sample you are analyzing give you confidence in the answer? 
-
-- What aspects make you hesitant?
-
-<br>
-
-This is where all the good strengths and weaknesses work you did in the first two reports comes into play, AND
-
-- where you discuss the strengths and weaknesses of the statistics you are providing as evidence
-
-<br>
-
-**Any questions on any of this advice?**
 :::
 
 
 
-## Report 3 {background-image="Images/background-slate_v2.png" .center}
-
-**Bivariate Test of your Hypotheses**
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-**Are powerful states more likely to respect the human rights of their citizens?**
+**Working on our Research Project (2024 Only)**
 
-1. Analyze the relationship between a country's `cinc` score (CoW NMC) and its measured level of respect for human rights and the rule of law (FFP) **using a scatter plot, a correlation and a simple OLS regression**. 
+1. Regress Yale's EPI on RSF's Press Freedom Index
 
-2. Repeat the above using the CoW NMC **indicator you were assigned in Report 2** instead of the `cinc` score.
+2. Regress one other EPI indicator on RSF's Press Freedom Index
+
+<br>
+
+Submit a polished regression table, residuals plot, predictions plot, and your analysis of the findings.
 
 ::: notes
 
-Alright, let's get back to work!
+For part 2, only one person per EPI indicator!
+
+- You claim the indicator you want on a Google Sheet linked on Canvas
+
+- First come, first served
 
 :::
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

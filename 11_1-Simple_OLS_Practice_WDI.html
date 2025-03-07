@@ -28,6 +28,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="11_1-Simple_OLS_Practice_WDI_files/libs/revealjs/dist/theme/quarto.css">
   <link href="11_1-Simple_OLS_Practice_WDI_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -319,21 +384,21 @@
       margin-right: 0; 
     }
   </style>
-  <script src="11_1-Simple_OLS_Practice_WDI_files/libs/kePrint-0.0.1/kePrint.js"></script>
-  <link href="11_1-Simple_OLS_Practice_WDI_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 
-<section>
-<section id="todays-agenda" class="title-slide slide level1 center" data-background-image="libs/Images/background-data_blue_v3.png">
-<h1>Today’s Agenda</h1>
+<section id="todays-agenda" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Today’s Agenda</h2>
 <p><br></p>
-<p><br></p>
-<p><strong>Practice fitting, interpreting and evaluating OLS regressions</strong></p>
-<p><br></p>
+<div class="r-fit-text">
+<p><strong>Ordinary Least Squares (OLS) Regression</strong></p>
+<ul>
+<li>Practice fitting, interpreting and evaluating OLS regressions</li>
+</ul>
+</div>
 <p><br></p>
 <div class="r-stack">
 <p>Justin Leinaweaver (Spring 2025)</p>
@@ -341,20 +406,10 @@
 <aside class="notes">
 <p>Prep for Class</p>
 <ol type="1">
-<li>…</li>
+<li>Check Canvas submissions</li>
 </ol>
 <p><br></p>
-<p>Ok, based on our work this week I think it is safe to say that we all need some more practice with simple OLS regressions</p>
-<ul>
-<li>THEREFORE, I am postponing the deadline for Report 3 by one week</li>
-</ul>
-<p><br></p>
-<p>Today we’ll take a breather from your project and focus on practicing fitting, interpreting and evaluating simple OLS regressions</p>
-<p><br></p>
-<p>So, what is a regression and how does it fit into the work we’ve been doing all semester?</p>
-<ul>
-<li><strong>SLIDE</strong></li>
-</ul>
+<p><strong>SLIDE</strong>: Why do we use regressions?</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -367,394 +422,26 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="how-much-more-expensive-are-larger-diamonds-than-smaller-ones" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>How much more expensive are larger diamonds than smaller ones?</h2>
-<aside class="notes">
-<p>Someone comes to you with a question to answer.</p>
+<section id="why-use-ols-regressions" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Why use OLS regressions?</h2>
 <p><br></p>
-<p>You are a social scientist so you decide to collect a bunch of data…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><strong>Sizes (carats)</strong></p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>  [1] 0.23 0.21 0.23 0.29 0.31 0.24
-  [7] 0.24 0.26 0.22 0.23 0.30 0.23
- [13] 0.22 0.31 0.20 0.32 0.30 0.30
- [19] 0.30 0.30 0.30 0.23 0.23 0.31
- [25] 0.31 0.23 0.24 0.30 0.23 0.23
- [31] 0.23 0.23 0.23 0.23 0.23 0.23
- [37] 0.23 0.31 0.26 0.33 0.33 0.33
- [43] 0.26 0.26 0.32 0.29 0.32 0.32
- [49] 0.25 0.29 0.24 0.23 0.32 0.22
- [55] 0.22 0.30 0.30 0.30 0.30 0.30
- [61] 0.35 0.30 0.30 0.30 0.42 0.28
- [67] 0.32 0.31 0.31 0.24 0.24 0.30
- [73] 0.30 0.30 0.30 0.26 0.26 0.26
- [79] 0.26 0.26 0.26 0.26 0.26 0.38
- [85] 0.26 0.24 0.24 0.24 0.24 0.32
- [91] 0.70 0.86 0.70 0.71 0.78 0.70
- [97] 0.70 0.96 0.73 0.80 0.75 0.75
-[103] 0.74 0.75 0.80 0.75 0.80 0.74
-[109] 0.81 0.59 0.80 0.74 0.90 0.74
-[115] 0.73 0.73 0.80 0.71 0.70 0.80
-[121] 0.71 0.74 0.70 0.70 0.70 0.70
-[127] 0.91 0.61 0.91 0.91 0.77 0.71
-[133] 0.71 0.70 0.77 0.63 0.71 0.71
-[139] 0.76 0.64 0.71 0.71 0.70 0.70
-[145] 0.71 0.70 0.71 0.73 0.70 0.70</code></pre>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<p><strong>Prices ($)</strong></p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>  [1]  326  326  327  334  335  336
-  [7]  336  337  337  338  339  340
- [13]  342  344  345  345  348  351
- [19]  351  351  351  352  353  353
- [25]  353  354  355  357  357  357
- [31]  402  402  402  402  402  402
- [37]  402  402  403  403  403  403
- [43]  403  403  403  403  403  403
- [49]  404  404  404  404  404  404
- [55]  404  405  405  405  405  405
- [61]  552  552  552  552  552  553
- [67]  553  553  553  553  553  554
- [73]  554  554  554  554  554  554
- [79]  554  554  554  554  554  554
- [85]  554  554  554  554  554  554
- [91] 2757 2757 2757 2759 2759 2759
- [97] 2759 2759 2760 2760 2760 2760
-[103] 2760 2760 2760 2760 2760 2761
-[109] 2761 2761 2761 2761 2761 2762
-[115] 2762 2762 2762 2762 2762 2762
-[121] 2762 2762 2762 2762 2762 2762
-[127] 2763 2763 2763 2763 2763 2764
-[133] 2764 2765 2765 2765 2765 2765
-[139] 2765 2766 2766 2766 2767 2767
-[145] 2767 2767 2768 2768 2768 2768</code></pre>
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p>You get your hands on a sample of 54k diamonds from a large database of diamond sellers</p>
-<p><br></p>
-<p>Here we see 54k diamond observations in terms of their sizes and prices</p>
-<ul>
-<li>A long, long, long list of numbers is definitely not a useful answer to the question</li>
-</ul>
-<p><br></p>
-<p>So, you reach into your bag of statistical tools because you know that, at its heart, statistics is a set of tools designed for simplifying and summarizing the world</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><strong>Sizes (carats)</strong></p>
-<div class="cell" data-layout-align="left">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-left">
-<figure>
-<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-left" width="624"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<table class="table caption-top" data-quarto-postprocess="true" style="font-size: 25px; margin-left: auto; margin-right: auto;">
-<thead>
-<tr class="header">
-<th style="text-align: right;" data-quarto-table-cell-role="th">Min</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Median</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Max</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">0.2</td>
-<td style="text-align: right;">0.7</td>
-<td style="text-align: right;">5.01</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<p><strong>Prices ($)</strong></p>
-<div class="cell" data-layout-align="left">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-left">
-<figure>
-<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-left" width="624"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<table class="table caption-top" data-quarto-postprocess="true" style="font-size: 25px; margin-left: auto; margin-right: auto;">
-<thead>
-<tr class="header">
-<th style="text-align: right;" data-quarto-table-cell-role="th">Min</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Median</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Max</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">326</td>
-<td style="text-align: right;">2401</td>
-<td style="text-align: right;">18823</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p>First you analyze each variable on its own to get a sense of the distribution</p>
-<ul>
-<li>This means visualizations and descriptive statistics</li>
-</ul>
-<p><br></p>
-<p>From this you see considerable variation in both the predictor and the outcome</p>
-<ul>
-<li><p>This means your sample includes large and small diamonds, AND</p></li>
-<li><p>Your sample includes cheap and expensive diamonds</p></li>
-</ul>
-<p><br></p>
-<p>If there is variation in both variables, then it is worth checking to see if there is evidence of a relationship</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>Here we visualize the relationship and calculate a statistic, the correlation, that aims to summarize what we are seeing</p>
-<p><br></p>
-<p>This scatterplot and correlation suggest a strong positive correlation</p>
-<ul>
-<li>Larger diamonds do tend to be more expensive</li>
-</ul>
-<p><br></p>
-<p>BUT, the question is, HOW MUCH more expensive?</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>Regression is a technique for estimating the relationship between predictor variables (X) and an outcome (Y) using the formula for a line</p>
-<ul>
-<li>Y = <span class="math inline">\(\alpha\)</span> + <span class="math inline">\(\beta\)</span> X</li>
-</ul>
-<p><br></p>
-<p>Here that line is the price of a diamond is equal to the intercept plus the size of the diamond times its slope coefficient</p>
-<p><br></p>
-<p>As we have discussed, and the readings explain, OLS draws this line through the data points by minimizing the sum of the squared residuals</p>
-<ul>
-<li>e.g.&nbsp;finding a line that best fits the “middle” of the data points</li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: And the result of this work is…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-4" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>In purely technical terms, OLS regression is a method for summarizing the relationship between two variables using a line</p>
-<ul>
-<li>That’s it.</li>
-</ul>
-<p><br></p>
-<p>Rather than show someone a cloud of observations and asking them to intuit the relationship, we provide a single line that summarizes it!</p>
-<ul>
-<li>So much cleaner, right?</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-5" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
-<p>The summary using a line technique is useful because we can use it to make predictions for any value of the predictor</p>
-<ul>
-<li>Again, this summary allows us to answer specific questions in a way we cannot do with a cloud of 54k observations</li>
-</ul>
-<p><br></p>
-<p>Our model predicts that a 1 carat diamond, on average, costs around $5k</p>
-<ul>
-<li><p>And the ggpredict function estimates a confidence interval of approximately +- $14</p></li>
-<li><p>Given the huge number of observations at the 1 carat level our regression is quite confident about its predictions!</p></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-6" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
-<p>Jumping to the bigger diamonds, our model predicts that a 3 carat diamond, on average, costs around $20k</p>
-<ul>
-<li><p>With fewer cases at this level the CI increases to approximately +- $62!</p></li>
-<li><p>Still very confident!</p></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-7" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<div class="r-fit-text">
-<p><strong>How much more expensive are larger diamonds than smaller ones?</strong></p>
-</div>
-
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
-<p>With these predictions we can also estimate differences along the line</p>
-<ul>
-<li>This lets us say with some confidence that moving from a 1 to 3 carat diamond will cost you, on average, some $15k!</li>
-</ul>
-<p><br></p>
-<p>More useful than a scatterplot or a correlation coefficient!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="why-do-we-use-ols-regressions" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Why do we use OLS regressions?</h2>
-<p><br></p>
-<div class="r-fit-text">
 <ul>
 <li><p>Quantifies the relationship between variables</p></li>
 <li><p>Uses <strong>ALL</strong> of the data</p></li>
 <li><p>Makes predictions with estimates of uncertainty</p></li>
 <li><p>Gives us criteria for evaluating the fit of the line</p></li>
 </ul>
-</div>
-<aside class="notes">
-<p>Bottom line, OLS is simply an extension of everything we’ve been doing this semester to summarize data</p>
+<p><strong>Future Weeks</strong></p>
 <ul>
-<li>A regression simply summarizes the relationship between two variables using a line</li>
+<li>Can be adjusted for confounders (e.g.&nbsp;control variables), nonlinear relationships and different data structures</li>
+</ul>
+<aside class="notes">
+<p><strong>Any questions on our work last week on regression?</strong></p>
+<ul>
+<li><strong>e.g.&nbsp;the intuitions, interpretations, evaluations or methods in R?</strong></li>
 </ul>
 <p><br></p>
-<p><strong>Questions on the intuitions?</strong></p>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s practice!</p>
+<p><strong>SLIDE</strong>: Let’s review your assignments</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -767,10 +454,608 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="global-life-expectancy" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<section id="assignment-for-today" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Assignment For Today</h2>
+<p><br></p>
+<p>What is the effect of college completion on poverty rates in midwest cities?</p>
+<ol type="1">
+<li><p>Fit the regression</p></li>
+<li><p>Submit a polished regression table, residuals plot and predictions plot</p></li>
+<li><p>Answer the question</p></li>
+<li><p>Evaluate the regression</p></li>
+</ol>
+<aside class="notes">
+<p><strong>How did this go?</strong></p>
+<p><br></p>
+<p><strong>Toughest part?</strong></p>
+<p><br></p>
+<p><em>Save your conclusion for next slide</em></p>
+<ul>
+<li><strong>Ok, what’s your answer to the question: What is the effect of college completion on poverty rates in midwest cities?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: My results and the evaluation tools</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:35%;">
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ilqsyyspiz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ilqsyyspiz table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ilqsyyspiz thead, #ilqsyyspiz tbody, #ilqsyyspiz tfoot, #ilqsyyspiz tr, #ilqsyyspiz td, #ilqsyyspiz th {
+  border-style: none;
+}
+
+#ilqsyyspiz p {
+  margin: 0;
+  padding: 0;
+}
+
+#ilqsyyspiz .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ilqsyyspiz .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ilqsyyspiz .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ilqsyyspiz .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ilqsyyspiz .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ilqsyyspiz .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ilqsyyspiz .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ilqsyyspiz .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ilqsyyspiz .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ilqsyyspiz .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ilqsyyspiz .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ilqsyyspiz .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ilqsyyspiz .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ilqsyyspiz .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ilqsyyspiz .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ilqsyyspiz .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ilqsyyspiz .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ilqsyyspiz .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ilqsyyspiz .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ilqsyyspiz .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ilqsyyspiz .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ilqsyyspiz .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ilqsyyspiz .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ilqsyyspiz .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ilqsyyspiz .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ilqsyyspiz .gt_left {
+  text-align: left;
+}
+
+#ilqsyyspiz .gt_center {
+  text-align: center;
+}
+
+#ilqsyyspiz .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ilqsyyspiz .gt_font_normal {
+  font-weight: normal;
+}
+
+#ilqsyyspiz .gt_font_bold {
+  font-weight: bold;
+}
+
+#ilqsyyspiz .gt_font_italic {
+  font-style: italic;
+}
+
+#ilqsyyspiz .gt_super {
+  font-size: 65%;
+}
+
+#ilqsyyspiz .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ilqsyyspiz .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ilqsyyspiz .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ilqsyyspiz .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ilqsyyspiz .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ilqsyyspiz .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ilqsyyspiz .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#ilqsyyspiz .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ilqsyyspiz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="Poverty-(%)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Poverty (%)</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">(Intercept)</td>
+<td class="gt_row gt_center" headers="Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">16.74*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">(0.73)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">College Degree (%)</td>
+<td class="gt_row gt_center" headers="Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">-0.23*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="Poverty (%)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.04)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">437</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
+<td class="gt_row gt_center" headers="Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">0.079</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">0.077</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
+<td class="gt_row gt_center" headers="Poverty (%)" style="background-color: #FFFFFF; font-size: x-large">4.94</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</div><div class="column" style="width:65%;">
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Predictions</a></li><li><a href="#tabset-1-2">Residuals</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p><strong>And, based on your evaluation of the regression, how confident are you in that answer?</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">nrow</span>(midwest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 437</code></pre>
+</div>
+</div>
+<p><br></p>
+<p><em>Make sure to discuss the seemingly small magnitude of the effect</em></p>
+<ul>
+<li><p><strong>Are these moves in poverty a big deal or not?</strong></p></li>
+<li><p><strong>How hard would it be to increase college completion rates in meaningful ways?</strong></p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Our plan for today is to keep practicing all of these skills!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="global-life-expectancy" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Global Life Expectancy</h2>
 
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="864"><aside class="notes">
+<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="864"><aside class="notes">
 <p>I’ve uploaded World Bank data to our Canvas modules for today</p>
 <ul>
 <li>Everybody grab that data!</li>
@@ -798,7 +1083,7 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="regress-life-expectancy-on" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
+<section id="regress-life-expectancy-on" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Regress life expectancy on…</h2>
 <p><br></p>
 <div class="columns">
@@ -807,7 +1092,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-left">
 <figure>
-<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-left" width="576"></p>
+<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-left" width="576"></p>
 </figure>
 </div>
 </div>
@@ -817,22 +1102,24 @@
 <div class="r-fit-text">
 <ol type="1">
 <li><p>fertility_rate_per_woman</p></li>
-<li><p>tobacco_use_pct</p></li>
 <li><p>compulsory_education_yrs</p></li>
+<li><p>unemployment_pct</p></li>
 </ol>
 </div>
 </div></div>
 <aside class="notes">
-<p>Work with the people around you to fit three regressions of life expectancy</p>
+<p>Work with the people around you to fit and evaluate three regressions of life expectancy</p>
 <ul>
 <li><p>Model 1 regresses life expectancy on the fertility rate per woman</p></li>
-<li><p>Model 2 regresses life expectancy on the proportion of adults who use tobacco products</p></li>
-<li><p>Model 3 regresses life expectancy on the number of years of education you are required to complete</p></li>
+<li><p>Model 2 regresses life expectancy on the number of years of education you are required to complete</p></li>
+<li><p>Model 3 regresses life expectancy on the proportion of adults who are unemployed</p></li>
 </ul>
 <p><br></p>
 <p>Your job:</p>
 <ol type="1">
-<li><p>Fit each model and interpret the coefficient, then</p></li>
+<li><p>Fit each model,</p></li>
+<li><p>Interpret the coefficient,</p></li>
+<li><p>Make predictions using the model, and then</p></li>
 <li><p>Evaluate each model with our four steps</p></li>
 </ol>
 <p><br></p>
@@ -840,6 +1127,8 @@
 <ul>
 <li>Get to it!</li>
 </ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Fertility rate models</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -852,27 +1141,30 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="explaining-global-life-expectancy" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Explaining Global Life Expectancy</h2>
+<section id="section-1" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><br></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="ofuflprgcp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ofuflprgcp table {
+<div id="qizkayperl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qizkayperl table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ofuflprgcp thead, #ofuflprgcp tbody, #ofuflprgcp tfoot, #ofuflprgcp tr, #ofuflprgcp td, #ofuflprgcp th {
+#qizkayperl thead, #qizkayperl tbody, #qizkayperl tfoot, #qizkayperl tr, #qizkayperl td, #qizkayperl th {
   border-style: none;
 }
 
-#ofuflprgcp p {
+#qizkayperl p {
   margin: 0;
   padding: 0;
 }
 
-#ofuflprgcp .gt_table {
+#qizkayperl .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -898,12 +1190,12 @@
   border-left-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_caption {
+#qizkayperl .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ofuflprgcp .gt_title {
+#qizkayperl .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -915,7 +1207,7 @@
   border-bottom-width: 0;
 }
 
-#ofuflprgcp .gt_subtitle {
+#qizkayperl .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -927,7 +1219,7 @@
   border-top-width: 0;
 }
 
-#ofuflprgcp .gt_heading {
+#qizkayperl .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -939,13 +1231,13 @@
   border-right-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_bottom_border {
+#qizkayperl .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_col_headings {
+#qizkayperl .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -960,7 +1252,7 @@
   border-right-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_col_heading {
+#qizkayperl .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -980,7 +1272,7 @@
   overflow-x: hidden;
 }
 
-#ofuflprgcp .gt_column_spanner_outer {
+#qizkayperl .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -992,15 +1284,15 @@
   padding-right: 4px;
 }
 
-#ofuflprgcp .gt_column_spanner_outer:first-child {
+#qizkayperl .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ofuflprgcp .gt_column_spanner_outer:last-child {
+#qizkayperl .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ofuflprgcp .gt_column_spanner {
+#qizkayperl .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1012,11 +1304,11 @@
   width: 100%;
 }
 
-#ofuflprgcp .gt_spanner_row {
+#qizkayperl .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ofuflprgcp .gt_group_heading {
+#qizkayperl .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1042,7 +1334,7 @@
   text-align: left;
 }
 
-#ofuflprgcp .gt_empty_group_heading {
+#qizkayperl .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1057,15 +1349,15 @@
   vertical-align: middle;
 }
 
-#ofuflprgcp .gt_from_md > :first-child {
+#qizkayperl .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ofuflprgcp .gt_from_md > :last-child {
+#qizkayperl .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ofuflprgcp .gt_row {
+#qizkayperl .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1084,7 +1376,7 @@
   overflow-x: hidden;
 }
 
-#ofuflprgcp .gt_stub {
+#qizkayperl .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1097,7 +1389,7 @@
   padding-right: 5px;
 }
 
-#ofuflprgcp .gt_stub_row_group {
+#qizkayperl .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1111,15 +1403,15 @@
   vertical-align: top;
 }
 
-#ofuflprgcp .gt_row_group_first td {
+#qizkayperl .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ofuflprgcp .gt_row_group_first th {
+#qizkayperl .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ofuflprgcp .gt_summary_row {
+#qizkayperl .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1129,16 +1421,16 @@
   padding-right: 5px;
 }
 
-#ofuflprgcp .gt_first_summary_row {
+#qizkayperl .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_first_summary_row.thick {
+#qizkayperl .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ofuflprgcp .gt_last_summary_row {
+#qizkayperl .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1148,7 +1440,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_grand_summary_row {
+#qizkayperl .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1158,7 +1450,7 @@
   padding-right: 5px;
 }
 
-#ofuflprgcp .gt_first_grand_summary_row {
+#qizkayperl .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1168,7 +1460,7 @@
   border-top-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_last_grand_summary_row_top {
+#qizkayperl .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1178,11 +1470,11 @@
   border-bottom-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_striped {
+#qizkayperl .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ofuflprgcp .gt_table_body {
+#qizkayperl .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1191,7 +1483,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_footnotes {
+#qizkayperl .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1205,7 +1497,7 @@
   border-right-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_footnote {
+#qizkayperl .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1214,7 +1506,7 @@
   padding-right: 5px;
 }
 
-#ofuflprgcp .gt_sourcenotes {
+#qizkayperl .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1228,7 +1520,7 @@
   border-right-color: #D3D3D3;
 }
 
-#ofuflprgcp .gt_sourcenote {
+#qizkayperl .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1236,72 +1528,72 @@
   padding-right: 5px;
 }
 
-#ofuflprgcp .gt_left {
+#qizkayperl .gt_left {
   text-align: left;
 }
 
-#ofuflprgcp .gt_center {
+#qizkayperl .gt_center {
   text-align: center;
 }
 
-#ofuflprgcp .gt_right {
+#qizkayperl .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ofuflprgcp .gt_font_normal {
+#qizkayperl .gt_font_normal {
   font-weight: normal;
 }
 
-#ofuflprgcp .gt_font_bold {
+#qizkayperl .gt_font_bold {
   font-weight: bold;
 }
 
-#ofuflprgcp .gt_font_italic {
+#qizkayperl .gt_font_italic {
   font-style: italic;
 }
 
-#ofuflprgcp .gt_super {
+#qizkayperl .gt_super {
   font-size: 65%;
 }
 
-#ofuflprgcp .gt_footnote_marks {
+#qizkayperl .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ofuflprgcp .gt_asterisk {
+#qizkayperl .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ofuflprgcp .gt_indent_1 {
+#qizkayperl .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ofuflprgcp .gt_indent_2 {
+#qizkayperl .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ofuflprgcp .gt_indent_3 {
+#qizkayperl .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ofuflprgcp .gt_indent_4 {
+#qizkayperl .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ofuflprgcp .gt_indent_5 {
+#qizkayperl .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ofuflprgcp .katex-display {
+#qizkayperl .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ofuflprgcp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#qizkayperl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1310,87 +1602,45 @@
 <thead>
 <tr class="header gt_col_headings">
 <th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
-<th id="a(2)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(2)</th>
-<th id="a(3)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(3)</th>
+<th id="Life-Expectancy" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Life Expectancy</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">(Intercept)</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">84.72*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">(0.65)</td>
+</tr>
+<tr class="odd">
 <td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Fertility (births per woman)</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">-4.89*</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large"></td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">(0.23)</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large"></td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Tobacco Use (%)</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.22*</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large"></td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">(0.06)</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large"></td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Compulsory Education (years)</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">0.72*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">(0.20)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">84.72*</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">67.57*</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">65.31*</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">-4.89*</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.65)</td>
-<td class="gt_row gt_center" headers="(2)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(1.29)</td>
-<td class="gt_row gt_center" headers="(3)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(2.03)</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.23)</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">209</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">161</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">192</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">209</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.691</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.084</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">0.065</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">0.691</td>
 </tr>
 <tr class="odd">
 <td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.689</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.079</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">0.060</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">0.689</td>
 </tr>
 <tr class="even">
 <td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">4.15</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">7.07</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">7.16</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">4.15</td>
 </tr>
 </tbody><tfoot class="gt_sourcenotes">
 <tr class="odd">
-<td colspan="4" class="gt_sourcenote">* p &lt; 0.05</td>
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
 </tr>
 </tfoot>
 
@@ -1399,71 +1649,62 @@
 </div>
 </div>
 </div>
+</div><div class="column" style="width:60%;">
+<div class="panel-tabset">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Predictions</a></li><li><a href="#tabset-2-2">Residuals</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
 <aside class="notes">
-<p><strong>Everybody get these results?</strong></p>
+<p><strong>Did everybody get these results for the fertility rate regression?</strong></p>
 <p><br></p>
-<p><strong>Interpret each coefficient for me</strong></p>
+<p><strong>Interpret the coefficient for me</strong></p>
 <ul>
-<li><p>As average births per woman increases by one, life expectancy decreases by almost 5 years!</p></li>
-<li><p>As tobacco use in the adult population increases by 1%, average life expectancy increases by .2 years</p>
-<ul>
-<li>So, add 5% more smokers and extend life expectancies by one year!</li>
-</ul></li>
-<li><p>Add one year of compulsory education and see an average increase of life expectancies by almost one year</p></li>
+<li>As average births per woman increases by one, life expectancy decreases by almost 5 years!</li>
 </ul>
 <p><br></p>
-<p><strong>Missing data issues?</strong></p>
+<p><strong>What is obvious from this set of predictions?</strong></p>
 <ul>
-<li>(Definitely for the tobacco model!)</li>
+<li><p>The effect is DRAMATICALLY larger</p></li>
+<li><p>ONE additional child is a 5 year decrease in life expectancy (on average)!</p></li>
+<li><p>The effect of fertility rate on life expectancy is staggeringly large!</p></li>
 </ul>
 <p><br></p>
-<p><strong>What do we learn from these R2 values?</strong></p>
+<p><strong>So, how well does the regression line fit the data?</strong></p>
+<ul>
+<li><strong>e.g.&nbsp;missing data, significance, R2, residuals</strong></li>
+</ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: Let’s check residual plots</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="check-the-residuals" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Check the Residuals</h2>
-
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p><strong>Any concerns with heteroskedasticity in the fertility rate regression?</strong></p>
 <ul>
 <li><p>Slight non-linearity here but the effect is rather minor</p></li>
 <li><p>Does appear that we have fewer cases at the low end of the scale (e.g.&nbsp;very high fertility rates) and so the model fits this extreme less well</p></li>
 </ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="check-the-residuals-1" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Check the Residuals</h2>
-
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p><strong>Any concerns with heteroskedasticity in the tobacco use regression?</strong></p>
-<ul>
-<li><p>YES!</p></li>
-<li><p>Appears like the regression line is missing a clear non-linear effect</p></li>
-</ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: At the end of class we’ll come back and try to address this!</p>
+<p><strong>SLIDE</strong>: Let’s talk education</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1476,49 +1717,30 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="check-the-residuals-2" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Check the Residuals</h2>
-
-<img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p><strong>Any concerns with heteroskedasticity in the education regression?</strong></p>
-<ul>
-<li><p>This residual plot shows the flaw in just relying on the red line because it’s tracking changes across the levels that are probably just scattered randomly</p></li>
-<li><p>Some evidence of heteroskedasticity: At the low end error is high, at the high end it’s the opposite</p></li>
-<li><p>Probably not a deal breaker but not a clear case of homoscedasticity</p></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="models-of-global-life-expectancy" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Models of Global Life Expectancy</h2>
+<section id="section-2" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><br></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="thjscirffh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#thjscirffh table {
+<div id="mxhcpznvsj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mxhcpznvsj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#thjscirffh thead, #thjscirffh tbody, #thjscirffh tfoot, #thjscirffh tr, #thjscirffh td, #thjscirffh th {
+#mxhcpznvsj thead, #mxhcpznvsj tbody, #mxhcpznvsj tfoot, #mxhcpznvsj tr, #mxhcpznvsj td, #mxhcpznvsj th {
   border-style: none;
 }
 
-#thjscirffh p {
+#mxhcpznvsj p {
   margin: 0;
   padding: 0;
 }
 
-#thjscirffh .gt_table {
+#mxhcpznvsj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1544,12 +1766,12 @@
   border-left-color: #D3D3D3;
 }
 
-#thjscirffh .gt_caption {
+#mxhcpznvsj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#thjscirffh .gt_title {
+#mxhcpznvsj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1561,7 +1783,7 @@
   border-bottom-width: 0;
 }
 
-#thjscirffh .gt_subtitle {
+#mxhcpznvsj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1573,7 +1795,7 @@
   border-top-width: 0;
 }
 
-#thjscirffh .gt_heading {
+#mxhcpznvsj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1585,13 +1807,13 @@
   border-right-color: #D3D3D3;
 }
 
-#thjscirffh .gt_bottom_border {
+#mxhcpznvsj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#thjscirffh .gt_col_headings {
+#mxhcpznvsj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1606,7 +1828,7 @@
   border-right-color: #D3D3D3;
 }
 
-#thjscirffh .gt_col_heading {
+#mxhcpznvsj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1626,7 +1848,7 @@
   overflow-x: hidden;
 }
 
-#thjscirffh .gt_column_spanner_outer {
+#mxhcpznvsj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1638,15 +1860,15 @@
   padding-right: 4px;
 }
 
-#thjscirffh .gt_column_spanner_outer:first-child {
+#mxhcpznvsj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#thjscirffh .gt_column_spanner_outer:last-child {
+#mxhcpznvsj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#thjscirffh .gt_column_spanner {
+#mxhcpznvsj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1658,11 +1880,11 @@
   width: 100%;
 }
 
-#thjscirffh .gt_spanner_row {
+#mxhcpznvsj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#thjscirffh .gt_group_heading {
+#mxhcpznvsj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1688,7 +1910,7 @@
   text-align: left;
 }
 
-#thjscirffh .gt_empty_group_heading {
+#mxhcpznvsj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1703,15 +1925,15 @@
   vertical-align: middle;
 }
 
-#thjscirffh .gt_from_md > :first-child {
+#mxhcpznvsj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#thjscirffh .gt_from_md > :last-child {
+#mxhcpznvsj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#thjscirffh .gt_row {
+#mxhcpznvsj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1730,7 +1952,7 @@
   overflow-x: hidden;
 }
 
-#thjscirffh .gt_stub {
+#mxhcpznvsj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1743,7 +1965,7 @@
   padding-right: 5px;
 }
 
-#thjscirffh .gt_stub_row_group {
+#mxhcpznvsj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1757,15 +1979,15 @@
   vertical-align: top;
 }
 
-#thjscirffh .gt_row_group_first td {
+#mxhcpznvsj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#thjscirffh .gt_row_group_first th {
+#mxhcpznvsj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#thjscirffh .gt_summary_row {
+#mxhcpznvsj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1775,16 +1997,16 @@
   padding-right: 5px;
 }
 
-#thjscirffh .gt_first_summary_row {
+#mxhcpznvsj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#thjscirffh .gt_first_summary_row.thick {
+#mxhcpznvsj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#thjscirffh .gt_last_summary_row {
+#mxhcpznvsj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1794,7 +2016,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#thjscirffh .gt_grand_summary_row {
+#mxhcpznvsj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1804,7 +2026,7 @@
   padding-right: 5px;
 }
 
-#thjscirffh .gt_first_grand_summary_row {
+#mxhcpznvsj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1814,7 +2036,7 @@
   border-top-color: #D3D3D3;
 }
 
-#thjscirffh .gt_last_grand_summary_row_top {
+#mxhcpznvsj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1824,11 +2046,11 @@
   border-bottom-color: #D3D3D3;
 }
 
-#thjscirffh .gt_striped {
+#mxhcpznvsj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#thjscirffh .gt_table_body {
+#mxhcpznvsj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1837,7 +2059,7 @@
   border-bottom-color: #D3D3D3;
 }
 
-#thjscirffh .gt_footnotes {
+#mxhcpznvsj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1851,7 +2073,7 @@
   border-right-color: #D3D3D3;
 }
 
-#thjscirffh .gt_footnote {
+#mxhcpznvsj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1860,7 +2082,7 @@
   padding-right: 5px;
 }
 
-#thjscirffh .gt_sourcenotes {
+#mxhcpznvsj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1874,7 +2096,7 @@
   border-right-color: #D3D3D3;
 }
 
-#thjscirffh .gt_sourcenote {
+#mxhcpznvsj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1882,72 +2104,1226 @@
   padding-right: 5px;
 }
 
-#thjscirffh .gt_left {
+#mxhcpznvsj .gt_left {
   text-align: left;
 }
 
-#thjscirffh .gt_center {
+#mxhcpznvsj .gt_center {
   text-align: center;
 }
 
-#thjscirffh .gt_right {
+#mxhcpznvsj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#thjscirffh .gt_font_normal {
+#mxhcpznvsj .gt_font_normal {
   font-weight: normal;
 }
 
-#thjscirffh .gt_font_bold {
+#mxhcpznvsj .gt_font_bold {
   font-weight: bold;
 }
 
-#thjscirffh .gt_font_italic {
+#mxhcpznvsj .gt_font_italic {
   font-style: italic;
 }
 
-#thjscirffh .gt_super {
+#mxhcpznvsj .gt_super {
   font-size: 65%;
 }
 
-#thjscirffh .gt_footnote_marks {
+#mxhcpznvsj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#thjscirffh .gt_asterisk {
+#mxhcpznvsj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#thjscirffh .gt_indent_1 {
+#mxhcpznvsj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#thjscirffh .gt_indent_2 {
+#mxhcpznvsj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#thjscirffh .gt_indent_3 {
+#mxhcpznvsj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#thjscirffh .gt_indent_4 {
+#mxhcpznvsj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#thjscirffh .gt_indent_5 {
+#mxhcpznvsj .gt_indent_5 {
   text-indent: 25px;
 }
 
-#thjscirffh .katex-display {
+#mxhcpznvsj .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#thjscirffh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#mxhcpznvsj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="Life-Expectancy" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Life Expectancy</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">(Intercept)</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">65.31*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">(2.03)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Compulsory Education (years)</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">0.72*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.20)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">192</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">0.065</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">0.060</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">7.16</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Predictions</a></li><li><a href="#tabset-3-2">Residuals</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p><strong>Did everybody get these results for the education regression?</strong></p>
+<p><br></p>
+<p><strong>Interpret the coefficient for me</strong></p>
+<ul>
+<li>Add one year of compulsory education and see an average increase of life expectancies by almost one year</li>
+</ul>
+<p><br></p>
+<p><strong>What is obvious from this set of predictions?</strong></p>
+<ul>
+<li><p>A country with ZERO required school that implements a primary education requirement will see, on average, an improvement of 4 years of life expectancy</p>
+<ul>
+<li>0 to 6 yrs education = 69.64-65.31 = 4.33</li>
+</ul></li>
+<li><p>A country moving from a primary only requirement to a secondary ed requirement will see, on average, an improvement of 4 years of life expectancy</p></li>
+<li><p>Do both and add 8 years!</p></li>
+</ul>
+<p><br></p>
+<p><strong>So, how well does the regression line fit the data?</strong></p>
+<ul>
+<li><strong>e.g.&nbsp;missing data, significance, R2, residuals</strong></li>
+</ul>
+<p><br></p>
+<p><strong>Any concerns with heteroskedasticity in the education regression?</strong></p>
+<ul>
+<li><p>This residual plot shows the flaw in just relying on the red line because it’s tracking changes across the levels that are probably just scattered randomly</p></li>
+<li><p>Some evidence of heteroskedasticity: At the low end error is high, at the high end it’s the opposite</p></li>
+<li><p>Probably not a deal breaker but not a clear case of homoscedasticity</p></li>
+</ul>
+<p><br></p>
+<p><strong>So, if you ran a development agency would you get more bang from your buck focusing on women’s rights and healthcare or increasing compulsory education?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s talk unemployment</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-3" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ngspdijrqh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ngspdijrqh table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ngspdijrqh thead, #ngspdijrqh tbody, #ngspdijrqh tfoot, #ngspdijrqh tr, #ngspdijrqh td, #ngspdijrqh th {
+  border-style: none;
+}
+
+#ngspdijrqh p {
+  margin: 0;
+  padding: 0;
+}
+
+#ngspdijrqh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ngspdijrqh .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ngspdijrqh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ngspdijrqh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ngspdijrqh .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ngspdijrqh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ngspdijrqh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ngspdijrqh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ngspdijrqh .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ngspdijrqh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ngspdijrqh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ngspdijrqh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ngspdijrqh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ngspdijrqh .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ngspdijrqh .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ngspdijrqh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ngspdijrqh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ngspdijrqh .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ngspdijrqh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ngspdijrqh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ngspdijrqh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ngspdijrqh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ngspdijrqh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ngspdijrqh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ngspdijrqh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ngspdijrqh .gt_left {
+  text-align: left;
+}
+
+#ngspdijrqh .gt_center {
+  text-align: center;
+}
+
+#ngspdijrqh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ngspdijrqh .gt_font_normal {
+  font-weight: normal;
+}
+
+#ngspdijrqh .gt_font_bold {
+  font-weight: bold;
+}
+
+#ngspdijrqh .gt_font_italic {
+  font-style: italic;
+}
+
+#ngspdijrqh .gt_super {
+  font-size: 65%;
+}
+
+#ngspdijrqh .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ngspdijrqh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ngspdijrqh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ngspdijrqh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ngspdijrqh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ngspdijrqh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ngspdijrqh .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#ngspdijrqh .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ngspdijrqh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="Life-Expectancy" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Life Expectancy</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">(Intercept)</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">73.02*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">(0.97)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Unemployment Rate (%)</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">-0.12</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.10)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">187</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">0.008</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">0.003</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
+<td class="gt_row gt_center" headers="Life Expectancy" style="background-color: #FFFFFF; font-size: x-large">7.55</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="panel-tabset">
+<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Predictions</a></li><li><a href="#tabset-4-2">Residuals</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-2">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p><strong>Did everybody get these results for the unemployment regression?</strong></p>
+<p><br></p>
+<p><strong>Interpret the coefficient for me</strong></p>
+<ul>
+<li><p>As the unemployment rate increases by 1%, average life expectancy decreases .12 years</p>
+<ul>
+<li>So, add 8% unemployment and shave one year off of average life expectancies!</li>
+</ul></li>
+</ul>
+<p><br></p>
+<p><strong>What is obvious from this set of predictions?</strong></p>
+<ul>
+<li>Negative but the effect magnitude is TINY</li>
+</ul>
+<p><br></p>
+<p><strong>So, how well does the regression line fit the data?</strong></p>
+<ul>
+<li><strong>e.g.&nbsp;missing data, significance, R2, residuals</strong></li>
+</ul>
+<p><br></p>
+<ul>
+<li>Some missing data, insignificant coefficient, some problems in the residuals plot</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Put them all together!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="models-of-global-life-expectancy" class="slide level2 center smaller" data-background-image="Images/background-data_blue_v4.png">
+<h2>Models of Global Life Expectancy</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="bclyzkpjcr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bclyzkpjcr table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#bclyzkpjcr thead, #bclyzkpjcr tbody, #bclyzkpjcr tfoot, #bclyzkpjcr tr, #bclyzkpjcr td, #bclyzkpjcr th {
+  border-style: none;
+}
+
+#bclyzkpjcr p {
+  margin: 0;
+  padding: 0;
+}
+
+#bclyzkpjcr .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#bclyzkpjcr .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#bclyzkpjcr .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#bclyzkpjcr .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#bclyzkpjcr .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#bclyzkpjcr .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#bclyzkpjcr .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#bclyzkpjcr .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#bclyzkpjcr .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#bclyzkpjcr .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#bclyzkpjcr .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bclyzkpjcr .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#bclyzkpjcr .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#bclyzkpjcr .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#bclyzkpjcr .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bclyzkpjcr .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#bclyzkpjcr .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#bclyzkpjcr .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#bclyzkpjcr .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bclyzkpjcr .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#bclyzkpjcr .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bclyzkpjcr .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#bclyzkpjcr .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bclyzkpjcr .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bclyzkpjcr .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bclyzkpjcr .gt_left {
+  text-align: left;
+}
+
+#bclyzkpjcr .gt_center {
+  text-align: center;
+}
+
+#bclyzkpjcr .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#bclyzkpjcr .gt_font_normal {
+  font-weight: normal;
+}
+
+#bclyzkpjcr .gt_font_bold {
+  font-weight: bold;
+}
+
+#bclyzkpjcr .gt_font_italic {
+  font-style: italic;
+}
+
+#bclyzkpjcr .gt_super {
+  font-size: 65%;
+}
+
+#bclyzkpjcr .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#bclyzkpjcr .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#bclyzkpjcr .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#bclyzkpjcr .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#bclyzkpjcr .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#bclyzkpjcr .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#bclyzkpjcr .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#bclyzkpjcr .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#bclyzkpjcr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1963,76 +3339,76 @@
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Fertility (births per woman)</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">-4.89*</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">(Intercept)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">84.72*</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">65.31*</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">73.02*</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">(0.23)</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">(0.65)</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">(2.03)</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">(0.97)</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Tobacco Use (%)</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.22*</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Fertility (births per woman)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">-4.89*</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">(0.06)</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">(0.23)</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Compulsory Education (years)</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">0.72*</td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Compulsory Education (years)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">0.72*</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">(0.20)</td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">(0.20)</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">84.72*</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">67.57*</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">65.31*</td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Unemployment Rate (%)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">-0.12</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.65)</td>
-<td class="gt_row gt_center" headers="(2)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(1.29)</td>
-<td class="gt_row gt_center" headers="(3)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(2.03)</td>
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(0.10)</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">209</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">161</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">192</td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">209</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">192</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">187</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.691</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.084</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">0.065</td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">0.691</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">0.065</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">0.008</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.689</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.079</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">0.060</td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">0.689</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">0.060</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">0.003</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">4.15</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">7.07</td>
-<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: x-large">7.16</td>
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">RMSE</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">4.15</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">7.16</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">7.55</td>
 </tr>
 </tbody><tfoot class="gt_sourcenotes">
 <tr class="odd">
@@ -2048,1396 +3424,13 @@
 <aside class="notes">
 <p><strong>Ok, where does this leave us?</strong></p>
 <ul>
-<li><strong>Is one model more useful than the others?</strong></li>
+<li><strong>Is one model more useful than the others? Why?</strong></li>
 </ul>
 <p><br></p>
+<p>Canvas assignment for next class</p>
 <ul>
-<li><p>Tobacco missing a ton of data and appears to have some unmodeled non-linearity</p></li>
-<li><p>The other two are pretty good fits, so…</p></li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: A “usefulness” argument should ABSOLUTELY consider the predictions!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="check-the-predictions" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Check the Predictions</h2>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:60%;">
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>$compulsory_education_yrs
-# Predicted values of life_expectancy_total
-
-compulsory_education_yrs | Predicted |       95% CI
----------------------------------------------------
-                       0 |     65.31 | 61.30, 69.31
-                       6 |     69.64 | 67.81, 71.48
-                       7 |     70.36 | 68.84, 71.89
-                       9 |     71.81 | 70.73, 72.89
-                      11 |     73.25 | 72.14, 74.37
-                      12 |     73.98 | 72.66, 75.29
-                      14 |     75.42 | 73.51, 77.33
-                      17 |     77.59 | 74.62, 80.56
-
-
-attr(,"class")
-[1] "ggalleffects" "list"        
-attr(,"model.name")
-[1] "res3"</code></pre>
-</div>
-</div>
-</div><div class="column" style="width:40%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p><strong>What do we learn about the education regression from considering the predictions?</strong></p>
-<p><br></p>
-<ul>
-<li><p>A country with ZERO required school that implements a primary education requirement will see, on average, an improvement of 4 years of life expectancy</p>
-<ul>
-<li>0 to 6 yrs education = 69.64-65.31 = 4.33</li>
-</ul></li>
-<li><p>A country moving from a primary only requirement to a secondary ed requirement will see, on average, an improvement of 4 years of life expectancy</p></li>
-<li><p>Do both and add 8 years!</p></li>
-</ul>
-<p><br></p>
-<p><strong>Make sense?</strong></p>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s check fertility rate</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="check-the-predictions-1" class="slide level2 center smaller" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Check the Predictions</h2>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:60%;">
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>$fertility_rate_per_woman
-# Predicted values of life_expectancy_total
-
-fertility_rate_per_woman | Predicted |       95% CI
----------------------------------------------------
-                       0 |     84.72 | 83.45, 86.00
-                       1 |     79.83 | 78.94, 80.73
-                       2 |     74.94 | 74.33, 75.56
-                       3 |     70.05 | 69.45, 70.66
-                       4 |     65.16 | 64.30, 66.03
-                       5 |     60.27 | 59.03, 61.51
-                       6 |     55.38 | 53.73, 57.04
-                       7 |     50.49 | 48.41, 52.57
-
-
-attr(,"class")
-[1] "ggalleffects" "list"        
-attr(,"model.name")
-[1] "res1"</code></pre>
-</div>
-</div>
-</div><div class="column" style="width:40%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p><strong>What is obvious from this set of predictions?</strong></p>
-<p><br></p>
-<p>The effect is DRAMATICALLY larger</p>
-<ul>
-<li><p>ONE additional child is a 5 year decrease in life expectancy (on average)!</p></li>
-<li><p>The effect of fertility rate on life expectancy is staggeringly large!</p></li>
-</ul>
-<p><br></p>
-<p><strong>So, if you ran a development agency would you get more bang from your buck focusing on women’s rights and healthcare or increasing compulsory education?</strong></p>
-<p><br></p>
-<p>Data is cool, right?</p>
-<p><br></p>
-<p><strong>Any questions on our practice work from today?</strong></p>
-<p><br></p>
-<p><strong>SLIDE</strong>: Before we end today, let’s see if we can fix the tobacco non-linearity problem!</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="adapting-to-non-linear-trends" class="slide level2">
-<h2>Adapting to Non-Linear Trends</h2>
-
-<img data-src="libs/Images/11_3-squared_functions.svg" class="r-stretch"><aside class="notes">
-<p>Don’t stress this, but we’re just reaching back to your basic algebra skills</p>
-<ul>
-<li><p>The key here is that we can add squared terms to a function in order to describe parabolic shapes</p></li>
-<li><p>e.g.&nbsp;curves!</p></li>
-</ul>
-<p><br></p>
-<p>These approaches allow us to model:</p>
-<ol type="1">
-<li><p>exponential growth</p></li>
-<li><p>exponential declines</p></li>
-<li><p>effects that change across the levels of the predictor from positive to negative and back again</p></li>
-</ol>
-<p><br></p>
-<p><strong>SLIDE</strong>: Applied to the tobacco problem…</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-8" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p>Life Exp = <span class="math inline">\(\alpha\)</span> + <span class="math inline">\(\beta_1\)</span> (Tobacco) + <span class="math inline">\(\beta_2\)</span> (Tobacco<span class="math inline">\(^2\)</span>)</p>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div id="cytkkzfwsa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#cytkkzfwsa table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#cytkkzfwsa thead, #cytkkzfwsa tbody, #cytkkzfwsa tfoot, #cytkkzfwsa tr, #cytkkzfwsa td, #cytkkzfwsa th {
-  border-style: none;
-}
-
-#cytkkzfwsa p {
-  margin: 0;
-  padding: 0;
-}
-
-#cytkkzfwsa .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#cytkkzfwsa .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#cytkkzfwsa .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#cytkkzfwsa .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#cytkkzfwsa .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#cytkkzfwsa .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#cytkkzfwsa .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#cytkkzfwsa .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#cytkkzfwsa .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#cytkkzfwsa .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#cytkkzfwsa .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#cytkkzfwsa .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#cytkkzfwsa .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#cytkkzfwsa .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#cytkkzfwsa .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#cytkkzfwsa .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#cytkkzfwsa .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#cytkkzfwsa .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#cytkkzfwsa .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#cytkkzfwsa .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#cytkkzfwsa .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#cytkkzfwsa .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#cytkkzfwsa .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#cytkkzfwsa .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#cytkkzfwsa .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#cytkkzfwsa .gt_left {
-  text-align: left;
-}
-
-#cytkkzfwsa .gt_center {
-  text-align: center;
-}
-
-#cytkkzfwsa .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#cytkkzfwsa .gt_font_normal {
-  font-weight: normal;
-}
-
-#cytkkzfwsa .gt_font_bold {
-  font-weight: bold;
-}
-
-#cytkkzfwsa .gt_font_italic {
-  font-style: italic;
-}
-
-#cytkkzfwsa .gt_super {
-  font-size: 65%;
-}
-
-#cytkkzfwsa .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#cytkkzfwsa .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#cytkkzfwsa .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#cytkkzfwsa .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#cytkkzfwsa .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#cytkkzfwsa .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#cytkkzfwsa .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#cytkkzfwsa .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#cytkkzfwsa div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
-<th id="a(2)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(2)</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Tobacco Use (%)</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.22*</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">1.36*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">(0.06)</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">(0.22)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Tobacco^2</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">-0.03*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">(0.00)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">67.57*</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">57.52*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(1.29)</td>
-<td class="gt_row gt_center" headers="(2)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(2.23)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">161</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">161</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.084</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.224</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.079</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.214</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">7.07</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">6.51</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="3" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p>Think of this like a preview of multiple regression</p>
-<ul>
-<li>e.g.&nbsp;adding more variables to a regression</li>
-</ul>
-<p><br></p>
-<p>Model 1 in the Table is what you fit, Model 2 adds a squared version of tobacco to the regression</p>
-<ul>
-<li><p>We are still dealing with the formula for a line, but there are two separate slope terms that both combine to estimate the relationship</p></li>
-<li><p>We interpret this the same way as before but now each increase in tobacco use has TWO simultaneous effects</p></li>
-<li><p>Each 1 adds the first coefficient, but also the square of that 1 adds the second coefficient</p></li>
-<li><p>This is why we are now producing a curved line</p></li>
-</ul>
-<p><br></p>
-<p><strong>First of all, does Model 2 fit the data better?</strong></p>
-<ul>
-<li>(Yes: Increases R2, both coefficients significant, reduced error)</li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: We can see this improvement in the residuals too</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="check-the-residuals-3" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Check the Residuals</h2>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p><strong>Pretty clear improvements, no?</strong></p>
-<p><br></p>
-<p><strong>SLIDE</strong>: Let’s interpret the new model</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-9" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2></h2>
-<p>Life Exp = <span class="math inline">\(\alpha\)</span> + <span class="math inline">\(\beta_1\)</span> (Tobacco) + <span class="math inline">\(\beta_2\)</span> (Tobacco<span class="math inline">\(^2\)</span>)</p>
-<p><br></p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div id="wfwdufgofy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#wfwdufgofy table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#wfwdufgofy thead, #wfwdufgofy tbody, #wfwdufgofy tfoot, #wfwdufgofy tr, #wfwdufgofy td, #wfwdufgofy th {
-  border-style: none;
-}
-
-#wfwdufgofy p {
-  margin: 0;
-  padding: 0;
-}
-
-#wfwdufgofy .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#wfwdufgofy .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#wfwdufgofy .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#wfwdufgofy .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#wfwdufgofy .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#wfwdufgofy .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#wfwdufgofy .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#wfwdufgofy .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#wfwdufgofy .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#wfwdufgofy .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#wfwdufgofy .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#wfwdufgofy .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#wfwdufgofy .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#wfwdufgofy .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#wfwdufgofy .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#wfwdufgofy .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#wfwdufgofy .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#wfwdufgofy .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#wfwdufgofy .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#wfwdufgofy .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#wfwdufgofy .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#wfwdufgofy .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#wfwdufgofy .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#wfwdufgofy .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#wfwdufgofy .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#wfwdufgofy .gt_left {
-  text-align: left;
-}
-
-#wfwdufgofy .gt_center {
-  text-align: center;
-}
-
-#wfwdufgofy .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#wfwdufgofy .gt_font_normal {
-  font-weight: normal;
-}
-
-#wfwdufgofy .gt_font_bold {
-  font-weight: bold;
-}
-
-#wfwdufgofy .gt_font_italic {
-  font-style: italic;
-}
-
-#wfwdufgofy .gt_super {
-  font-size: 65%;
-}
-
-#wfwdufgofy .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#wfwdufgofy .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#wfwdufgofy .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#wfwdufgofy .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#wfwdufgofy .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#wfwdufgofy .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#wfwdufgofy .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#wfwdufgofy .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#wfwdufgofy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="header gt_col_headings">
-<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
-<th id="a(2)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(2)</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Tobacco Use (%)</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.22*</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">1.36*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">(0.06)</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">(0.22)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Tobacco^2</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">-0.03*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">(0.00)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">67.57*</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">57.52*</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
-<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(1.29)</td>
-<td class="gt_row gt_center" headers="(2)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(2.23)</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">161</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">161</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.084</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.224</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.079</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">0.214</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
-<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">7.07</td>
-<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: x-large">6.51</td>
-</tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
-<td colspan="3" class="gt_sourcenote">* p &lt; 0.05</td>
-</tr>
-</tfoot>
-
-</table>
-
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="11_1-Simple_OLS_Practice_WDI_files/figure-revealjs/unnamed-chunk-28-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-<aside class="notes">
-<p>Let’s talk interpretation of the curved line</p>
-<ul>
-<li><p>Just as before we can think of the coefficients as changes in the predictor by one</p></li>
-<li><p>HOWEVER, the second coefficient doesn’t change by ones, it changes by squares</p></li>
-<li><p>So, the model prediction at 10% tobacco use is 10 x 1.36 PLUS 10^2 or 100 x -.03</p></li>
-<li><p>And the model prediction at 40% tobacco use is 40 x 1.36 PLUS 40^2 or 1600 x -.03</p></li>
-</ul>
-<p><br></p>
-<p>This means at low levels of tobacco use the first coefficient is bigger than the second</p>
-<ul>
-<li>e.g.&nbsp;tobacco use extends life expectancies on average</li>
-</ul>
-<p><br></p>
-<p>HOWEVER, once you get beyond the mid-20s in tobacco use, the second coefficient starts to outweigh the increases</p>
-<ul>
-<li>So, even though the squared coefficient is tiny it gets added thousands of times at the high end of the scale</li>
-</ul>
-<p><br></p>
-<p><strong>Anybody want to take a stab at explaining why we might see this relationship in the real world?</strong></p>
-<ul>
-<li><strong>Do we think tobacco use actually improves lives?</strong></li>
-</ul>
-<p><br></p>
-<p>(Definitely not. My guess is this is a proxy for wealth at the low end)</p>
-<ul>
-<li><p>As income goes up from a very low point access to entertainment products like tobacco increases</p></li>
-<li><p>BUT, at a certain point the effect of the tobacco use harms health and lowers life expectancies</p></li>
-</ul>
-<p><br></p>
-<p>Pretty cool, right?</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="next-class" class="slide level2 center" data-background-image="libs/Images/background-slate_v2.png">
-<h2>Next Class</h2>
-<p><br></p>
-<p><strong>Causal Inference Week</strong></p>
-<ul>
-<li>Huntington-Klein 2022 chapter 5 “The Challenge of Identification”</li>
-</ul>
-<aside class="notes">
-<p>Next week we tackle some big, important ideas.</p>
-<ul>
-<li><p>Specifically, how do we make an argument about causality if all our methods so far have just been aimed at describing associations?</p></li>
-<li><p>Important material for social scientists AND for those heading off to Research Design and Senior Seminar!</p></li>
+<li><p>What is the effect of tobacco use on average life expectancies around the world?</p></li>
+<li><p>Details on Canvas</p></li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -3455,7 +3448,7 @@ attr(,"model.name")
 
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 

@@ -2,20 +2,22 @@
 format: revealjs
 ---
 
-# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r}
 library(tidyverse)
 library(readxl)
 library(kableExtra)
 library(modelsummary)
+library(ggeffects)
 
-d <- read_excel("../Data_in_Class/Merged_Dataset-2006-2016.xlsx", na = "NA")
+# Input merged project data
+d <- read_excel("../Data_in_Class/Data-2024-EPI_RSF-Merged.xlsx", na = "NA")
 ```
 
 <br>
 
-<br>
+::: {.r-fit-text}
 
 **Thinking Carefully About Causal Inference**
 
@@ -23,7 +25,7 @@ d <- read_excel("../Data_in_Class/Merged_Dataset-2006-2016.xlsx", na = "NA")
 
 -   An Identification Strategy
 
-<br>
+:::
 
 <br>
 
@@ -47,7 +49,7 @@ This week I want us to explore causal inference.
 -   How do we start to build this argument in our project this semester?
 :::
 
-## Correlation Does Not Imply Causation {.center background-image="Images/background-slate_v2.png"}
+## Correlation Does Not Imply Causation {.center background-image="Images/background-data_blue_v4.png"}
 
 ```{r, fig.align='center'}
 knitr::include_graphics("Images/12_1-dinosaur_correlation.webp")
@@ -63,7 +65,7 @@ You've probably all heard the oft repeated phrase: "correlation does not imply c
 **SLIDE**: HOWEVER, ...
 :::
 
-## Correlation May Imply Causation {.center background-image="Images/background-slate_v2.png"}
+## Correlation May Imply Causation {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -135,7 +137,7 @@ Correlation doesn't tell us which, but it does tell us something is likely going
 **SLIDE**: And so the takeaway for us is...
 :::
 
-## Correlation and Causation {.center background-image="Images/background-slate_v2.png"}
+## Correlation and Causation {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -155,7 +157,7 @@ To do this I want us to take a step back from the work we've been doing all seme
 -   We need to start our exploration of causal inference by talking about where data comes from.
 :::
 
-## Exploratory Data Analyses {.center background-image="Images/background-slate_v2.png"}
+## Exploratory Data Analyses {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -177,27 +179,29 @@ In short, I gave you data (gathered by someone else) and you used it to tell me 
 **SLIDE**: Our approach to this task followed three general steps
 :::
 
-## 1. Analyzed the Methodology {.center background-image="Images/background-slate_v2.png"}
+
+
+## 1. Analyzed the Methodology {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-::: columns
-::: {.column width="45%"}
+::::: {columns}
+:::: {.column width="45%"}
 ::: r-fit-text
 Predictor
 
--   National Military Capabilities (CoW)
+- Press Freedom Index
 
 Outcome
 
--   Fragile States Index (FFP)
+- Environmental Performance Index
 :::
-:::
+::::
 
-::: {.column width="10%"}
-:::
+:::: {.column width="10%"}
+::::
 
-::: {.column width="45%"}
+:::: {.column width="45%"}
 -   Source of the Data
 
 -   Operationalization
@@ -207,8 +211,8 @@ Outcome
 -   Measurement Process
 
 -   Data Validation
-:::
-:::
+::::
+:::::
 
 ::: notes
 First we analyzed the research design that produced these measures.
@@ -232,41 +236,43 @@ I hope everyone now better understands that THESE choices are FAR MORE impactful
 -   Almost always THESE are the source of the problems in any data analysis
 :::
 
-## 2. Univariate Analyses {.center background-image="Images/background-slate_v2.png"}
+
+
+## 2. Univariate Analyses {.center background-image="Images/background-data_blue_v4.png"}
 
 ::: columns
 ::: {.column width="50%"}
-```{r, fig.align='center', fig.width=6}
+```{r, fig.align='center', fig.width=6, eval=TRUE}
 d |>
-  ggplot(aes(x = cinc_pct)) +
+  ggplot(aes(x = Press_Global)) +
   geom_histogram(color = "white", bins = 15) +
   theme_bw() + 
-  labs(x = "CINC (%)", y = "Count", caption = "Source: CoW NMC Database",
-       title = "Predictor: Military Capabilities")
+  labs(x = "Press Freedom Index", y = "Count", caption = "Source: RSF",
+       title = "Predictor: Global Press Freedom (2024)")
 
 d |>
   summarize(
-    Mean = mean(cinc_pct),
-    "Std Dev" = sd(cinc_pct)
+    Mean = mean(Press_Global),
+    "Std Dev" = sd(Press_Global)
   ) |>
   kbl(digits = 2)
 ```
 :::
 
 ::: {.column width="50%"}
-```{r, fig.align='center', fig.width=6}
+```{r, fig.align='center', fig.width=6, eval=TRUE}
 d |>
-  ggplot(aes(x = P3_Human_Rts)) +
+  ggplot(aes(x = EPI.new)) +
   geom_histogram(color = "white", bins = 15) +
   theme_bw() + 
-  labs(x = "Human Rights Indicator", y = "Count", caption = "Source: FFP",
-       title = "Outcome: Respect for Human Rights / Rule of Law") +
+  labs(x = "Environmental Quality Index", y = "Count", caption = "Source: Yale",
+       title = "Outcome: Environmental Quality (2024)") +
   scale_x_continuous(breaks = 0:10)
 
 d |>
   summarize(
-    Mean = mean(P3_Human_Rts),
-    "Std Dev" = sd(P3_Human_Rts)
+    Mean = mean(EPI.new),
+    "Std Dev" = sd(EPI.new)
   ) |>
   kbl(digits = 2)
 ```
@@ -293,16 +299,19 @@ As I hope was clear from the reading today, THIS step is vital for learning abou
 -   The whole ballgame of statistical modeling!
 :::
 
-## 3. Bivariate Analyses {.center background-image="Images/background-slate_v2.png"}
+
+
+## 3. Bivariate Analyses {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
-::: columns
+:::: columns
 ::: {.column width="50%"}
-```{r, fig.align='center'}
-res1 <- lm(data = d, P3_Human_Rts ~ cinc_pct)
+```{r, fig.align='center', eval=TRUE}
+res1 <- lm(data = d, EPI.new ~ Press_Global)
+res2 <- lm(data = d, EPI.new ~ Press_Global + I(Press_Global^2))
 
-modelsummary(models = list(res1), stars = c("*" = .05), fmt = 2, gof_omit = "IC|F|Log", output = "gt", coef_map = c('cinc_pct' = 'CINC (%)', '(Intercept)' = 'Constant')) |>
+modelsummary(models = list("Environmental Quality" = res1, res2), stars = c("*" = .05), fmt = 2, gof_omit = "IC|F|Log", output = "gt", coef_rename = c('Press_Global' = 'Press Freedom Index')) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
@@ -311,18 +320,19 @@ modelsummary(models = list(res1), stars = c("*" = .05), fmt = 2, gof_omit = "IC|
 :::
 
 ::: {.column width="50%"}
-```{r, fig.align='center', fig.asp=.9, fig.width=6}
-d |>
-  ggplot(aes(x = cinc_pct, y = P3_Human_Rts)) +
-  geom_point() +
-  theme_bw() +
-  geom_smooth(method = "lm") +
-  labs(x = "CINC (%)", y = "Human Rights Indicator") +
-  scale_x_continuous(breaks = seq(0, 24, 2)) + 
-  scale_y_continuous(breaks = 0:10)
+```{r, fig.align='center', fig.asp=.9, fig.width=6, eval=TRUE}
+plot(ggpredict(res2, terms = "Press_Global"))
+# 
+# 
+# d |>
+#   ggplot(aes(x = Press_Global, y = EPI.new)) +
+#   geom_point() +
+#   theme_bw() +
+#   geom_smooth(method = "lm") +
+#   labs(x = "Press Freedom Index", y = "Environmental Quality")
 ```
 :::
-:::
+::::
 
 ::: notes
 Our third step was to use bivariate analysis tools to describe the relationships between our predictors and the outcome variables.
@@ -336,7 +346,12 @@ Our third step was to use bivariate analysis tools to describe the relationships
 **SLIDE**: Our final job this semester is to try and push beyond demonstrating associations or correlations
 :::
 
-## Building a Causal Argument {.center background-image="Images/background-slate_v2.png"}
+
+
+
+
+
+## Building a Causal Argument {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -376,23 +391,23 @@ Much of this language comes from medicine where they focus on treatments and eff
 -   For our purposes, think of "treatment to effect" as synonymous with "predictor to outcome."
 :::
 
-## Building a Causal Argument {.center background-image="Images/background-slate_v2.png"}
+## Building a Causal Argument {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
-::: columns
+:::: columns
 ::: {.column width="50%"}
-```{r, echo = FALSE, fig.align = 'center'}
-knitr::include_graphics("Images/13_1-classroom.jpg")
-```
+
+![](Images/13_1-classroom.jpg)
+
 :::
 
 ::: {.column width="50%"}
-```{r, echo = FALSE, fig.align = 'center'}
-knitr::include_graphics("Images/13_1-student_success2.png")
-```
+
+![](Images/13_1-student_success2.png)
+
 :::
-:::
+::::
 
 ```{r, fig.retina = 3, fig.align = 'center', fig.width = 7, fig.height=1}
 ## Manual DAG
@@ -428,7 +443,7 @@ Easy peasy, now let's use an experiment to show I am right!
 -   I am now going to walk you through a solid gold, infallible research design for testing a hypothesis
 :::
 
-## Building a Causal Argument {background-image="Images/background-slate_v2.png"}
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png"}
 
 ![](Images/13_1-Student.png){.absolute bottom="100" left="0" width="45%"}
 
@@ -452,7 +467,7 @@ This gives us a measure of Bob's growth for the year
 -   **SLIDE**: the next step is the tricky one
 :::
 
-##  {background-image="Images/background-slate_v2.png"}
+##  {background-image="Images/background-data_blue_v4.png"}
 
 ![](Images/13_1-delorean-time-travel.gif){.absolute top="0" left="250" width="60%"}
 
@@ -474,7 +489,7 @@ In May, AFTER RECORDING BOB's TEST SCORES, you use a time machine to return to A
 **Did I lose anybody here?**
 :::
 
-##  {background-image="Images/background-slate_v2.png"}
+##  {background-image="Images/background-data_blue_v4.png"}
 
 ![](Images/13_1-Student.png){.absolute top="0" left="340" width="35%"}
 
@@ -488,7 +503,7 @@ Step 3: Calculate the difference in test scores between past Bob and past revise
 -   You have a firm estimate of the causal effect of class size on Bob's individual success.
 :::
 
-##  {background-image="Images/background-slate_v2.png"}
+##  {background-image="Images/background-data_blue_v4.png"}
 
 ![](Images/12_1-students2.jpg){.absolute top="0" left="25" width="40%"}
 
@@ -506,7 +521,7 @@ Now all you have to do is repeat this process for a few hundred randomly selecte
 **Questions?**
 :::
 
-##  {.center background-image="Images/background-slate_v2.png"}
+##  {.center background-image="Images/background-data_blue_v4.png"}
 
 ::: r-fit-text
 The Fundamental Problem of Causal Inference
@@ -534,7 +549,7 @@ NOTE: This is a problem for ALL science, not just the social sciences.
 
 
 
-## Randomized Controlled Trials (RCTs) {.center background-image="Images/background-slate_v2.png"}
+## Randomized Controlled Trials (RCTs) {.center background-image="Images/background-data_blue_v4.png"}
 
 ```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
 ## Manual DAG
@@ -589,7 +604,7 @@ Bottom line:
 
 
 
-## Randomized Controlled Trials (RCTs) {.center background-image="Images/background-slate_v2.png"}
+## Randomized Controlled Trials (RCTs) {.center background-image="Images/background-data_blue_v4.png"}
 
 ```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
 ## Manual DAG
@@ -633,7 +648,9 @@ So, RCT is an approach in which we randomly assign the treatment in order to gen
 
 
 
-##  {.center background-image="Images/13_1-armed-forces-personnel.svg"}
+## {.center background-image="Images/background-data_blue_v4.png"}
+
+![](Images/12_1-RSF_Map.png)
 
 ::: notes
 Our Challenge: Estimating causal effects using observational data
@@ -644,14 +661,14 @@ Our Challenge: Estimating causal effects using observational data
 
 <br>
 
-The countries of the world simply aren't going to let us randomly assign the size of their armies in order to test some theory.
+The countries of the world simply aren't going to let us randomly assign their levels of press freedom in order to test some theory.
 
 <br>
 
 So, the question becomes, how do you identify a causal effect in the absence of a time machine or random assignment.
 :::
 
-## Our Challenge {background-image="Images/background-slate_v2.png"}
+## Our Challenge {background-image="Images/background-data_blue_v4.png"}
 
 **Estimating Causal Effects Using Observational Data**
 
@@ -671,7 +688,7 @@ Let's say the local school board has agreed to give us last year's anonymized da
 -   e.g. The size of their classes and their end of year test scores
 :::
 
-## The Challenge of Observational Data {.center background-image="Images/background-slate_v2.png"}
+## The Challenge of Observational Data {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -734,7 +751,7 @@ So, unlike in the RCT example we can see that we have a number of reasons to sus
 **Make sense?**
 :::
 
-## Developing a Causal Argument {background-image="Images/background-slate_v2.png"}
+## Developing a Causal Argument {background-image="Images/background-data_blue_v4.png"}
 
 ![](Images/13_1-HK_ch5.png){.absolute left=50 width="40%"}
 
@@ -761,7 +778,7 @@ I'm always on the lookout for better and more accessible readings on this materi
 
 
 
-## The Data Generating Process (DGP) {.center background-image="Images/background-slate_v2.png"}
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -792,7 +809,7 @@ The danger is that we tend not to interrogate these foundational theories we hol
 
 
 
-## The Data Generating Process (DGP) {.center background-image="Images/background-slate_v2.png"}
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -846,7 +863,7 @@ So, your first big task as a scientist is to train yourself to think of data as 
 
 
 
-## The Data Generating Process (DGP) {.center background-image="Images/background-slate_v2.png"}
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -883,7 +900,7 @@ This means it is VERY hard for us to use the data we collect to make inferences 
 **SLIDE**: In a slightly more applied way of thinking...
 :::
 
-## The Data Generating Process (DGP) {.center background-image="Images/background-slate_v2.png"}
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -951,7 +968,7 @@ And all of that brings us to the data generating process (DGP)
 -   (**SLIDE**)
 :::
 
-## The Data Generating Process (DGP) {.center background-image="Images/background-slate_v2.png"}
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -986,7 +1003,7 @@ Our work to describe how students in SGF end up in large vs small classrooms was
 
 
 
-## The Data Generating Process (DGP) {.center background-image="Images/background-slate_v2.png"}
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -1071,7 +1088,7 @@ The second big step in making a causal argument using observational data is to m
 **SLIDE**: Let's wrap up our work for today with the suggested plan of attack from the reading
 :::
 
-## Identification and the DGP {.center background-image="Images/background-slate_v2.png"}
+## Identification and the DGP {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -1084,12 +1101,20 @@ The second big step in making a causal argument using observational data is to m
 :::
 
 ::: notes
+
+**REVEAL x 3**
+
+<br>
+
 Our work today has primarily focused on this first step.
 
 -   Our work on Wednesday will be much more focused on steps two and three.
 :::
 
-## For Next Class {.center background-image="Images/background-slate_v2.png"}
+
+
+
+## For Next Class {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
@@ -1097,14 +1122,15 @@ Our work today has primarily focused on this first step.
 
 2.  Brainstorm the DGP for our project (e.g. **SUBMIT** three separate lists of reasons why states would vary in):
 
-    - P3_Human_Rights
-    - CoW NMC CINC
-    - Your assigned indicator from CoW NMC
+    - Global Press Freedom (Press_Global)
+    - Environmental Quality (EPI.new)
+    - Your chosen indicator from the EPI
 
 ::: notes
+
 Submit your lists to Canvas before class!
 
--   Remember, your list for P3_Human_Rights should NOT include these predictors! They are what we are hoping to test!
+-   Remember, your list for Environmental Quality should NOT include press freedom! That's what we are testing!
 
 <br>
 

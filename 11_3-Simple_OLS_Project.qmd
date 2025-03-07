@@ -9,20 +9,24 @@ library(tidyverse)
 library(readxl)
 library(kableExtra)
 library(modelsummary)
+library(modelr)
 library(ggeffects)
+
+# Input merged data
+d <- read_excel("../Data_in_Class/Data-2024-EPI_RSF-Merged.xlsx", na = "NA")
+
+d2 <- read_excel("../Data_in_Class/Data-2015-2022-EPI_RSF-Merged.xlsx", na = "NA")
 ```
 
 <br>
 
-<br>
-
 ::: {.r-fit-text}
-**Working on Report 3**
 
-- Scatterplots, correlations and simple OLS regressions
+**Ordinary Least Squares (OLS) Regression**
+
+- Applying OLS to our research project
+
 :::
-
-<br>
 
 <br>
 
@@ -33,218 +37,204 @@ Justin Leinaweaver (Spring 2025)
 ::: notes
 Prep for Class
 
-1. Make sure merged data available on Canvas
-
-2. Post assignment details on Canvas
+1. Check Canvas submissions
 
 <br>
 
-**SLIDE**: Let's touch base on the pre-class work
+**SLIDE**: Review assignments
 
-Ok, this week we work on your third report so let's talk about it.
 :::
 
 
 
-## For today, evaluate the fit of both regressions (all four steps): {background-image="Images/background-slate_v2.png" .center}
+## For Today {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-1. Regress city fuel economy on engine displacement ('mpg' datatset)
+**Working on our Research Project (2024 Only)**
 
-2. Regress percent of people below the  poverty line (`percbelowpoverty`) on the percent college educated (`percollege`) in the `midwest` datatset
+1. Regress Yale's EPI on RSF's Press Freedom Index
+
+2. Regress one other EPI indicator on RSF's Press Freedom Index
+
+<br>
+
+Submit a polished regression table, residuals plot, predictions plot, and your analysis of the findings.
+
+::: notes
+
+**How did this go?**
+
+- **Any big picture problems to discuss before we report back on your findings?**
+
+<br>
+
+**SLIDE**: Overall results
+
+:::
 
 
 
-## City Fuel Economy and Engine Size {background-image="Images/background-slate_v2.png" .center .smaller}
+## {background-image="Images/background-data_blue_v4.png"}
 
-:::: {.columns}
-::: {.column width="40%"}
-```{r}
-model1 <- lm(data = mpg, cty ~ displ)
-predictions1 <- ggpredict(model1, terms = "displ")
+::::: {.columns}
 
-modelsummary(list("Fuel Economy (City)" = model1), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("displ"= "Engine Size", "(Intercept)" = "Constant")) |>
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res1 <- lm(data = d, EPI.new ~ Press_Global)
+
+modelsummary(list("Environmental Quality" = res1),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("Press_Global" = "Press Freedom Index")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
   ), locations = gt::cells_body())
 ```
 
+::::
 
-```{r, echo=TRUE}
-nrow(mpg)
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(ggpredict(res1, terms = "Press_Global")) +
+  labs(x = "Press Freedom Index",
+       y = "Environmental Quality")
 ```
-:::
 
-::: {.column width="60%"}
-```{r, echo = FALSE, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
-plot(model1, which = 1)
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res1, which = 1)
 ```
 
 :::
 ::::
+:::::
+
+::: notes
+
+**Did everybody get these results?**
+
+<br>
+
+**What do we learn from these regression results?**
+
+- *YOU be quiet, it's on them*
+
+<br>
+
+**Did anybody check to see if a squared term gives a better fit here?**
+
+- (**SLIDE**: I hope so!!!!!!)
+
+:::
 
 
 
-## College Education and Poverty {background-image="Images/background-slate_v2.png" .center .smaller}
+## {background-image="Images/background-data_blue_v4.png"}
 
-:::: {.columns}
-::: {.column width="40%"}
+::::: {.columns}
 
-```{r}
-model2 <- lm(data = midwest, percbelowpoverty ~ percollege)
-predictions2 <- ggpredict(model2, terms = "percollege")
+:::: {.column width="40%"}
 
-modelsummary(list("Below Poverty (%)" = model2), output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("percollege"= "College Educated (%)", "(Intercept)" = "Constant")) |>
+<br>
+
+```{r, echo=FALSE}
+res2 <- lm(data = d, EPI.new ~ Press_Global + I(Press_Global^2))
+
+modelsummary(list("Environmental Quality" = res2),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("Press_Global" = "Press Freedom Index",
+                             "I(Press_Global^2)" = "Press Freedom Index (Squared)")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
   ), locations = gt::cells_body())
 ```
 
-```{r, echo=TRUE}
-nrow(midwest)
-```
-:::
-
-::: {.column width="60%"}
-```{r, echo = FALSE, fig.asp=0.9, fig.align = 'center', fig.width=7, cache=TRUE}
-plot(model2, which = 1)
-```
-:::
 ::::
 
+:::: {.column width="60%"}
 
+::: {.panel-tabset}
 
+### Predictions
 
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(ggpredict(res2, terms = "Press_Global")) +
+  labs(x = "Press Freedom Index",
+       y = "Environmental Quality")
+```
 
+### Residuals
 
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res2, which = 1)
+```
 
-## Report 3 {background-image="Images/background-slate_v2.png" .center}
+:::
+::::
+:::::
 
-**Bivariate Test of your Hypotheses**
+::: notes
+
+Hot damn, that's cool.
 
 <br>
 
-This report should focus on making a single, over-arching argument that answers this question: Are powerful states more likely to respect the human rights of their citizens?
+Ok, next job, go check out the indicator regressions your classmates made for today
 
-::: notes
-Report 3 is your first chance to try and answer our research question
+- Make note of any you think tell an interesting story!
 
-- This is possible in an effective way because of the work you have done in the first two reports
+- And call out great work!
+
+- Go!
+
+<br>
+
+Ok, now I want everyone to remake their indicator regression BUT this time using the across time data
+
+- e.g. the dataset with observations from 2015 - 2022
+
+- Go!
+
+<br>
+
+**Ok, are the results of your across time analysis consistent with the 2024 results or not?** 
+
+- **Examples to share?**
+
+- *(Save controlling for year for multiple regression*)
+
 :::
 
 
 
-## Report 3 {background-image="Images/background-slate_v2.png" .center}
-
-**Bivariate Test of your Hypotheses**
+## Next Class {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-**Are powerful states more likely to respect the human rights of their citizens?**
+**Causal Inference Week**
 
-1. Analyze the relationship between a country's `cinc` score (CoW NMC) and its measured level of respect for human rights and the rule of law (FFP) **using a scatter plot, a correlation and a simple OLS regression**. 
-
-2. Repeat the above using the CoW NMC **indicator you were assigned in Report 2** instead of the `cinc` score.
+- Huntington-Klein 2022 chapter 5 "The Challenge of Identification"
 
 ::: notes
-In order to answer our research question you will perform two tests on **ALL** of the data
 
-- cinc x p3_human_rights
+Next week we tackle some big, important ideas.
 
-- a selected NMC indicator x p3_human_rights
+- Specifically, how do we make an argument about causality if all our methods so far have just been aimed at describing associations?
 
-<br>
+- Important material for social scientists AND for those heading off to Research Design and Senior Seminar!
 
-**Questions on prompts?**
 
-<br>
-
-**SLIDE**: Notes for the report
 :::
-
-
-
-## Report 3 {background-image="Images/background-slate_v2.png" .center}
-
-**Bivariate Test of your Hypotheses**
-
-<br>
-
-**Submission Requirements**
-
-- Submit a **pdf** to **Canvas** (due **Apr 5th**)
-
-- Include an **APA** formatted bibliography
-
-- Polish **all** included visualizations and tables
-
-- Lead with **arguments** NOT evidence
-
-::: notes
-The basic requirements same as last time
-
-- Late penalty (-10) points per day
-
-<br>
-
-Important note 1: Make sure to lead all paragraphs in the paper with your argument and not with the evidence.
-
-- Explain your argument and support it with the evidence, not vice versa.
-
-<br>
-
-**Questions on these elements?**
-
-<br>
-
-**SLIDE**: Important note 2...
-:::
-
-
-
-## Evaluating the Fit of an OLS Regression {background-image="Images/background-slate_v2.png" .center}
-
-<br>
-
-1. Missing data problems?
-
-2. Are the coefficients significant?
-
-3. What does the R<sup>2</sup> indicate? 
-
-4. Any problems in the residuals plot?
-
-
-::: notes
-Important note 2: Be sure to evaluate all OLS regressions you include using the four steps reviewed in class. 
-
-<br>
-
-These four steps allow you to explain how confident you are in the answers provided by the OLS regression.
-:::
-
-
-
-## Report 3 {background-image="Images/background-slate_v2.png" .center}
-
-**Bivariate Test of your Hypotheses**
-
-<br>
-
-**Are powerful states more likely to respect the human rights of their citizens?**
-
-1. Analyze the relationship between a country's `cinc` score (CoW NMC) and its measured level of respect for human rights and the rule of law (FFP) **using a scatter plot, a correlation and a simple OLS regression**. 
-
-2. Repeat the above using the CoW NMC **indicator you were assigned in Report 2** instead of the `cinc` score.
-
-::: notes
-Alright, let's get to work!
-
-- Let me know if you have questions
-:::
-
