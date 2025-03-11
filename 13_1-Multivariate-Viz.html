@@ -392,14 +392,14 @@
     <div class="slides">
 
 
-<section>
-<section id="todays-agenda" class="title-slide slide level1 center" data-background-image="Images/background-data_blue_v4.png">
-<h1>Today’s Agenda</h1>
+<section id="todays-agenda" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Today’s Agenda</h2>
 <p><br></p>
 <div class="r-fit-text">
 <p><strong>Multivariate Analyses</strong></p>
 <ul>
-<li>Descriptive Statistics and Visualizations</li>
+<li><p>Descriptive Statistics and Visualizations</p></li>
+<li><p>Data: WDI-Multivariate_Viz-2024-04-04.xlsx</p></li>
 </ul>
 </div>
 <p><br></p>
@@ -409,13 +409,16 @@
 <aside class="notes">
 <p>Prep for Class</p>
 <ol type="1">
-<li>Keep using WDI-Practice_Simple_OLS-2024-04-04.xlsx on Modules in Week 11</li>
+<li><p>Review Canvas submissions</p></li>
+<li><p>Data: WDI-Multivariate_Viz-2024-04-04.xlsx</p></li>
 </ol>
 <p><br></p>
 <p>Everybody make sure they have, or redownload, the WDI data I posted in Week 11 on our Canvas Modules page</p>
 <ul>
 <li>We’ll keep working with that data today</li>
 </ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Last week…</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -446,7 +449,7 @@
 <li><p>the need to adjust our analyses for confounders.</p></li>
 </ul>
 <p><br></p>
-<h3 id="any-questions-on-those-big-ideas">Any questions on those big ideas?</h3>
+<p><strong>Any questions on those big ideas?</strong></p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -470,7 +473,21 @@
 <li><p>Gather data that operationalizes the concepts we identified as important confounders in these relatonships.</p></li>
 </ol>
 <p><br></p>
-<h3 id="any-questions-on-those-dags-or-the-variables-we-selected">Any questions on those DAGs or the variables we selected?</h3>
+<p><strong>Any questions on those DAGs or the variables we selected?</strong></p>
+<p><br></p>
+<p>For today I asked each of you to perform univariate analyses on our chosen confounders</p>
+<ul>
+<li><strong>How did that go?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>Do we have sufficient variation in each to be useful?</strong></p>
+<ul>
+<li><strong>In other words, do the countries of the world actually vary in their levels of these confounders?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>Any interesting observations about the world from analyzing these variables on their own?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Plan for today</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -483,23 +500,26 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses</h2>
+<section id="multivariate-analyses-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Multivariate Analyses 1</h2>
 <p><br></p>
 <div class="r-fit-text">
+<p><strong>Working with Categorical Variables as Confounders</strong></p>
 <ol type="1">
 <li><p>Descriptive statistics by groups</p></li>
-<li><p>Using facets to extend any visualization</p></li>
-<li><p>Mapping 3rd variables with colors, shapes or sizes</p></li>
+<li><p>Multiple Facets</p></li>
+<li><p>Adding colors, shapes and sizes</p></li>
 </ol>
 </div>
 <aside class="notes">
 <p>Today I will introduce you to a series of multivariate statistical tools</p>
 <ul>
-<li>These allow you to adjust your analyses for a confounder variable (or multiple confounder variables)</li>
+<li><p>These tools allow you to adjust your visualizations and descriptive statistics for a confounder variable</p></li>
+<li><p>HOWEVER, these tools, and our work this week, will focus ONLY on adding categorical variables to our analyses</p></li>
+<li><p>Adding numeric variables is something we will do using mulitple regression next week</p></li>
 </ul>
 <p><br></p>
-<p>Today we’ll focus on adapting to a single confounder, but know that these techniques can be used for multiple confounders (although it does get messy)</p>
+<p><strong>SLIDE</strong>: Our practice data</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -512,17 +532,17 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="do-countries-with-higher-average-fertility-rates-have-shorter-life-expectancies" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Do countries with higher average fertility rates have shorter life expectancies?</h2>
+<section id="does-increasing-fertility-rates-directly-lower-life-expectancy-around-the-world" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Does increasing fertility rates directly lower life expectancy around the world?</h2>
 <p><br></p>
 
 <img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"><aside class="notes">
 <p>Two weeks ago we used simple OLS models to explore global predictors of life expectancy</p>
 <ul>
-<li>One of our strongest findings was that there is an association between higher average fertility rates and considerably lower life expectancies</li>
+<li>One of our strongest findings was that countries with average fertility rates have lower average life expectancies</li>
 </ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: The question for us is can we build a causal argument that this is more than simple correlation?</p>
+<p><strong>SLIDE</strong>: The question for us is, can we use statistics to establish that this is a causal effect and not just a correlation?</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -561,6 +581,12 @@
 </ul>
 <p><br></p>
 <p><strong>Of these options, are we convinced all of them are likely confounders of this relationship? Why or why not?</strong></p>
+<p><br></p>
+<p>Now, remember our techniques for today are all designed for when you have categorical variables as confounders</p>
+<ul>
+<li><p>None of these are currently categorical!</p></li>
+<li><p><strong>SIDE</strong>: So, our first job is to create categorical versions of each of these variables</p></li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -573,120 +599,52 @@
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 1</h2>
-<p><br></p>
+<section id="section" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
 <div class="r-fit-text">
-<p><strong>Descriptive statistics by groups</strong></p>
-<ul>
-<li><p>categorical x categorical x categorical</p></li>
-<li><p>categorical x categorical x numeric</p></li>
-</ul>
+<p><strong>Convert Numeric Variables to Categorical</strong></p>
 </div>
-<aside class="notes">
-<p>Data analysis principle 3 remains in effect: Variable type determines tool!</p>
-<p><br></p>
-<p>When your multivariate analysis is composed of mostly categorical variables then descriptive statistics by group is a viable approach</p>
-<p><br></p>
-<p>The WDI data we are working with is all numerical data, but we know how to convert numeric into categorical right?</p>
-<ul>
-<li><p><strong>What function do we use?</strong></p></li>
-<li><p>(<strong>SLIDE</strong>: Cut!)</p></li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="multivariate-analyses-approach-1-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 1</h2>
-<p><br></p>
-<p><strong>Identify the quartiles</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">summary</span>(d<span class="sc">$</span>fertility_rate_per_woman)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Get the Quartiles</span></span>
+<span id="cb1-2"><a href=""></a><span class="fu">summary</span>(d<span class="sc">$</span>fertility_rate_per_woman)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
   0.837   1.558   2.040   2.525   3.257   6.892       6 </code></pre>
 </div>
 </div>
 <p><br></p>
-<p><strong>Convert numeric var to categorical</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>d<span class="sc">$</span>fertility2 <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x =</span> d<span class="sc">$</span>fertility_rate_per_woman, </span>
-<span id="cb3-2"><a href=""></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.558</span>, <span class="fl">2.040</span>, <span class="fl">3.257</span>, <span class="dv">7</span>), </span>
-<span id="cb3-3"><a href=""></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Fertility (Q1)"</span>, <span class="st">"Fertility (Q2)"</span>, </span>
-<span id="cb3-4"><a href=""></a>                               <span class="st">"Fertility (Q3)"</span>, <span class="st">"Fertility (Q4)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="fragment">
-<p><strong>Practice: Create categorical versions of <code>gdp_per_capita</code> and <code>tobacco_use_pct</code></strong></p>
-</div>
-<aside class="notes">
-<p>Refresh memories on using cut() to convert numeric to categorical</p>
-<ul>
-<li><p>Remember, your breaks argument needs one more value than labels!</p></li>
-<li><p>Defining the bins requires a start and end point for each bin</p></li>
-</ul>
-<p><br></p>
-<p><strong>Questions on the code?</strong></p>
-<p><br></p>
-<p><strong>REVEAL</strong>: Practice this code by using it to convert gdp and tobacco using the same approach as shown here</p>
-<ul>
-<li><p>e.g.&nbsp;group the cases into quartiles</p></li>
-<li><p>Remember, quartiles mean four equally sized groups which can make it a useful way to describe variation in each group for comparison</p></li>
-</ul>
-<p><br></p>
-<p><strong>SLIDE</strong>: Code results</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="multivariate-analyses-approach-1-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 1</h2>
-<p><br></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>d<span class="sc">$</span>gdp_pc2 <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x =</span> d<span class="sc">$</span>gdp_per_capita, </span>
-<span id="cb4-2"><a href=""></a>                 <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">2262.2</span>, <span class="fl">6370.9</span>, <span class="fl">22805.3</span>, <span class="dv">183000</span>),</span>
-<span id="cb4-3"><a href=""></a>                 <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"GDP pc (Q1)"</span>, <span class="st">"GDP pc (Q2)"</span>, </span>
-<span id="cb4-4"><a href=""></a>                            <span class="st">"GDP pc (Q3)"</span>, <span class="st">"GDP pc (Q4)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>d<span class="sc">$</span>tobacco2 <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x =</span> d<span class="sc">$</span>tobacco_use_pct, </span>
-<span id="cb5-2"><a href=""></a>                  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">11.80</span>, <span class="fl">20.30</span>, <span class="fl">26.60</span>, <span class="dv">50</span>), </span>
-<span id="cb5-3"><a href=""></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Tobacco (Q1)"</span>, <span class="st">"Tobacco (Q2)"</span>, </span>
-<span id="cb5-4"><a href=""></a>                             <span class="st">"Tobacco (Q3)"</span>, <span class="st">"Tobacco (Q4)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><strong>AUDIT: Check the group sizes</strong></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">table</span>(d<span class="sc">$</span>gdp_pc2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="co"># Make the categorical version</span></span>
+<span id="cb3-2"><a href=""></a>d<span class="sc">$</span>fertility_cat <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x =</span> d<span class="sc">$</span>fertility_rate_per_woman, </span>
+<span id="cb3-3"><a href=""></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.558</span>, <span class="fl">2.040</span>, <span class="fl">3.257</span>, <span class="dv">7</span>), </span>
+<span id="cb3-4"><a href=""></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Fertility (Q1)"</span>, <span class="st">"Fertility (Q2)"</span>, </span>
+<span id="cb3-5"><a href=""></a>                               <span class="st">"Fertility (Q3)"</span>, <span class="st">"Fertility (Q4)"</span>))</span>
+<span id="cb3-6"><a href=""></a></span>
+<span id="cb3-7"><a href=""></a><span class="co"># Check the result</span></span>
+<span id="cb3-8"><a href=""></a><span class="fu">table</span>(d<span class="sc">$</span>fertility_cat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4) 
-         53          52          52          53 </code></pre>
+Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4) 
+            53             53             52             53 </code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>Always a good idea to audit the data work you do</p>
+<p>We have previously used the cut() function to convert numeric variables into categorical variables</p>
 <ul>
-<li><p>In this case checking the size of each category with table()</p></li>
-<li><p>Since we made quartiles each groups should be approximately the same size</p></li>
+<li>Let’s practice that skill again now!</li>
 </ul>
 <p><br></p>
-<p><strong>SLIDE</strong>: Now that we have categorical variables we can build our first multivariate analysis</p>
+<p>Everybody copy this code using the cut function to make a categorical version of fertility</p>
+<ul>
+<li><strong>Does everybody remember this approach?</strong></li>
+</ul>
+<p><br></p>
+<p>For ease of our work today I have done this for you for the GDP and tobacco variables</p>
+<ul>
+<li>Both are in today’s dataset with “_cat” at the end.</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: with our categorical confounders in hand we can start on our first multivariate approach…</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -699,43 +657,35 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-1-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 1</h2>
+<section id="section-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Descriptive Statistics by Groups</strong></p>
 <p><br></p>
-<p><strong>Bivariate Descriptive Statistics</strong></p>
+<p><strong>Step 1: Start with the bivariate analysis</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2, <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility_cat, </span>
+<span id="cb5-2"><a href=""></a>          <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      fertility2 life_expectancy_total
+<pre><code>   fertility_cat life_expectancy_total
 1 Fertility (Q1)              78.58678
 2 Fertility (Q2)              76.57482
 3 Fertility (Q3)              71.09696
 4 Fertility (Q4)              63.19423</code></pre>
 </div>
 </div>
-<p><br></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2, <span class="at">FUN =</span> median)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      fertility2 life_expectancy_total
-1 Fertility (Q1)               79.2740
-2 Fertility (Q2)               75.8920
-3 Fertility (Q3)               71.6285
-4 Fertility (Q4)               62.8290</code></pre>
-</div>
 </div>
 <aside class="notes">
-<p><strong>Does everybody remember the aggregate function from our bivariate work a few weeks ago?</strong></p>
-<p><br></p>
-<p>Uses the formula method for variable selection</p>
+<p>Step 1 to taking your descriptive statistics into multivariate analyses starts with the aggregate function</p>
 <ul>
-<li>Any descriptive stats function can be used (mean, median, sd, summary, min, max, etc)</li>
+<li><p>Remember, this is what we used in our bivariate analyses.</p></li>
+<li><p>Any descriptive stats function can be used (mean, median, sd, summary, min, max, etc)</p></li>
 </ul>
 <p><br></p>
 <p>Here we see our main causal mechanism in action</p>
 <ul>
 <li><p>e.g.&nbsp;how mean life expectancy changes across fertility rate groupings</p></li>
-<li><p>In terms of both the means and medians, increasing average fertility rates is associated with a reduction in average life expectancy in 2020.</p></li>
+<li><p>Life expectancy decreases are associated with increases in the fertility rate</p></li>
 </ul>
 <p><br></p>
 <p>There are two ways to add a third variable to the aggregate function</p>
@@ -754,30 +704,23 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-1-4" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 1</h2>
-<p><strong>The Subsets Argument</strong></p>
+<section id="section-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Descriptive Statistics by Groups</strong></p>
+<p><br></p>
+<p><strong>Step 2a: Add a subset (numeric)</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2, <span class="at">FUN =</span> mean,</span>
-<span id="cb12-2"><a href=""></a>          <span class="at">subset =</span> gdp_per_capita <span class="sc">&lt;</span> <span class="fl">6370.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility_cat, </span>
+<span id="cb7-2"><a href=""></a>          <span class="at">FUN =</span> mean,</span>
+<span id="cb7-3"><a href=""></a>          <span class="at">subset =</span> gdp_per_capita <span class="sc">&lt;</span> <span class="fl">6370.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      fertility2 life_expectancy_total
+<pre><code>   fertility_cat life_expectancy_total
 1 Fertility (Q1)              74.11989
 2 Fertility (Q2)              72.83625
 3 Fertility (Q3)              69.39530
 4 Fertility (Q4)              63.19822</code></pre>
 </div>
-</div>
-<p><br></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2, <span class="at">FUN =</span> mean,</span>
-<span id="cb14-2"><a href=""></a>          <span class="at">subset =</span> gdp_per_capita <span class="sc">&gt;</span> <span class="fl">6370.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      fertility2 life_expectancy_total
-1 Fertility (Q1)              79.37761
-2 Fertility (Q2)              77.66560
-3 Fertility (Q3)              75.24399
-4 Fertility (Q4)              64.98400</code></pre>
 </div>
 </div>
 <aside class="notes">
@@ -787,34 +730,14 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
 <li><p>Any relational symbols can be used in subset (e.g.&nbsp;&gt;, &lt;, &gt;=, &lt;=, etc)</p></li>
 </ul>
 <p><br></p>
-<p>Here I am running the aggregate function one time on countries with GDP pc above the median and one time below the median</p>
+<p>I know I told you our focus today would be on categorical confounders, but, hey, this works too!</p>
 <ul>
-<li>In other words, I am estimating the relationship between fertility and life expectancy one time for countries below median wealth and one time above it</li>
+<li><strong>Everybody clear on this code?</strong></li>
 </ul>
 <p><br></p>
-<p><strong>Questions on the code?</strong></p>
+<p><strong>Does our association between fertility rate and life expectancy hold amongst the poorer countries in the world?</strong></p>
 <p><br></p>
-<p><strong>Remind me, why are we doing this and what do these results indicate?</strong></p>
-<p><br></p>
-<p>This represents our first attempt to establish a causal argument</p>
-<ul>
-<li><p>Remember, our interest is on estimating the effect of fertility rate changes on average life expectancies</p></li>
-<li><p>Here we have adjusted our analysis for GDP pc as a confounder in the relationship</p></li>
-</ul>
-<p><br></p>
-<p>Per these results, adjusting our analyses for the wealth of the country does not change our estimated association!</p>
-<ul>
-<li><p>Put more assertively, IFF GDP pc is the only confounder then this is evidence that increasing fertility rates may reduce average life expectancies</p></li>
-<li><p>This is the kind of evidence we would provide to make a causal argument</p></li>
-</ul>
-<p><br></p>
-<p><strong>Make sense?</strong></p>
-<p><br></p>
-<p>Now this is a very weak attempt to adjust for wealth</p>
-<ul>
-<li><p>Just above and below the median</p></li>
-<li><p><strong>SLIDE</strong>: Let’s try another technique to adjust for more levels of wealth</p></li>
-</ul>
+<p><strong>SLIDE</strong>: Rather than having to run this code repeatedly for different subsets lets use our quartiles variable</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -827,15 +750,17 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-1-5" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 1</h2>
+<section id="section-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Descriptive Statistics by Groups</strong></p>
 <p><br></p>
-<p><strong>Adding Extra Categorical Variables</strong></p>
+<p><strong>Step 2a: Add extra variables (categorical)</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility2 <span class="sc">+</span> gdp_pc2, </span>
-<span id="cb16-2"><a href=""></a>          <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility_cat <span class="sc">+</span> gdp_pc_cat, </span>
+<span id="cb9-2"><a href=""></a>          <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       fertility2     gdp_pc2 life_expectancy_total
+<pre><code>    fertility_cat  gdp_pc_cat life_expectancy_total
 1  Fertility (Q2) GDP pc (Q1)              71.96800
 2  Fertility (Q3) GDP pc (Q1)              68.15742
 3  Fertility (Q4) GDP pc (Q1)              62.27090
@@ -852,6 +777,7 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
 14 Fertility (Q3) GDP pc (Q4)              79.84459</code></pre>
 </div>
 </div>
+</div>
 <aside class="notes">
 <p>The second way to modify the aggregate function is to add additional categorical variables to the formula argument</p>
 <ul>
@@ -859,11 +785,21 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
 </ul>
 <p><br></p>
 <p><strong>Everybody get this code to work?</strong></p>
+<ul>
+<li><p>Note that there’s a catch to these results!</p></li>
+<li><p>In the poorest states (GDP pc Q1) there are NO states with the lowest fertility rates!</p></li>
+<li><p>In the richest states it’s the opposite!</p></li>
+</ul>
 <p><br></p>
-<p><strong>Do our results hold up to adjusting for four levels of state wealth?</strong></p>
+<p><strong>So, do our results hold up to adjusting for four levels of state wealth?</strong></p>
 <ul>
 <li><p>We can see the effect of interest (fertility -&gt; life exp) holds up in all instances except the richest countries!</p></li>
 <li><p>Apparently, in rich countries it looks like the negative effects of fertility rate may be reduced!</p></li>
+</ul>
+<p><br></p>
+<p>This means IFF our causal argument specified GDP pc as the only confounder then this analysis is evidence of a causal relationship and not just correlation!</p>
+<ul>
+<li><strong>Does everybody understand this distinction?</strong></li>
 </ul>
 <p><br></p>
 <p><strong>Any questions about using aggregate for multivariate analyses?</strong></p>
@@ -881,18 +817,20 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-1-6" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 1</h2>
+<section id="section-4" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Descriptive Statistics by Groups</strong></p>
 <p><br></p>
-<p><strong>What is the impact of adjusting for tobacco use as a confounder?</strong></p>
-<p><br></p>
+<p><strong>Replicate but replace GDP with tobacco as a confounder</strong></p>
+</div>
 <div class="fragment">
 <div class="cell">
 <div class="cell-output-display">
 <table class="table caption-top" data-quarto-postprocess="true" style="font-size: 30px; margin-left: auto; margin-right: auto;">
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">tobacco2</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">tobacco_cat</th>
 <th style="text-align: center;" data-quarto-table-cell-role="th">Fertility (Q1)</th>
 <th style="text-align: center;" data-quarto-table-cell-role="th">Fertility (Q2)</th>
 <th style="text-align: center;" data-quarto-table-cell-role="th">Fertility (Q3)</th>
@@ -962,38 +900,26 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 2</h2>
+<section id="section-5" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Extend a Visualization with Facets</strong></p>
+</div>
 <p><br></p>
-<p><strong>If you are adding a categorical variable you can use a facet wrap on ANY visualization</strong></p>
-<aside class="notes">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb11-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb11-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb11-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
 <p>Multivariate approach 2 uses facet wraps</p>
 <ul>
 <li>IFF the third variable you want to add to any analysis is categorical, you can use a facet wrap to do it</li>
 </ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="multivariate-analyses-approach-2-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 2</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
-<span id="cb18-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb18-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb18-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="864"><aside class="notes">
-<p>Here’s our bivariate scatter plot of the key association we’re analyzing</p>
+<p><br></p>
+<p>Just like before we begin with our bivariate analysis</p>
 <ul>
 <li><p>I’m going to omit the polish and just focus on the new techniques here.</p></li>
 <li><p>I’ve also added the geom_smooth function to add an OLS line of best fit to our plot</p></li>
@@ -1014,21 +940,25 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-2-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 2</h2>
+<section id="section-6" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Extend a Visualization with Facets</strong></p>
+</div>
 <p><br></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19" data-code-line-numbers="5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
-<span id="cb19-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb19-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb19-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb19-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_pc2, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb12-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb12-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb12-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb12-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_pc_cat, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
-<p>We worked with facet wraps a few weeks ago when doing bivariate analyses</p>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
+<p>The ONLY change here is the facet_wrap line (line 5)</p>
 <ul>
-<li><strong>Questions on the code?</strong></li>
+<li><p>We worked with facet wraps a few weeks ago when doing bivariate analyses</p></li>
+<li><p><strong>Questions on the code?</strong></p></li>
 </ul>
 <p><br></p>
 <p><strong>What do we learn from this effort to adjust the relationship for the wealth confounder?</strong></p>
@@ -1056,18 +986,21 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-2-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 2</h2>
+<section id="section-7" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Extend a Visualization with Facets</strong></p>
+</div>
 <p><br></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
-<span id="cb20-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb20-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb20-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb20-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco2, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb13-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb13-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb13-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco_cat, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
 <p><strong>What do we learn from this effort to adjust the relationship for tobacco use as a confounder?</strong></p>
 <p><br></p>
 <p><strong>SLIDE</strong>: One more multivariate approach for today</p>
@@ -1083,21 +1016,23 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 3</h2>
-<p><br></p>
+<section id="section-8" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
 <div class="r-fit-text">
-<p><strong>You can adapt scatter plots to confounders</strong></p>
-<ul>
-<li><p>Categorical confounder: Colors and/or shapes</p></li>
-<li><p>Numeric confounder: Vary the sizes</p></li>
-</ul>
+<p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
 </div>
-<aside class="notes">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb14-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb14-3"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>Ok, let’s reset our code again!</p>
+<p><br></p>
 <p>Multivariate approach 3 focuses on the points in a scatter plot</p>
 <ul>
-<li><p>IFF the third variable you want to add to any analysis is categorical, you can use colors and shapes</p></li>
-<li><p>IFF the third variable you want to add to any analysis is numeric, you can use sizes</p></li>
+<li><strong>SLIDE</strong>: IFF the third variable you want to add to any analysis is categorical, you can use colors and shapes</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -1111,70 +1046,83 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-3-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 3</h2>
-<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
+<section id="section-9" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
+</div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb21" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
-<span id="cb21-2"><a href=""></a>              <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb21-3"><a href=""></a>              <span class="at">color =</span> gdp_pc2)) <span class="sc">+</span></span>
-<span id="cb21-4"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb21-5"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb15-2"><a href=""></a>              <span class="at">color =</span> gdp_pc_cat)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb15-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>TBD</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="multivariate-analyses-approach-3-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 3</h2>
-<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb22" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
-<span id="cb22-2"><a href=""></a>              <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb22-3"><a href=""></a>              <span class="at">shape =</span> gdp_pc2)) <span class="sc">+</span></span>
-<span id="cb22-4"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb22-5"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>If printing in B&amp;W</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="multivariate-analyses-approach-3-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 3</h2>
-<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb23" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
-<span id="cb23-2"><a href=""></a>              <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb23-3"><a href=""></a>              <span class="at">color =</span> gdp_pc2, <span class="at">shape =</span> gdp_pc2)) <span class="sc">+</span></span>
-<span id="cb23-4"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb23-5"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
-<p>Use Both!</p>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>You can use all of our other tools for adjusting these colors</p>
+<ul>
+<li>scale_color_manual, scale_color_brewer, etc</li>
+</ul>
 <p><br></p>
+<p><strong>Questions on this code?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: working in B&amp;W</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-10" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb16-2"><a href=""></a>              <span class="at">shape =</span> gdp_pc_cat)) <span class="sc">+</span></span>
+<span id="cb16-3"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb16-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>If printing in B&amp;W use shapes</p>
+<ul>
+<li>Usually helpful to increase the size of the points</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Use both!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-11" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb17-2"><a href=""></a>              <span class="at">color =</span> gdp_pc_cat, <span class="at">shape =</span> gdp_pc_cat)) <span class="sc">+</span></span>
+<span id="cb17-3"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb17-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>If there aren’t too many observations or there is considerable spacing between groups this can be a really effective visualization technique</p>
 <p><br></p>
 <p>Everybody practice this replacing GDP with tobacco again</p>
@@ -1193,18 +1141,19 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-3-4" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 3</h2>
-<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
+<section id="section-12" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
+</div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb24" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
-<span id="cb24-2"><a href=""></a>              <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb24-3"><a href=""></a>              <span class="at">color =</span> tobacco2, <span class="at">shape =</span> tobacco2)) <span class="sc">+</span></span>
-<span id="cb24-4"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb24-5"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb18-2"><a href=""></a>              <span class="at">color =</span> tobacco_cat, <span class="at">shape =</span> tobacco_cat)) <span class="sc">+</span></span>
+<span id="cb18-3"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb18-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>I don’t think this actually clarifies the test given the overlap in the groups</p>
 <ul>
 <li><strong>SLIDE</strong>: So combine approaches and re-add the facet wrap!</li>
@@ -1221,19 +1170,20 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-3-5" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 3</h2>
-<p><strong>Categorical Confounder: Use Color and/or Shapes</strong></p>
+<section id="section-13" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
+</div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb25" data-code-line-numbers="3,6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
-<span id="cb25-2"><a href=""></a>              <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb25-3"><a href=""></a>              <span class="at">color =</span> tobacco2, <span class="at">shape =</span> tobacco2)) <span class="sc">+</span></span>
-<span id="cb25-4"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb25-5"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb25-6"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco2, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb19-2"><a href=""></a>              <span class="at">color =</span> tobacco_cat, <span class="at">shape =</span> tobacco_cat)) <span class="sc">+</span></span>
+<span id="cb19-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb19-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb19-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco_cat, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
 <p><strong>Any questions on using colors or shapes for categorical confounders?</strong></p>
 <p><br></p>
 <p><strong>SLIDE</strong>: Adding numeric confounders is also a bit clunky but I’d like you to be aware of the option</p>
@@ -1249,18 +1199,19 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-3-6" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 3</h2>
-<p><strong>Numerical Confounder: Use Sizing</strong></p>
+<section id="section-14" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
+</div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb26" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
-<span id="cb26-2"><a href=""></a>              <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb26-3"><a href=""></a>              <span class="at">size =</span> gdp_per_capita)) <span class="sc">+</span></span>
-<span id="cb26-4"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb26-5"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb20-2"><a href=""></a>              <span class="at">size =</span> gdp_per_capita)) <span class="sc">+</span></span>
+<span id="cb20-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb20-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>Size will rescale the points per a numeric variable</p>
 <ul>
 <li>Some refer to these as bubble plots</li>
@@ -1284,18 +1235,19 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-approach-3-7" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses: Approach 3</h2>
-<p><strong>Numerical Confounder: Use Sizing</strong></p>
+<section id="section-15" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
+</div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb27" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, </span>
-<span id="cb27-2"><a href=""></a>              <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb27-3"><a href=""></a>              <span class="at">size =</span> tobacco_use_pct)) <span class="sc">+</span></span>
-<span id="cb27-4"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb27-5"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb21-2"><a href=""></a>              <span class="at">size =</span> tobacco_use_pct)) <span class="sc">+</span></span>
+<span id="cb21-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb21-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>Tobacco use much more spread out across this relationship</p>
 <ul>
 <li>Less distinction rich vs poor on this one</li>
@@ -1312,14 +1264,15 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
           display:block!important;
       }</style></aside>
 </section>
-<section id="multivariate-analyses-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
-<h2>Multivariate Analyses</h2>
+<section id="multivariate-analyses-1-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Multivariate Analyses 1</h2>
 <p><br></p>
 <div class="r-fit-text">
+<p><strong>Working with Categorical Variables as Confounders</strong></p>
 <ol type="1">
 <li><p>Descriptive statistics by groups</p></li>
-<li><p>Using facets to extend any visualization</p></li>
-<li><p>Mapping 3rd variables with colors, shapes or sizes</p></li>
+<li><p>Multiple Facets</p></li>
+<li><p>Adding colors, shapes and sizes</p></li>
 </ol>
 </div>
 <aside class="notes">
@@ -1341,7 +1294,7 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
 <section id="for-next-class" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>For Next Class</h2>
 
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-27-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><p><strong>Possible Confounders</strong>: GDP per capita, tobacco use, unemployment rate, compulsory education</p>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><p><strong>Possible Confounders</strong>: unemployment rate, compulsory education</p>
 <aside class="notes">
 <p>We covered GDP and tobacco in class today</p>
 <ul>
@@ -1366,7 +1319,7 @@ GDP pc (Q1) GDP pc (Q2) GDP pc (Q3) GDP pc (Q4)
 
 </div>
 </div>
-</section></section>
+</section>
     </div>
   </div>
 

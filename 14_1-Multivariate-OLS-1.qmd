@@ -2,7 +2,7 @@
 format: revealjs
 ---
 
-# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r}
 library(tidyverse)
@@ -11,7 +11,7 @@ library(kableExtra)
 library(modelsummary)
 library(ggeffects)
 
-d <- read_excel("../Data_in_Class/Class11-1-Simple_OLS-WDI_LifeExpectancy/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+d <- read_excel("../Data_in_Class/World_Development_Indicators/WDI-Multivariate_Viz-2024-04-04.xlsx", na = "NA")
 ```
 
 <br>
@@ -31,11 +31,11 @@ Justin Leinaweaver (Spring 2025)
 ::: notes
 Prep for Class
 
-1. Keep using the simple OLS WDI data
+1. Data: WDI-Multivariate_Viz-2024-04-04.xlsx
 
 <br>
 
-We'll continue using the WDI data from Monday.
+We'll continue using the WDI data from last Monday.
 
 - Everybody open up a new script file and import the WDI data so we can work with it again
 
@@ -47,7 +47,7 @@ We'll continue using the WDI data from Monday.
 
 
 
-## Building a Causal Argument {background-image="Images/background-slate_v2.png" .center}
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
 ## Manual DAG
@@ -71,56 +71,64 @@ ggplot(data = d1, aes(x = x, y = y)) +
 
 ::: notes
 
-Always want to keep our work rooted in the problem which is making a causal argument using observational data
+We worked last week on this problem:
+
+- Can we build a statistical argument that increasing fertility rates causes a decrease in average life expectancies around the world? 
 
 <br>
 
-This week we've been trying to adjust our analysis for confounders using multivariate data visualization and descriptive statistics tools
+**SLIDE**: We started by using multivariate descriptive statistics
+
+:::
+
+
+
+## Does increasing fertility rates directly lower life expectancy around the world? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, echo=FALSE}
+d$fertility_cat <- cut(x = d$fertility_rate_per_woman, 
+                    breaks = c(0, 1.558, 2.040, 3.257, 7), 
+                    labels = c("Fertility (Q1)", "Fertility (Q2)", 
+                               "Fertility (Q3)", "Fertility (Q4)"))
+
+aggregate(data = d, life_expectancy_total ~ fertility_cat + tobacco_cat, 
+          FUN = mean) |>
+  pivot_wider(names_from = fertility_cat, values_from = life_expectancy_total) |>
+  arrange(tobacco_cat) |>
+  rename("Tobacco Use" = "tobacco_cat") |>
+  kbl(digits = 1, align = c("l", rep("c", 4))) |>
+  kableExtra::kable_styling(font_size = 30)
+```
+
+::: notes
+
+Using quartiles and the aggregate function we were able to show that increasing fertility rates does decrease average life expectancy
+
+- We showed this worked for the categorical versions of tobacco use, GDP per capita, unemployment and compulsory education
 
 <br>
 
 The aim for today is to use OLS regressions to bring a confounder into the adjustment process
 
+- OLS has all the benefits we discussed previously PLUS
+
+1. We can include numeric and categorical variables as confounders, AND
+
+2. We can include more than one confounder as well!
+
 <br>
 
-**SLIDE**: Why move back to regression?
+**SLIDE**: Let's extend our regression
 
 :::
 
 
 
-## Why use OLS regressions? {background-image="Images/background-slate_v2.png" .center}
-
-::: {.r-fit-text}
-- Assumes **"regression to the mean"**
-
-- **Quantifies** the relationship between variables
-
-- Uses **ALL** of the data
-
-- Provides estimates of **uncertainty**
-
-- Can be adjusted for **non-linear effects** and **confounders**
-:::
-
-::: notes
-
-*Read slide*
-
-<br>
-
-Key to this is to remember that regression is a method for finding conditional means. 
-
-- e.g. drawing a line through the middle of the points, and by middle we mean averages.
-
-<br>
-
-**SLIDE**: And what is a simple regression?
-
-:::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Ordinary Least Squares (OLS) Regression**
@@ -153,7 +161,8 @@ The lm function in R gives us an estimate of the intercept term and the beta coe
 :::
 
 
-## Our Baseline Estimate {background-image="Images/background-slate_v2.png" .center}
+
+## Our Baseline Estimate {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, echo=TRUE}
 res1 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman)
@@ -164,8 +173,8 @@ res1 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman)
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r}
-modelsummary(models = list("Baseline" = res1), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
-             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "(Intercept)" = "Constant")) |>
+modelsummary(models = list("Baseline" = res1), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log",
+             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
@@ -213,15 +222,19 @@ Here are the results of regressing life expectancy on fertility rates around the
 :::
 
 
-## Our Baseline Estimate {background-image="Images/background-slate_v2.png" .center}
+## Our Baseline Estimate {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE}
+res1 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman)
+```
 
 <br>
 
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r}
-modelsummary(models = list("Baseline" = res1), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
-             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "(Intercept)" = "Constant")) |>
+modelsummary(models = list("Baseline" = res1), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log",
+             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
@@ -230,7 +243,7 @@ modelsummary(models = list("Baseline" = res1), out = "gt", fmt = 2, stars = c("*
 :::
 
 ::: {.column width="50%"}
-```{r, fig.align='center', fig.asp=.85, fig.width=8}
+```{r, fig.align='center', fig.asp=.85, fig.width=6.5}
 plot(res1, which = 1)
 ```
 :::
@@ -251,7 +264,7 @@ If we have time we'll fix this non-linearity before the end of class using a mul
 :::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Ordinary Least Squares (OLS) Regression**
@@ -285,29 +298,25 @@ In R terms, it is equally easy to add predictors to the lm function!
 
 For our first multiple regression we are going to add the simplest possible predictor variable, a dummy variable
 
-- **Anybody know what a "dummy" variable is?**
+- **Does everybody remember our work with categorical variables in Week 11 e.g. examining the Bechdel test on sexist movies?**
 
 <br>
 
-Think "dummy" like a store mannequin
+- **And remind me, what is a dummy variable?**
 
-- e.g. it stands in for something else (plastic person for showing how clothes might fit)
-
-<br>
-
-A dummy variable, also called dichotomous, can only have a value of zero or 1
+- (A dummy variable, also called a dichotomous variable, can only have a value of zero or 1)
 
 - If the value is 1 then the characteristic is present, if zero then it is absent
 
 <br>
 
-**SLIDE**: Let's make this idea more concrete!
+**SLIDE**: Let's practice adding a dummy variable to our regression
 
 :::
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 **1. Find the median of wealth**
 ```{r, echo=TRUE}
@@ -361,16 +370,15 @@ We're using the if_else function to do this
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-**4. Fit a multiple regression using the dummy confounder**
 ```{r, echo=TRUE}
 res2 <- lm(data = d, life_expectancy_total ~ 
              fertility_rate_per_woman + wealthier_median)
 ```
 
 ```{r}
-modelsummary(models = list("Model 2" = res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+modelsummary(models = list("Model 2" = res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
@@ -390,17 +398,17 @@ modelsummary(models = list("Model 2" = res2), out = "gt", fmt = 2, stars = c("*"
 :::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Multiple Regression: Add a Dummy Confounder**
 :::
 
 :::: {.columns}
-::: {.column width="25%"}
+::: {.column width="30%"}
 
 ```{r, echo=FALSE}
-modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "large")
@@ -413,7 +421,7 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 
 :::
 
-::: {.column width="70%"}
+::: {.column width="65%"}
 
 <br>
 
@@ -444,17 +452,17 @@ Keep in mind, both of these models describe a SINGLE line
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Multiple Regression: Add a Dummy Confounder**
 :::
 
 :::: {.columns}
-::: {.column width="25%"}
+::: {.column width="30%"}
 
 ```{r, echo=FALSE}
-modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "large")
@@ -467,7 +475,7 @@ modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05
 
 :::
 
-::: {.column width="70%"}
+::: {.column width="65%"}
 
 <br>
 
@@ -507,26 +515,22 @@ As we've done many times, we can then use this formula to make predictions for A
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Multiple Regression: Add a Dummy Confounder**
 :::
 
 :::: {.columns}
-::: {.column width="25%"}
+::: {.column width="30%"}
 
 ```{r, echo=FALSE}
-modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_rename =  c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "large")
   ), locations = gt::cells_body())
 ```
-
-:::
-
-::: {.column width="5%"}
 
 :::
 
@@ -573,7 +577,7 @@ Before we use Model 2 to make predictions, let's talk about the fit of the model
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Multiple Regression: Add a Dummy Confounder**
@@ -585,14 +589,14 @@ Before we use Model 2 to make predictions, let's talk about the fit of the model
 ::: {.column width="50%"}
 
 **Simple OLS Regression**
-```{r, fig.align='center', fig.asp=.85, fig.width=8}
+```{r, fig.align='center', fig.asp=.85, fig.width=6}
 plot(res1, which = 1)
 ```
 :::
 
 ::: {.column width="50%"}
 **Multiple OLS Regression 1**
-```{r, fig.align='center', fig.asp=.85, fig.width=8}
+```{r, fig.align='center', fig.asp=.85, fig.width=6}
 plot(res2, which = 1)
 ```
 :::
@@ -630,7 +634,7 @@ That was our four-step approach to evaluating a simple OLS regression
 
 :::
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Evaluating the Fit of a Multiple Regression**
@@ -639,7 +643,7 @@ That was our four-step approach to evaluating a simple OLS regression
 **1. Use the adjusted R2**
 
 ```{r, echo=FALSE}
-modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "large")
@@ -675,14 +679,15 @@ The adjusted r-squared adds a small penalty to its calculation that is meant to 
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 ::: {.r-fit-text}
 **Evaluating the Fit of a Multiple Regression**
 :::
 
 **2. Include the F-test**
-```{r, echo=TRUE}
+
+```{r, echo=FALSE}
 summary(res2)
 ```
 
@@ -720,7 +725,7 @@ So, when evaluating the fit of a regression model we check the significance of e
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Multiple Regression: Add a Dummy Confounder**
@@ -729,19 +734,15 @@ So, when evaluating the fit of a regression model we check the significance of e
 <br>
 
 :::: {.columns}
-::: {.column width="25%"}
+::: {.column width="30%"}
 
 ```{r, echo=FALSE}
-modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+modelsummary(models = list(res1, res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "large")
   ), locations = gt::cells_body())
 ```
-
-:::
-
-::: {.column width="5%"}
 
 :::
 
@@ -816,20 +817,16 @@ So, remember, making predictions with a multiple regression requires specifying 
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Multiple Regression: Add a Dummy Confounder**
 :::
 
-```{r, echo=TRUE, fig.align='center', fig.asp=.75, fig.width=7}
+```{r, echo=TRUE, fig.align='center', fig.asp=.75, fig.width=6}
 # Make the predictions
-pred2 <- ggpredict(res2, 
-                   terms = c("fertility_rate_per_woman", 
-                             "wealthier_median"))
-
-# Visualize the predictions
-plot(pred2)
+plot(ggpredict(res2, terms = c("fertility_rate_per_woman",
+                               "wealthier_median")))
 ```
 
 ::: notes
@@ -855,19 +852,17 @@ Given that our wealth variable is a dummy, we have to use ggpredict a little dif
 :::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Multiple Regression: Add a Dummy Confounder**
 :::
 
-<br>
-
 :::: {.columns}
 ::: {.column width="50%"}
 
 ```{r, echo=FALSE}
-modelsummary(models = list(res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+modelsummary(models = list(res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
@@ -881,9 +876,10 @@ modelsummary(models = list(res2), out = "gt", fmt = 2, stars = c("*" = .05), gof
 <br>
 
 
-```{r, echo=F, fig.align='center', fig.asp=.75, fig.width=7}
+```{r, echo=F, fig.align='center', fig.asp=.75, fig.width=6}
 # Visualize the predictions
-plot(pred2)
+plot(ggpredict(res2, 
+               terms = c("fertility_rate_per_woman", "wealthier_median")))
 ```
 :::
 ::::
@@ -921,21 +917,19 @@ That's NOT the story with the dummy variable
 :::
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Multiple Regression: Add a Dummy Confounder**
 :::
 
-<br>
-
 ```{r, echo=FALSE}
-modelsummary(models = list("Association" = res1, "Causal Argument" = res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "(Intercept)" = "Constant")) |>
+modelsummary(models = list("Association" = res1, "Causal Argument" = res2), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
   ), locations = gt::cells_body()) |>
-  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2:3, rows = 1))
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 2:3, rows = 3))
 ```
 
 
@@ -965,11 +959,10 @@ IFF our identification strategy is convincing then our second model is getting u
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
 **Multiple Regression: Add a Numeric Confounder**
-:::
 
 <br>
 
@@ -980,11 +973,13 @@ d$gdp_pc_10k <- d$gdp_per_capita/10000
 
 <br>
 
-**Fit a multiple regression using the rescaled confounder**
+**Fit a new multiple regression**
 ```{r, echo=TRUE}
 res3 <- lm(data = d, life_expectancy_total ~ 
              fertility_rate_per_woman + gdp_pc_10k)
 ```
+
+:::
 
 ::: notes
 
@@ -1011,14 +1006,14 @@ Everybody run this code and examine the results!
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
 :::: {.columns}
 ::: {.column width="50%"}
 ```{r, echo=FALSE}
-modelsummary(models = list(res1, res2, res3), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "gdp_pc_10k" = "GDP per capita", "(Intercept)" = "Constant")) |>
+modelsummary(models = list(res1, res2, res3), out = "gt", fmt = 2, stars = c("*" = .05), gof_omit = "IC|Log", coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "wealthier_median" = "Wealth > Median", "gdp_pc_10k" = "GDP per capita ($10k)")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "large")
@@ -1086,11 +1081,23 @@ Important note
 
 
 
-## {background-image="Images/background-slate_v2.png" .center}
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.panel-tabset}
+
+### Table
 
 ```{r, echo=TRUE, fig.align='center', fig.asp=.85, fig.width=8}
 ggpredict(res3, terms = "fertility_rate_per_woman")
 ```
+
+### Visualization
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.7, fig.width=7}
+plot(ggpredict(res3, terms = "fertility_rate_per_woman"))
+```
+
+:::
 
 ::: notes
 
@@ -1100,7 +1107,7 @@ What I want you to see here is that with numeric confounders ggpredict will set 
 
 <br>
 
-**Questions on the mutliple regressions we've worked on today?**
+**Questions on the multiple regressions we've worked on today?**
 
 - How to fit?
 
@@ -1116,7 +1123,7 @@ What I want you to see here is that with numeric confounders ggpredict will set 
 
 
 
-## For Next Class {background-image="Images/background-slate_v2.png" .center}
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
 ## Manual DAG

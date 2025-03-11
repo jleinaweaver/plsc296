@@ -679,7 +679,7 @@ ONLY if the movie answers yes to all three questions does it pass the test.
 
 1. What years are included? (`year`)
 
-2. What proportion of movies passed the Bechdel Test? (`binary`)
+2. What proportion of movies passed the Bechdel Test? (`bechdel_test`)
 
 3. Which step in the test trips up most movies? (`clean_test`)
 
@@ -699,11 +699,11 @@ range(d$year)
 
 <br>
 
-**How many, and what proportion of, movies passed the Bechdel Test? (`binary`)**
+**How many, and what proportion of, movies passed the Bechdel Test? (`bechdel_test`)**
 
 ```{r}
-table(d$binary)
-proportions(table(d$binary))
+table(d$bechdel_test)
+proportions(table(d$bechdel_test))
 ```
 
 <br>
@@ -746,7 +746,7 @@ Time to go bivariate in our analyses
 
 <br>
 
-1. Regress box office returns (`boxoffice_millions`) on the Bechdel Test (`binary`)
+1. Regress box office returns (`boxoffice_millions`) on the Bechdel Test (`bechdel_test`)
 
 2. Make the table and the predictions
 
@@ -773,12 +773,12 @@ Everybody run this regression, interpret the results and check the fit of the li
 <br>
 
 ```{r, echo=FALSE}
-res4 <- lm(data = d, boxoffice_millions ~ binary)
+res4 <- lm(data = d, boxoffice_millions ~ bechdel_test)
 
 modelsummary(list("Box Office" = res4),
              out = "gt",
              fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
-             coef_rename = c("binaryPASS" = "Passing the Bechdel Test")) |>
+             coef_rename = c("bechdel_test" = "Passing the Bechdel Test")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
@@ -794,7 +794,7 @@ modelsummary(list("Box Office" = res4),
 ### Predictions
 
 ```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-plot(ggpredict(res4, terms = "binary")) +
+plot(ggpredict(res4, terms = "bechdel_test")) +
   labs(x = "The Bechdel Test",
        y = "Box Office (Millions USD)")
 ```
@@ -810,7 +810,7 @@ plot(res4, which = 1)
 <br>
 
 ```{r, echo=TRUE}
-aggregate(d$boxoffice_millions ~ d$binary, FUN = mean)
+aggregate(d$boxoffice_millions ~ d$bechdel_test, FUN = mean)
 ```
 
 :::
