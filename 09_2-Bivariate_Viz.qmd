@@ -53,53 +53,32 @@ Prep for Class
 
 <br>
 
-**Did any of these trip you up? Is there anything we need to discuss?**
+**SLIDE:** Let's talk takeaways! (try to move through these quickly)
 
-<br>
-
-SLIDES x 5 if necessary **BUT try to blow past these and get to the new tools!**
 :::
 
 
 
+## {background-image="Images/background-data_blue_v4.png"}
 
-## Practice for Today {background-image="Images/background-data_blue_v4.png" .center}
+::: {.panel-tabset}
 
-**Categorical x Categorical**
-
-<br>
-
-```{r, echo=TRUE}
-proportions(table(diamonds$clarity, diamonds$cut), margin = 1)
-```
-
-::: notes
-When you have 50k+ observations across this many levels of each variable it can be VERY hard to find clear takeaways
-
-- BUT that is the utility of the margin argument
-
-- Margin lets you examine the relationship in a directional sense, rather than just overall
+### Prompt
 
 <br>
 
-What I hope you're very quickly seeing here is that interpreting the relationships in tables is hard!
-
-- That's why we build pictures!
-
 <br>
 
-**SLIDE**: It is possible to polish a table
-:::
+#### **What are your takeaways from analyzing the relationship between the cut and clarity of diamonds?**
 
 
-
-## {background-image="Images/background-data_blue_v4.png" .center}
+### Polished
 
 ```{r}
 proportions(table(diamonds$clarity, diamonds$cut), margin = 1) |>
   round(digits = 2) |>
   kbl(align = "c") |>
-  kable_styling(bootstrap_options = c("condensed")) |>
+  kable_styling(bootstrap_options = c("condensed"), font_size = 35) |>
   column_spec(2, color = "white", background = c("#C6DBEF", rep("lightgrey", 7))) |>
   column_spec(3, color = "white", background = c(rep("lightgrey", 8))) |>
   column_spec(4, color = "white", background = c(rep("lightgrey", 8))) |>
@@ -107,53 +86,81 @@ proportions(table(diamonds$clarity, diamonds$cut), margin = 1) |>
   column_spec(6, color = "white", background = c(rep("lightgrey", 2), "#BDD7E7", rep("#6BAED6", 2), rep("#3182BD", 2), "#08519C")) |>
   row_spec(0, background = "white") |>
   column_spec(1, background = "white")
-
-#RColorBrewer::brewer.pal(n = 6, name = "Blues")
-
-# proportions(table(diamonds$clarity, diamonds$cut), margin = 1) |>
-#   round(digits = 2) |>
-#   kbl(align = "c") |>
-#   kable_styling(bootstrap_options = c("condensed")) |>
-#   column_spec(2, color = "white", background = c("orange", rep("lightgrey", 7))) |>
-#   column_spec(3, color = "white", background = c(rep("lightgrey", 8))) |>
-#   column_spec(4, color = "white", background = c(rep("lightgrey", 8))) |>
-#   column_spec(5, color = "white", background = c("lightgrey", "orange", rep("lightgrey", 6))) |>
-#   column_spec(6, color = "white", background = c(rep("lightgrey", 2), rep("orange", 6))) |>
-#   row_spec(0, background = "antiquewhite") |>
-#   column_spec(1, background = "antiquewhite")
 ```
 
+### Code
+
+```{r, echo=TRUE, eval=FALSE}
+## Analyzing the relationship between a categorical variable (clarity) 
+# and a second categorical variable (cut)
+
+proportions(table(diamonds$clarity, diamonds$cut))
+
+proportions(table(diamonds$clarity, diamonds$cut), margin = 1)
+
+proportions(table(diamonds$clarity, diamonds$cut), margin = 2)
+```
+
+:::
+
 ::: notes
-Here I've highlighted the highest proportion in each row AND increased the heat of the color as the proportions increase
+
+**Takeaways from analyzing this relationship?**
 
 <br>
 
-Assuming jewelers can control cut, but not clarity I think this version of the table makes the most sense (e.g. row margins)
+POLISHED: Assuming jewelers can control cut, but not clarity I think this version of the table makes the most sense (e.g. row margins)
+
+- Here I've highlighted the highest proportion in each row AND increased the heat of the color as the proportions increase
+
+
+<br>
+
+My takeaway:
+
+- I assume the clarity is more out of the jewelers control
 
 - When jewelers have an internally flawless diamond (IF) or close to it, they clearly try to give it their highest quality cut (maximize price)
 
 - At the opposite end, when you see a "fair" cut diamond it is safe to assume it is not very clear at all.
 
-<br>
-
-**Make sense?**
-
-<br>
-
-
-:::
+::: 
 
 
 
-## Practice for Today {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png"}
 
-**Categorical x Numeric**
+::: {.panel-tabset}
+
+### Prompt
 
 <br>
 
+<br>
+
+#### **What are your takeaways from analyzing the relationship between the cut and the price of diamonds?**
+
+
+### Results
+
+<br>
+
+<br>
+
+```{r}
+options(width = 120)
+```
+
+:::: {.r-fit-text}
 ```{r, echo=TRUE}
+## Analyzing the relationship between a numeric variable (price) and a categorical
+# variable (cut)
+
 aggregate(data = diamonds, price ~ cut, FUN = summary)
 ```
+::::
+
+:::
 
 ::: notes
 
@@ -174,24 +181,51 @@ Your next job was to analyze the relationship between the price and cut quality 
 
 
 
-## Practice for Today {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png"}
 
-**Numeric x Numeric: Convert one into a categorical variable**
+::: {.panel-tabset}
+
+### Prompt
 
 <br>
 
+<br>
+
+#### **What are your takeaways from analyzing the relationship between the size and the price of diamonds?**
+
+
+### Option: Conversion
+
+<br>
+
+:::: {.r-fit-text}
 ```{r, echo=TRUE}
-# Transform Numeric Variable to Categorical
+# Option 1: Transform a numeric variable (carat) into a categorical variable
 diamonds$carat2 <- cut(diamonds$carat, 
-                       breaks = c(0, .8, 6), 
-                       labels = c("Below Avg", "Above Avg"))
-```
+                       breaks = c(0, .4, .7, 1.04, 5.5), 
+                       labels = c("1st Q", "2nd Q", "3rd Q", "4th Q"))
 
-<br>
-
-```{r, echo=TRUE}
+# Describe the new relationship
 aggregate(data = diamonds, price ~ carat2, FUN = summary)
 ```
+::::
+
+
+### Option: Correlation
+
+```{r, echo=TRUE}
+# Correlation
+cor(diamonds$carat, diamonds$price)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Statistical Test
+cor.test(diamonds$carat, diamonds$price)
+```
+
+:::
 
 ::: notes
 Your next job was to analyze the relationship between the price and weight of the diamonds.
@@ -199,29 +233,6 @@ Your next job was to analyze the relationship between the price and weight of th
 - **What did you find?**
 
 - (Pretty clear that diamond size is a BIG determinant of price!)
-:::
-
-
-
-## Practice for Today {background-image="Images/background-data_blue_v4.png" .center}
-
-**Numeric x Numeric: Correlation**
-
-```{r, echo=TRUE}
-# Correlation
-cor(diamonds$carat, diamonds$price)
-```
-
-```{r, echo=TRUE}
-# Statistical Test
-cor.test(diamonds$carat, diamonds$price)
-```
-
-::: notes
-
-Your final job was to analyze the relationship between the price and cut quality of the diamonds using correlation.
-
-- **What did you find?**
 
 - (A STRONG linear relationship implied by this VERY high correlation score)
 
@@ -229,7 +240,9 @@ Your final job was to analyze the relationship between the price and cut quality
 
 This is another approach that would REALLY benefit from visualization!
 
-- **Any questions on the practice exercises or the tools/concepts from last class?**
+<br>
+
+**Any questions on the practice exercises or the tools/concepts from last class?**
 :::
 
 
