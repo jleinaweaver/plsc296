@@ -7,7 +7,7 @@ format: revealjs
 ```{r}
 library(tidyverse)
 library(readxl)
-# library(kableExtra)
+library(kableExtra)
 library(modelsummary)
 library(modelr)
 library(ggeffects)
@@ -32,7 +32,7 @@ Justin Leinaweaver (Spring 2025)
 ::: notes
 Prep for Class
 
-1. Check Canvas submissions
+1. Check Canvas submissions AND plug in guesses into code below
 
 2. Update presidential results (if needed)
 
@@ -56,9 +56,120 @@ If you do the work, I promise that each time you go through the material it will
 
 
 
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+:::: {.columns}
+
+::: {.column width="65%"}
+
+```{r, fig.retina=3, fig.asp=.9, fig.align='center', fig.width = 6, cache=FALSE}
+d_test <- tibble(
+  x1 = c(2, 3, 4, 5, 6),
+  y1 = c(3, 2, 4, 3, 5)
+)
+
+guesses <- tribble(
+  ~Student, ~Alpha, ~Beta,
+  #"OLS", 1.4, .5,
+  "Rylie", 1, .5,
+  "Chloe E", 1, .5,
+  "Caylee", 1, .5,
+  "Jack", 0, .75,
+  "Gracie", 1.25, .5,
+  "Jackson", 1.25, .5,
+  "Chloe H", 1.25, .5,
+  "Isa", 1.4, .5,
+  "Sadie", 1.4, .5,
+  "Shaeley", 1.5, .5,
+  "Austin M", .5, .75,
+  "Catherine", 1.5, .5,
+  "Madeline", 1.25, .5,
+  "Saige", 1.25, .5
+)
+
+guesses2 <- guesses |>
+  select(-Student)
+
+# ggplot(data = d_test, aes(x = x1, y = y1)) + 
+#   geom_point(size = 3) +
+#   geom_abline(data = guesses, aes(slope = Beta, intercept = Alpha), color = "darkgrey") +
+#   #geom_abline(slope = .5, intercept = 1.4, linewidth = 1.5) +
+#   theme_bw() +
+#   labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)", title = "Class Estimates BY HAND") +
+#   scale_x_continuous(limits = c(.25, 9), breaks = 0:9) +
+#   scale_y_continuous(limits = c(.25, 7), breaks = 1:7)
+
+ggplot(data = d_test, aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  #geom_abline(data = guesses2, aes(slope = Beta, intercept = Alpha), color = "grey", linewidth=.25) +
+  geom_abline(data = guesses, aes(slope = Beta, intercept = Alpha)) +
+  gganimate::transition_states(Student, state_length = 5) +
+  #geom_abline(slope = .5, intercept = 1.4, linewidth = 1.5) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)", 
+       title = "Estimating a Line of Best Fit (BY HAND): {closest_state}") +
+  scale_x_continuous(limits = c(.25, 9), breaks = 0:9) +
+  scale_y_continuous(limits = c(.25, 7), breaks = 1:7)
+
+#  gganimate::shadow_wake(wake_length = .1)
+```
+
+:::
+
+::: {.column width="35%"}
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7, cache=FALSE}
+# d_test |>
+#   mutate(
+#     Prediction = 1 + .5 * x1,
+#     Residual = y1 - Prediction,
+#     Squared = Residual^2
+#   ) |>
+#   summarize(
+#     RSS = sum(Squared)
+#   )
+
+guesses |>
+  group_by(Student) |>
+  mutate(
+    RSS = sum((d_test$y1 - (Alpha + Beta * d_test$x1))^2)
+  ) |>
+  arrange(RSS) |>
+  kbl(align = c("l", "c", "c", "c")) |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size = 20)
+```
+:::
+
+::::
+
+::: notes
+
+For today I challenged each of you to draw us a line of best fit using only a ruler.
+
+- **How did that go?**
+
+<br>
+
+NOTE that my RSS values may differ slightly from yours.
+
+- You used a ruler, and I used R
+
+<br>
+
+Some of the class had trouble calculating the RSS.
+
+- **Is everybody clear on summing the squared errors?**
+
+<br>
+
+**SLIDE**: The process
+
+:::
+
+
+
 ## The Line of Best Fit? {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7, cache=TRUE}
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7, cache=FALSE}
 d_test <- tibble(
   x1 = c(2, 3, 4, 5, 6),
   y1 = c(3, 2, 4, 3, 5)
@@ -81,23 +192,21 @@ ggplot(data = d_test, aes(x = x1, y = y1)) +
   labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
   annotate("text", x = .5, y = seq(6.8, 3.5, length.out = 5), hjust = 0, label = paste0("Y = ", round(d_random$intercept1[1:5], 2), " + ", round(d_random$slope1[1:5], 2), "?"), size = 4) +
   annotate("text", x = 7.5, y = seq(4, .7, length.out = 5), hjust = 0, label = paste0("Y = ", round(d_random$intercept1[6:10], 2), " + ", round(d_random$slope1[6:10], 2), "?"), size = 4)
+
 ```
 
 ::: notes
 
-For today I challenged each of you to draw us a line of best fit using only a ruler.
+In a sense, what we are doing here is mimicking the logic of a maximum likelihood approach.
 
-- **How did that go?**
-
-<br>
-
-**What's the smallest RSS anybody in class came up with?**
+- Taken to the extreme, we could fit a HUGE number of lines and simply keep the one with the least squared error
 
 <br>
 
 **SLIDE**: The actual line of best fit
 
 :::
+
 
 
 
