@@ -47,16 +47,33 @@ Today we learn to fit OLS regressions in R
 :::
 
 
+## {background-image="Images/background-data_blue_v4.png" .smaller}
 
-## {background-image="Images/background-data_blue_v4.png" .center}
+::::: {.columns}
 
-:::: {.columns}
-
-::: {.column width="50%"}
+:::: {.column width="30%"}
 
 <br>
 
-```{r, fig.retina=3, fig.asp=1, fig.align='center', fig.width=7}
+<br>
+
+```{r}
+# Regression Table
+res1 <- lm(data = d, life_expectancy ~ employment_agriculture)
+
+modelsummary(res1, output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("employment_agriculture"= "Agriculture Employment (%)", "(Intercept)" = "Constant"))
+```
+
+::::
+
+:::: {.column width="70%"}
+
+::: {.panel-tabset}
+
+### Scatterplot
+
+```{r, fig.retina=3, fig.asp=1, fig.align='center', fig.width=7, out.width="80%"}
 ## Scatter plot
 d |>
   ggplot(aes(x = employment_agriculture, y = life_expectancy)) +
@@ -66,24 +83,48 @@ d |>
   labs(x = "Employment in Agriculture (%)", y = "Life Expectancy (Total Years)",
        caption = "Source: World Bank WDI data for 2021")
 ```
-:::
 
-::: {.column width="50%"}
-```{r}
-# Regression Table
-res1 <- lm(data = d, life_expectancy ~ employment_agriculture)
+### Residuals
 
-modelsummary(res1, output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("employment_agriculture"= "Agriculture Employment (%)", "(Intercept)" = "Constant"))
-```
-
-```{r, fig.retina=3, fig.asp=.7, fig.align='center', fig.width=6}
+```{r, fig.retina=3, fig.asp=.95, fig.align='center', fig.width=7, out.width="80%"}
 ## Residuals plot
 plot(res1, which = 1)
 ```
+
+### Missing
+
+<br>
+
+:::::: {.r-fit-text}
+
+```{r, echo=TRUE, eval=FALSE}
+# New object with only key variables
+d2 <- select(d, country, life_expectancy, employment_agriculture)
+
+# Keep any observation with NA in one of the variables
+filter(d2, is.na(life_expectancy) | is.na(employment_agriculture))
+```
+
+::::::
+
+<br>
+
+```{r}
+d |>
+  select(country, life_expectancy, employment_agriculture) |>
+  mutate(
+    missing = if_else(is.na(life_expectancy) | is.na(employment_agriculture), 1, 0)
+  ) |>
+  filter(missing == 1) |>
+  select(country) |>
+  as.vector()
+```
+
 :::
 
 ::::
+
+:::::
 
 ::: notes
 
@@ -118,6 +159,8 @@ Questions from Canvas:
 **Q4: Evaluate the fit of the model using the four criteria we discussed in class. How confident are you in that the results of this OLS regression usefully summarize the relationship between life expectancy and agricultural employment?**
 
 - (Dataset has 217 observations so 30 countries missing)
+
+    - **How does this list of missing observations impact your evaluation of the regression?**
     
 - (Coefficients are significant)
     
@@ -126,10 +169,10 @@ Questions from Canvas:
 - (Not terrible, but residuals unbalanced)
 
     - u-shaped error, above the line at the low and high end, below the line for middle countries
-
+    
 <br>
 
-**SLIDE**: Let's learn how to do all of this in R
+**SLIDE**: Let's use today's class to learn how to do all of this in R
 :::
 
 
