@@ -38,7 +38,11 @@ Prep for Class
 
 <br>
 
-**SLIDE**: Why do we use regressions?
+Kick us off with a big question!
+
+- **Tell me, why do we use regressions?**
+
+- (**SLIDE**)
 
 :::
 
@@ -48,13 +52,13 @@ Prep for Class
 
 <br>
 
-- Quantifies the relationship between variables
+- **Quantifies the relationship** between variables
 
 - Uses **ALL** of the data
 
-- Makes predictions with estimates of uncertainty
+- Makes predictions with estimates of **uncertainty**
 
-- Gives us criteria for evaluating the fit of the line
+- Gives us **criteria** for evaluating the fit of the line
 
 **Future Weeks**
 
@@ -90,27 +94,45 @@ What is the effect of college completion on poverty rates in midwest cities?
 
 ::: notes
 
-**How did this go?**
+**How did this go? Toughest part?**
 
 <br>
 
-**Toughest part?**
+*Save your conclusions/results for the next slide*
 
 <br>
 
-*Save your conclusion for next slide*
-
-- **Ok, what's your answer to the question: What is the effect of college completion on poverty rates in midwest cities?**
+**What is the effect of college completion on poverty rates in midwest cities?**
 
 <br>
 
-**SLIDE**: My results and the evaluation tools
+**In real-world terms, is this a small or large effect? Did you expect something different?**
 
+<br>
+
+**How confident are you in this regression as a summary of the relationship?**
+
+<br>
+
+**SLIDE**: Results
+
+```{r}
+res1 <- lm(data = midwest, percbelowpoverty ~ percollege)
+
+modelsummary(list("Poverty (%)" = res1), 
+             output = "gt", fmt = 2, 
+             stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_rename = c("percollege"= "College Degree (%)")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
 :::
 
 
 
-## {background-image="Images/background-data_blue_v4.png"}
+## {background-image="Images/background-data_blue_v4.png" .smaller}
 
 ::::: {.columns}
 
@@ -137,19 +159,38 @@ modelsummary(list("Poverty (%)" = res1),
 
 ::: {.panel-tabset}
 
-### Predictions
+### Scatter
 
 ```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=6}
-plot(ggpredict(res1, terms = "percollege")) +
-  labs(x = "College Degree (%)",
-       y = "Poverty (%)",
-       title = "Investments in college access and affordability may directly\nreduce poverty rates")
+ggplot(midwest, aes(x = percollege, y = percbelowpoverty)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "College Degree (%)", y = "Population Below the Poverty Line (%)") +
+  geom_smooth(method = "lm", se = FALSE)
+
 ```
 
 ### Residuals
 
 ```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=6}
 plot(res1, which = 1)
+```
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=6}
+plot(ggpredict(res1, terms = "percollege")) +
+  labs(x = "College Degree (%)", y = "Population Below the Poverty Line (%)",
+       title = "Investments in college access and affordability may directly\nreduce poverty rates")
+```
+
+### Predictions 2
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=6}
+plot(ggpredict(res1, terms = "percollege")) +
+  labs(x = "College Degree (%)", y = "Population Below the Poverty Line (%)",
+       title = "Investments in college access and affordability may directly\nreduce poverty rates") +
+  ylim(0,50)
 ```
 
 :::
@@ -160,7 +201,23 @@ plot(res1, which = 1)
 
 ::: notes
 
-**And, based on your evaluation of the regression, how confident are you in that answer?**
+**Did everybody get these results?**
+
+<br>
+
+**Scatter: Does everybody see why this summary has such a low R2 value?**
+
+- (The line doesn't cover the actual full range of outcome values)
+
+- (HOWEVER, this might still be a USEFUL estimate of this relationship)
+
+- Don't forget, our goal is a best estimate of the slope, NOT the highest R2 possible
+
+<br>
+
+**Any missing data problems?**
+
+- (No)
 
 ```{r, echo=TRUE}
 nrow(midwest)
@@ -168,11 +225,27 @@ nrow(midwest)
 
 <br>
 
-*Make sure to discuss the seemingly small magnitude of the effect*
+**Residuals: Any concerns with patterns or heteroscedasticity in the residuals?**
 
-- **Are these moves in poverty a big deal or not?**
+- (A hint of non-linearity but not a deal-breaker)
 
-- **How hard would it be to increase college completion rates in meaningful ways?**
+<br>
+
+**Predictions: Are these moves in poverty a big deal or not?**
+
+- Be careful interpreting the predictions plot
+
+- This is designed to make the slow fill the entire space, YOU have to recognize how little range is visualized on the y-axis
+
+- *Show Predictions 2 with full range of the data*
+
+<br>
+
+**Predictions 2: How does this change our sense of the relationship?**
+
+<br>
+
+**Assuming we want this small effect, how hard would it be to increase college completion rates in meaningful ways?**
 
 <br>
 
@@ -251,6 +324,11 @@ wdi |>
 
 3. unemployment_pct
 :::
+
+<br>
+
+Task: Fit, interpret and evaluate each model
+
 ::::
 :::::
 
@@ -289,7 +367,7 @@ Your job:
 
 
 
-## {background-image="Images/background-data_blue_v4.png"}
+## {background-image="Images/background-data_blue_v4.png" .smaller}
 
 ::::: {.columns}
 
@@ -315,6 +393,16 @@ modelsummary(list("Life Expectancy" = res1),
 :::: {.column width="60%"}
 
 ::: {.panel-tabset}
+
+### Scatter
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+ggplot(wdi, aes(x = fertility_rate_per_woman, y = life_expectancy_total)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Fertility (births per woman)", y = "Life Expectancy (years)") +
+  geom_smooth(method = "lm", se = FALSE)
+```
 
 ### Predictions
 
@@ -364,6 +452,14 @@ plot(res1, which = 1)
 
 <br>
 
+Once again, let's reinforce what the R2 is meant to tell us
+
+- Here we see a high R2 value, e.g. almost 70% of the outcome is explained by this one predictor
+
+- The blue line covers the complete range of the outcomes!
+
+<br>
+
 **Any concerns with heteroskedasticity in the fertility rate regression?**
 
 - Slight non-linearity here but the effect is rather minor
@@ -378,7 +474,7 @@ plot(res1, which = 1)
 
 
 
-## {background-image="Images/background-data_blue_v4.png"}
+## {background-image="Images/background-data_blue_v4.png" .smaller}
 
 ::::: {.columns}
 
@@ -404,6 +500,17 @@ modelsummary(list("Life Expectancy" = res2),
 :::: {.column width="60%"}
 
 ::: {.panel-tabset}
+
+### Scatter
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+ggplot(wdi, aes(x = compulsory_education_yrs, y = life_expectancy_total)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Compulsory Education (years)", y = "Life Expectancy (years)") +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
 
 ### Predictions
 
@@ -454,6 +561,16 @@ plot(res2, which = 1)
 
 <br>
 
+Once again, let's reinforce what the R2 is meant to tell us
+
+- Here we see a VERY low R2 value, e.g. almost 7% of the outcome is explained by this one predictor
+
+- The blue line covers only a small subset of the outcomes
+
+- BUT our interest is in the effect, not perfectly predicting the outcome
+
+<br>
+
 **Any concerns with heteroskedasticity in the education regression?**
 
 - This residual plot shows the flaw in just relying on the red line because it's tracking changes across the levels that are probably just scattered randomly
@@ -474,7 +591,7 @@ plot(res2, which = 1)
 
 
 
-## {background-image="Images/background-data_blue_v4.png"}
+## {background-image="Images/background-data_blue_v4.png" .smaller}
 
 ::::: {.columns}
 
@@ -500,6 +617,17 @@ modelsummary(list("Life Expectancy" = res3),
 :::: {.column width="60%"}
 
 ::: {.panel-tabset}
+
+### Scatter
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+ggplot(wdi, aes(x = unemployment_pct, y = life_expectancy_total)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Unemployment Rate (%)", y = "Life Expectancy (years)") +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
 
 ### Predictions
 
@@ -548,6 +676,16 @@ plot(res3, which = 1)
 <br>
 
 - Some missing data, insignificant coefficient, some problems in the residuals plot
+
+<br>
+
+Once again, let's reinforce what the R2 is meant to tell us
+
+- Here we see a VERY, VERY, VERY low R2 value, e.g. not even 1% of the outcome is explained by this one predictor
+
+- The blue line covers basically none of the outcomes
+
+- BUT our interest is in the effect, not perfectly predicting the outcome
 
 <br>
 
