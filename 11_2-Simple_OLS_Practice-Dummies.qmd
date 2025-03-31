@@ -48,7 +48,7 @@ Prep for Class
 
 
 
-## {background-image="Images/background-data_blue_v4.png"}
+## {background-image="Images/background-data_blue_v4.png" .smaller}
 
 ::::: {.columns}
 
@@ -74,6 +74,17 @@ modelsummary(list("Life Expectancy" = res3),
 :::: {.column width="60%"}
 
 ::: {.panel-tabset}
+
+### Scatter
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+ggplot(wdi, aes(x = tobacco_use_pct, y = life_expectancy_total)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Tobacco Use (%)", y = "Life Expectancy (years)") +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
 
 ### Predictions
 
@@ -141,131 +152,11 @@ I cannot emphasize enough the dangers of assuming a regression is a "good" summa
 
 Today I want to introduce you to different ways we can extend an OLS regression to fit different kinds of variables and relationships between X and Y
 
-- **SLIDE**: Let's start with non-linearity
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Adapting OLS regressions to fit non-linear relationships**
-:::
-
-```{r, fig.align='center', fig.retina=3, fig.asp=.75, fig.width=7}
-d1 <- tibble(
-  x1 = 1:20,
-  x2 = x1^2,
-  #y1 = c(-1:10, 9:2)
-  y1 = c(-1, 0, 1, 1, 2, 3, 3, 4, 3, 4, 5, 5, 4, 3, 4, 2, 3, 2, 2, 3)
-)
-
-d1 |>
-  ggplot(aes(x = x1, y = y1)) +
-  geom_point() +
-  theme_bw() +
-  scale_x_continuous(breaks = 1:20) +
-  scale_y_continuous(breaks = -5:10) +
-  labs(x = "Predictor (X)", y = "Outcome (Y)")
-```
-
-::: notes
-
-Let's imagine we have some data on two variables that we can visualize with a simple scatter plot
+- Let's start with non-linearity
 
 <br>
 
-**What is the relationship between X and Y here?**
-
-- (As X increases from zero, Y steadily increases as well)
-
-- (HOWEVER, at a certain point further increases in X lead to serious declines in Y)
-
-<br>
-
-**SLIDE**: Let's fit a simple OLS regression to this data
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png"}
-
-::: {.r-fit-text}
-**Adapting OLS regressions to fit non-linear relationships**
-:::
-
-::::: {.columns}
-
-:::: {.column width="40%"}
-
-<br>
-
-```{r, echo=FALSE}
-res1 <- lm(data = d1, y1 ~ x1)
-
-modelsummary(list("Outcome (Y)" = res1), 
-             output = "gt",
-             stars = c("*" = .05),
-             gof_omit = "IC|Log|F",
-             coef_rename = c("x1" = "Predictor (X)")) |>
-  gt::tab_style(style = list(
-                  gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "large")
-  ), locations = gt::cells_body())
-```
-
-::::
-
-:::: {.column width="60%"}
-
-::: {.panel-tabset}
-
-### Scatterplot
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-d1 |>
-  ggplot(aes(x = x1, y = y1)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  theme_bw() +
-  scale_x_continuous(breaks = 1:20) +
-  scale_y_continuous(breaks = -5:10) +
-  labs(x = "Predictor (X)", y = "Outcome (Y)")
-```
-
-### Residuals
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-plot(res1, which = 1)
-```
-
-:::
-
-::::
-
-:::::
-
-::: notes
-
-Evaluate this regression for me.
-
-- **Is this a good summary of the relationship or not?**
-
-<br>
-
-Per the usual metrics in the regression table this looks pretty darn good!
-
-- HOWEVER, the residuals plot AND visualizing the data shows us there is a serious problem here
-
-- If your takeaway stopped here you might recommend someone increase X forever to increase Y but we know that isn't what is happening in the relationship.
-
-<br>
-
-Ideally, what we'd like to see is the slope on X be larger in the beginning, but then to turn and become negative at the end
-
-- **Anybody remember how to curve a line in algebra?**
+**Does anybody remember how to curve the formula for a line in algebra?**
 
 - (**SLIDE**)
 
@@ -273,151 +164,208 @@ Ideally, what we'd like to see is the slope on X be larger in the beginning, but
 
 
 
-
-##
-
-::: {.r-fit-text}
-**Adapting OLS regressions to fit non-linear relationships**
-:::
-
-![](Images/11_3-squared_functions.svg)
-
-::: notes
-
-Don't stress the math here, I just want you to remember that we can absolutely curve our lines using squared terms
-
-- Or make all kinds of curves with additional polynomials
-
-<br>
-
-Knowing how to tweak the line in this way allows us to model:
-
-1. exponential growth (e.g. the spread of a disease in a community)
-
-2. exponential declines (e.g. the collapse of a resource)
-
-3. effects that change across the levels of the predictor from positive to negative and back again (e.g. tobacco use and life expectancy!)
-
-<br>
-
-**SLIDE**: Applied to our fake data example
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png"}
+## {background-image="Images/background-data_blue_v4.png" .smaller}
 
 ::: {.r-fit-text}
 **Adapting OLS regressions to fit non-linear relationships**
 :::
-
-::::: {.columns}
-
-:::: {.column width="40%"}
-
-<br>
-
-```{r, echo=FALSE}
-res2 <- lm(data = d1, y1 ~ x1 + x2)
-
-modelsummary(list(res1, res2), 
-             output = "gt",
-             stars = c("*" = .05),
-             gof_omit = "IC|Log|F",
-             coef_rename = c("x1" = "Predictor (X)",
-                             "x2" = "Predictor Squared")) |>
-  gt::tab_style(style = list(
-                  gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "large")
-  ), locations = gt::cells_body())
-```
-
-::::
-
-:::: {.column width="60%"}
 
 ::: {.panel-tabset}
 
-### Scatterplot
+### Exponential Growth Data
 
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-d1 |>
-  add_predictions(res2) |>
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 <- tibble(
+  x1 = 1:50,
+  x2 = (1:50)^2,
+  y1 = x1 + x2 + rnorm(n = 50, mean = 10, sd = 2)
+)
+
+res10 <- lm(data = d3, y1 ~ x1)
+res11 <- lm(data = d3, y1 ~ x1 + I(x1^2))
+
+d4 <- d3 |>
+  add_predictions(res10, var = "lm") |>
+  add_predictions(res11, var = "squared")
+
+d3 |>
   ggplot(aes(x = x1, y = y1)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE, color = "darkgrey", linewidth = .5) +
-  geom_line(aes(x = x1, y = pred), color = "red") +
   theme_bw() +
-  scale_x_continuous(breaks = 1:20) +
-  scale_y_continuous(breaks = -5:10) +
-  labs(x = "Predictor (X)", y = "Outcome (Y)") +
-  annotate("text", color = "red", x = 8, hjust = 0, y = 0, size = 7, label = paste0("Y = ", round(coef(res2)[1], 2), " + ", round(coef(res2)[2], 2), "(X) + ", round(coef(res2)[3], 2), "(X^2)"))
+  labs(x = "Predictor", y = "Outcome")
 ```
 
-### Residuals
 
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-plot(res2, which = 1)
+### Version 1
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 15, y = 2000, size = 8, color = "red",
+           label = expression("Y = " ~ alpha + beta[1] ~ "x"))
+```
+
+### Version 2
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  geom_line(data = d4, aes(x = x1, y = squared), color = "blue") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 2, y = 2000, size = 8, color = "red", hjust = 0,
+           label = expression("Y = " ~ alpha + beta[1] ~ "x")) +
+  annotate("text", x = 2, y = 1500, size = 8, color = "blue", hjust = 0, label = expression("Y = " ~ alpha + beta[1] ~ "x" + beta[2] ~ "x"^2))
 ```
 
 :::
 
-::::
+::: notes
 
-:::::
+Example 1: Exponential growth
+
+- Here I have plotted some toy data that follows an exponential growth curve
+
+- e.g. increases begin slowly but speed up as we move across the levels of the predictor
+
+<br>
+
+**Version 1**: We can definitely fit a simple regression to this data
+
+- Heck, it even comes pretty close to the trend!
+
+- However, you can see here the pattern in the residuals without even needing to check the residuals plot
+
+<br>
+
+**Version 2**: In this form we allow X to have TWO effects on the line
+
+- X impacts Y both in its regular form (e.g. 1, 2, 3, 4) AND also as a square (e.g. 1, 4, 9, 16)
+
+- Early on the squared term has a small impact on the line and that impact gets bigger and bigger
+
+<br>
+
+Note that this formula for a line also allows the effect of each version of X to differ from each other!
+
+- Each X has a SEPARATE beta term in the regression
+
+- This makes this form VERY adaptable
+
+<br>
+
+For example, you could have a strong, positive slope on regular X but a tiny slope on X^2
+
+- That would be a mostly straight line that skews upward very slowly
+
+<br>
+
+Alternatively, you could have a small slope coefficient on X and a huge slope on the squared term
+
+- This is a trend that launches upward like a rocket
+
+<br>
+
+**Do these intuitions make sense?**
+
+<br>
+
+**SLIDE**: We can also do this in the other direction
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+
+::: {.panel-tabset}
+
+### Exponential Decline Data
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 <- tibble(
+  x1 = 1:50,
+  x2 = (1:50)^2,
+  y1 = x1 - x2 + rnorm(n = 50, mean = 10, sd = 2)
+)
+
+res10 <- lm(data = d3, y1 ~ x1)
+res11 <- lm(data = d3, y1 ~ x1 + I(x1^2))
+
+d4 <- d3 |>
+  add_predictions(res10, var = "lm") |>
+  add_predictions(res11, var = "squared")
+
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome")
+```
+
+
+### Version 1
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 2, y = -1500, size = 8, color = "red", hjust = 0, label = expression("Y = " ~ alpha + beta[1] ~ "x"))
+```
+
+### Version 2
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  geom_line(data = d4, aes(x = x1, y = squared), color = "blue") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 2, y = -1500, size = 8, color = "red", hjust = 0,
+           label = expression("Y = " ~ alpha + beta[1] ~ "x")) +
+  annotate("text", x = 2, y = -2000, size = 8, color = "blue", hjust = 0, label = expression("Y = " ~ alpha + beta[1] ~ "x" - beta[2] ~ "x"^2))
+```
+
+:::
 
 ::: notes
 
-Focus just on the intuition here.
+Example 2: Exponential decline
 
-- All I've done is include X twice in the regression
+- Decreases begin slowly but speed up as we move across the levels of the predictor
 
-- One time it enters normally and the second time squared
-
-- This allows the X variable to influence the prediction of the line in two ways
-
-- Each increase in X increases Y by 0.95, AND
-
-- Each increase in X^2 decreases Y by .04
+- Here we see fake data in an exponential decline curve
 
 <br>
 
-Evaluate the fit of this new regression line for me
-
-- **Is this a good summary of the relationship?**
-
-- (We've improved on every one of the four evaluation steps, AND)
-
-- (We've made a line that actually fits the data!)
+**Version 1**: If we fit a linear model we see a vague approximation but with a definite pattern to the error
 
 <br>
 
-Practice this logic for me
+**Version 2**: In this form we allow X to have TWO effects on the line
 
-- **What does the regression predict for Y if X equals 3?**
+- X impacts Y both in its regular form (e.g. 1, 2, 3, 4) AND THEN by subtracting its squared term (e.g. 1, 4, 9, 16)
 
-- = -1.71 + .95*3 - .04*3^2
-
-- = -1.71 + 2.85 - .36
-
-- = .78
+- Early on the squared term has a small impact on the line and that impact gets bigger and bigger
 
 <br>
 
-It's the exact same formula for a line but now we let X have two separate effects
-
-- One time for each level of X, and
-
-- One time for each squared value of X
-
-- This allows the line to increase for a time and then eventually begin to fall
-
-<br>
-
-**Everybody with me here?**
-
-- **Questions on this?**
+**Make sense?**
 
 <br>
 
@@ -440,9 +388,9 @@ It's the exact same formula for a line but now we let X have two separate effect
 <br>
 
 ```{r, echo=FALSE}
-res3 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
+res5 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
 
-modelsummary(list("Life Expectancy" = res3),
+modelsummary(list("Life Expectancy" = res5),
              out = "gt",
              fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
              coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "tobacco_use_pct" = "Tobacco Use (%)", "compulsory_education_yrs" = "Compulsory Education (years)")) |>
@@ -459,7 +407,7 @@ modelsummary(list("Life Expectancy" = res3),
 <br>
 
 ```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-plot(res3, which = 1)
+plot(res5, which = 1)
 ```
 
 ::::
@@ -530,10 +478,10 @@ Ok, fit this new model, make the predictions and check the residuals!
 <br>
 
 ```{r, echo=FALSE}
-res3 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
-res4 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct + I(tobacco_use_pct^2))
+res5 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
+res6 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct + I(tobacco_use_pct^2))
 
-modelsummary(list(res3, res4),
+modelsummary(list(res5, res6),
              out = "gt",
              fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
              coef_rename = c("tobacco_use_pct" = "Tobacco Use (%)", "I(tobacco_use_pct^2)" = "Tobacco Use Squared")) |>
@@ -551,16 +499,16 @@ modelsummary(list(res3, res4),
 
 ### Predictions
 
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-plot(ggpredict(res4, terms = "tobacco_use_pct")) +
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(res6, terms = "tobacco_use_pct")) +
   labs(x = "Tobacco Use (%)",
        y = "Life Expectancy (years)")
 ```
 
 ### Residuals
 
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-plot(res4, which = 1)
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(res6, which = 1)
 ```
 
 :::
@@ -619,7 +567,147 @@ Pretty cool, right?
 
 - **Questions on adding a squared predictor to curve the line?**
 
+<br>
+
+**SLIDE**: Let's practice!
+
 :::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+# test on unemployment
+res7 <- lm(data = wdi, life_expectancy_total ~ unemployment_pct)
+
+modelsummary(res7,
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("unemployment_pct" = "Unemployment (%)", "I(unemployment_pct^2)" = "Unemployment Squared")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+
+
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(res7, terms = "unemployment_pct")) +
+  labs(x = "Unemployment (%)",
+       y = "Life Expectancy (years)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(res7, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+Last class we fit a straight line regression to the unemployment data and learned very little from it.
+
+- The coefficient is insignificant and the R2 is basically zero
+
+- The predictions plot has a HUGE uncertainty interval
+
+<br>
+
+HOWEVER, the residuals plot suggests there may be a nonlinearity!
+
+- Everybody fit a new unemployment regression with the squared term included!
+
+<br>
+
+**SLIDE**: Results
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res7 <- lm(data = wdi, life_expectancy_total ~ unemployment_pct)
+res7b <- lm(data = wdi, life_expectancy_total ~ unemployment_pct + I(unemployment_pct^2))
+
+modelsummary(list(res7, res7b),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("unemployment_pct" = "Unemployment (%)", "I(unemployment_pct^2)" = "Unemployment Squared")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(res7b, terms = "unemployment_pct")) +
+  labs(x = "Unemployment (%)",
+       y = "Life Expectancy (years)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(res7b, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+**So, what happened? Has our answer changed?**
+
+- **How does unemployment impact life expectancy?**
+
+<br>
+
+**SLIDE**: Ok, next extension of regression analysis
+
+::: 
+
 
 
 
