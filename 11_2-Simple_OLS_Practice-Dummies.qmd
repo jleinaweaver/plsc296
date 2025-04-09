@@ -17,6 +17,7 @@ wdi <- read_excel("../Data_in_Class/Class11-1-Simple_OLS-WDI_LifeExpectancy/WDI-
 
 # Input Bechdel data
 d <- read_excel("../Data_in_Class/FiveThirtyEight-Movie_Box_Office/Movie_Box_Office_Data-538.xlsx", na = "NA")
+
 ```
 
 <br>
@@ -767,7 +768,7 @@ ONLY if the movie answers yes to all three questions does it pass the test.
 
 1. What years are included? (`year`)
 
-2. What proportion of movies passed the Bechdel Test? (`bechdel_test`)
+2. What proportion of movies passed the Bechdel Test? (`bechdel_test1`)
 
 3. Which step in the test trips up most movies? (`clean_test`)
 
@@ -790,8 +791,8 @@ range(d$year)
 **How many, and what proportion of, movies passed the Bechdel Test? (`bechdel_test`)**
 
 ```{r}
-table(d$bechdel_test)
-proportions(table(d$bechdel_test))
+table(d$bechdel_test1)
+proportions(table(d$bechdel_test1))
 ```
 
 <br>
@@ -802,7 +803,7 @@ proportions(table(d$bechdel_test))
 
 - "notalk" means the female characters never have a conversation
 
-- "men" means they do tlak but only about men
+- "men" means they do talk but only about men
 
 <br>
 
@@ -834,7 +835,7 @@ Time to go bivariate in our analyses
 
 <br>
 
-1. Regress box office returns (`boxoffice_millions`) on the Bechdel Test (`bechdel_test`)
+1. Regress box office returns (`boxoffice_millions`) on the Bechdel Test (`bechdel_test1`)
 
 2. Make the table and the predictions
 
@@ -861,12 +862,12 @@ Everybody run this regression, interpret the results and check the fit of the li
 <br>
 
 ```{r, echo=FALSE}
-res4 <- lm(data = d, boxoffice_millions ~ bechdel_test)
+res4 <- lm(data = d, boxoffice_millions ~ bechdel_test1)
 
 modelsummary(list("Box Office" = res4),
              out = "gt",
              fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
-             coef_rename = c("bechdel_test" = "Passing the Bechdel Test")) |>
+             coef_rename = c("bechdel_test1Pass" = "Passing the Bechdel Test")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
                   gt::cell_text(size = "x-large")
@@ -882,7 +883,7 @@ modelsummary(list("Box Office" = res4),
 ### Predictions
 
 ```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-plot(ggpredict(res4, terms = "bechdel_test")) +
+plot(ggpredict(res4, terms = "bechdel_test1")) +
   labs(x = "The Bechdel Test",
        y = "Box Office (Millions USD)")
 ```
@@ -898,7 +899,7 @@ plot(res4, which = 1)
 <br>
 
 ```{r, echo=TRUE}
-aggregate(d$boxoffice_millions ~ d$bechdel_test, FUN = mean)
+aggregate(d$boxoffice_millions ~ d$bechdel_test1, FUN = mean)
 ```
 
 :::
@@ -981,17 +982,103 @@ Everybody run this regression, interpret the results and check the fit of the li
 :::
 
 
+
 ## {background-image="Images/background-data_blue_v4.png" .smaller}
-
-::::: {.columns}
-:::: {.column width="40%"}
-
-<br>
 
 ```{r, echo=FALSE}
 res5 <- lm(data = d, boxoffice_millions ~ clean_test)
 
 modelsummary(list("Box Office" = res5),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("binaryPASS" = "Passing the Bechdel Test")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+::: {.r-fit-text}
+**Box Office = 324.1 - 76.4 (Bechdel: Ok) - 17.4 (No Women) + 31.5 (No Talking) - 36.2 (Talk about Men)**
+:::
+
+::: notes
+
+I've written the result as the formula for a line to see if that helps us understand what we've made here.
+
+- When given a categorical variable, R converts the levels into separate dummy variables
+
+- EXCEPT one of the levels is treated as the intercept
+
+- Here the "dubious" movies category is set as the baseline
+
+<br>
+
+*Step through all*
+
+- Only ONE of these predictors can be true at the same time so only ONE coefficient gets added to the intercept
+
+- Remember, the intercept represents the average box office for dubious movies (unclear Bechdel result)
+
+- Pass the test and subtract $76.4 million
+
+- Don't include named women and subtract $17 million
+
+- Have women but don't let them talk and ADD $31.5 million!
+
+- Have women but they only talk about men and subtract $36 million
+
+<br>
+
+**SLIDE**: Before we interpret the results let's change what the intercept represents.
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+```{r, echo=TRUE}
+# Data: d
+# Treat `clean_test` as a factor
+d$clean_test2 <- factor(d$clean_test, 
+      levels = c("ok", "nowomen", "notalk", "men", "dubious"))
+
+# Refit the regression
+res_new <- lm(data = d, boxoffice_millions ~ clean_test2)
+```
+:::
+
+::: notes
+
+We can tell R to treat the categorical variable as a factor
+
+- The advantage here is that we can specify the order of the levels we are interested in
+
+- Whatever lever comes first will be the basleine in the regression
+
+- This sets us up to compare the levels to movies that pass the Bechdel test
+
+<br>
+
+Everybody make the new variable and re-run the regression
+
+<br>
+
+**SLIDE**: Results
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+```{r, echo=FALSE}
+modelsummary(list("Box Office" = res_new),
              out = "gt",
              fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
              coef_rename = c("binaryPASS" = "Passing the Bechdel Test")) |>
@@ -1010,7 +1097,7 @@ modelsummary(list("Box Office" = res5),
 ### Predictions
 
 ```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-plot(ggpredict(res5, terms = "clean_test")) +
+plot(ggpredict(res_new, terms = "clean_test2")) +
   labs(x = "The Bechdel Test",
        y = "Box Office (Millions USD)")
 ```
@@ -1018,7 +1105,7 @@ plot(ggpredict(res5, terms = "clean_test")) +
 ### Residuals
 
 ```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
-plot(res5, which = 1)
+plot(res_new, which = 1)
 ```
 
 ### Other
@@ -1026,48 +1113,18 @@ plot(res5, which = 1)
 <br>
 
 ```{r, echo=TRUE}
-aggregate(d$boxoffice_millions ~ d$clean_test, FUN = mean)
+aggregate(d$boxoffice_millions ~ d$clean_test2, FUN = mean)
 ```
 
 :::
 ::::
 :::::
 
-::: {.r-fit-text}
-**Box Office = 324.1 - 76.4 (Bechdel: Ok) - 17.4 (No Women) + 31.5 (No Talking) - 36.2 (Talk about Men)**
-:::
-
 ::: notes
-
-I've written the result as the formula for a line to see if that helps us understand what we've made here.
-
-- Just like last time, each level of the categorical variable gets a coefficient except one of them which is represented by the intercept
-
-- Here the intercept represents the average box office for dubious movies (unclear Bechdel result)
-
-- **Make sense?**
-
-<br>
 
 **So, what is going on here?**
 
 - **What are these regression results telling us?**
-
-<br>
-
-*Step through all*
-
-Only ONE of these predictors can be true at the same time so only ONE coefficient gets added to the intercept
-
-- Remember, the intercept represents the average box office for dubious movies (unclear Bechdel result)
-
-- Pass the test and subtract $76.4 million
-
-- Don't include named women and subtract $17 million
-
-- Have women but don't let them talk and ADD $31.5 million!
-
-- Have women but they only talk about men and subtract $36 million
 
 <br>
 
