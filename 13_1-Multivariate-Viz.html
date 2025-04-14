@@ -410,6 +410,7 @@
 <p>Prep for Class</p>
 <ol type="1">
 <li><p>Review Canvas submissions</p></li>
+<li><p>Update histograms for confounders we selected last class</p></li>
 <li><p>Data: WDI-Multivariate_Viz-2024-04-04.xlsx</p></li>
 </ol>
 <p><br></p>
@@ -482,10 +483,96 @@
 <p><br></p>
 <p><strong>Do we have sufficient variation in each to be useful?</strong></p>
 <ul>
-<li><strong>In other words, do the countries of the world actually vary in their levels of these confounders?</strong></li>
+<li><p><strong>In other words, do the countries of the world actually vary in their levels of these confounders?</strong></p></li>
+<li><p>(<strong>SLIDE</strong>: Histograms of each)</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="analyzing-the-confounders" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Analyzing the Confounders</h2>
+
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<p><strong>What do we learn about the world from these distributions?</strong></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  Variable                        Mean      SD        Min     Max Missing
+  &lt;chr&gt;                          &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+1 gdp_current_usd2023    646460500428. 2.66e12 938189444. 2.77e13       7
+2 gdp_pc_current_usd2023        17804. 2.40e 4       193. 1.29e 5       7
+3 population2023             47244996. 1.61e 8    104597  1.44e 9       1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  Variable                            Mean     SD   Min    Max Missing
+  &lt;chr&gt;                              &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;int&gt;
+1 compulsory_ed_years2023            9.92   2.46   5     17          9
+2 control_corruption_estimate2023   -0.104  0.987 -1.69   2.38       1
+3 control_corruption_percentile2023 46.5   28.5    1.42 100          1</code></pre>
+</div>
+</div>
+<p><br></p>
+<p>Quick aside, DO NOT include figures in your reports with exponents in the axis labels OR in the regression results.</p>
+<ul>
+<li>Rescale the variables and replot them</li>
 </ul>
 <p><br></p>
-<p><strong>Any interesting observations about the world from analyzing these variables on their own?</strong></p>
+<p>Let’s practice this one time by rescaling GDP into billions of USD</p>
+<ul>
+<li><strong>SLIDE</strong>: How-to</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="keep-those-axis-labels-readable" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Keep those axis labels readable!</h2>
+<div class="r-fit-text">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="co"># Rescale GDP into trillions USD</span></span>
+<span id="cb3-2"><a href=""></a>data1<span class="sc">$</span>gdp_trillions <span class="ot">&lt;-</span> data1<span class="sc">$</span>gdp_current_usd2023 <span class="sc">/</span> <span class="fl">1e12</span></span>
+<span id="cb3-3"><a href=""></a></span>
+<span id="cb3-4"><a href=""></a><span class="co"># Visualize the new variable</span></span>
+<span id="cb3-5"><a href=""></a><span class="fu">ggplot</span>(<span class="at">data =</span> data1, <span class="fu">aes</span>(<span class="at">x =</span> gdp_trillions)) <span class="sc">+</span></span>
+<span id="cb3-6"><a href=""></a>  <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" style="width:55.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>The process is fairly simple</p>
+<ul>
+<li><p>Create a new variable that is a modification of the current one</p></li>
+<li><p>Divide by a million to rescale into millions</p></li>
+<li><p>Divide by a trillion to rescale into trillions</p></li>
+</ul>
+<p><br></p>
+<p><strong>Questions on rescaling a variable?</strong></p>
 <p><br></p>
 <p><strong>SLIDE</strong>: Plan for today</p>
 <style type="text/css">
@@ -536,7 +623,7 @@
 <h2>Does increasing fertility rates directly lower life expectancy around the world?</h2>
 <p><br></p>
 
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:90.0%"><aside class="notes">
 <p>Two weeks ago we used simple OLS models to explore global predictors of life expectancy</p>
 <ul>
 <li>One of our strongest findings was that countries with average fertility rates have lower average life expectancies</li>
@@ -558,7 +645,7 @@
 <section id="building-a-causal-argument-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>Building a Causal Argument</h2>
 
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><p><strong>Possible Confounders</strong>: GDP per capita, unemployment rate, tobacco use, compulsory education</p>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><p><strong>Possible Confounders</strong>: GDP per capita, unemployment rate, tobacco use, compulsory education</p>
 <aside class="notes">
 <p>Here is a list of the other variables in the dataset that we can consider as confounders in this relationship</p>
 <p><br></p>
@@ -605,8 +692,8 @@
 <p><strong>Convert Numeric Variables to Categorical</strong></p>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Get the Quartiles</span></span>
-<span id="cb1-2"><a href=""></a><span class="fu">summary</span>(d<span class="sc">$</span>fertility_rate_per_woman)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="co"># Get the Quartiles</span></span>
+<span id="cb4-2"><a href=""></a><span class="fu">summary</span>(d<span class="sc">$</span>fertility_rate_per_woman)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
   0.837   1.558   2.040   2.525   3.257   6.892       6 </code></pre>
@@ -614,14 +701,14 @@
 </div>
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="co"># Make the categorical version</span></span>
-<span id="cb3-2"><a href=""></a>d<span class="sc">$</span>fertility_cat <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x =</span> d<span class="sc">$</span>fertility_rate_per_woman, </span>
-<span id="cb3-3"><a href=""></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.558</span>, <span class="fl">2.040</span>, <span class="fl">3.257</span>, <span class="dv">7</span>), </span>
-<span id="cb3-4"><a href=""></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Fertility (Q1)"</span>, <span class="st">"Fertility (Q2)"</span>, </span>
-<span id="cb3-5"><a href=""></a>                               <span class="st">"Fertility (Q3)"</span>, <span class="st">"Fertility (Q4)"</span>))</span>
-<span id="cb3-6"><a href=""></a></span>
-<span id="cb3-7"><a href=""></a><span class="co"># Check the result</span></span>
-<span id="cb3-8"><a href=""></a><span class="fu">table</span>(d<span class="sc">$</span>fertility_cat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co"># Make the categorical version</span></span>
+<span id="cb6-2"><a href=""></a>d<span class="sc">$</span>fertility_cat <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x =</span> d<span class="sc">$</span>fertility_rate_per_woman, </span>
+<span id="cb6-3"><a href=""></a>                    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.558</span>, <span class="fl">2.040</span>, <span class="fl">3.257</span>, <span class="dv">7</span>), </span>
+<span id="cb6-4"><a href=""></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Fertility (Q1)"</span>, <span class="st">"Fertility (Q2)"</span>, </span>
+<span id="cb6-5"><a href=""></a>                               <span class="st">"Fertility (Q3)"</span>, <span class="st">"Fertility (Q4)"</span>))</span>
+<span id="cb6-6"><a href=""></a></span>
+<span id="cb6-7"><a href=""></a><span class="co"># Check the result</span></span>
+<span id="cb6-8"><a href=""></a><span class="fu">table</span>(d<span class="sc">$</span>fertility_cat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4) 
@@ -664,8 +751,8 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><br></p>
 <p><strong>Step 1: Start with the bivariate analysis</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility_cat, </span>
-<span id="cb5-2"><a href=""></a>          <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility_cat, </span>
+<span id="cb8-2"><a href=""></a>          <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   fertility_cat life_expectancy_total
 1 Fertility (Q1)              78.58678
@@ -711,9 +798,9 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><br></p>
 <p><strong>Step 2a: Add a subset (numeric)</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility_cat, </span>
-<span id="cb7-2"><a href=""></a>          <span class="at">FUN =</span> mean,</span>
-<span id="cb7-3"><a href=""></a>          <span class="at">subset =</span> gdp_per_capita <span class="sc">&lt;</span> <span class="fl">6370.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility_cat, </span>
+<span id="cb10-2"><a href=""></a>          <span class="at">FUN =</span> mean,</span>
+<span id="cb10-3"><a href=""></a>          <span class="at">subset =</span> gdp_per_capita <span class="sc">&lt;</span> <span class="fl">6370.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   fertility_cat life_expectancy_total
 1 Fertility (Q1)              74.11989
@@ -757,8 +844,8 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><br></p>
 <p><strong>Step 2a: Add extra variables (categorical)</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility_cat <span class="sc">+</span> gdp_pc_cat, </span>
-<span id="cb9-2"><a href=""></a>          <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> d, life_expectancy_total <span class="sc">~</span> fertility_cat <span class="sc">+</span> gdp_pc_cat, </span>
+<span id="cb12-2"><a href=""></a>          <span class="at">FUN =</span> mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    fertility_cat  gdp_pc_cat life_expectancy_total
 1  Fertility (Q2) GDP pc (Q1)              71.96800
@@ -907,13 +994,13 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 </div>
 <p><br></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
-<span id="cb11-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb11-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb11-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb14-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb14-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb14-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
 <p>Multivariate approach 2 uses facet wraps</p>
 <ul>
 <li>IFF the third variable you want to add to any analysis is categorical, you can use a facet wrap to do it</li>
@@ -947,14 +1034,14 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 </div>
 <p><br></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
-<span id="cb12-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb12-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb12-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb12-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_pc_cat, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb15-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb15-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb15-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb15-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> gdp_pc_cat, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
 <p>The ONLY change here is the facet_wrap line (line 5)</p>
 <ul>
 <li><p>We worked with facet wraps a few weeks ago when doing bivariate analyses</p></li>
@@ -993,14 +1080,14 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 </div>
 <p><br></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
-<span id="cb13-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb13-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb13-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb13-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco_cat, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb16-3"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb16-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco_cat, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
 <p><strong>What do we learn from this effort to adjust the relationship for tobacco use as a confounder?</strong></p>
 <p><br></p>
 <p><strong>SLIDE</strong>: One more multivariate approach for today</p>
@@ -1022,12 +1109,12 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
-<span id="cb14-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb14-3"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb17-3"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>Ok, let’s reset our code again!</p>
 <p><br></p>
 <p>Multivariate approach 3 focuses on the points in a scatter plot</p>
@@ -1052,13 +1139,13 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb15-2"><a href=""></a>              <span class="at">color =</span> gdp_pc_cat)) <span class="sc">+</span></span>
-<span id="cb15-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb15-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb18-2"><a href=""></a>              <span class="at">color =</span> gdp_pc_cat)) <span class="sc">+</span></span>
+<span id="cb18-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb18-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>You can use all of our other tools for adjusting these colors</p>
 <ul>
 <li>scale_color_manual, scale_color_brewer, etc</li>
@@ -1085,13 +1172,13 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb16-2"><a href=""></a>              <span class="at">shape =</span> gdp_pc_cat)) <span class="sc">+</span></span>
-<span id="cb16-3"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb16-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb19-2"><a href=""></a>              <span class="at">shape =</span> gdp_pc_cat)) <span class="sc">+</span></span>
+<span id="cb19-3"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb19-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>If printing in B&amp;W use shapes</p>
 <ul>
 <li>Usually helpful to increase the size of the points</li>
@@ -1116,13 +1203,13 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb17-2"><a href=""></a>              <span class="at">color =</span> gdp_pc_cat, <span class="at">shape =</span> gdp_pc_cat)) <span class="sc">+</span></span>
-<span id="cb17-3"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb17-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb20-2"><a href=""></a>              <span class="at">color =</span> gdp_pc_cat, <span class="at">shape =</span> gdp_pc_cat)) <span class="sc">+</span></span>
+<span id="cb20-3"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb20-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>If there aren’t too many observations or there is considerable spacing between groups this can be a really effective visualization technique</p>
 <p><br></p>
 <p>Everybody practice this replacing GDP with tobacco again</p>
@@ -1147,13 +1234,13 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb18-2"><a href=""></a>              <span class="at">color =</span> tobacco_cat, <span class="at">shape =</span> tobacco_cat)) <span class="sc">+</span></span>
-<span id="cb18-3"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb18-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb21-2"><a href=""></a>              <span class="at">color =</span> tobacco_cat, <span class="at">shape =</span> tobacco_cat)) <span class="sc">+</span></span>
+<span id="cb21-3"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb21-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>I don’t think this actually clarifies the test given the overlap in the groups</p>
 <ul>
 <li><strong>SLIDE</strong>: So combine approaches and re-add the facet wrap!</li>
@@ -1176,14 +1263,14 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb19-2"><a href=""></a>              <span class="at">color =</span> tobacco_cat, <span class="at">shape =</span> tobacco_cat)) <span class="sc">+</span></span>
-<span id="cb19-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb19-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb19-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco_cat, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb22-2"><a href=""></a>              <span class="at">color =</span> tobacco_cat, <span class="at">shape =</span> tobacco_cat)) <span class="sc">+</span></span>
+<span id="cb22-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb22-4"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb22-5"><a href=""></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tobacco_cat, <span class="at">ncol =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><aside class="notes">
 <p><strong>Any questions on using colors or shapes for categorical confounders?</strong></p>
 <p><br></p>
 <p><strong>SLIDE</strong>: Adding numeric confounders is also a bit clunky but I’d like you to be aware of the option</p>
@@ -1205,13 +1292,13 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb20-2"><a href=""></a>              <span class="at">size =</span> gdp_per_capita)) <span class="sc">+</span></span>
-<span id="cb20-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb20-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb23-2"><a href=""></a>              <span class="at">size =</span> gdp_per_capita)) <span class="sc">+</span></span>
+<span id="cb23-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb23-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>Size will rescale the points per a numeric variable</p>
 <ul>
 <li>Some refer to these as bubble plots</li>
@@ -1241,13 +1328,13 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <p><strong>Multivariate Analyses: Adding colors, shapes and sizes</strong></p>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
-<span id="cb21-2"><a href=""></a>              <span class="at">size =</span> tobacco_use_pct)) <span class="sc">+</span></span>
-<span id="cb21-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb21-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x =</span> fertility_rate_per_woman, <span class="at">y =</span> life_expectancy_total, </span>
+<span id="cb24-2"><a href=""></a>              <span class="at">size =</span> tobacco_use_pct)) <span class="sc">+</span></span>
+<span id="cb24-3"><a href=""></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb24-4"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
 <p>Tobacco use much more spread out across this relationship</p>
 <ul>
 <li>Less distinction rich vs poor on this one</li>
@@ -1294,7 +1381,7 @@ Fertility (Q1) Fertility (Q2) Fertility (Q3) Fertility (Q4)
 <section id="for-next-class" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
 <h2>For Next Class</h2>
 
-<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><p><strong>Possible Confounders</strong>: unemployment rate, compulsory education</p>
+<img data-src="13_1-Multivariate-Viz_files/figure-revealjs/unnamed-chunk-27-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><p><strong>Possible Confounders</strong>: unemployment rate, compulsory education</p>
 <aside class="notes">
 <p>We covered GDP and tobacco in class today</p>
 <ul>

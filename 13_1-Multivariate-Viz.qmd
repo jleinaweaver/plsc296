@@ -20,6 +20,8 @@ library(modelsummary)
 #write_excel_csv(d, file = "../Data_in_Class/WDI-Multivariate_Viz-2024-04-04.csv")
 
 d <- read_excel("../Data_in_Class/World_Development_Indicators/WDI-Multivariate_Viz-2024-04-04.xlsx", na = "NA")
+
+data1 <- read_excel("../Data_in_Class/Data-2024-EPI_RSF-Merged_w_Confounders.xlsx", na = "NA")
 ```
 
 <br>
@@ -43,7 +45,9 @@ Prep for Class
 
 1. Review Canvas submissions
 
-1. Data: WDI-Multivariate_Viz-2024-04-04.xlsx
+2. Update histograms for confounders we selected last class
+
+3. Data: WDI-Multivariate_Viz-2024-04-04.xlsx
 
 <br>
 
@@ -153,9 +157,102 @@ For today I asked each of you to perform univariate analyses on our chosen confo
 
 - **In other words, do the countries of the world actually vary in their levels of these confounders?**
 
+- (**SLIDE**: Histograms of each)
+
+:::
+
+
+
+## Analyzing the Confounders {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.align='center'}
+data1 |>
+  select(gdp_current_usd2023:population2023) |>
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Values") |>
+  ggplot(aes(x = Values)) +
+  geom_histogram() +
+  theme_bw() +
+  facet_wrap(~ Variable, scales = "free")
+```
+
+::: notes
+
+**What do we learn about the world from these distributions?**
+
+```{r}
+data1 |>
+  select(gdp_current_usd2023, gdp_pc_current_usd2023, population2023) |>
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Values") |>
+  group_by(Variable) |>
+  summarize(
+    Mean = mean(Values, na.rm = T),
+    SD = sd(Values, na.rm = T),
+    Min = min(Values, na.rm = T),
+    Max = max(Values, na.rm = T),
+    Missing = sum(is.na(Values))
+  )
+```
+
+```{r}
+data1 |>
+  select(compulsory_ed_years2023, control_corruption_estimate2023, control_corruption_percentile2023) |>
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Values") |>
+  group_by(Variable) |>
+  summarize(
+    Mean = mean(Values, na.rm = T),
+    SD = sd(Values, na.rm = T),
+    Min = min(Values, na.rm = T),
+    Max = max(Values, na.rm = T),
+    Missing = sum(is.na(Values))
+  )
+```
+
+
+
 <br>
 
-**Any interesting observations about the world from analyzing these variables on their own?**
+Quick aside, DO NOT include figures in your reports with exponents in the axis labels OR in the regression results.
+
+- Rescale the variables and replot them
+
+<br>
+
+Let's practice this one time by rescaling GDP into billions of USD
+
+- **SLIDE**: How-to
+
+:::
+
+
+
+## Keep those axis labels readable! {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+```{r, fig.retina=3, fig.align='center', echo=TRUE, out.width="55%", fig.asp=.75, fig.width = 6}
+# Rescale GDP into trillions USD
+data1$gdp_trillions <- data1$gdp_current_usd2023 / 1e12
+
+# Visualize the new variable
+ggplot(data = data1, aes(x = gdp_trillions)) +
+  geom_histogram()
+```
+
+:::
+
+::: notes
+
+The process is fairly simple
+
+- Create a new variable that is a modification of the current one
+
+- Divide by a million to rescale into millions
+
+- Divide by a trillion to rescale into trillions
+
+<br>
+
+**Questions on rescaling a variable?**
 
 <br>
 
