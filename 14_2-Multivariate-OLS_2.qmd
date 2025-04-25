@@ -118,6 +118,12 @@ Quick note, I don't know why modelsummary is omitting some of the F-statistics..
 
 - **At what level increase does each predictor make a serious impact on life expectancy?**
 
+- $10k GDP pc buys a year longer life on average!
+
+- 7% increase in unemployment shortens life expectancy by 1 year on average
+
+- Tobacco use and education no different from the null
+
 <br>
 
 **Any missing data concerns?**
@@ -220,21 +226,37 @@ modelsummary(models = list(res1, res2, res3, res4, res5),
 
 ::: notes
 
-Remember, the goal of this exercise is to use an identification strategy to make a causal argument about fertility and life expectancy
-
-- **Bottom line, what do we learn from these regressions?**
+Ok, two SUPER important notes I want to reinforce in your minds about interpreting the results of a multivariate regression
 
 <br>
 
-- Robustness Test: It is reassuring that the coefficient on fertility rate is fairly stable across models
+FIRST, this table reflects our approach to identifying the CAUSAL effect of fertility rates on life expectancy
 
-- The direction of effect makes sense on wealth and unemployment (the other two aren't significant or large enough to interpret)
+- Think of all these models as a robustness test on the effect
+
+- Across all of these different confounders the direction, the size and the significance of the coefficient on fertility stays consistent
+
+- THIS is typically why you see regression tables in published research with a bunch of columns in them
 
 <br>
 
-**Did anybody compare their regression results to the multivariate visualizations we made in class on Monday?**
+**Does this make sense?**
 
-- (**SLIDE**: Compare to our multivariate visualizations last week)
+<br>
+
+SECOND, this table DOES NOT tell us the causal effect of the confounders on life expectancy
+
+- This table tells us GDP pc and life expectancy are associated BUT NOT that they are causally linked
+
+- Same with the other confounders on this table
+
+<br>
+
+**Make this clear for me, why can't I say that according to this regression increasing the years of compulsory education does not cause changes in average life expectancy?**
+
+- (BECAUSE we have not built an identification strategy to measure that effect!)
+
+- (**SLIDE**: Let's take a look at Model 5 here using a visualization)
 
 :::
 
@@ -293,27 +315,21 @@ modelsummary(models = list(res5),
 
 ::: notes
 
-Ok, let's make sure everybody understands the intuitions of our work on multivariate analyses over the last few weeks
+This regression and these scatter plots reinforce the main idea
 
-<br>
+- We are testing the effect of X on Y while adjusting or controlling for the confounder
 
-Help me understand what I'm seeing here.
+- e.g. Does increasing fertility rates lower life expectancy
 
-- On the left, I see scatter plots where the negative effect of fertility rate on life expectancy seems consistent across the levels of education
+- The confounder, education, is meant ONLY to help us think about the main relationship
 
-- On the right, the results of a multiple regression showing education is not a significant predictor of life expectancy
-
-- **Are these two pieces of data analysis consistent with each other or not?**
+- NONE of these plots tell you the effect of education on life expectancy
 
 <br>
 
 This is KEY to understanding our work over the last few weeks
 
 - Never forget our focus is to use data analyses **to make a causal argument that changes in fertility rates CHANGE average life expectancy** around the world
-
-- NONE of these tables or pictures tell us about the causal effect of education on life expectancy
-
-- We are interested in the effect of fertility rates WHEN CONTROLLING FOR EDUCATION
 
 - In other words, for this identification strategy we assume that countries with high vs low fertility rates differ in their levels of education
 
@@ -359,7 +375,7 @@ ggplot(data = d1, aes(x = x, y = y)) +
 
 ::: notes
 
-In this story, I do not think fertility rates are a confounder
+**In this relationship do you believe that fertility rates are a confounder?**
 
 <br>
 
@@ -437,6 +453,10 @@ Regression results
 
 <br>
 
+IF the goal is to estimate the causal effect AND fertility is a mediator here then we should exclude it from the analysis!
+
+<br>
+
 **Does this make sense?**
 
 :::
@@ -490,7 +510,6 @@ modelsummary(models = list(res1, res2, res3, res4, res5),
                   gt::cell_text(size = "15px")
   ), locations = gt::cells_body()) |>
   gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 1:6, rows = 1))
-
 ```
 :::
 ::::
@@ -517,7 +536,156 @@ In either case, this is all a reminder not to become infatuated with your regres
 
 **Any questions on all of this?**
 
+<br>
+
+With these tools in place you can add as many confounders to a single regression as you want.
+
+- Let's practice!
+
+- Everybody fit one more regression for this test but now I want you to include BOTH GDP pc and unemployment
+
+- Go!
+
+<br>
+
+**SLIDE**: Results
+
 :::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Do higher fertility rates lower average life expectancies around the world?**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<br>
+
+```{r, fig.align = 'center', fig.asp=1, fig.width=7, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.4, y = 1, yend = 1, arrow = arrow(), linewidth = 1.4) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+:::
+
+::: {.column width="50%"}
+
+<br>
+
+```{r}
+res6 <- lm(data = d, life_expectancy_total ~ fertility_rate_per_woman + gdp_pc_10k + unemployment_pct)
+
+modelsummary(models = list(res1, res2, res3, res6), 
+             out = "gt", 
+             fmt = 2, stars = c("*" = .05), 
+             gof_omit = "IC|Log", 
+             coef_map = c("fertility_rate_per_woman" = "Fertility (births per woman)", 
+                          "gdp_pc_10k" = "GDP pc ($10k)", 
+                          "unemployment_pct" = "Unemployment (%)",
+                          "tobacco_use_pct" = "Tobacco Use (%)",
+                          "compulsory_education_yrs" = "Education (years)",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "15px")
+  ), locations = gt::cells_body()) |>
+  gt::tab_style(style = gt::cell_fill(color = 'orange'), locations = gt::cells_body(columns = 1:5, rows = 1))
+```
+:::
+::::
+
+::: notes
+
+**Everybody get these results?**
+
+<br>
+
+This is a big decrease on the effect of fertility rates on life expectancy.
+
+- **So, is Model 4 the "right" model to report to answer this question? Why or why not?**
+
+<br>
+
+Ultimately this should be driven by your identification strategy
+
+- If you believe BOTH are confounders than you must control for both!
+
+- **Make sense?**
+
+<br>
+
+**SLIDE**: Making an argument with regression analyses
+
+:::
+
+
+
+## How confident are you that higher fertility rates directly lower average life expectancies around the world? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Confidence depends on the quality of...
+
+1. The Data
+
+2. The Sample
+
+3. The Regression
+
+
+::: notes
+
+Ok, data analysts, the big question is ultimately how convinced are you from our work that increasing fertility rates directly reduces average life expectancy around the world?
+
+<br>
+
+Your certainty should depend on the quality of:
+
+1. The data (methodolgy and measurement)
+
+2. The sample (representative of the population or not)
+
+3. The regression
+
+<br>
+
+Let's consider each of those:
+
+**FIRST, what's your level of confidence in the quality of the data pulled form the World Bank?**
+
+<br>
+
+**SECOND, what's your level of confidence that we have a representative sample of the countries in the world in 2022?**
+
+<br>
+
+**THIRD, what's your level of confidence in the fit of the multiple regression model?**
+
+<br>
+
+**Bottom line, have we built a useful causal argument or not?**
+
+<br>
+
+**SLIDE**: Wrapping up regression
+
+::: 
 
 
 
@@ -532,18 +700,89 @@ In either case, this is all a reminder not to become infatuated with your regres
 
 - Provides estimates of **uncertainty**
 
-- Can include a **confounder**
+- Can include **confounder(s)**
+:::
+
+::: notes
+
+**Any questions on why we use regressions in our analyses?**
+
+<br>
+
+**SLIDE**: Let's talk final papers!
+
 :::
 
 
 
-## Why use multiple regressions? {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-- Can include more than one **confounder**
-
-- Can be adjusted for **non-linear effects**
+**Report 3: Test the Causal Mechanism**
 :::
+
+<br>
+
+- PDF of FINAL paper due May 6th, 12:20p
+
+- Support ALL claims with evidence (and APA citations)
+
+- All figures and tables in the paper must be polished
+
+- Think carefully about your macro, meso and micro structures
+
+::: notes
+
+Big picture details match the prior reports
+
+<br>
+
+**SLIDE**: Finer details...
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Your argument must:**
+
+::: {.incremental}
+
+- Explain your theoretical argument (e.g. the mechanism by which changes in the predictor CAUSE changes in the outcome),
+
+- Explain your identification strategy (e.g. why include these confounders),
+
+- Acknowledge the uncertainty (e.g. how do we use this data despite the problems in the measures?), and
+
+- Test the theory using multivariate regressions AND visualizations
+
+:::
+
+::: notes
+
+**REVEAL x 4**
+
+<br>
+
+**Questions on the assignment?**
+
+- All details are on Canvas
+
+<br>
+
+Let's use the rest of our time today to get to work on this!
+
+- Help each other and feel free to ask us questions!
+
+- Go!
+
+:::
+
+
+
+
+## OLD SLIDES
 
 
 
@@ -643,52 +882,7 @@ Ok, everybody fit the new multiple regression that includes all of the confounde
 
 
 
-## How confident are you that higher fertility rates directly lower average life expectancies around the world? {background-image="Images/background-data_blue_v4.png" .center}
 
-<br>
-
-Confidence depends on the quality of...
-
-1. The Data
-
-2. The Sample
-
-3. The Regression
-
-
-::: notes
-
-Ok, data analysts, the big question is ultimately how convinced are you from our work that increasing fertility rates directly reduces average life expectancy around the world?
-
-<br>
-
-Your certainty should depend on the quality of:
-
-1. The data (methodolgy and measurement)
-
-2. The sample (representative of the population or not)
-
-3. The regression
-
-<br>
-
-Let's consider each of those:
-
-**FIRST, what's your level of confidence in the quality of the data pulled form the World Bank?**
-
-<br>
-
-**SECOND, what's your level of confidence that we have a representative sample of the countries in the world in 2022?**
-
-<br>
-
-**THIRD, what's your level of confidence in the fit of the multiple regression model?**
-
-<br>
-
-**Bottom line, have we built a useful causal argument or not?**
-
-::: 
 
 
 
