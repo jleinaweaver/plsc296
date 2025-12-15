@@ -1,0 +1,761 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+library(modelr)
+library(ggeffects)
+
+d <- read_excel("../Data_in_Class/Class10-3-SimpleOLS_Analyses_to_Interpret/WDI-LifeExp_Agriculture/WDI-2021-Data-2024-12-12.xlsx", na = "NA")
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Ordinary Least Squares (OLS) Regression**
+
+- Using R to fit and evaluate a regression
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Check Canvas submissions
+
+<br>
+
+Today we learn to fit OLS regressions in R
+
+<br>
+
+**SLIDE**: But first, let's review your assignment for today
+
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::::: {.columns}
+
+:::: {.column width="30%"}
+
+<br>
+
+<br>
+
+```{r}
+# Regression Table
+res1 <- lm(data = d, life_expectancy ~ employment_agriculture)
+
+modelsummary(res1, output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_map = c("employment_agriculture"= "Agriculture Employment (%)", "(Intercept)" = "Constant"))
+```
+
+::::
+
+:::: {.column width="70%"}
+
+::: {.panel-tabset}
+
+### Scatterplot
+
+```{r, fig.retina=3, fig.asp=1, fig.align='center', fig.width=7, out.width="80%"}
+## Scatter plot
+d |>
+  ggplot(aes(x = employment_agriculture, y = life_expectancy)) +
+  geom_point() +
+  geom_smooth(method = "lm", se=F) +
+  theme_bw() +
+  labs(x = "Employment in Agriculture (%)", y = "Life Expectancy (Total Years)",
+       caption = "Source: World Bank WDI data for 2021")
+```
+
+### Residuals
+
+```{r, fig.retina=3, fig.asp=.95, fig.align='center', fig.width=7, out.width="80%"}
+## Residuals plot
+plot(res1, which = 1)
+```
+
+### Missing
+
+<br>
+
+:::::: {.r-fit-text}
+
+```{r, echo=TRUE, eval=FALSE}
+# New object with only key variables
+d2 <- select(d, country, life_expectancy, employment_agriculture)
+
+# Keep any observation with NA in one of the variables
+filter(d2, is.na(life_expectancy) | is.na(employment_agriculture))
+```
+
+::::::
+
+<br>
+
+```{r}
+d |>
+  select(country, life_expectancy, employment_agriculture) |>
+  mutate(
+    missing = if_else(is.na(life_expectancy) | is.na(employment_agriculture), 1, 0)
+  ) |>
+  filter(missing == 1) |>
+  select(country) |>
+  as.vector()
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+**How did this go?**
+
+<br>
+
+Questions from Canvas:
+
+<br>
+
+**Q1: Describe the relationship between life expectancy and the proportion of a country's population employed in agricultural work according to this OLS line (e.g. interpret the main coefficient)**
+
+- (On average, increases of 1% in population employed in agricultural work is associated with a decrease in life expectancy of .27 years)
+    
+- (So, a 4% increase in agriculture, reduces average life expectancy by 1 year!)
+
+<br>
+
+**Q2: Use the formula for a line to make a prediction: What is the predicted life expectancy in a country if 10% of the population works in agriculture?**
+
+- (77.6959 + -0.2725 * 10 = 74.9709)
+
+<br>
+
+**Q3: Use the formula for a line to make a prediction: What is the predicted life expectancy in a country if 50% of the population works in agriculture?**
+
+- (77.6959 + -0.2725 * 50 = 64.0709)
+
+<br>
+
+**Q4: Evaluate the fit of the model using the four criteria we discussed in class. How confident are you in that the results of this OLS regression usefully summarize the relationship between life expectancy and agricultural employment?**
+
+- (Dataset has 217 observations so 30 countries missing)
+
+    - **How does this list of missing observations impact your evaluation of the regression?**
+    
+- (Coefficients are significant)
+    
+- (R2 is pretty darn high given the effort to explain all of life expectancy, 55%)
+    
+- (Not terrible, but residuals unbalanced)
+
+    - u-shaped error, above the line at the low and high end, below the line for middle countries
+    
+<br>
+
+**SLIDE**: Let's use today's class to learn how to do all of this in R
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+**How do we perform regression analysis in R?**
+
+1. Fitting a Regression: lm()
+
+2. Making a Regression Table: modelsummary()
+
+3. Visualizing the Residuals: plot()
+
+4. Making Predictions: ggpredict()
+
+```{r, echo=TRUE, eval=FALSE}
+# Install these one time
+install.packages("modelsummary")
+install.packages("ggeffects")
+```
+
+:::
+
+::: notes
+
+Three tools for your proverbial toolbox
+
+- Write these down and install these two add-on packages
+
+:::
+
+
+
+## 1. Fitting OLS Regressions in R {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+::: {.r-fit-text}
+lm(data = dataset, outcome ~ predictor)
+:::
+
+![](Images/10_1-lm_help_file.png){.absolute width="90%" bottom=50 left=65}
+
+::: notes
+We use the lm function to fit simple linear models in R
+
+<br>
+
+While the help file shows you can do a ton of stuff with the lm() function, we'll be starting with just these three elements
+
+- Specify the dataset,
+
+- The outcome variable, and
+
+- The predictor
+
+<br>
+
+**SLIDE**: Applied example
+:::
+
+
+
+## 1. Fitting OLS Regressions in R {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+
+```{r, echo = TRUE, eval = FALSE}
+# Regress `price` on `carat` in the `diamonds` dataset
+model1 <- lm(data = diamonds, price ~ carat)
+
+# Check the Results
+summary(model1)
+```
+
+:::
+
+```{r}
+model1 <- lm(data = diamonds, price ~ carat)
+summary(model1)
+```
+
+::: notes
+
+**Everybody get these results?**
+
+<br>
+
+**Questions on this code?**
+
+:::
+
+
+
+## 2. Formatting Regression Tables in R {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+![](Images/10_3-modelsummary.png)
+
+::: notes
+
+There are a bunch of packages that can do this, but recently I've been using modelsummary
+
+- Makes a wide variety of elegant tables and the code isn't too tough to tweak
+
+<br>
+
+Using this requires installing the modelsummary package
+
+<br>
+
+**SLIDE**: Basic output
+
+:::
+
+
+
+## 2. Formatting Regression Tables in R {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+<br>
+
+<br>
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+library(modelsummary)
+
+modelsummary(model1)
+```
+:::::
+
+:::
+
+::: {.column width="50%"}
+```{r}
+library(modelsummary)
+
+modelsummary(model1)
+```
+:::
+
+::::
+
+::: notes
+
+This is the default output you get if you run the function with no extra arguments
+
+<br>
+
+**Did everybody get this code to run?**
+
+<br>
+
+**SLIDE**: Let's polish this table
+
+:::
+
+
+
+## 2. Formatting Regression Tables in R {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, echo=TRUE, eval=FALSE}
+# Polishing a Table - Minumum Required
+modelsummary(model1, 
+             fmt = 2, 
+             stars = c('*' = .05), 
+             gof_omit = "AIC|BIC|Log|F")
+```
+
+```{r}
+modelsummary(model1, output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F") |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+::: notes
+
+This version modifies three of the arguments in the modelsummary function
+
+- fmt is how many digits after the decimal (two is a good rule of thumb)
+
+- I set the significance stars to one level (.05)
+
+- I omitted a bunch of fit statistics we don't need at the moment
+
+    - Specifically I'm omitting the Akaike information criterion (AIC), Bayesian information criterion (BIC), the log likelihood and the F test
+
+
+<br>
+
+**Did everybody get this code to run?**
+
+<br>
+
+This is the minimum customization I want you to use
+
+- This ensures the table is readable and focused
+
+<br>
+
+**SLIDE**: However, I want to encourage you to go further in polishing this table
+
+:::
+
+
+
+## 2. Formatting Regression Tables in R {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, echo=TRUE, eval=FALSE}
+# Polishing a Table - The Goal
+modelsummary(list("Diamond Price" = model1),
+             fmt = 2, 
+             stars = c('*' = .05), 
+             gof_omit = "AIC|BIC|Log|F",
+             coef_rename = c("carat" = "Diamond Size (carats)"))
+```
+
+```{r}
+modelsummary(list("Diamond Price" = model1), output = "gt",
+             fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_rename = c("carat" = "Diamond Size (carats)")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+::: notes
+
+1. Add the outcome variable as the column header using a named list
+
+2. Rename the coefficient to make it plain english instead of just the variable name
+
+<br>
+
+**Did everybody get this code to run?**
+
+<br>
+
+These extra steps are crucial if the aim is to share your regression table with a professional audience
+
+- This version allows with any regression training to interpret your findings
+
+<br>
+
+**SLIDE**: Next tool is the residuals plot
+
+:::
+
+
+
+## 3. Visualizing the Residuals in R {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Making a residual plot using base R
+plot(x = model1, which = 1)
+```
+:::::
+
+```{r, fig.retina=3, fig.align='center', cache=TRUE, fig.asp=.75, fig.width=6}
+plot(x = model1, which = 1)
+```
+
+::: notes
+
+The easiest way to make the residuals plot is to use the built-in plot function in R
+
+<br>
+
+Two things to keep in mind:
+
+- "x" is the name of the regression object
+
+- "which" is where you specify which diagnostic plot you want
+
+    - Plot type 1 is the residuals plot
+    
+<br>
+
+**Did everybody get this code to run?**
+
+<br>
+
+**SLIDE**: Last bit of new code, making regression predictions in R
+
+:::
+
+
+
+
+
+## 4. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/10_3-ggeffects.png)
+
+ggpredict(model, terms)
+
+- "model" is the regression model you've already fit
+
+- "terms" is the predictor you want to focus on
+
+::: notes
+
+This week we've been using algebra and the formula for a line to make predictions using our regression results
+
+- But, of course, R will do it for you!
+
+<br>
+
+Make sure you have the ggeffects package installed and loaded before you can use the ggpredict function
+
+- It can do a TON but we'll focus on just these two parts
+
+- You have to tell ggpredict the name of your regression object and which predictor you want to use to make predictions
+
+<br>
+
+**SLIDE**: Let's use it on the diamonds data
+
+:::
+
+
+
+## 4. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+library(ggeffects)
+
+ggpredict(model = model1, terms = "carat")
+```
+:::::
+
+```{r}
+library(ggeffects)
+
+ggpredict(model1, terms = "carat")
+```
+
+::: notes
+
+Our current regression model only has one predictor so we have only one choice for the ggpredict function
+
+- This code asks for predictions across the main levels of the carat variable in the dataset
+
+<br>
+
+The table shows the predicted value of a diamond at these six possible weights according to our model
+
+- In addition, this table gives us a 95% confidence interval around each prediction
+
+- The CI is meant to convey our level of confidence in the predictions
+
+- Large CIs mean we can't be very certain with this data!
+
+- These CIs are incredibly small because we have 53k observations which is a ton
+
+<br>
+
+**Did everybody get this code to run?**
+
+<br>
+
+**SLIDE**: Visualize these predictions
+
+:::
+
+
+
+## 4. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+plot(ggpredict(model = model1, terms = "carat"))
+```
+:::::
+
+```{r, eval=TRUE, fig.align='center', fig.retina=3, fig.asp=.8, out.width='70%', fig.width=6}
+plot(ggpredict(model = model1, terms = "carat"))
+```
+
+::: notes
+
+Just add the plot function around your ggpredict and get a nice visualization
+
+- This will prove VERY helpful when we move to multiple regression in a few weeks
+
+<br>
+
+**Did everybody get this code to run?**
+
+<br>
+
+**SLIDE**: Usefully you can tweak this visualization as if it were a ggplot function
+
+:::
+
+
+
+## 4. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+plot(ggpredict(model = model1, terms = "carat")) +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  labs(x = "Diamond Size (carats)", y = "")
+```
+:::::
+
+```{r, eval=TRUE, fig.align='center', fig.retina=3, fig.asp=.8, out.width='70%', fig.width=6}
+plot(ggpredict(model = model1, terms = "carat")) +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  labs(x = "Diamond Size (carats)", y = "")
+```
+
+::: notes
+
+Here I'm just making some simple ggplot tweaks
+
+1. Formatting the y-axis in dollars
+
+2. Changing the axis labels
+
+<br>
+
+**Did everybody get this code to run?**
+
+<br>
+
+**SLIDE**: Time to practice!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.panel-tabset}
+
+### Practice 1
+
+Regress presidential vote share (`vote_share`) on presidential approval rating (`approval_june`) using the datatset on Canvas
+
+- Fit the regression
+
+- Format the table
+
+- Make the residuals plot
+
+- Make a predictions plot
+
+```{r}
+d <- read_excel("../Data_in_Class/Class10-3-SimpleOLS_Analyses_to_Interpret/SP25-Incumbent_Performance_US_Elections.xlsx", na = "NA")
+```
+
+### Table
+
+```{r, echo=TRUE}
+res1 <- lm(data = d, vote_share ~ approval_june)
+
+modelsummary(list("Vote Share" = res1), 
+             output = "gt", fmt = 2, 
+             stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_rename = c("approval_june"= "Approval in June (%)"))
+```
+
+
+### Residuals
+
+```{r, echo=TRUE, fig.retina=3, fig.asp=.7, fig.align='center', fig.width=6}
+res1 <- lm(data = d, vote_share ~ approval_june)
+
+plot(res1, which = 1)
+```
+
+### Predictions
+
+```{r, echo=TRUE, fig.retina=3, fig.asp=.7, fig.align='center', fig.width=6}
+res1 <- lm(data = d, vote_share ~ approval_june)
+
+plot(ggpredict(res1, terms = "approval_june")) +
+  labs(x = "Presidential Approval in June (%)",
+       y = "Presidential Vote Share (%)")
+```
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.panel-tabset}
+
+### Practice 2
+
+Regress city fuel economy (`cty`) on engine displacement (`displ`) in the `mpg` datatset
+
+- Fit the regression
+
+- Format the table
+
+- Make the residuals plot
+
+- Make a predictions plot
+
+### Table
+
+```{r, echo=TRUE}
+res2 <- lm(data = mpg, cty ~ displ)
+
+modelsummary(list("Fuel Economy (City)" = res2), 
+             output = "gt", fmt = 2, 
+             stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_rename = c("displ"= "Engine Size"))
+```
+
+
+### Residuals
+
+```{r, echo=TRUE, fig.retina=3, fig.asp=.7, fig.align='center', fig.width=6}
+res2 <- lm(data = mpg, cty ~ displ)
+
+plot(res2, which = 1)
+```
+
+### Predictions
+
+```{r, echo=TRUE, fig.retina=3, fig.asp=.7, fig.align='center', fig.width=6}
+res2 <- lm(data = mpg, cty ~ displ)
+
+plot(ggpredict(res2, terms = "displ")) +
+  labs(x = "Engine Size (displacement)",
+       y = "Fuel Economy (City)")
+```
+
+:::
+
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+### What is the effect of college completion on poverty rates in midwest cities?
+
+1. Fit the regression
+2. Submit a polished regression table, residuals plot and predictions plot
+3. Answer the question
+4. Evaluate the regression
+
+::: notes
+
+Canvas assignment for next class will let us practice all these skills!
+
+- The assignment prompt has more details for each of these.
+
+- Take a look and let me know if you have any questions
+
+:::
+
+
+
+
+

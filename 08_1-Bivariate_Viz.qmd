@@ -1,0 +1,825 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Bivariate Analyses**
+
+- Visualizing the relationship between two variables
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Check Canvas submissions
+:::
+
+
+
+## Practice for Today {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+1. `cut` and `clarity`
+
+2. `cut` and `price`
+
+3. `carat` and `price` (convert `carat` to a categorical variable)
+
+4. `carat` and `price` (correlation)
+
+**Source:** `diamonds` dataset in tidyverse
+
+::: notes
+**Did everybody complete all four of these exercises?**
+
+<br>
+
+**SLIDE:** Let's talk takeaways! (try to move through these quickly)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.panel-tabset}
+
+### Prompt
+
+<br>
+
+<br>
+
+#### **What are your takeaways from analyzing the relationship between the cut and clarity of diamonds?**
+
+
+### Polished
+
+```{r}
+proportions(table(diamonds$clarity, diamonds$cut), margin = 1) |>
+  round(digits = 2) |>
+  kbl(align = "c") |>
+  kable_styling(bootstrap_options = c("condensed"), font_size = 35) |>
+  column_spec(2, color = "white", background = c("#C6DBEF", rep("lightgrey", 7))) |>
+  column_spec(3, color = "white", background = c(rep("lightgrey", 8))) |>
+  column_spec(4, color = "white", background = c(rep("lightgrey", 8))) |>
+  column_spec(5, color = "white", background = c("lightgrey", "#BDD7E7", rep("lightgrey", 6))) |>
+  column_spec(6, color = "white", background = c(rep("lightgrey", 2), "#BDD7E7", rep("#6BAED6", 2), rep("#3182BD", 2), "#08519C")) |>
+  row_spec(0, background = "white") |>
+  column_spec(1, background = "white")
+```
+
+### Code
+
+```{r, echo=TRUE, eval=FALSE}
+## Analyzing the relationship between a categorical variable (clarity) 
+# and a second categorical variable (cut)
+
+proportions(table(diamonds$clarity, diamonds$cut))
+
+proportions(table(diamonds$clarity, diamonds$cut), margin = 1)
+
+proportions(table(diamonds$clarity, diamonds$cut), margin = 2)
+```
+
+:::
+
+::: notes
+
+**Takeaways from analyzing this relationship?**
+
+<br>
+
+POLISHED: Assuming jewelers can control cut, but not clarity I think this version of the table makes the most sense (e.g. row margins)
+
+- Here I've highlighted the highest proportion in each row AND increased the heat of the color as the proportions increase
+
+
+<br>
+
+My takeaway:
+
+- I assume the clarity is more out of the jewelers control
+
+- When jewelers have an internally flawless diamond (IF) or close to it, they clearly try to give it their highest quality cut (maximize price)
+
+- At the opposite end, when you see a "fair" cut diamond it is safe to assume it is not very clear at all.
+
+::: 
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.panel-tabset}
+
+### Prompt
+
+<br>
+
+<br>
+
+#### **What are your takeaways from analyzing the relationship between the cut and the price of diamonds?**
+
+
+### Results
+
+<br>
+
+<br>
+
+```{r}
+options(width = 120)
+```
+
+:::: {.r-fit-text}
+```{r, echo=TRUE}
+## Analyzing the relationship between a numeric variable (price) and a categorical
+# variable (cut)
+
+aggregate(data = diamonds, price ~ cut, FUN = summary)
+```
+::::
+
+:::
+
+::: notes
+
+Your next job was to analyze the relationship between the price and cut quality of the diamonds.
+
+**What did you find?**
+
+<br>
+
+**Why the big differences between mean and medians?**
+
+<br>
+
+**What specifically can we infer based on the fact that the ranges overlap so much?**
+
+- (More factors to diamond price! Especially the size of the diamond!)
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.panel-tabset}
+
+### Prompt
+
+<br>
+
+<br>
+
+#### **What are your takeaways from analyzing the relationship between the size and the price of diamonds?**
+
+
+### Option: Conversion
+
+<br>
+
+:::: {.r-fit-text}
+```{r, echo=TRUE}
+# Option 1: Transform a numeric variable (carat) into a categorical variable
+diamonds$carat2 <- cut(diamonds$carat, 
+                       breaks = c(0, .4, .7, 1.04, 5.5), 
+                       labels = c("1st Q", "2nd Q", "3rd Q", "4th Q"))
+
+# Describe the new relationship
+aggregate(data = diamonds, price ~ carat2, FUN = summary)
+```
+::::
+
+
+### Option: Correlation
+
+```{r, echo=TRUE}
+# Correlation
+cor(diamonds$carat, diamonds$price)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Statistical Test
+cor.test(diamonds$carat, diamonds$price)
+```
+
+:::
+
+::: notes
+Your next job was to analyze the relationship between the price and weight of the diamonds.
+
+- **What did you find?**
+
+- (Pretty clear that diamond size is a BIG determinant of price!)
+
+- (A STRONG linear relationship implied by this VERY high correlation score)
+
+<br>
+
+This is another approach that would REALLY benefit from visualization!
+
+<br>
+
+**Any questions on the practice exercises or the tools/concepts from last class?**
+:::
+
+
+
+## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+1. Descriptive Statistics by Group
+    - Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations
+
+2. Visualizations
+    - Bar plots (stacked, side-by-side, proportions), facet wraps, density plots, box plots and scatter plots
+
+::: notes
+
+On Monday, we worked on the Descriptive Statistics by Group.
+
+- Essentially you can calculate all of these using the table, summary and aggregate functions
+
+<br>
+
+Today we dive into bivariate visualizations as a tool for analyzing a relationship.
+
+- The descriptive statistics help us discuss our analyses in text, but the pictures enable the reader to MUCH better understand what the world looks like.
+:::
+
+
+
+## 3. Variable type determines the tool {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.align='center', out.width='90%'}
+knitr::include_graphics("Images/01_2-levels_measurement.png")
+```
+
+::: notes
+Just as we did previously, we will be guided in learning our new tools by this rule of data science!
+
+- If you know the variable types you are analyzing, choosing the right tool is done for you!
+
+<br>
+
+**SLIDE**: Let's start with a univariate analysis of a single categorical variable
+:::
+
+
+
+
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=FALSE}
+ggplot(mpg, aes(x = class)) +
+  geom_bar()
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=FALSE}
+ggplot(mpg, aes(x = drv)) +
+  geom_bar()
+```
+:::
+::::
+
+::: notes
+
+Ah yes, our old friend the bar plot!
+
+- On the left is the distribution of cars by "class"
+
+- On the right is the distribution of drive trains
+
+<br>
+
+Previously we used stacked bar plots to examine changes in the trend of a categorical variable across time
+
+- What I want to show you now is that a stacked bar plot works for visualizing the relationship between any two categorical variables
+
+<br>
+
+**SLIDE**: The first type of bivariate bar plot is what we call a side-by-side plot
+
+:::
+
+
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=FALSE}
+# Side-by-side bar plots
+ggplot(mpg, aes(x = class, fill = drv)) +
+  geom_bar(position = "dodge")
+```
+
+::: notes
+
+*Make sure they can interpret these results*
+
+- For the bivariate case geom_bar needs an x and a fill argument inside the aes function.
+
+<br>
+
+By default geom_bar adjusts the width of the bars so each x label takes up the same space.
+
+- I really don't love this default choice.
+
+- **SLIDE**: Let's fix it.
+:::
+
+
+
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=FALSE}
+# Side-by-side bar plots
+ggplot(mpg, aes(x = class, fill = drv)) +
+  geom_bar(position = position_dodge(preserve = "single"))
+```
+
+::: notes
+
+**What do we learn from this? What does the relationship appear to be between class and drive train?**
+
+<br>
+
+Practice for me
+
+- I want you to get a sense of what happens when you change which variable goes on the x axis and which is the fill.
+
+- Swap the 'x' and 'fill' variables in this code
+
+<br>
+
+**SLIDE**: Result
+:::
+
+
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.width=5, fig.asp=.9, cache=FALSE}
+ggplot(mpg, aes(x = class, fill = drv)) +
+  geom_bar(position = position_dodge(preserve = "single")) +
+  labs(title = "x = class, fill = drv") +
+  scale_fill_brewer(type = "qual", palette = 2)
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.width=5, fig.asp=.9, cache=FALSE}
+ggplot(mpg, aes(x = drv, fill = class)) +
+  geom_bar(position = position_dodge(preserve = "single")) +
+  labs(title = "x = drv, fill = class") +
+  scale_fill_brewer(type = "qual", palette = 2)
+```
+:::
+::::
+
+::: notes
+**What question does this plot on the right help us answer? How is it different from the other one?**
+
+- (What types of car class are most associated with each type of drive train)
+
+<br>
+
+Same data, same tool, very different questions answered!
+
+<br>
+
+**Questions on making a side-by-side bar plot two categorical variables?**
+:::
+
+
+
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=FALSE}
+# Stacked bar plots
+ggplot(mpg, aes(x = class, fill = drv)) +
+  geom_bar(position = "stack")
+```
+
+::: notes
+Here we see the second style of bivariate bar plot: A Stacked Bar Plot
+
+<br>
+
+**Why is the stacked bar plot better for analyzing this relationship?**
+
+- (These plots are meant to tell us how each class of car uses the various drive trains and stacked bars help you see the proportions specific to each car)
+
+<br>
+
+**Make sense?**
+:::
+
+
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, cache=FALSE}
+# Proportionate bar plot
+ggplot(mpg, aes(x = class, fill = drv)) +
+  geom_bar(position = "fill")
+```
+
+::: notes
+Last style of common bar plot is a proportional stacked bar plot.
+
+- Super cool approach transforms each bar to a proportion of 100% per x variable level.
+
+- So, the y-axis marks off the proportion of the total represented by each level of the fill variable.
+
+<br>
+
+Clearly makes comparisons and summary easier, BUT...
+
+<br>
+
+**Why are these super dangerous?**
+
+- Look on the left plot, very FEW 2seaters and minivans so the proportions are much less stable
+
+- Only takes adding one of this class with a different drive train to dramatically change the %'s
+
+<br>
+
+**Any questions on our three versions of the bar plot?**
+
+- Remember, need to specify both an 'x' and a 'fill' variable PLUS a 'position' argument in the geom_bar
+
+<br>
+
+**SLIDE**: Let's tweak the y-axis labels to match the proportions
+
+:::
+
+
+
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, cache=FALSE}
+ggplot(mpg, aes(x = class, fill = drv)) +
+  geom_bar(position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "", y = "")
+```
+
+::: notes
+The y-axis is converted to proportions so we can tweak the labels along the tick marks
+
+<br>
+
+**Make sense?**
+:::
+
+
+
+
+## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=.85, fig.align='center', cache=FALSE}
+ggplot(mpg, aes(x = cty)) +
+  geom_histogram(bins = 15, color = "white") +
+  theme_bw()
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=.85, fig.align='center', cache=FALSE}
+ggplot(mpg, aes(x = drv)) +
+  geom_bar(fill = "darkblue") +
+  theme_bw()
+```
+:::
+::::
+
+::: notes
+Next visualization challenge!
+
+<br>
+
+We have a numeric variable, city fuel economy, and a categorical variable, car drive trains.
+
+- Last class we calculated summary statistics of the numeric variable for each level of the categorical variable using the aggregate function
+
+- Today I'll show you three options for visualizing this relationship
+
+<br>
+
+**SLIDE**: Our first option is simply to make separate histograms for each drive train
+:::
+
+
+
+## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+**1. Facet Wrap**
+
+:::: {.columns}
+::: {.column width="60%"}
+```{r, echo=TRUE, fig.align='center', cache=FALSE}
+ggplot(mpg, aes(x = cty)) +
+  geom_histogram(bins = 15) +
+  theme_bw() +
+  facet_wrap(~ drv)
+```
+:::
+
+::: {.column width="40%"}
+```{r, echo=TRUE, fig.align='center', fig.asp=1.2, cache=FALSE}
+ggplot(mpg, aes(x = cty)) +
+  geom_histogram(bins = 15) +
+  theme_bw() +
+  facet_wrap(~ drv, ncol = 1)
+```
+:::
+::::
+
+::: notes
+Option 1: facet_wrap
+
+- Use a tilde and then the categorical variable
+
+- This produces separate histograms for each level of the categorical variable
+
+<br>
+
+On the right I used the "ncol" argument to specify you want a single column of plots
+
+- Much easier to compare across the distributions this way
+
+<br>
+
+**What does this suggest about the relationship between fuel economy and car drive trains?**
+
+<br>
+
+**SLIDE**: Let's try a new approach, overlapping density plots
+:::
+
+
+
+## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.columns}
+::: {.column width="35%"}
+
+<br>
+
+<br>
+
+```{r, echo=FALSE, fig.align='center', fig.asp=0.75}
+ggplot(mpg, aes(x = cty)) +
+  geom_histogram(bins = 15) +
+  theme_bw() +
+  labs(x = "City Fuel Economy (mpg)", 
+       y = "Count")
+```
+:::
+
+::: {.column width="65%"}
+```{r, echo=TRUE, fig.align='center', fig.asp=0.618}
+# 2. Density Plots
+ggplot(mpg, aes(x = cty)) +
+  geom_density() +
+  theme_bw()  +
+  labs(x = "City Fuel Economy (mpg)", 
+       y = "Density")
+```
+:::
+::::
+
+::: notes
+Think of a density plot like a smoothed histogram
+
+- Histograms count observations in bins
+
+- Density plots represent the relative probability of values
+
+- The higher the point on the curve, the more likely the observations near that value of the variable
+
+<br>
+
+**Does everybody see how these two plots represent the same idea in different ways?**
+
+<br>
+
+**SLIDE**: Density plots make it much easier to overlay distributions
+:::
+
+
+
+## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.asp=0.618}
+# 2. Density Plots
+ggplot(mpg, aes(x = cty, fill = drv)) +
+  geom_density(alpha = .4) +
+  theme_bw()
+```
+
+::: notes
+Much clearer if only two levels of the categorical variable OR if the distributions are separated widely
+
+- However, a useful tool to add to your toolbox.
+
+<br>
+
+**Questions on this second option for visualizing the relationship between a numeric and a categorical variable?**
+
+<br>
+
+**SLIDE**: Facet wraps and density plots can help you see the whole distribution-ish, but this is a problem box plots were designed to solve!
+:::
+
+
+
+## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.columns}
+::: {.column width="60%"}
+```{r, echo=TRUE, eval=FALSE}
+# 3. Box Plot
+ggplot(mpg, aes(x = cty, y = drv)) +
+  geom_boxplot()
+```
+
+```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=FALSE}
+# Box Plot
+ggplot(mpg, aes(x = cty, y = drv)) +
+  geom_boxplot() +
+  scale_y_discrete(limits = c("r", "f", "4"))
+```
+:::
+
+::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE, fig.align='center', fig.width=5, fig.asp=1.2, cache=FALSE}
+ggplot(mpg, aes(x = cty)) +
+  geom_histogram(bins = 15, `code-line-numbers`="1,3") +
+  theme_bw() +
+  facet_wrap(~ drv, ncol = 1)
+```
+:::
+::::
+
+::: notes
+Here is where we see the real utility of box plots.
+
+- For comparing the distribution of numeric variables across the levels of a categorical variable.
+
+<br>
+
+**Remind me, what are the main components of a box plot?**
+
+- (Median is the black line)
+- (IQR is the box)
+- (Whiskers extend 1.5x the IQR)
+- (Outliers identified)
+
+<br>
+
+**Does everybody see how both of these visualizations represent the same data?**
+
+<br>
+
+**When would you prefer to use the boxes and when the histograms?**
+
+- **What are the benefits of each approach?**
+:::
+
+
+
+## Numeric x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=FALSE}
+# Scatter Plot
+ggplot(mpg, aes(x = displ, y = cty)) +
+  geom_point()
+```
+
+::: notes
+Our final new tool: Scatter Plots
+
+**Any questions on how to read this plot?**
+
+<br>
+
+**What do we learn from this?**
+
+<br>
+
+**What statistic could we calculate to help us explain the relationship?**
+- (Correlation!)
+
+<br>
+
+Go for it!
+:::
+
+
+## Bivariate Categorical Variables {background-image="Images/background-data_blue_v4.png" .center}
+
+**Numeric x Numeric Variable**
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.align='center', fig.width=5, fig.asp=1, cache=FALSE}
+# Scatter Plot
+ggplot(mpg, aes(x = displ, y = cty)) +
+  geom_point()
+```
+:::
+
+::: {.column width="50%"}
+
+<br>
+
+```{r, echo=TRUE}
+cor.test(mpg$displ, mpg$cty)
+```
+:::
+::::
+
+
+## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+<br>
+
+**Categorical x Categorical**
+
+- Tables, Proportions (with margins) and Bar plots (stacked, side-by-side, proportions)
+
+**Numeric x Categorical**
+
+- Descriptive statistics by group (aggregate across summary, mean, median, percentiles, standard deviations), facet wraps, overlapping density plots and box plots
+
+**Numeric x Numeric**
+
+- Descriptive statistics by group (cut numeric into categorical), correlations and scatter plots
+
+::: notes
+**Any questions on the tools we learned today?**
+:::
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+### Submit your "best" visualization of the relationship between:
+
+::: {.r-fit-text}
+
+1. The style (`cut`) and clarity (`clarity`) of the diamonds
+
+2. The style (`cut`) and the cost (`price`) of the diamonds
+
+3. The size (`carat`) and the cost (`price`) of the diamonds
+
+:::
+
+::: notes
+Your job is to come up with the best version of each that you can.
+
+- By "best" I mean completely polished!
+
+<br>
+
+**Any questions on the assignment?**
+:::
+

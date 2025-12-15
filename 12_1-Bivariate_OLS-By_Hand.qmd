@@ -1,0 +1,1038 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(modelr)
+#library(kableExtra)
+#library(modelsummary)
+#library(ggeffects)
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Ordinary Least Squares (OLS) Regression**
+
+- Developing our intuitions about regression
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Print sheets for "best fit" line practice in class (one per student) AND rulers for all
+
+    - Graph paper with axes printed on them so everyone using same reference points
+    
+2. Bring rulers to class
+    
+<br>
+
+**SLIDE**: Our focus of the semester remains on answering a research question with data!
+:::
+
+
+
+## Our Research Question {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**Does a free press promote better environmental quality around the world?**
+
+```{r, fig.align='center', fig.width = 10, fig.height=2}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Press\nFreedom", "Environmental\nQuality")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 1.85, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+
+In the first half of the semester we used univariate analyses to examine each of these measurements on their own
+
+<br>
+
+The second half of our semester shifts our focus from univariate to bivariate and multivariate analyses
+
+- In short, that means moving from describing the variation in one variable to describing the relationship between the variables
+
+<br>
+
+Our ultimate goal is to use all of our tools to answer this question
+
+- And the heart of this question is an effort to explain a single outcome
+
+- *Restate question as: What explains the variation in our DV?*
+
+<br>
+
+**SLIDE**: Last week
+
+:::
+
+
+
+## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+1. Descriptive Statistics by Group
+    - Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations
+
+2. Visualizations
+    - Bar plots (stacked, side-by-side, proportions), box plots and scatter plots
+
+::: notes
+
+Last week we practiced some of the tools of bivariate analysis
+
+- **Any questions on these tools?**
+
+<br>
+
+Given our work on Friday I'd imagine you are developing an early answer to our research question
+
+- **What are we seeing so far in the relationship between our predictor and outcome variables?**
+
+<br>
+
+Over the next two weeks we are going to add regressions to your statistical toolbox
+
+- These are an INCREDIBLY useful, but often misunderstood tool, so we need to dedicate some time to this
+
+- You have to make sure to keep up with the readings and take notes during class!
+
+<br>
+
+**SLIDE**: Speaking of the readings, let's draw out our big picture goals using the Wheelan chapter!
+
+:::
+
+
+
+## Regression Analysis {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/10_2-Wheelan_Cover.jpg){style="display: block; margin: 0 auto"}
+
+::: notes
+
+**According to Wheelan, what is the purpose of regression analysis?**
+
+- (p186: "Specifically, regression analysis allows us to quantify the relationship between a particular variable and an outcome that we care about while *controlling for other factors.*")
+
+<br>
+
+In other words, regression will enable us to estimate more specific answers to our research question
+
+- e.g. by how much does increasing X increase Y
+
+<br>
+
+I want to reinforce Wheelan's big warnings before we get started
+
+<br>
+
+FIRST, thanks to computers, fitting a regression is TOO easy (p187).
+
+- You will be able to quickly fit and use regressions thanks to R
+
+- In most cases, R will let you fit a regression even if the variables you are using are not appropriate for the tool
+    
+- The hard part is learning WHEN and HOW to use these regressions
+
+<br>
+
+SECOND, the answers produced by regression are estimates, not truth!
+
+- Regressions are useful because thye help us measure the uncertainty in our answers
+
+- BUT there is WAY more uncertainty than even the computer will identify
+
+    - How was the data measured?
+    
+    - Is the sample representative of the population?
+    
+    - Is time a complicating factor?
+
+<br>
+
+**SLIDE**: Those warnings in mind, let's get to work reinforcing some of the intuitions you need to develop about regression
+
+:::
+
+
+
+## The Intuitions of OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
+
+1. Take a piece of prepared graph paper and a ruler
+
+2. Plot the following (X, Y) coordinates
+
+| X | Y |
+|---|---|
+|2|3|
+|3|2|
+|4|4|
+|5|3|
+|6|5|
+
+::: notes
+
+*Distribute paper and rulers*
+
+<br>
+
+My advice:
+
+1. Do your own page, BUT help each other
+
+2. Remember the old advice: measure twice, cut once
+
+    - Use a pencil and THINK before you mark the paper!
+
+<br>
+
+**SLIDE**: The set-up
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7}
+d_test <- tibble(
+  x1 = c(2, 3, 4, 5, 6),
+  y1 = c(3, 2, 4, 3, 5)
+)
+
+d_test |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)")
+```
+
+::: notes
+
+**Everybody have this?**
+
+<br>
+
+Thus far, we have been using bivariate analyses to describe the relationship between two variables
+
+- **Describe this relationship for me. How would you describe the relationship between X and Y here?**
+
+<br>
+
+Simple OLS regression is also a bivariate tool meant to help us describe the relationship between two variables USING A LINE
+
+- **Does everybody remember the formula for a line from the reading (or other classes)?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7, cache=TRUE}
+d_test |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("text", x = 4.75, y = 6.5, label = "Formula for a Line: Y = \U03B1 + \U03B2 X", size = 10, color = "darkblue")
+```
+
+::: notes
+
+Wheelan p191-192 explains the formula for a line
+
+- Note that Wheelan uses "a" for alpha and "b" for beta in the text 
+
+- You need to memorize and understand this formula DEEPLY in order to use regression analysis
+
+- **Questions on this formula from the reading?**
+
+<br>
+
+You may have learned this formula in math as y = mx + c
+
+- It's the same thing but in stats we use the alpha and beta version here
+
+- Unless you are a math major, memorize this one
+
+<br>
+
+So, regression generates a line that summarizes the relationship between two or more variables
+
+- This line version of a summary is incredibly useful because it allows us to ask directional questions
+
+- The regression line directly estimates how changes in X, the predictor, are associated with changes in Y, the outcome.
+
+<br>
+
+I think the best way to approach this is to draw some lines by hand and interpret them
+
+<br>
+
+**SLIDE**: Let's take a step back now and focus just on Y for a moment
+
+:::
+
+
+
+## The Outcome to be Explained {background-image="Images/background-data_blue_v4.png" .center}
+
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="20%"}
+
+:::
+
+::: {.column width="30%"}
+
+| Y |
+|---|
+|3|
+|2|
+|4|
+|3|
+|5|
+
+:::
+
+::: {.column width="50%"}
+
+![](Images/10_1-small_bag.png)
+
+:::
+
+::::
+
+::: notes
+
+Imagine each of these five observations is written on a small ball and placed into a bag.
+
+- In a moment you will reach your hand in the bag and pull out one of the balls.
+
+<br>
+
+**What is your best guess for the value of the ball you will pull out? Why?**
+
+- (Probability: 2/5 balls are "3" so that's a 40% chance vs 1/5 for "2", "4" and "5" or a 20% chance)
+
+- (Median: 3)
+
+- (Mean: 3.4)
+
+<br>
+
+Certainly seems like a bunch of reasons to predict the number 3!
+
+- SO, if you had NO other information about the bag or the balls themselves, three seems like a guess
+
+<br>
+
+**SLIDE**: Let's go back to our plot
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 1: Ignoring the X variable**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7, cache=TRUE}
+d_test |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("text", x = 1, y = 6.5, hjust = 0, label = "Our 'Best' Guess = 3", size = 6, color = "darkblue")
+```
+
+::: notes
+
+In a sense, this is our null hypothesis
+
+- Meaning a prediction based on no information beyond the outcome variable
+
+<br>
+
+Everybody take a second and think about this for me before you say or draw anything.
+
+- What would a line look like on your plot that predicts a Y value of 3 for EVERY value of X
+
+- Put your ruler on your plot where you think the line would go
+
+<br>
+
+*Walk around and check them*
+
+<br>
+
+Ok, draw those lines!
+
+<br>
+
+**SLIDE**: represent using formula
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 1: Ignoring the X variable**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7, cache=TRUE}
+d_test |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("text", x = 1, y = 6.5, hjust = 0, label = "Formula for a Line: Y = \U03B1 + \U03B2 X", size = 6, color = "darkblue") +
+  geom_hline(yintercept = 3, color = "darkblue")
+```
+
+::: notes
+
+**Everybody has this line drawn, yes?**
+
+<br>
+
+Now take a second and think about this for me before you say anything.
+
+- **What is the formula for this line?**
+
+- **In other words, a line that predicts the outcome will be 3 NO MATTER the value of X**
+
+- Don't say it out loud, just write it down
+
+<br>
+
+(**SLIDE**)
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 1: Ignoring the X variable**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8, cache=TRUE}
+d_test |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  geom_hline(yintercept = 3, color = "darkblue") +
+  annotate("text", x = 1, y = 6.5, hjust = 0, label = "Y = \U03B1 + \U03B2 X", size = 7, color = "darkblue") +
+  annotate("text", x = 1, y = 5.5, hjust = 0, label = "Y = 3 + 0X", size = 7, color = "darkblue")
+```
+
+::: notes
+
+**Everybody comfortable matching this formula to this line?**
+
+- **Why is the alpha set to 3?** (The y-intercept of the line)
+
+- **Why is the beta set to zero?** (The slope of the line does not increase or decrease)
+
+<br>
+
+Alright, let's use this summary of the relationship to make predictions!
+
+- **Use some basic algebra to tell me, if X = 4 then what is your prediction for Y?** (3!)
+
+- **And if X = 150 million, what is your prediction for Y?** (3!)
+
+- Just checking...
+
+<br>
+
+Before we use this regression line as an answer to any question, we need to evaluate how well it fits the data
+
+- Let's start with just your sense of this.
+
+- **In what ways is this a "good" fit and in what ways a "bad" fit?**
+
+<br>
+
+The first MASSIVE problem with this summary of the relationship is that it makes NO attempt to model the actual relationship!
+
+- This line completely ignores all the information in X!
+
+- As an answer to the question, does X explain the variation in Y this is not getting the job done.
+
+<br>
+
+**SLIDE**: Second big problem
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 1: Ignoring the X variable**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8, cache=TRUE}
+d_test |>
+  ggplot(aes(x = x1, y = y1)) + 
+  annotate("rect", xmin = 0.5, xmax = 9, ymin = 2, ymax = 5, alpha = .3, fill = "darkgreen") +
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  geom_hline(yintercept = 3, color = "darkblue") +
+  annotate("text", x = 1, y = 6.5, hjust = 0, label = "Y = \U03B1 + \U03B2 X", size = 7, color = "darkblue") +
+  annotate("text", x = 1, y = 5.5, hjust = 0, label = "Y = 3 + 0X", size = 7, color = "darkblue") +
+  annotate("segment", x = 8, xend = 8, y = 2, yend = 5, arrow = arrow(ends = "both"), color = "darkgreen", linewidth = 1.5)
+```
+
+::: notes
+
+The second MASSIVE problem with this summary of the relationship is, in reality, Y varies from two up to five but our line only ever predicts 3
+
+- This means our summary line is incredibly unhelpful in achieving the main purpose of explaining the outcome
+
+<br>
+
+**Do these two problems with this line make sense at an intuitive level?**
+
+<br>
+
+**SLIDE**: Let's try to actually measure the error in this summary line
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 1: Ignoring the X variable**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8, cache=TRUE}
+d_test2 <- d_test |>
+  mutate(
+    pred = 3,
+    residual = pred - y1
+  )
+
+d_test2 |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  geom_hline(yintercept = 3, color = "darkblue") +
+  annotate("text", x = 1, y = 6.5, hjust = 0, label = "Y = \U03B1 + \U03B2 X", size = 7, color = "darkblue") +
+  annotate("text", x = 1, y = 5.5, hjust = 0, label = "Y = 3 + 0X", size = 7, color = "darkblue") +
+  annotate("segment", x = d_test2$x1, xend = d_test2$x1, y = d_test2$y1, yend = d_test2$pred, color = "red")
+```
+
+::: notes
+
+The "error" here is how far off our summary line is from the actual outcomes we are interested in explaining.
+
+- We call these the residuals
+
+- The higher the error, the worse the line fits the data
+
+- **Make sense?**
+
+<br>
+
+Everybody use your ruler to measure these five residuals in inches
+
+- Round to tenths of an inch
+
+<br>
+
+(**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 1: Ignoring the X variable**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8, cache=TRUE}
+d_test2 |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  geom_hline(yintercept = 3, color = "darkblue") +
+  annotate("text", x = 1, y = 6.5, hjust = 0, label = "Y = \U03B1 + \U03B2 X", size = 7, color = "darkblue") +
+  annotate("text", x = 1, y = 5.5, hjust = 0, label = "Y = 3 + 0X", size = 7, color = "darkblue") +
+  annotate("segment", x = d_test2$x1, xend = d_test2$x1, y = d_test2$y1, yend = d_test2$pred, color = "red") +
+  annotate("text", x = 1.7:5.7, y = c(2.8, 2.5, 3.5, 2.8, 4), label = d_test2$residual, color = "red")
+```
+
+::: notes
+
+**Everybody come close to these?**
+
+<br>
+
+**Per Wheelan, how do we combine these residuals to find the error in the line?**
+
+- (Sum of the squared errors!)
+
+<br>
+
+So, square each value and then add them all together
+
+- We square the residuals so the negative and positive values don't erase each other
+
+- Go!
+
+<br>
+
+**What did you get?**
+
+- Sum of squared residuals: (`r sum((d_test2$residual)^2)`)
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 1: Ignoring the X variable**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8, cache=TRUE}
+d_test2 |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  geom_hline(yintercept = 3, color = "darkblue") +
+  annotate("text", x = 1, y = 6.5, hjust = 0, label = "Y = \U03B1 + \U03B2 X", size = 7, color = "darkblue") +
+  annotate("text", x = 1, y = 5.5, hjust = 0, label = "Y = 3 + 0X", size = 7, color = "darkblue") +
+  annotate("segment", x = d_test2$x1, xend = d_test2$x1, y = d_test2$y1, yend = d_test2$pred, color = "red") +
+  annotate("text", x = 1.7:5.7, y = c(2.8, 2.5, 3.5, 2.8, 4), label = d_test2$residual, color = "red") +
+  annotate("text", x = 1, y = 1, hjust = 0, label = "RSS = 0\U00B2 + 1\U00B2 + -1\U00B2 + 0\U00B2 + -2\U00B2 = 6", color = "red", size = 7)
+```
+
+::: notes
+
+The sum of squared residuals is also known as the RSS or Residual Sum of Squares
+
+<br>
+
+We will primarily use the RSS to compare different lines to each other
+
+- Generally speaking we prefer regression lines with less error to those with more error
+
+- HOWEVER, in an absolute sense this value of "6" doesn't hold a lot of meaning
+
+<br>
+
+The other thing we check for with the errors is if we see any patterns to them
+
+- In this case, there are more errors above the line than below, AND
+
+- The errors above the line are bigger than those below
+
+- This tells me we should be able to draw a line that fits this data better!
+
+<br>
+
+**How are we doing so far? Any questions?**
+
+<br>
+
+**SLIDE**: Alright let's practice all of this and generate a better summary line!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 2: Adapt the line for two observations**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8, cache=TRUE}
+d_test2 |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("point", x = c(3,5), y = c(2,3), color = "red", size = 3)
+```
+
+::: notes
+
+Let's summarize this relationship again but now we add some of the information in X
+
+- To start we'll consider some of the information provided by the X variable
+
+- Everybody use your ruler to draw a straight line through these two observations (Points: 3,2 and 5,3)
+
+<br>
+
+**SLIDE**: Result and assignment
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 2: Adapt the line for two observations**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8}
+d3 <- tibble(
+  x1 = c(3, 5),
+  y1 = c(2, 3)
+)
+
+res1 <- lm(data = d3, y1 ~ x1)
+
+d_test2 |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("point", x = c(3,5), y = c(2,3), color = "red", size = 3) +
+  geom_abline(slope = res1$coefficients[2], intercept = res1$coefficients[1], color = "darkblue") +
+  annotate("text", x = .5, y = 6.5, hjust = 0, label = "Formula for a Line: Y = \U03B1 + \U03B2 X", size = 7, color = "darkblue")
+```
+
+::: notes
+
+**Did everybody draw this line?**
+
+<br>
+
+**Alright, everybody convert this line into the formula for a line**
+
+- Remember the alpha is the y-intercept, and
+
+- The beta is the rise/run or the change in y divided by the change in x between any two points
+
+<br>
+
+(**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 2: Adapt the line for two observations**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8, cache=TRUE}
+d_test2 |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("point", x = c(3,5), y = c(2,3), color = "red", size = 3) +
+  geom_abline(slope = res1$coefficients[2], intercept = res1$coefficients[1], color = "darkblue") +
+  annotate("text", x = .5, y = 6.5, hjust = 0, label = "Y = 0.5 + 0.5 X", size = 9, color = "darkblue")
+```
+
+::: notes
+
+**Did everybody get this formula?**
+
+- **Why is the alpha 0.5?**
+
+- **Why is the beta 0.5?**
+
+<br>
+
+Let's now use this line to make predictions
+
+<br>
+
+**What does our line predict is the value of Y when X = 1?**
+
+- (x = 1 then y = 1)
+
+<br>
+
+**What does our line predict is the value of Y when X = 7?**
+
+- (x = 7 then y = 4)
+
+<br>
+
+So, that's our new summary of this relationship.
+
+- Now I want each of you to evaluate how well this line fits the data
+
+- Calculate the residual sum of squares and evaluate the line
+
+- Go!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 2: Adapt the line for two observations**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8, cache=TRUE}
+d_test3 <- d_test |>
+  add_predictions(res1) |>
+  add_residuals(res1)
+
+d_test3 |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("point", x = c(3,5), y = c(2,3), color = "red", size = 3) +
+  geom_abline(slope = res1$coefficients[2], intercept = res1$coefficients[1], color = "darkblue") +
+  annotate("text", x = .5, y = 6.5, hjust = 0, label = "Y = 0.5 + 0.5 X", size = 8, color = "darkblue") +
+  annotate("segment", x = 2:6, xend = 2:6, y = d_test3$y1, yend = d_test3$pred, color = "red") +
+  annotate("text", x = 1.7:5.7, y = c(2.2, 1.5, 3.2, 2.5, 4.25), label = round(d_test3$resid, 1), color = "red") +
+  annotate("text", x = .5, y = 5.5, hjust = 0, label = "RSS = 6.75", size = 8, color = "red")
+```
+
+::: notes
+
+**Ok, is this line a better summary of the relationship between X and Y than our naive prediction?**
+
+<br>
+
+Pro:
+
+- Actually predicts values of Y across the actual range (2-5)!
+
+- Includes more information from the world (two observations of X)
+
+Cons:
+
+- RSS is higher (6.75 > 6)
+
+- Almost all of the errors are above the line (bad pattern)
+
+<br>
+
+**Ok, check in, how are we doing?**
+
+<br>
+
+**SLIDE**: Let's do it again!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 3: Adapt the line for three observations**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8}
+d4 <- tibble(
+  x1 = c(2,4,6),
+  y1 = c(3,4,5)
+)
+
+res2 <- lm(data = d4, y1 ~ x1)
+
+d_test2 |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("point", x = c(2,4,6), y = c(3,4,5), color = "red", size = 3) +
+  geom_abline(slope = res2$coefficients[2], intercept = res2$coefficients[1], color = "darkblue") +
+  annotate("text", x = .5, y = 6.5, hjust = 0, label = "Formula for a Line: Y = \U03B1 + \U03B2 X", size = 7, color = "darkblue")
+```
+
+::: notes
+
+Alright, draw a new line through these three observations then evaluate this line as a summary of the relationship
+
+- Estimate the formula and evaluate the line
+
+- Go!
+
+<br>
+
+(**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Relationship Summary 3: Adapt the line for three observations**
+:::
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 8}
+d_test4 <- d_test |>
+  add_predictions(res2) |>
+  add_residuals(res2)
+
+d_test4 |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)") +
+  annotate("point", x = c(2,4,6), y = c(3,4,5), color = "red", size = 3) +
+  geom_abline(slope = res2$coefficients[2], intercept = res2$coefficients[1], color = "darkblue") +
+  annotate("text", x = .5, y = 6.5, hjust = 0, label = "Y = 2.0 + 0.5 X", size = 7, color = "darkblue") +
+  annotate("segment", x = 2:6, xend = 2:6, y = d_test4$y1, yend = d_test4$pred, color = "red") +
+  annotate("text", x = 1.7:5.7, y = c(2.4, 2.7, 3.5, 3.75, 4.4), label = round(d_test4$resid, 1), color = "red") +
+  annotate("text", x = .5, y = 5.5, hjust = 0, label = "RSS = 4.5", size = 8, color = "red")
+```
+
+::: notes
+
+**Ok, is this line a better summary of the relationship between X and Y than our prior two attempts?**
+
+<br>
+
+Pro:
+
+- Actually predicts values of Y across the actual range (2-5)!
+
+- Includes more information from the world (THREE observations of X)
+
+- Lower RSS! (4.5 < 6 < 6.75)
+
+Cons:
+
+- Almost all of the errors are below the line (bad pattern)
+
+<br>
+
+**SLIDE**: For next class
+
+:::
+
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.asp=.65, fig.align='center', fig.width = 7}
+d_test |>
+  ggplot(aes(x = x1, y = y1)) + 
+  geom_point(size = 3) +
+  scale_x_continuous(limits = c(.4, 9), breaks = 1:9) +
+  scale_y_continuous(limits = c(.4, 7), breaks = 1:7) +
+  theme_bw() +
+  labs(x = "Predictor Variable (X)", y = "Outcome Variable (Y)",
+       title = "Assignment: Draw your line of best fit by hand")
+```
+
+::: notes
+
+For next class:
+
+1. Read Huntington-Klein (2022) chapter 4
+
+2. Draw YOUR eyeballed line of best fit! 
+
+    - Estimate the formula for a line and evaluate using all steps. 
+    
+    - Smallest error with a straight line gets EC
+    
+3. Submit to Canvas the formula for the line and your calculated RSS
+
+<br>
+
+**Questions on the assignment?**
+
+
+
+:::

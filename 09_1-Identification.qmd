@@ -1,0 +1,1138 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+library(ggeffects)
+
+# Input merged project data
+d <- read_excel("../Data_in_Class/Data-2024-EPI_RSF-Merged.xlsx", na = "NA")
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Thinking Carefully About Causal Inference**
+
+-   The Data Generating Process (DGP)
+
+-   An Identification Strategy
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1.  Save brainstormed lists in this Rmd file AND next class
+
+2. Reading: Huntington-Klein 2022 chapter 5 "The Challenge of Identification" [LINK](https://theeffectbook.net/ch-Identification.html)
+
+<br>
+
+This week I want us to explore causal inference.
+
+-   What does it mean to establish causality with an argument and data?
+
+-   How do we start to build this argument in our project this semester?
+:::
+
+## Correlation Does Not Imply Causation {.center background-image="Images/background-data_blue_v4.png"}
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/12_1-dinosaur_correlation.webp")
+```
+
+::: notes
+You've probably all heard the oft repeated phrase: "correlation does not imply causation."
+
+-   This represents a good warning that prevent us from reaching conclusions with our data that we cannot support
+
+<br>
+
+**SLIDE**: HOWEVER, ...
+:::
+
+## Correlation May Imply Causation {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+::: columns
+::: {.column width="50%"}
+```{r, fig.align = 'center', fig.width = 6, fig.height=1.25}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("A", "B")
+)
+
+p1 <- ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(.5, 1.5)) +
+  geom_label(aes(label = labels), size = 7)
+
+p1 +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+```{r, fig.align = 'center', fig.width = 6, fig.height=2.5}
+p1 +
+  annotate("segment", x = -1.9, xend = 2.2, y = .85, yend = .85, arrow = arrow()) +
+  annotate("segment", x = 2.2, xend = -1.9, y = 1.15, yend = 1.15, arrow = arrow())
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align = 'center', fig.width = 6, fig.height=1.25}
+p1 +
+  annotate("segment", x = 2.2, xend = -1.9, y = 1, yend = 1, arrow = arrow())
+```
+
+```{r, fig.align = 'center', fig.width = 6, fig.height=2.5}
+p1 +
+  annotate("segment", x = .4, xend = 2.6, y = 1.32, yend = 1.05, arrow = arrow()) +
+  annotate("segment", x = -.4, xend = -2.6, y = 1.32, yend = 1.05, arrow = arrow()) +
+  annotate("text", x = 0, y = 1.4, label = "C", size = 8)
+```
+:::
+:::
+
+::: notes
+Very often, when two things are correlated that tells us there is causation happening somewhere around the variables
+
+<br>
+
+Correlation can be evidence of a number of different plausible relationships
+
+-   A causes B
+
+-   B causes A
+
+-   A causes B and B causes A
+
+-   A and B are both caused by C
+
+-   etc.
+
+<br>
+
+Correlation doesn't tell us which, but it does tell us something is likely going on in this relationship!
+
+<br>
+
+**SLIDE**: And so the takeaway for us is...
+:::
+
+## Correlation and Causation {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/08_2-xkcd_correlation.png")
+```
+
+::: notes
+So, how do we get to "causation"?
+
+-   e.g. how do we make a convincing argument that changes in our predictor variable CAUSE changes in our outcome variable?
+
+<br>
+
+To do this I want us to take a step back from the work we've been doing all semester.
+
+-   We need to start our exploration of causal inference by talking about where data comes from.
+:::
+
+## Exploratory Data Analyses {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+Statistics is a set of tools we use to summarize data (**Level 1**)
+
+-   Summarize: "give a brief statement of the main points of (something)" (Oxford Dictionary).
+
+::: notes
+So far this semester we have been engaged in what might be called a process of exploratory or descriptive analyses
+
+-   This is what we described in week 4 as level 1 statistics
+
+<br>
+
+In short, I gave you data (gathered by someone else) and you used it to tell me about the world FROM THE PERSPECTIVE OF THAT DATA.
+
+<br>
+
+**SLIDE**: Our approach to this task followed three general steps
+:::
+
+
+
+## 1. Analyzed the Methodology {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::::: {columns}
+:::: {.column width="45%"}
+::: r-fit-text
+Predictor
+
+- Press Freedom Index
+
+Outcome
+
+- Environmental Performance Index
+:::
+::::
+
+:::: {.column width="10%"}
+::::
+
+:::: {.column width="45%"}
+-   Source of the Data
+
+-   Operationalization
+
+-   Instrumentation
+
+-   Measurement Process
+
+-   Data Validation
+::::
+:::::
+
+::: notes
+First we analyzed the research design that produced these measures.
+
+<br>
+
+We evaluated:
+
+1.  The source(s) of the data,
+
+2.  How the concepts were operationalized,
+
+3.  The process by which those tools produced measurements, and
+
+4.  The data validation done by the researchers.
+
+<br>
+
+I hope everyone now better understands that THESE choices are FAR MORE impactful on the data than anything we might do using "statistics."
+
+-   Almost always THESE are the source of the problems in any data analysis
+:::
+
+
+
+## 2. Univariate Analyses {.center background-image="Images/background-data_blue_v4.png"}
+
+::: columns
+::: {.column width="50%"}
+```{r, fig.align='center', fig.width=6, eval=TRUE}
+d |>
+  ggplot(aes(x = Press_Global)) +
+  geom_histogram(color = "white", bins = 15) +
+  theme_bw() + 
+  labs(x = "Press Freedom Index", y = "Count", caption = "Source: RSF",
+       title = "Predictor: Global Press Freedom (2024)")
+
+d |>
+  summarize(
+    Mean = mean(Press_Global),
+    "Std Dev" = sd(Press_Global)
+  ) |>
+  kbl(digits = 2)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.width=6, eval=TRUE}
+d |>
+  ggplot(aes(x = EPI.new)) +
+  geom_histogram(color = "white", bins = 15) +
+  theme_bw() + 
+  labs(x = "Environmental Quality Index", y = "Count", caption = "Source: Yale",
+       title = "Outcome: Environmental Quality (2024)") +
+  scale_x_continuous(breaks = 0:10)
+
+d |>
+  summarize(
+    Mean = mean(EPI.new),
+    "Std Dev" = sd(EPI.new)
+  ) |>
+  kbl(digits = 2)
+```
+:::
+:::
+
+::: notes
+Our second step was to use univariate analysis tools to describe the distribution of the data.
+
+-   In other words, we needed to see if there was variation in the measures
+
+<br>
+
+If no variation in the outcome, then nothing to explain
+
+If no variation in the predictor, then no ability to explain the outcome
+
+<br>
+
+As I hope was clear from the reading today, THIS step is vital for learning about the world
+
+-   THIS is the variation you want your model to explain!
+
+-   The whole ballgame of statistical modeling!
+:::
+
+
+
+## 3. Bivariate Analyses {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+:::: columns
+::: {.column width="50%"}
+```{r, fig.align='center', eval=TRUE}
+res1 <- lm(data = d, EPI.new ~ Press_Global)
+res2 <- lm(data = d, EPI.new ~ Press_Global + I(Press_Global^2))
+
+modelsummary(models = list("Environmental Quality" = res1, res2), stars = c("*" = .05), fmt = 2, gof_omit = "IC|F|Log", output = "gt", coef_rename = c('Press_Global' = 'Press Freedom Index')) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.9, fig.width=6, eval=TRUE}
+plot(ggpredict(res2, terms = "Press_Global"))
+# 
+# 
+# d |>
+#   ggplot(aes(x = Press_Global, y = EPI.new)) +
+#   geom_point() +
+#   theme_bw() +
+#   geom_smooth(method = "lm") +
+#   labs(x = "Press Freedom Index", y = "Environmental Quality")
+```
+:::
+::::
+
+::: notes
+Our third step was to use bivariate analysis tools to describe the relationships between our predictors and the outcome variables.
+
+-   Bivariate tables, correlations, visualizations and simple OLS regressions
+
+-   A vital next step, but at best this simply describes associations
+
+<br>
+
+**SLIDE**: Our final job this semester is to try and push beyond demonstrating associations or correlations
+:::
+
+
+
+
+
+
+## Building a Causal Argument {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+"Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e. intervention) was the 'cause' of the effect (or outcome) that was observed" (Frey 2018).
+
+<br>
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 6, fig.height=1.25}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Treatment", "Effect")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+Our aim is explanatory or causal analysis
+
+-   e.g. making an argument with data about why the world works like it does.
+
+-   In other words, we want to demonstrate that changes in our chosen predictors CAUSE a change in the outcome variable
+
+<br>
+
+Much of this language comes from medicine where they focus on treatments and effects
+
+-   Think new medicines and curing a disease
+
+-   For our purposes, think of "treatment to effect" as synonymous with "predictor to outcome."
+:::
+
+## Building a Causal Argument {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+:::: columns
+::: {.column width="50%"}
+
+![](Images/13_1-classroom.jpg)
+
+:::
+
+::: {.column width="50%"}
+
+![](Images/13_1-student_success2.png)
+
+:::
+::::
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 7, fig.height=1}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Class\nSize", "Student\nSuccess")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -2.15, xend = 2, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+Let's step through a toy example to think about how we build a causal argument.
+
+<br>
+
+Let's say we have a hypothesis that smaller class sizes will lead to better student success
+
+-   The theory is that in smaller classes teachers can provide more individualized attention, and
+
+-   Students who receive more personalized attention grow faster than those who do not
+
+<br>
+
+Easy peasy, now let's use an experiment to show I am right!
+
+-   I am now going to walk you through a solid gold, infallible research design for testing a hypothesis
+:::
+
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/13_1-Student.png){.absolute bottom="100" left="0" width="45%"}
+
+![](Images/13_1-small_class.webp){.absolute bottom="130" right="0" width="50%"}
+
+::: notes
+Step 1:
+
+-   Take a specific student, say, Bob here who is a hypothetical 3rd grader.
+
+-   This coming August place Bob in a small class and ensure he attends all year
+
+-   Next May we record his test scores
+
+<br>
+
+This gives us a measure of Bob's growth for the year
+
+-   **Everybody with me?**
+
+-   **SLIDE**: the next step is the tricky one
+:::
+
+##  {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/13_1-delorean-time-travel.gif){.absolute top="0" left="250" width="60%"}
+
+![](Images/13_1-Student.png){.absolute bottom="0" left="0" width="35%"}
+
+![](Images/13_1-large_class_size.png){.absolute bottom="0" right="0" width="45%"}
+
+::: notes
+Step 2
+
+In May, AFTER RECORDING BOB's TEST SCORES, you use a time machine to return to August
+
+-   In the past August you place Bob in a large class and ensure he attends all year
+
+-   Then in past future May we record his test scores
+
+<br>
+
+**Did I lose anybody here?**
+:::
+
+##  {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/13_1-Student.png){.absolute top="0" left="340" width="35%"}
+
+![](Images/13_1-small_class.webp){.absolute bottom="0" left="0" width="45%"}
+
+![](Images/13_1-large_class_size.png){.absolute bottom="0" right="0" width="45%"}
+
+::: notes
+Step 3: Calculate the difference in test scores between past Bob and past revised Bob
+
+-   You have a firm estimate of the causal effect of class size on Bob's individual success.
+:::
+
+##  {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/12_1-students2.jpg){.absolute top="0" left="25" width="40%"}
+
+![](Images/13_1-delorean-time-travel.gif){.absolute top="50" right="0" width="45%"}
+
+![](Images/13_1-small_class.webp){.absolute bottom="0" left="0" width="45%"}
+
+![](Images/13_1-large_class_size.png){.absolute bottom="0" right="0" width="45%"}
+
+::: notes
+Now all you have to do is repeat this process for a few hundred randomly selected students and you will be able to conclusively demonstrate a causal effect of class size on student success.
+
+<br>
+
+**Questions?**
+:::
+
+##  {.center background-image="Images/background-data_blue_v4.png"}
+
+::: r-fit-text
+The Fundamental Problem of Causal Inference
+:::
+
+<br>
+
+"To measure causal effects, we need to compare the factual outcome with the counter-factual outcome, but **we can never observe the counter-factual outcome**" (Llaudet and Imai 2023).
+
+::: notes
+This is what we call the fundamental problem of causal inference
+
+-   In the real world we observe only the actual outcome (Student X in small class) and never the counter-factual (Student X in large class)!
+
+<br>
+
+NOTE: This is a problem for ALL science, not just the social sciences.
+
+-   Whether its gravity, speed, biological reproduction or whatever else, we cannot observe actual counter-factuals
+
+<br>
+
+**SLIDE**: So, how do we solve this problem?
+:::
+
+
+
+## Randomized Controlled Trials (RCTs) {.center background-image="Images/background-data_blue_v4.png"}
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
+## Manual DAG
+d2 <- tibble(
+  x = c(2.5, 2, 3),
+  y = c(3, 2, 2),
+  labels = c("Participants", "Treatment\nGroup", "Control\nGroup")
+)
+
+ggplot(data = d2, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.5, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  annotate("segment", x = 2.5, xend = 2.5, y = 2.85, yend = 2.7, arrow = arrow(length = unit(0.1, "inches"))) +
+  annotate("segment", x = 2.5, xend = 2.2, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("text", x = 2.5, y = 2.6, label = "Random Allocation", color = "red", size = 10)
+```
+
+::: notes
+Where possible, the "gold" standard solution across the scientific fields is to run a Randomized Controlled Trial (RCTs)
+
+<br>
+
+The key to what makes an RCT powerful is that its design is based on randomly assigning the treatment and control groups
+
+- For example, take a random sample of third grade students in Springfield and assign them to either a small class (the treatment) or a large class (the control) using the flip of a coin.
+
+<br>
+
+Why randomize the assignment?
+
+- Random assignment means that every individual has an equal chance of being assigned to either group
+
+- So, each randomly created group should have a similar proportion of students by gender, race, background, ability, etc
+
+- The real power here is we don't have to know, a priori, which factors matter for our hypothesis, the random assignment takes care of it.
+
+<br>
+
+Bottom line:
+
+1. Random assignment means that even though both groups are composed of different individuals, the two groups are comparable to each other **on average** in all respects.
+
+2. Random assignment means that the only thing that distinguishes the treatment group from the control group **BESIDES THE TREATMENT** is chance.
+
+<br>
+
+**Does this make sense?**
+:::
+
+
+
+## Randomized Controlled Trials (RCTs) {.center background-image="Images/background-data_blue_v4.png"}
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
+## Manual DAG
+d2 <- tibble(
+  x = c(2.5, 2, 3, 2, 3),
+  y = c(3, 2, 2, 1, 1),
+  labels = c("Participants", "Treatment\nGroup", "Control\nGroup", "Outcome", "Outcome")
+)
+
+ggplot(data = d2, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  annotate("segment", x = 2.5, xend = 2.5, y = 2.85, yend = 2.7, arrow = arrow(length = unit(0.1, "inches"))) +
+  annotate("segment", x = 2.5, xend = 2.2, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2, xend = 2, y = 1.75, yend = 1.15, arrow = arrow()) +
+ annotate("segment", x = 3, xend = 3, y = 1.75, yend = 1.15, arrow = arrow()) +
+  annotate("text", x = 2.5, y = 2.6, label = "Random Allocation", color = "red", size = 10)
+```
+
+::: notes
+
+Since the groups are "identical" on average we can use the factual outcome of each group as the counter-factual for the other group.
+
+- The average difference in outcomes between the two groups is called the "average treatment effect" and THAT is our measure of the effect
+
+<br>
+
+So, RCT is an approach in which we randomly assign the treatment in order to generate an estimate of the causal effect
+
+- This approach does NOT give us the actual counter-factual, BUT
+
+- If the size of our sample is large AND the quality of our random assignment is good then we can develop an estimate of the "average treatment effect" (ATE)
+
+<br>
+
+**Does this make sense in big picture terms?**
+:::
+
+
+
+## {.center background-image="Images/background-data_blue_v4.png"}
+
+![](Images/12_1-RSF_Map.png)
+
+::: notes
+Our Challenge: Estimating causal effects using observational data
+
+-   Much of what we do in the social sciences is dependent on observational, NOT experimental, data
+
+-   e.g. data from observing the world, not directly manipulating it as is done in an RCT.
+
+<br>
+
+The countries of the world simply aren't going to let us randomly assign their levels of press freedom in order to test some theory.
+
+<br>
+
+So, the question becomes, how do you identify a causal effect in the absence of a time machine or random assignment.
+:::
+
+## Our Challenge {background-image="Images/background-data_blue_v4.png"}
+
+**Estimating Causal Effects Using Observational Data**
+
+![](Images/13_1-SPS_Map.png){.absolute left=75 width="40%"}
+
+![](Images/13_1-small_class.webp){.absolute top=150 right=75 width="33%"}
+
+![](Images/13_1-large_class_size.png){.absolute bottom=20 right=75 width="33%"}
+
+::: notes
+Let's keep going with our student success research, but shift to using observational data.
+
+<br>
+
+Let's say the local school board has agreed to give us last year's anonymized data on all of the third grade students in Springfield
+
+-   e.g. The size of their classes and their end of year test scores
+:::
+
+## The Challenge of Observational Data {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
+## Manual DAG
+d2 <- tibble(
+  x = c(2.5, 2, 3),
+  y = c(3, 2, 2),
+  labels = c("Nature", "Small\nClasses", "Large\nClasses")
+)
+
+ggplot(data = d2, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  #annotate("text", x = 2.5, y = 2.6, label = "::: notes?????????", color = "red", size = 10) +
+  #annotate("segment", x = 2.5, xend = 2.5, y = 2.9, yend = 2.7, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.15, y = 2.9, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.9, yend = 2.2, arrow = arrow())
+```
+
+::: notes
+This means we have students in different class sizes but we didn't get to assign them to those classes.
+
+-   THEREFORE, the first thing we have to think about is what explains the variation in how students end up in different sized classes?
+
+<br>
+
+**In the real world, what mechanisms do you think explain why some students are in small classes and others are in large classes?**
+
+- *BRAINSTORM ON BOARD*
+
+- *GIVE THIS EXERCISE TIME TO BREATHE, WORK IN GROUPS BEFORE AS A CLASS*
+
+<br>
+
+- Wealthier families more likely to spend money (private tuition, move into a better district) to get their kids into smaller classes/better schools
+
+- Some kids might be in smaller class sizes because their district is more rural (e.g. fewer kids)
+
+- Some kids might be in smaller class sizes because they have special needs
+
+- Number of students in district
+
+- Level of funding from state / equalization of resources
+
+- Number of schools in district
+
+<br>
+
+So, unlike in the RCT example we can see that we have a number of reasons to suspect that in the real world these two groups **ARE NOT** identical on average.
+
+-   If the groups are not identical on average then we **cannot** interpret differences in the outcome as a measure of the effect of class sizes.
+
+-   It is actually the effect of **class size differences + the effect of any other differences between the groups**
+
+<br>
+
+**Make sense?**
+:::
+
+## Developing a Causal Argument {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/13_1-HK_ch5.png){.absolute left=50 width="40%"}
+
+![](Images/13_1-HK_ch5_TOC.png){.absolute top=230 right=10 width="45%"}
+
+::: notes
+
+The reading for today is all about introducing you to the big, important concepts we need to think about causality
+
+-   Two big ideas we need to explore: The data generating process (DGP) and the need for an identification strategy
+
+<br>
+
+I'm always on the lookout for better and more accessible readings on this material.
+
+-   Ideally, freely available is also key!
+
+- **So, what did you think of the reading?**
+
+<br>
+
+**SLIDE**: In order to make a causal argument we must first describe the Data Generating Process (DGP)
+:::
+
+
+
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/12_1-Using_our_Senses.jpg")
+```
+
+::: notes
+
+We go through the world constantly making observations
+
+- We can think of this like gathering data
+
+<br>
+
+We then use this data as the building blocks for our theories of how the world works
+
+- Flip a wall switch and the light comes on
+
+- Cut someone off in traffic and make someone very angry
+
+<br>
+
+The danger is that we tend not to interrogate these foundational theories we hold in our "gut."
+
+- They tend to be very powerful, but are frequently based on data that is NOT representative of the wider world
+:::
+
+
+
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 8, fig.height=1.75}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Nature", "Data")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -2.3, xend = 2.5, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+The first key observation for us as scientists is to recognize that data is the output of a system, NOT a description of how the system works
+
+- You all know how to use a light switch, but do you understand why the light comes on?
+
+- Or how your phone sends a text message?
+
+- Or why some people vote and others don't?
+
+<br>
+
+As scientists our goal is to understand and explain the system!
+
+- The data gives us hints about how the system works, but it is up to us to develop the explanations
+
+- You've probably heard of these "explanations" referred to as theory
+
+<br>
+
+So, your first big task as a scientist is to train yourself to think of data as an output and not as the system itself.
+
+- Data is the result of a system NOT the engine of that system
+
+<br>
+
+**Does this make sense?**
+
+<br>
+
+**SLIDE**: BUT that's not all!
+:::
+
+
+
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 8, fig.height=1.75}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 0, 3),
+  y = c(1, 1, 1),
+  labels = c("Nature", "Measurement", "Data")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -2.3, xend = -1.2, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.2, xend = 2.5, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+It turns out, the data we observe depends on BOTH the system AND the measurements we use to "see" the world!
+
+- In other words, ALL data is the result of both natural laws and measurement error 
+
+<br>
+
+This means it is VERY hard for us to use the data we collect to make inferences about the system
+
+-   We simply can't be certain about which parts of our data represent the system and which part the error!
+
+<br>
+
+**SLIDE**: In a slightly more applied way of thinking...
+:::
+
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 8, fig.height=1.25}
+d1a <- tibble(
+  x = c(-3, 0, 3),
+  y = c(1, 1, 1),
+  labels = c("Nature\n(model)", "Measurement", "Data")
+)
+
+ggplot(data = d1a, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -2.3, xend = -1.2, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.2, xend = 2.5, y = 1, yend = 1, arrow = arrow())
+```
+
+<br>
+
+1.  Model produces data
+
+2.  Model has unknown parameters
+
+3.  Data reduces the uncertainty in the parameters
+
+::: notes
+We try to represent the laws of nature with a model so we'll switch to that language here.
+
+<br>
+
+1.  ALL DATA is produced by a model
+
+2.  We don't know what is in that model
+
+3.  We can use data to uncover what is in that model and the more data we have the more of the model we can uncover.
+
+<br>
+
+### Does this make sense in broad strokes?
+
+<br>
+
+### Is this a fundamentally different way of thinking about data for you too?
+
+-   Blew my damn mind when I first read this in graduate school!
+
+<br>
+
+In a sense, science is the process of studying data and measurement in order to learn about the models/laws that make the world move in the way that it does.
+
+-   Our goal is to understand the underlying "rules" of the system but all we have to go on is the data!
+
+<br>
+
+And all of that brings us to the data generating process (DGP)
+
+-   Per the HK chapter, in order to use the data we must first describe "the parts we know, and the parts we don't" that produced it
+
+<br>
+
+### How have we already started to do this in our student success research?
+
+-   (**SLIDE**)
+:::
+
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
+## Manual DAG
+d2 <- tibble(
+  x = c(2.5, 2, 3),
+  y = c(3, 2, 2),
+  labels = c("Nature", "Small\nClasses", "Large\nClasses")
+)
+
+ggplot(data = d2, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  # annotate("text", x = 2.5, y = 2.6, label = "????????????", color = "red", size = 10) +
+  # annotate("segment", x = 2.5, xend = 2.5, y = 2.9, yend = 2.7, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.15, y = 2.9, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.9, yend = 2.2, arrow = arrow())
+```
+
+::: notes
+Our work to describe how students in SGF end up in large vs small classrooms was us trying to describe the parts of the DGP that "we know" 
+
+- Or think we do...
+
+<br>
+
+**SLIDE**: BUT, THIS work is only HALF of the DGP!
+:::
+
+
+
+## The Data Generating Process (DGP) {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
+## Manual DAG
+d3 <- tibble(
+  x = c(2.5, 2, 3),
+  y = c(3, 2, 2),
+  labels = c("Nature", "Low\nScores", "High\nScores")
+)
+
+ggplot(data = d3, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  # annotate("text", x = 2.5, y = 2.6, label = "????????????", color = "red", size = 10) +
+  # annotate("segment", x = 2.5, xend = 2.5, y = 2.9, yend = 2.7, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.15, y = 2.9, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.9, yend = 2.2, arrow = arrow())
+
+```
+
+::: notes
+We also need to describe the DGP for our outcome variable!
+
+<br>
+
+**In the real world, what mechanisms do you think explain why some students get high scores on standardized tests and why others get lower scores?**
+
+- *BRAINSTORM ON BOARD*
+
+- *GIVE THIS EXERCISE TIME TO BREATHE, WORK IN GROUPS BEFORE AS A CLASS*
+
+<br>
+
+-   Wealthy families more likely to provide tutoring, read to their kids, provide enough food and healthcare so they can succeed at school
+
+-   Highly educated families more likely to make education a priority
+
+-   Some students have higher aptitude for test-taking than others
+
+-   Some student experience stronger test anxiety than others
+
+-   Willingness to hard work,
+
+<br>
+
+Now we have two lists that together represent "the parts we know" of our DGP.
+
+<br>
+
+**What is the "parts we don't know" in our DGP?**
+
+-   (It's the part we are testing with our research!)
+-   e.g. How do class sizes effect student success?
+
+<br>
+
+**Make sense?**
+:::
+
+## Identification {background-image="Images/13_1-cartoon-dog.jpg"}
+
+::: notes
+The second big step in making a causal argument using observational data is to move from the DGP to an identification strategy.
+
+-   Per the chapter, "Identification is the process of figuring out what part of the variation in your data answers your research question. It's called identification because we've ensured that our calculation identifies a single theoretical mechanism of interest."
+
+<br>
+
+**In the chapter, what specific things did Abel and Annie do to figure out how their dog kept escaping the house at night?**
+
+- (Locking doors, windows, etc)
+
+<br>
+
+**Do you understand how our brainstormed DGP is represented by Abel and Annie going through the house and identifying all the ways the dog could escape?**
+
+<br>
+
+**SLIDE**: Let's wrap up our work for today with the suggested plan of attack from the reading
+:::
+
+## Identification and the DGP {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+::: {.incremental}
+1.  Using theory, paint the most accurate picture possible of what the DGP looks like
+
+2.  Use that DGP to figure out the reasons our data might look the way it does that don't answer our research question
+
+3.  Find ways to block out those alternate reasons and so dig out the variation we need
+:::
+
+::: notes
+
+**REVEAL x 3**
+
+<br>
+
+Our work today has primarily focused on this first step.
+
+-   Our work on Wednesday will be much more focused on steps two and three.
+:::
+
+
+
+
+## For Next Class {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+1.  Read Huntington-Klein chapters 6 and 7
+
+2.  Brainstorm the DGP for our project (e.g. **SUBMIT** three separate lists of reasons why states would vary in):
+
+    - Global Press Freedom (Press_Global)
+    - Environmental Quality (EPI.new)
+    - Your chosen indicator from the EPI
+
+::: notes
+
+Submit your lists to Canvas before class!
+
+-   Remember, your list for Environmental Quality should NOT include press freedom! That's what we are testing!
+
+<br>
+
+**Questions on the assignment?**
+:::

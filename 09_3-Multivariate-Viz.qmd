@@ -1,0 +1,1025 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+
+# Create new dataset with categorical data for class to work with
+# d <- read_excel("../Data_in_Class/Class11-1-Simple_OLS-WDI_LifeExpectancy/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+# 
+# d$gdp_pc_cat <- cut(x = d$gdp_per_capita, breaks = c(0, 2262.2, 6370.9, 22805.3, 183000), labels = c("GDP pc (Q1)", "GDP pc (Q2)", "GDP pc (Q3)", "GDP pc (Q4)"))
+# 
+# d$tobacco_cat <- cut(x = d$tobacco_use_pct, breaks = c(0, 11.80, 20.30, 26.60, 50), labels = c("Tobacco (Q1)", "Tobacco (Q2)", "Tobacco (Q3)", "Tobacco (Q4)"))
+# 
+#write_excel_csv(d, file = "../Data_in_Class/WDI-Multivariate_Viz-2024-04-04.csv")
+
+d <- read_excel("../Data_in_Class/World_Development_Indicators/WDI-Multivariate_Viz-2024-04-04.xlsx", na = "NA")
+
+data1 <- read_excel("../Data_in_Class/Data-2024-EPI_RSF-Merged_w_Confounders.xlsx", na = "NA")
+```
+
+<br>
+
+::: {.r-fit-text}
+**Multivariate Analyses**
+
+- Descriptive Statistics and Visualizations
+
+- Data: WDI-Multivariate_Viz-2024-04-04.xlsx
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2025)
+:::
+
+::: notes
+Prep for Class
+
+1. Review Canvas submissions
+
+2. Update histograms for confounders we selected last class
+
+3. Data: WDI-Multivariate_Viz-2024-04-04.xlsx
+
+<br>
+
+Everybody make sure they have, or redownload, the WDI data I posted in Week 11 on our Canvas Modules page
+
+- We'll keep working with that data today
+
+<br>
+
+**SLIDE**: Last week...
+
+:::
+
+
+
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=7, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Predictor", "Confounders", "Outcome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.45, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.1, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.1, arrow = arrow())
+```
+
+::: notes
+
+Last week we started exploring the concepts and approaches we can use to make causal arguments
+
+- e.g. arguments that changes in X cause a change in Y
+
+<br>
+
+We discussed:
+
+- the Data Generating Process (DGP), 
+
+- identification strategies, 
+
+- the use of Directed Acyclic Graphs (DAGs), and 
+
+- the need to adjust our analyses for confounders.
+
+<br>
+
+**Any questions on those big ideas?**
+
+:::
+
+
+
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Press\nFreedom", "Confounders", "Environmental\nQuality")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.6, xend = 2.3, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+::: notes
+
+In class on Friday we worked to:
+
+1. Draw a DAG for our key mechanism, and
+
+2. Gather data that operationalizes the concepts we identified as important confounders in these relatonships.
+
+<br>
+
+**Any questions on those DAGs or the variables we selected?**
+
+<br>
+
+For today I asked each of you to perform univariate analyses on our chosen confounders
+
+- **How did that go?**
+
+<br>
+
+**Do we have sufficient variation in each to be useful?**
+
+- **In other words, do the countries of the world actually vary in their levels of these confounders?**
+
+- (**SLIDE**: Histograms of each)
+
+:::
+
+
+
+## Analyzing the Confounders {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.align='center'}
+data1 |>
+  select(gdp_current_usd2023:population2023) |>
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Values") |>
+  ggplot(aes(x = Values)) +
+  geom_histogram() +
+  theme_bw() +
+  facet_wrap(~ Variable, scales = "free")
+```
+
+::: notes
+
+**What do we learn about the world from these distributions?**
+
+```{r}
+data1 |>
+  select(gdp_current_usd2023, gdp_pc_current_usd2023, population2023) |>
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Values") |>
+  group_by(Variable) |>
+  summarize(
+    Mean = mean(Values, na.rm = T),
+    SD = sd(Values, na.rm = T),
+    Min = min(Values, na.rm = T),
+    Max = max(Values, na.rm = T),
+    Missing = sum(is.na(Values))
+  )
+```
+
+```{r}
+data1 |>
+  select(compulsory_ed_years2023, control_corruption_estimate2023, control_corruption_percentile2023) |>
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "Values") |>
+  group_by(Variable) |>
+  summarize(
+    Mean = mean(Values, na.rm = T),
+    SD = sd(Values, na.rm = T),
+    Min = min(Values, na.rm = T),
+    Max = max(Values, na.rm = T),
+    Missing = sum(is.na(Values))
+  )
+```
+
+
+
+<br>
+
+Quick aside, DO NOT include figures in your reports with exponents in the axis labels OR in the regression results.
+
+- Rescale the variables and replot them
+
+<br>
+
+Let's practice this one time by rescaling GDP into billions of USD
+
+- **SLIDE**: How-to
+
+:::
+
+
+
+## Keep those axis labels readable! {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+```{r, fig.retina=3, fig.align='center', echo=TRUE, out.width="55%", fig.asp=.75, fig.width = 6}
+# Rescale GDP into trillions USD
+data1$gdp_trillions <- data1$gdp_current_usd2023 / 1e12
+
+# Visualize the new variable
+ggplot(data = data1, aes(x = gdp_trillions)) +
+  geom_histogram()
+```
+
+:::
+
+::: notes
+
+The process is fairly simple
+
+- Create a new variable that is a modification of the current one
+
+- Divide by a million to rescale into millions
+
+- Divide by a trillion to rescale into trillions
+
+<br>
+
+**Questions on rescaling a variable?**
+
+<br>
+
+**SLIDE**: Plan for today
+
+:::
+
+
+
+## Multivariate Analyses 1 {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+**Working with Categorical Variables as Confounders**
+
+1. Descriptive statistics by groups
+  
+2. Multiple Facets
+    
+3. Adding colors, shapes and sizes
+:::
+
+::: notes
+Today I will introduce you to a series of multivariate statistical tools
+
+- These tools allow you to adjust your visualizations and descriptive statistics for a confounder variable
+
+- HOWEVER, these tools, and our work this week, will focus ONLY on adding categorical variables to our analyses
+
+- Adding numeric variables is something we will do using mulitple regression next week
+
+<br>
+
+**SLIDE**: Our practice data
+
+:::
+
+
+
+## Does increasing fertility rates directly lower life expectancy around the world? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 7, fig.height=1.3, out.width='90%', cache=TRUE}
+# Do countries with higher average fertility rates have shorter life expectancies?
+
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Fertility\nRate", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -2.1, xend = 1.9, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+
+Two weeks ago we used simple OLS models to explore global predictors of life expectancy
+
+- One of our strongest findings was that countries with average fertility rates have lower average life expectancies
+
+<br>
+
+**SLIDE**: The question for us is, can we use statistics to establish that this is a causal effect and not just a correlation?
+
+:::
+
+
+
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9, cache=TRUE}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+**Possible Confounders**: GDP per capita, unemployment rate, tobacco use, compulsory education
+
+::: notes
+
+Here is a list of the other variables in the dataset that we can consider as confounders in this relationship
+
+<br>
+
+**Remind me, what is the test for a confounder?**
+
+- **When should we adjust our analysis for one of these variables?**
+
+<br>
+
+A confounder is a variable that explains some of the variation in both the treatment and the outcome variables.
+
+1. The confounder MUST cause BOTH variables in the mechanism
+
+2. The direction of effect is FROM the confounder TO the mechanism
+
+<br>
+
+I think it can be useful to think about this in terms of the "gold standard" of running a RCT (randomized controlled experiment)
+
+- Do you believe that, on average, the high and low fertility rate countries are identical?
+
+- If not, are the key differences also things that should influence life expectancy?
+
+- If you believe they are not identical on average and the variable also influences the outcome then it is a confounder!
+
+<br>
+
+**Of these options, are we convinced all of them are likely confounders of this relationship? Why or why not?**
+
+<br>
+
+Now, remember our techniques for today are all designed for when you have categorical variables as confounders
+
+- None of these are currently categorical!
+
+- **SIDE**: So, our first job is to create categorical versions of each of these variables
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Convert Numeric Variables to Categorical**
+:::
+
+```{r, echo=TRUE}
+# Get the Quartiles
+summary(d$fertility_rate_per_woman)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Make the categorical version
+d$fertility_cat <- cut(x = d$fertility_rate_per_woman, 
+                    breaks = c(0, 1.558, 2.040, 3.257, 7), 
+                    labels = c("Fertility (Q1)", "Fertility (Q2)", 
+                               "Fertility (Q3)", "Fertility (Q4)"))
+
+# Check the result
+table(d$fertility_cat)
+```
+
+::: notes
+
+We have previously used the cut() function to convert numeric variables into categorical variables
+
+- Let's practice that skill again now!
+
+<br>
+
+Everybody copy this code using the cut function to make a categorical version of fertility
+
+- **Does everybody remember this approach?**
+
+<br>
+
+For ease of our work today I have done this for you for the GDP and tobacco variables
+
+- Both are in today's dataset with "_cat" at the end.
+
+<br>
+
+**SLIDE**: with our categorical confounders in hand we can start on our first multivariate approach...
+
+:::
+
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Descriptive Statistics by Groups**
+
+<br>
+
+**Step 1: Start with the bivariate analysis**
+
+```{r, echo=TRUE}
+aggregate(data = d, life_expectancy_total ~ fertility_cat, 
+          FUN = mean)
+```
+:::
+
+::: notes
+
+Step 1 to taking your descriptive statistics into multivariate analyses starts with the aggregate function
+
+- Remember, this is what we used in our bivariate analyses.
+
+- Any descriptive stats function can be used (mean, median, sd, summary, min, max, etc)
+
+<br>
+
+Here we see our main causal mechanism in action
+
+- e.g. how mean life expectancy changes across fertility rate groupings
+
+- Life expectancy decreases are associated with increases in the fertility rate
+
+<br>
+
+There are two ways to add a third variable to the aggregate function
+
+- **SLIDE**: Option 1 is to use the subset argument
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Descriptive Statistics by Groups**
+
+<br>
+
+**Step 2a: Add a subset (numeric)**
+
+```{r, echo=TRUE}
+aggregate(data = d, life_expectancy_total ~ fertility_cat, 
+          FUN = mean,
+          subset = gdp_per_capita < 6370.9)
+```
+
+:::
+
+::: notes
+
+Exact same code as before but now include a subset argument
+
+- Subset allows you to define what part of the dataset you want to focus on using relational symbols
+
+- Any relational symbols can be used in subset (e.g. >, <, >=, <=, etc)
+
+<br>
+
+I know I told you our focus today would be on categorical confounders, but, hey, this works too!
+
+- **Everybody clear on this code?**
+
+<br>
+
+**Does our association between fertility rate and life expectancy hold amongst the poorer countries in the world?**
+
+<br>
+
+**SLIDE**: Rather than having to run this code repeatedly for different subsets lets use our quartiles variable
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Descriptive Statistics by Groups**
+
+<br>
+
+**Step 2a: Add extra variables (categorical)**
+
+```{r, echo=TRUE}
+aggregate(data = d, life_expectancy_total ~ fertility_cat + gdp_pc_cat, 
+          FUN = mean)
+```
+
+:::
+
+::: notes
+
+The second way to modify the aggregate function is to add additional categorical variables to the formula argument
+
+- This creates a long set of results that shows the mean life expectancy for each combination of fertility and gdp quartiles
+
+<br>
+
+**Everybody get this code to work?**
+
+- Note that there's a catch to these results!
+
+- In the poorest states (GDP pc Q1) there are NO states with the lowest fertility rates!
+
+- In the richest states it's the opposite!
+
+<br>
+
+**So, do our results hold up to adjusting for four levels of state wealth?**
+
+- We can see the effect of interest (fertility -> life exp) holds up in all instances except the richest countries!
+
+- Apparently, in rich countries it looks like the negative effects of fertility rate may be reduced!
+
+<br>
+
+This means IFF our causal argument specified GDP pc as the only confounder then this analysis is evidence of a causal relationship and not just correlation!
+
+- **Does everybody understand this distinction?**
+
+<br>
+
+**Any questions about using aggregate for multivariate analyses?**
+
+<br>
+
+**SLIDE**: Practice on tobacco use
+
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Descriptive Statistics by Groups**
+
+<br>
+
+**Replicate but replace GDP with tobacco as a confounder**
+:::
+
+::: {.fragment}
+```{r, echo=FALSE}
+aggregate(data = d, life_expectancy_total ~ fertility_cat + tobacco_cat, 
+          FUN = mean) |>
+  pivot_wider(names_from = fertility_cat, values_from = life_expectancy_total) |>
+  arrange(tobacco_cat) |>
+  kbl(digits = 1, align = c("l", rep("c", 4))) |>
+  kableExtra::kable_styling(font_size = 30)
+```
+:::
+
+::: notes
+Now everybody practice this one time using the categorical version of tobacco use
+
+- Check to see if the negative effect of fertility on life expectancy remains when adjusting for the quartiles of tobacco use
+
+<br>
+
+(**REVEAL**: Results in wide format for ease of reading)
+
+- Read results within each row and across the columns, e.g. countries with lowest tobacco use is row 1, how does their life expectancy change as fertility increases?
+
+<br>
+
+**What do we learn from this?**
+
+- IFF tobacco use is the only confounder then this is evidence that increasing fertility rates reduces average life expectancies
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Extend a Visualization with Facets**
+:::
+
+<br>
+
+```{r, echo=TRUE, fig.retina=3, fig.asp=0.7, fig.align='center', fig.width=7}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  theme_bw()
+```
+
+
+::: notes
+
+Multivariate approach 2 uses facet wraps
+
+- IFF the third variable you want to add to any analysis is categorical, you can use a facet wrap to do it
+
+<br>
+
+Just like before we begin with our bivariate analysis
+
+- I'm going to omit the polish and just focus on the new techniques here.
+
+- I've also added the geom_smooth function to add an OLS line of best fit to our plot
+
+<br>
+
+**Everybody clear on this code?**
+
+<br>
+
+**SLIDE**: Let's now adjust this analysis for GDP pc using a facet wrap
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Extend a Visualization with Facets**
+:::
+
+<br>
+
+```{r, echo=TRUE, fig.asp=0.25, fig.align='center', fig.width=14, cache=TRUE}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  facet_wrap(~ gdp_pc_cat, ncol = 5)
+```
+
+::: notes
+
+The ONLY change here is the facet_wrap line (line 5)
+
+- We worked with facet wraps a few weeks ago when doing bivariate analyses
+
+- **Questions on the code?**
+
+<br>
+
+**What do we learn from this effort to adjust the relationship for the wealth confounder?**
+
+<br>
+
+- Some cases missing GDP data, but fortunately, the relationship there appears similar to the others
+
+- The negative slope is evident in each facet
+
+- If our identification hinged on adjusting for wealth this represents another step in the right direction
+
+<br>
+
+Now everybody practice this one time using the categorical version of tobacco use
+
+- Check to see if the negative effect of fertility on life expectancy remains when adjusting for the quartiles of tobacco use
+
+- (**SLIDE**)
+
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Extend a Visualization with Facets**
+:::
+
+<br>
+
+```{r, echo=TRUE, fig.asp=0.25, fig.align='center', fig.width=14}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  facet_wrap(~ tobacco_cat, ncol = 5)
+```
+
+::: notes
+
+**What do we learn from this effort to adjust the relationship for tobacco use as a confounder?**
+
+<br>
+
+**SLIDE**: One more multivariate approach for today
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Adding colors, shapes and sizes**
+:::
+
+```{r, echo=TRUE, fig.retina=3, fig.asp=0.618, fig.align='center', fig.width=8}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total)) +
+  geom_point() + 
+  theme_bw()
+```
+
+::: notes
+
+Ok, let's reset our code again!
+
+<br>
+
+Multivariate approach 3 focuses on the points in a scatter plot
+
+- **SLIDE**: IFF the third variable you want to add to any analysis is categorical, you can use colors and shapes
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Adding colors, shapes and sizes**
+:::
+
+```{r, echo=TRUE, fig.retina=3, fig.asp=0.618, fig.align='center', fig.width=8}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total, 
+              color = gdp_pc_cat)) +
+  geom_point() + 
+  theme_bw()
+```
+
+::: notes
+
+You can use all of our other tools for adjusting these colors
+
+- scale_color_manual, scale_color_brewer, etc
+
+<br>
+
+**Questions on this code?**
+
+<br>
+
+**SLIDE**: working in B&W
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Adding colors, shapes and sizes**
+:::
+
+```{r, echo=TRUE, fig.asp=0.618, fig.align='center', fig.width=8, fig.retina=3}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total, 
+              shape = gdp_pc_cat)) +
+  geom_point(size = 2) + 
+  theme_bw()
+```
+
+::: notes
+
+If printing in B&W use shapes
+
+- Usually helpful to increase the size of the points
+
+<br>
+
+**SLIDE**: Use both!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Adding colors, shapes and sizes**
+:::
+
+```{r, echo=TRUE, fig.asp=0.618, fig.align='center', fig.width=8, fig.retina=3}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total, 
+              color = gdp_pc_cat, shape = gdp_pc_cat)) +
+  geom_point(size = 2) + 
+  theme_bw()
+```
+
+::: notes
+
+If there aren't too many observations or there is considerable spacing between groups this can be a really effective visualization technique
+
+<br>
+
+Everybody practice this replacing GDP with tobacco again
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Adding colors, shapes and sizes**
+:::
+
+```{r, echo=TRUE, fig.asp=0.618, fig.align='center', fig.width=8, fig.retina=3}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total, 
+              color = tobacco_cat, shape = tobacco_cat)) +
+  geom_point(size = 2) + 
+  theme_bw()
+```
+
+::: notes
+
+I don't think this actually clarifies the test given the overlap in the groups
+
+- **SLIDE**: So combine approaches and re-add the facet wrap!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Adding colors, shapes and sizes**
+:::
+
+```{r, echo=TRUE, fig.asp=0.25, fig.align='center', fig.width=14, fig.retina=3}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total, 
+              color = tobacco_cat, shape = tobacco_cat)) +
+  geom_point() + 
+  theme_bw() +
+  facet_wrap(~ tobacco_cat, ncol = 5)
+```
+
+::: notes
+
+**Any questions on using colors or shapes for categorical confounders?**
+
+<br>
+
+**SLIDE**: Adding numeric confounders is also a bit clunky but I'd like you to be aware of the option
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Adding colors, shapes and sizes**
+:::
+
+```{r, echo=TRUE, fig.asp=0.618, fig.align='center', fig.width=8, fig.retina=3}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total, 
+              size = gdp_per_capita)) +
+  geom_point() + 
+  theme_bw()
+```
+
+::: notes
+
+Size will rescale the points per a numeric variable
+
+- Some refer to these as bubble plots
+
+<br>
+
+Shows us there is a clear separation between the rich and poor world in this relationship!
+
+<br>
+
+Everybody practice this on tobacco!
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Multivariate Analyses: Adding colors, shapes and sizes**
+:::
+
+```{r, echo=TRUE, fig.asp=0.618, fig.align='center', fig.width=8, fig.retina=3}
+ggplot(d, aes(x = fertility_rate_per_woman, y = life_expectancy_total, 
+              size = tobacco_use_pct)) +
+  geom_point() + 
+  theme_bw()
+```
+
+::: notes
+
+Tobacco use much more spread out across this relationship
+
+- Less distinction rich vs poor on this one
+:::
+
+
+
+## Multivariate Analyses 1 {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+**Working with Categorical Variables as Confounders**
+
+1. Descriptive statistics by groups
+  
+2. Multiple Facets
+    
+3. Adding colors, shapes and sizes
+:::
+
+::: notes
+
+**Any questions on the multivariate techniques we covered today?**
+
+<br>
+
+**SLIDE**: Practice for next class!
+
+:::
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina = 3, fig.align = 'center', out.width='80%', fig.height=4, fig.width=9}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Fertility\nRate", "Confounders", "Life\nExpectancy")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 8) +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.4, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.25, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+**Possible Confounders**: unemployment rate, compulsory education
+
+::: notes
+
+We covered GDP and tobacco in class today
+
+- Your job for Wednesday is to replicate our work today using the other two possible confounders
+
+- Does the central mechanism hold up when we adjust the analyses for either unemployment or years of compulsory education?
+
+<br>
+
+**Questions?**
+
+:::
+

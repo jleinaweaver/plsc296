@@ -1,0 +1,287 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Apply bivariate analyses to our research project**
+
+:::
+
+<br>
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Make the merged data file available on Canvas
+:::
+
+
+
+## For Today {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+### Submit your "best" visualization of the relationship between:
+
+::: {.r-fit-text}
+
+1. The style (`cut`) and clarity (`clarity`) of the diamonds
+
+2. The style (`cut`) and the cost (`price`) of the diamonds
+
+3. The size (`carat`) and the cost (`price`) of the diamonds
+
+:::
+
+::: notes
+Ok, here's what I asked you to do for class today
+
+- My hope is that this gave you a chance to practice all of the visualizations from last class, PLUS
+
+- A chance to practice our polishing skills again
+
+<br>
+
+**SLIDE**: Let's step through each challenge one-by-one
+
+:::
+
+
+
+## How did you visualize the relationship between `cut` and `clarity`? {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/09_3-Diamond_Cut.png")
+```
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/09_3-Diamond_Clarity.jpg")
+```
+
+::: notes
+Alright, let's see what everybody made!
+
+- *Encourage everyone to walk around and see all the plots*
+
+<br>
+
+**What are we seeing? What do we like?**
+
+<br>
+
+**SLIDE**: Here's my stab
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=.618, fig.width=8, cache=TRUE}
+#| code-fold: true
+
+ggplot(diamonds, aes(x = clarity, fill = forcats::fct_rev(cut))) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_brewer(type = "seq", palette = 4) +
+  labs(x = "Diamond Clarity", fill = "Cut Type",
+       caption = "Source: The Loose Diamonds Search Engine (n.d.)",
+       title = "Jewelers appear to use greater care when shaping higher quality diamonds")
+
+# Replicate student submissions
+# ggplot(diamonds, aes(x = cut, fill = clarity)) +
+#   geom_bar(position = "stack") +
+#   theme_bw()
+# 
+# ggplot(diamonds, aes(x = cut, fill = clarity)) +
+#   geom_bar(position = "dodge") +
+#   theme_bw()
+# 
+# ggplot(diamonds, aes(x = clarity, fill = cut)) +
+#   geom_bar(position = "stack") +
+#   theme_bw()
+
+```
+
+
+
+## How did you visualize the relationship between `cut` and `price`? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/09_3-Diamond_Cut2.webp")
+```
+
+::: notes
+Alright, let's see what everybody made!
+
+- *Encourage everyone to walk around and see all the plots*
+
+<br>
+
+**What are we seeing? What do we like?**
+
+<br>
+
+**SLIDE**: Here's my stab
+:::
+
+
+
+## Diamonds: 'cut' and 'price' {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.columns}
+::: {.column width="45%"}
+
+<br>
+
+```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.asp=1, fig.width=6, cache=TRUE}
+ggplot(diamonds, aes(x = price, y = forcats::fct_rev(cut))) +
+  geom_boxplot(fill = "seagreen2") +
+  theme_bw() +
+  labs(x = "", y = "", title = "Does the quality of the a diamond's cut influence its price?", caption = "Source: The Loose Diamonds Search Engine") +
+  scale_x_continuous(labels = scales::dollar_format()) 
+```
+:::
+
+::: {.column width="55%"}
+```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.asp=1.1, fig.width=7, cache=TRUE}
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(bins = 15, color = "white") +
+  facet_wrap(~ cut, ncol = 1) +
+  theme_bw() +
+  scale_x_continuous(labels = scales::dollar_format()) 
+```
+:::
+::::
+
+::: notes
+The distributions overlap considerably.
+
+- Doesn't look like cut and price are highly correlated!
+
+<br>
+
+**Any guesses why cut and price appear uncorrelated here?**
+
+- (Size, e.g. carats, matters in diamonds a ton!)
+
+<br>
+
+**SLIDE**: Last one focuses on size!
+:::
+
+
+
+## How did you visualize the relationship between `carat` and `price`? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/09_3-Diamond_Carats.jpg")
+```
+
+::: notes
+Alright, let's see what everybody made!
+
+- *Encourage everyone to walk around and see all the plots*
+
+<br>
+
+**What are we seeing? What do we like?**
+
+<br>
+
+**SLIDE**: Here's my stab
+:::
+
+
+
+## Diamonds: 'carat' and 'price' {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.width=7, fig.asp=.7, cache=TRUE}
+#| code-fold: true
+
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point(alpha = .05) +
+  theme_bw() +
+  labs(x = "Size of the Diamond (carats)", y = "Prices",
+       title = "The larger the diamond the more expensive!") +
+  scale_y_continuous(labels = scales::dollar_format())
+```
+
+::: notes
+The alpha argument in geom_point is new for our class pictures
+
+- Given the 50k diamonds in the dataset it can be VERY hard to see through the cloud of points
+
+- The alpha changes the opacity of the points, e.g. how dark each one is
+
+- I've set the alpha SUPER low so we can try to see somewhat through the cloud
+
+<br>
+
+**Does anything interesting stand out in this plot thanks to the very low alpha setting?**
+
+- The dark vertical bands at round-ish numbers of carats (1, 1.25, 1.5, 1.75, 2) implies jewelers are actively making cuts in order to create tiers in the market
+
+- If they cut what they got in order to preserve the original size everytime we'd see much more variation
+
+- The diamond market is ten layers of nonsense and marketing
+:::
+
+
+
+## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+1. Descriptive Statistics by Group
+    - Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations
+
+2. Visualizations
+    - Bar plots (stacked, side-by-side, proportions), box plots and scatter plots
+
+::: notes
+**Any questions on our bivariate analyses tools?**
+
+<br>
+
+My expectation from here on out is that you can use all of these tools in R
+
+<br>
+
+Ok, let's use our class time today to apply these tools to our developing research project.
+
+- Let's brainstorm a plan of attack!
+
+- **Given our research question AND the variables in our merged dataset, what bivariate analyses should we produce?**
+
+- *ON BOARD*
+
+<br>
+
+Get to it!
+
+:::
+
+
+

@@ -1,0 +1,396 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+```
+
+<br>
+
+<br>
+
+**Installing and configuring R and RStudio**
+
+<br>
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. ...
+:::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+:::: {.columns}
+::: {.column width="45%"}
+**R**
+
+```{r, fig.align='left'}
+knitr::include_graphics("Images/03_3-R_Icon2.png")
+```
+:::
+
+::: {.column width="10%"}
+
+:::
+
+::: {.column width="45%"}
+**RStudio**
+
+```{r, fig.align='right'}
+knitr::include_graphics("Images/03_3-RStudio_Icon.png")
+```
+:::
+::::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/03_3-R_Engine.png")
+```
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/03_3-rstudio_blank.png")
+```
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+1. Open RStudio
+
+<br>
+
+2. "Tools" &rarr; "Global Options"
+
+<br>
+
+3. Uncheck all boxes in "General"
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center'}
+knitr::include_graphics("Images/02_1-global_options1.png")
+```
+:::
+::::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+1. "Code" page
+
+<br>
+
+2. &#10004; soft-wrap R source files
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center'}
+knitr::include_graphics("Images/02_1-global_options2.png")
+```
+:::
+::::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+1. "Pane Layout" page
+
+<br>
+
+2. Move the "Console" to the top-right box
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center'}
+knitr::include_graphics("Images/02_1-global_options3.png")
+```
+:::
+::::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+1. "Rmarkdown" page
+
+<br>
+
+2. Uncheck "Show output inline..."
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center'}
+knitr::include_graphics("Images/02_1-global_options4.png")
+```
+:::
+::::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/02_1-RStudio_setup.png")
+```
+
+
+
+## Organize your Semester {background-image="Images/background-slate_v2.png" .center}
+
+**Data and Notes**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+Include:
+
+- A top-level folder for the class,
+
+- A folder for the data, and 
+
+- A folder for each report
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center'}
+knitr::include_graphics("Images/02_1-Folders.png")
+```
+:::
+::::
+
+
+
+## Create a script file: Getting_Started.R {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+**Option 1**
+
+"File" 
+
+&#8595;
+
+"New File" 
+
+&#8595;
+
+"R Script"
+:::
+
+::: {.column width="50%"}
+**Option 2**
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/03_3-New_Script.png")
+```
+:::
+::::
+
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/03_3-RStudio_Practice1.png")
+```
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/03_3-RStudio_Practice2.png")
+```
+
+
+## Using R as a Calculator {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+tribble(
+  ~Function, ~Description,
+  "x + y", "Addition",
+  "x - y", "Subtraction",
+  "x * y", "Multiplication",
+  "x / y", "Division",
+  "x ^ y", "Exponentiation"
+) |>
+  kableExtra::kbl(align = c("c", "l"))
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=TRUE, eval=FALSE}
+# Addition & subtraction
+151 + 13 - 224
+
+# Division
+831/12
+
+# Exponentiation
+5^12
+
+# Multiplication, 
+# division and parentheses
+312 * (23/154)
+```
+:::
+::::
+
+
+## {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/03_3-Run_Selected_Lines.png")
+```
+
+
+
+## Using R for simple relationships {background-image="Images/background-slate_v2.png" .center}
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+tribble(
+  ~Function, ~Description,
+  "x < y", "Less than",
+  "x <= y", "Less or equal to", 
+  "x > y", "Greater than", 
+  "x >= y", "Greater or equal to",
+  "x == y", "Equal to",
+  "x != y", "Not equal to"
+  ) |>
+  kableExtra::kbl(align = c("c", "l"))
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=TRUE, eval=FALSE}
+# Less than
+22 < 234
+
+# Greater than
+67 > 5366
+
+# Equal to
+7 == 32
+
+# Not equal to
+7 != 32
+```
+:::
+::::
+
+
+## Using R for Vectors of Data {background-image="Images/background-slate_v2.png" .center}
+
+```{r, echo=TRUE, eval=FALSE}
+# Save a list of numbers as the object 'x1'
+x1 <- c(64, 57, 52, 58, 67)
+
+# Print the numbers in the object
+x1
+
+# Do math on the vector
+x1 + 10
+x1 * 3
+
+# Check relationships on the vector
+x1 > 56
+```
+
+
+
+## Installing Extra Packages {background-image="Images/background-slate_v2.png" .center}
+
+```{r, echo=TRUE, eval=FALSE}
+# Install packages with extra tools
+
+# Readxl let's you input Excel files into R
+install.packages("readxl")
+
+# Tidyverse makes tons of statistics work easier
+install.packages("tidyverse")
+```
+
+
+
+## Let's Install R! {background-image="Images/background-slate_v2.png" .center}
+
+1. http://www.r-project.org/
+
+2. Click on “CRAN.”
+
+3. Select a site near you or “0-Cloud”
+
+:::: {.columns}
+::: {.column width="50%"}
+**Windows**
+
++ "Download R for Windows"
++ "Download and Install R"
++ Select "base"
++ Download the .exe and run it
+:::
+
+::: {.column width="50%"}
+**macOS**
+
++ "Download R for (Mac) OS X"
++ Click .pkg under "Latest release"
++ Run the .pkg file
+:::
+::::
+
+
+
+## Let's Install RStudio! {background-image="Images/background-slate_v2.png" .center}
+
+https://posit.co/download/rstudio-desktop/
+
+<br>
+
+1) Scroll down to "All Installers"
+
+<br>
+
+2) Download and run the file for your OS
+

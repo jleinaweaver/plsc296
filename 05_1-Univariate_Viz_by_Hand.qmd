@@ -1,0 +1,1100 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Univariate Analyses**
+
+- Building univariate visualizations
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Bring paper and rulers to class
+
+2. Review Canvas submissions
+
+<br>
+
+**SLIDE**: Let's talk about your practice exercises!
+:::
+
+
+## Practice Exercises {background-image="Images/background-data_blue_v4.png"}
+
+1. What proportion of US presidents since 1953 have been Republicans? (Built-in Data: presidential, Variable: party)
+
+2.  Why are the mean and median total populations in the midwest so different from each other? (Built-in Data: midwest, Variable: poptotal)
+
+3.  How many hours per day do you have to sleep to sleep longer than 75% of studied mammals? (Built-in Data: msleep, Variable: sleep_total)
+
+4.  Which mammal sleeps the least and which the most? (Built-in Data: msleep, Variable: sleep_total)
+
+::: notes
+
+For today I asked you to practice our coding skills and descriptive stats from last class.
+
+<br>
+
+### Did everybody finish the assignment? 
+:::
+
+
+
+## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**What proportion of US presidents since 1953 have been Republicans?**
+
+<br>
+
+::: {.r-fit-text}
+```{r, echo=TRUE}
+proportions(table(presidential$party))
+```
+:::
+
+::: notes
+**Everybody get this?**
+:::
+
+
+
+## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**Why are the mean and median total populations in the midwest so different from each other?**
+
+<br>
+
+::: {.r-fit-text}
+
+```{r, echo=TRUE}
+summary(midwest$poptotal)
+
+sd(midwest$poptotal)
+```
+
+:::
+
+::: notes
+**So, what's your answer to this question?**
+
+<br>
+
+On average, the cities in the midwest differ from the mean by nearly 300k!
+
+- Huge variance in city sizes
+
+- Some VERY small (sub-2k) and some MASSIVE (5+ million)
+:::
+
+
+## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**How many hours per day do you have to sleep to sleep longer than 75% of studied mammals?**
+
+<br>
+
+::: {.r-fit-text}
+
+```{r, echo=TRUE, eval=TRUE}
+summary(msleep$sleep_total)
+
+quantile(msleep$sleep_total, probs = .75)
+```
+:::
+
+::: notes
+
+The third quartile IS the 75th percentile
+
+- Here I'm also showing you the function to calculate ANY percentile
+
+<br>
+
+Interpret this result for me
+
+### What does this 13.75 mean?
+:::
+
+
+
+## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**Which mammal sleeps the least and which the most?**
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=FALSE, eval=TRUE}
+# Identify the range and view the data
+msleep |>
+  select(name, sleep_total) |>
+  arrange(sleep_total) |>
+  slice_head(n = 10) |>
+  kbl(align = c('l', 'c')) |>
+  kableExtra::kable_styling(font_size = 22)
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, eval=TRUE}
+# Identify the range and view the data
+msleep |>
+  select(name, sleep_total) |>
+  arrange(desc(sleep_total)) |>
+  slice_head(n = 10) |>
+  kbl(align = c('l', 'c')) |>
+  kableExtra::kable_styling(font_size = 22)
+```
+:::
+::::
+
+::: notes
+
+The most direct approach is probably to use the View() function and click the arrow next to sleep_total to sort the data
+
+<br>
+
+**SLIDE**: Alright let's move to our new work for today!
+:::
+
+
+
+
+## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo = FALSE, fig.align = 'center', out.width = '50%'}
+knitr::include_graphics("Images/03_1-data_viz.jpg")
+```
+
+<br>
+
+A method for summarizing data in more compelling, easier to understand and more informative methods than descriptive statistics.
+
+
+
+## Why draw visualizations by hand? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::::: {.columns}
+:::: {.column width="40%"}
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("Images/03_1-By_hand.jpg")
+```
+::::
+
+:::: {.column width="60%"}
+::: {.incremental}
+1. Principle 3 in action
+
+2. Learn to think like a programmer
+
+3. Learn to "see" descriptive statistics
+:::
+::::
+:::::
+
+::: notes
+Today we practice making data visualizations working entirely by hand!
+
+- I've brought paper and rulers!
+
+<br>
+
+Please don't aim for making art today.
+
+- We're trying to learn the intuitions underpinning each type of visualization.
+
+<br>
+
+**REVEAL**: Why do this?
+
+- Learning these intutions by hand will help drive home the lesson of connnecting variable types to visualization tools.
+
+- Certain types of variables tie to specific tools
+
+- e.g. Tables of categorical variables often look better as a bar plot
+
+<br>
+
+**REVEAL**: Being a programmer, e.g. writing code, is a means of solving problems in small steps.
+
+- Drawing a visualization by hand works the same way
+
+<br>
+
+**REVEAL**: The better you learn how specific descriptive stats connect to specific viz, the sooner you will learn to "see" the visualization in a table of descriptive statistics.
+:::
+
+
+
+## Principle 3 {background-image="Images/background-data_blue_v4.png" .center}
+
+**Variable Type Determines Tool**
+
+<br>
+
+**Univariate Visualizations**
+
++ If a **categorical** variable, make a **bar plot**
+
++ If a **numeric** variable, make a **box plot** or **histogram**
+
++ If a **numeric variable across time**, make a **line plot**
+
+::: notes
+
+Here is our plan of attack for today.
+
+- We will first draw bar plots of categorical variables,
+
+- Then histograms and box plots for numeric variables, and
+
+- Finally, line plots of numeric variables that change across time.
+
+<br>
+
+### Everybody have this written down?
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+:::
+
+:::: {.columns}
+::: {.column width="45%"}
+
+<br>
+
+::: {.r-fit-text}
+**Bar Plots**
+
+1. Counts
+
+2. Proportions
+:::
+:::
+
+::: {.column width="55%"}
+
+![](Images/03_1-Johnson-Bar_plot.png)
+
+:::
+::::
+
+::: notes
+
+Bar plots, as the Johnson reading explains, represent the number (or proportion) of observations in each level using the height of a bar.
+
+<br>
+
+Drawing a bar plot is super easy:
+
+1. Count the levels in the variable (e.g. make a table),
+
+2. Draw the x axis with labels for each level,
+
+3. Draw the y-axis with enough height to represent the largest count
+
+4. Draw each bar to represent the number of observations in that level
+
+<br>
+
+### Make sense?
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+:::
+
+<br>
+
+**By hand**, draw a bar plot of drive train levels (drv) for the cars in the mpg dataset.
+
+1. Count the levels
+
+2. Draw X axis with labels
+
+3. Draw Y axis to max height
+
+4. Add the bars
+
+::: notes
+
+Everybody make us this bar plot
+
+- Quick and dirty!
+
+- Our aim is learning the intuition behind each tool NOT making art
+
+- Go!
+
+<br>
+
+*After 2 minutes, you make it on the board*
+
+- *Have the class walk you through what to do*
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+
+```{r, echo=TRUE}
+table(mpg$drv)
+```
+:::
+
+```{r, fig.width=4, fig.asp=1, fig.align='center'}
+mpg |>
+  ggplot(aes(x = drv)) +
+  geom_bar(width = .5, fill = c("blue1", "skyblue3", "lightblue")) +
+  theme_bw() +
+  labs(x = "", y = "Count of Observations") +
+  #scale_x_discrete(limits = c("4", "f", "r"), labels = c("4 Wheel Drive", "Front Wheel Drive", "Rear Wheel Drive")) +
+  scale_x_discrete(limits = c("r", "4", "f"), labels = c("Rear Wheel\n Drive", "4 Wheel\n Drive", "Front Wheel\n Drive")) +
+  geom_hline(yintercept = seq(25, 100, 25), color = "white")
+```
+
+::: notes
+**How did we do?**
+
+I ordered my bars from least to most to help aid ease of interpretation.
+
+<br>
+
+Let's practice this one more time!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+:::
+
+<br>
+
+**By hand**, draw a bar plot of **the proportion** of parties that have controlled the presidency since 1953 in the presidential data set.
+
+1. Count the levels and convert to proportions
+
+2. Draw X axis with labels
+
+3. Draw Y axis to max height
+
+4. Add the bars
+
+::: notes
+
+Everybody make us this bar plot
+
+- Quick and dirty!
+
+- Our aim is learning the intuition behind each tool NOT making art
+
+- Go!
+
+<br>
+
+*After 2 minutes, you make it on the board*
+
+- *Have the class walk you through what to do*
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**Categorical Variable: Make a Bar Plot**
+:::
+
+<br>
+
+:::: {.columns}
+::: {.column width="45%"}
+
+```{r, fig.width=5, fig.asp=1}
+presidential |>
+  count(party) |>
+  mutate(
+    sum = sum(n),
+    prop = n/sum
+  ) |>
+  ggplot(aes(x = party, y = prop)) +
+  geom_col(width = .5, fill = c("blue1", "red3")) +
+  theme_bw() +
+  labs(x = "", y = "Proportion of Observations") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  geom_hline(yintercept = seq(.2, .6, .2), color = "white")
+```
+
+:::
+
+::: {.column width="55%"}
+
+<br>
+
+<br>
+
+::: {.r-fit-text}
+
+```{r, echo=TRUE, fig.retina=3}
+proportions(table(presidential$party))
+```
+:::
+
+:::
+
+::::
+
+::: notes
+**How did we do?**
+
+<br>
+
+### Everybody comfortable with what bar plots are used for, how you make them and how we interpret them?
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Bar Plot?**
+:::
+
+<br>
+
+Why can't we simply make a bar plot for total population (`poptotal`) in the `midwest` data set?
+
+::: notes
+
+Everybody try it!
+
+- Use the table function to count the levels in midwestern populations
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Bar Plot?**
+
+```{r, echo=TRUE}
+table(midwest$poptotal)
+```
+
+:::
+
+::: notes
+
+In the realm of numerical data there may not be any overlap in numbers in the data set!
+
+- This means we get a table of almost all '1's 
+
+    - e.g. the odds of two cities having exactly 18,409 people are pretty darn low.
+    
+- That's, arguably, less informative than just giving someone the actual data.
+
+<br>
+
+**Make sense?**
+
+<br>
+
+**So, what do we do?**
+:::
+    
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
+
+<br>
+
+```{r, fig.align = 'center'}
+knitr::include_graphics("Images/03_1-Johnson-Histogram.png")
+```
+
+::: notes
+
+In a bar plot for a categorical variable, each bar represents the count of each level.
+
+<br>
+
+To build a bar plot for numeric data we group numbers that are close together into each bar.
+
+- In histograms we call these groupings "bins"
+
+<br>
+
+This example from the book chapter shows a histogram of women's ages.
+
+- It looks like five bars per 15 years so I'm guessing the bins are each five years wide.
+
+<br>
+
+### Does that make sense?
+
+<br>
+
+Let's practice building a histogram to see if that helps drive the intuition home for you.
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+
+<br>
+
+1. Make a binned table of city fuel economy (mpg dataset)
+    - Bin 1: 0 - 10
+    - Bin 2: 11 - 20
+    - Bin 3: 21 - 30
+    - Bin 4: 31 - 40
+
+2. Make a bar plot of these bins
+:::
+
+::: notes
+
+1. Run the table function on the cty fuel economy variable
+
+    - The add together the totals in each bin
+    
+2. THEN draw the bars for the new groups!
+
+<br>
+
+Everybody make us this histogram (e.g. a bar plot of bins)
+
+- Quick and dirty!
+
+- Go!
+
+<br>
+
+*After 2 minutes, you make it on the board*
+
+- *Have the class walk you through what to do*
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
+
+:::: {.columns}
+::: {.column width="60%"}
+```{r, fig.width=4, fig.asp=1, fig.align='center'}
+mpg |>
+  mutate(
+    cty2 = case_when(
+      cty <= 10 ~ "0 - 10",
+      cty <= 20 ~ "11 - 20",
+      cty <= 30 ~ "21 - 30",
+      cty <= 40 ~ "31 - 40")
+  ) |>
+  ggplot(aes(x = cty2)) +
+  geom_bar(width = .75, fill = "orange3") +
+  theme_bw() +
+  labs(x = "Fuel Economy (City)", y = "Proportion of Observations") +
+  geom_hline(yintercept = seq(50, 150, 50), color = "white")
+```
+:::
+
+::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+mpg |>
+  mutate(
+    cty2 = case_when(
+      cty <= 10 ~ "0 - 10",
+      cty <= 20 ~ "11 - 20",
+      cty <= 30 ~ "21 - 30",
+      cty <= 40 ~ "31 - 40")
+  ) |>
+  count(cty2) |>
+  kableExtra::kbl(col.names = c("City Fuel Economy", "Count"), align = "c") |>
+  kableExtra::kable_styling(font_size = 30) |>
+  kableExtra::column_spec(1:2, background = "white")
+```
+:::
+::::
+
+::: notes
+**Everybody have a bar plot that looks like this?**
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Histogram**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.width=5, fig.asp=1}
+mpg |>
+  ggplot(aes(x = cty)) +
+  geom_histogram(fill = "orange3", color = "white", bins = 5) +
+  theme_bw() +
+  labs(x = "Fuel Economy (City)", y = "",
+       title = "5 Bins")
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.width=5, fig.asp=1}
+mpg |>
+  ggplot(aes(x = cty)) +
+  geom_histogram(fill = "orange3", color = "white", bins = 25) +
+  theme_bw() +
+  labs(x = "Fuel Economy (City)", y = "",
+       title = "25 Bins")
+```
+:::
+::::
+
+::: notes
+
+Using software you can easily adjust the size of the bins in order to find a version of the histogram that you feel best conveys the shape of the distribution.
+
+- The five bins version is approx 5 mpg per bar
+
+- The 25 bins version is slightly more than 1 mpg per bar
+
+<br>
+
+### Is everybody clear on how a histogram is like a bar plot applied to a numeric variable?
+
+<br>
+
+So, a histogram is a binned bar plot and it attempts to show us the shape of the distribution.
+
+- BUT, as you see here, the size of the bins has a BIG effect on what the histogram looks like!
+
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Box Plot**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<br>
+
+**Box Plots**
+
+- 25th percentile
+
+- Median (50th)
+
+- 75th percentile
+
+- IQR x 1.5
+:::
+
+::: {.column width="50%"}
+
+![](Images/03_1-Johnson-Box_plot.png)
+
+:::
+::::
+
+::: notes
+
+An alternative to the histogram is the box plot.
+
+- Much simpler to make (by hand) and conveys much of the same information, BUT
+
+- Typically harder for untrained people to understand
+
+<br>
+
+**Any questions on the components of a box plot?**
+
+<br>
+
+**SLIDE**: Let's practice!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Box Plot**
+:::
+
+<br>
+
+**By hand**, draw a box plot of city fuel economy in the mpg data set
+
+1. Calculate the median, the 25th and 75th percentiles
+
+2. Draw X axis to include the full range of values
+
+3. Draw the median as a small line
+
+4. Draw the box around the IQR
+
+5. Add the whiskers (1.5x the IQR)
+
+::: notes
+
+Remember, the summary() function gets you everything you need.
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**Numerical Variable: Make a Box Plot**
+:::
+
+:::: {.columns}
+::: {.column width="65%"}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE}
+# Summary stats
+summary(mpg$cty)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Calculate the tails
+quantile(mpg$cty, probs = .25) - IQR(mpg$cty)*1.5
+
+quantile(mpg$cty, probs = .75) + IQR(mpg$cty)*1.5
+```
+:::::
+:::
+
+::: {.column width="35%"}
+```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=1, out.width='100%', fig.align='center'}
+mpg |>
+  ggplot(aes(y = 1, x = cty)) +
+  geom_boxplot(fill = "orange3") +
+  theme_bw() +
+  labs(x = "Fuel Economy (City)", y = "") +
+  scale_y_continuous(limits = c(0.25, 1.75), breaks = c(0, .5, 1, 1.5, 2), labels = rep("", 5)) +
+  scale_x_continuous(limits = c(0, 40))
+```
+:::
+::::
+
+::: notes
+**How did we do?**
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**Numerical Variable: Histograms and Box Plots**
+:::
+
+<br>
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("Images/04_2-Fuel_Economy.gif")
+```
+
+```{r}
+## Create a gif of three plots:
+# 1. Histogram
+# 2. Boxplot overlaid on histogram
+# 3. Box plot
+
+# Step 1 save each as png file
+# Histogram
+# mpg |>
+#   ggplot(aes(x = cty)) +
+#   geom_histogram(fill = "white", color = "black", bins = 25) +
+#   theme_bw() +
+#   scale_x_continuous(limits = c(0, 40)) +
+#   labs(x = "Fuel Economy (City)", y = "")
+# 
+# ggsave("Images/04_2-Histogram_mpg.png")
+
+# Overlapping
+# mpg |>
+#   ggplot(aes(x = cty)) +
+#   geom_histogram(fill = "white", color = "black", bins = 25) +
+#   theme_bw() +
+#   labs(x = "Fuel Economy (City)", y = "") +
+#   #geom_boxplot(fill = "orange3", aes(y = 20)) +
+#   scale_x_continuous(limits = c(0, 40)) +
+#   annotate("segment", x = quantile(mpg$cty, probs = .25)-1.5*IQR(mpg$cty), xend = quantile(mpg$cty, probs = .75)+1.5*IQR(mpg$cty), y = 20, yend = 20) +
+#   annotate("rect", xmin = quantile(mpg$cty, probs = .25), xmax = quantile(mpg$cty, probs = .75), ymin = 15, ymax = 25, fill = "orange3") +
+#   annotate("segment", x = median(mpg$cty), xend = median(mpg$cty), y = 15, yend = 25, linewidth = 1.5) +
+#   annotate("segment", x = quantile(mpg$cty, probs = c(.25, .75)), xend = quantile(mpg$cty, probs = c(.25, .75)), y = 15, yend = 25, linewidth = 1) +
+#   annotate("segment", x = quantile(mpg$cty, probs = .25), xend = quantile(mpg$cty, probs = .75), y = c(15, 25), yend = c(15, 25))
+# 
+# ggsave("Images/04_2-Overlaid_Histogram_mpg.png")
+
+# Box plot drawn in pieces
+# mpg |>
+#   ggplot(aes(x = cty)) +
+#   geom_histogram(fill = "white", color = "white", bins = 25) +
+#   theme_bw() +
+#   labs(x = "Fuel Economy (City)", y = "") +
+#   #geom_boxplot(fill = "orange3", aes(y = 20)) +
+#   scale_x_continuous(limits = c(0, 40)) +
+#   annotate("segment", x = quantile(mpg$cty, probs = .25)-1.5*IQR(mpg$cty), xend = quantile(mpg$cty, probs = .75)+1.5*IQR(mpg$cty), y = 20, yend = 20) +
+#   annotate("rect", xmin = quantile(mpg$cty, probs = .25), xmax = quantile(mpg$cty, probs = .75), ymin = 15, ymax = 25, fill = "orange3") +
+#   annotate("segment", x = median(mpg$cty), xend = median(mpg$cty), y = 15, yend = 25, linewidth = 1.5) +
+#   annotate("segment", x = quantile(mpg$cty, probs = c(.25, .75)), xend = quantile(mpg$cty, probs = c(.25, .75)), y = 15, yend = 25, linewidth = 1) +
+#   annotate("segment", x = quantile(mpg$cty, probs = .25), xend = quantile(mpg$cty, probs = .75), y = c(15, 25), yend = c(15, 25))
+# 
+# ggsave("Images/04_2-Boxplot_mpg.png")
+
+###########################
+## Create gif
+# library(gifski)
+# 
+# png_files1 <- c("Images/04_2-Histogram_mpg.png",
+#                 "Images/04_2-Overlaid_Histogram_mpg.png")
+# 
+#gifski(png_files1, gif_file = "Images/04_2-Fuel_Economy.gif", delay = 2)
+```
+
+::: notes
+**Does everybody see how these figures attempt to represent the same thing?**
+
+<br>
+
+### Under what conditions should we prefer a histogram and when a box plot?
+
+<br>
+
+We'll find that the value of a box plot increases DRAMATICALLY when comparing multiple distributions
+
+- Put a pin in that for now...
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**Numeric Variables Across Time: Line Plots**
+:::
+
+<br>
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("Images/03_1-Johnson-Line_plot.png")
+```
+
+::: notes
+
+Last visualization tool is a line plot
+
+- This is what we make when you have a numeric variable across time.
+
+<br>
+
+Technically this is our first BIVARIATE visualization because it depends on two variables
+
+- However, I include it here because our interest focuses on one variable (but allows it to vary in time)
+
+<br>
+
+**SLIDE**: Let's practice!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Numeric Variables Across Time: Line Plots**
+:::
+
+<br>
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("Images/03_1-Johnson-Line_plot.png")
+```
+
+<br>
+
+Draw a line plot of US unemployment (`unemploy`) for the most recent 12 months in the `economics` data set.
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Numeric Variables Across Time: Line Plots**
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r, fig.width=6, fig.asp=.8, fig.align='center'}
+economics |>
+  slice_tail(n = 12) |>
+  ggplot(aes(x = date, y = unemploy)) +
+  geom_line() +
+  geom_point() +
+  theme_bw() +
+  scale_x_date(date_breaks = "month", date_labels = "%b %y") +
+  labs(x = "", y = "Unemployment (thousands)",
+       caption = "Source: St Louis Federal Reserve") +
+  scale_y_continuous(limits = c(0, 10000))
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.width=6, fig.asp=.8, fig.align='center'}
+economics |>
+  slice_tail(n = 12) |>
+  ggplot(aes(x = date, y = unemploy)) +
+  geom_line() +
+  geom_point() +
+  theme_bw() +
+  scale_x_date(date_breaks = "month", date_labels = "%b %y") +
+  labs(x = "", y = "Unemployment (thousands)",
+       caption = "Source: St Louis Federal Reserve")
+```
+:::
+
+::::
+
+::: notes
+
+**Everybody make this?**
+
+- Line plots super easy, no?
+
+:::
+
+
+## Principle 3 {background-image="Images/background-data_blue_v4.png" .center}
+
+**Variable Type Determines Tool**
+
+<br>
+
+**Univariate Visualizations**
+
++ If a **categorical** variable, make a **bar plot**
+
++ If a **numeric** variable, make a **box plot** or **histogram**
+
++ If a **numeric variable across time**, make a **line plot**
+
+::: notes
+**Any questions on the univarate analyses we've explored today?**
+
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**For Next Class**
+
+<br>
+
+1. Review ALL notes and code from today
+
+2. Healy (2019) [Sections 3.1 - 3.4](https://socviz.co/makeplot.html)
+
+:::
+
+::: notes
+
+From this point forward, a big part of your job in this class is to spend time after EVERY CLASS making sure you understand what we did today.
+
+<br>
+
+That means reviewing your notes to make sure you understand 
+
+1. why we ran the code we did, 
+
+2. how to run the code, AND 
+
+3. how to interpret the results. 
+
+<br>
+
+### Questions on the assignment?
+:::

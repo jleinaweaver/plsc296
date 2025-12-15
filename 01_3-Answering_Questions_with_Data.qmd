@@ -1,0 +1,594 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Section 1: Measurement is Hard**
+
+1. Syllabus review
+
+2. Let's answer some questions with data!
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Review Canvas submissions
+
+2. Keep middle screen off in OEC 335 so you have board space to work
+:::
+
+
+## Questions on the Syllabus? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, fig.align='center'}
+tibble(
+  x1 = c("Attendance & Participation", "Assignments", "- Report: Analyze the Outcome Variable(s)", "- Report: Analyze the Predictor Variable(s)", "- Report: Test the Causal Mechanism"),
+  x2 = c("50%", "50%", "", "", "")
+) |>
+  kbl(align = c("l", "c"), col.names = c("", "")) |>
+  kableExtra::kable_styling(font_size = 38) |>
+  column_spec(1:2, background = "white")
+```
+
+::: notes
+
+**Any questions about the class from your review of the syllabus?**
+
+<br>
+
+Our job this semester is to design and execute a research project
+- Your grade is heavy on being in class and collaborating to get this done
+
+<br>
+
+### Is the attendance policy clear?
+1. Attendance cliff: > 4 unexcused absences = 'C'
+2. YOUR JOB to request make-up assignments from excused absences
+
+<br>
+
+### Does everybody understand how to earn the participation points?
+- Come to class on-time,
+- Be engaged while in class (e.g., bring all needed materials, don’t distract others, etc.), and
+- Submit all required daily assignments BEFORE class begins.
+
+<br>
+
+### Does everybody see where the readings for each class are assigned and know how to access them?
+
+<br>
+
+### Any questions on using Canvas?
+
+:::
+
+
+
+## {background-image="Images/01_2-Backup-Your-Computer.jpg"}
+
+::: notes
+
+Important Note: I expect each of you to save and backup your work in this class to the cloud on a daily basis. 
+
+- I will not accept lost or broken computers as excuses for incomplete assignments and missed deadlines.
+
+<br>
+
+### Is everybody already backing up to the cloud (e.g. iCloud, OneDrive, Dropbox, etc.)?
+
+OneDrive backup is FREE for Drury students!
+
+- Let me know if you need help with this.
+
+:::
+
+
+
+## Assignment for Today {background-image="Images/background-data_blue_v4.png" .center}
+
+1. Population of the USA in 2024?
+
+2. Number of countries in the world today?
+
+3. Number of wars in the world today?
+
+<br>
+
+**Complete answers include specificity, sourcing and an argument that this measurement is useful.**
+
+::: notes
+
+Our first participation assignment was due today.
+
+<br>
+
+Before we get to the answers, let's talk in broad strokes about the assignment.
+
+### How did it go? How did you attack this?
+
+<br>
+
+*Split class into small groups (3)*
+
+- You must form a group with NEW people (not the group you worked with on the assignment)
+
+- I want each group to draw on different approaches and have different answers
+
+- Go sit with your group!
+
+<br>
+
+**SLIDE**: Let's dig in!
+:::
+
+
+## Population of the USA in 2024 {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("Images/01_2-Satellite-Map-USA.jpg")
+```
+
+<br>
+
+1. "Best" answer (with confidence interval)?
+
+2. Key sources of uncertainty? Subject, Tool, Process, Validation
+
+::: notes
+
+Groups, discuss all the submitted answers to our first question and get ready to report back two things
+
+1. What is our "best" answer to the question (e.g. with confidence interval)?
+    - You are NOT picking a single submission, but identifying a useful range that you are confident includes the "real" answer.
+    
+2. What are the primary sources of uncertainty in our answer?
+    - Identify AT LEAST ONE source of uncertainty for each of the four aspects of measurement we discussed last class
+    
+<br>
+
+### Everybody understand what I want?
+
+- 5 mins, get to it!
+
+<br>
+
+*ON BOARD*
+
+1. "Best" answer ranges
+    - Present and discuss each
+    
+2. Sources of uncertainty (4 columns)
+    - Subject, Tool, Process, Validation
+
+<br>
+
+NOTES
+
+**Subject Definitions Matter**
+
+- WHO should be counted? Citizens vs residents vs people
+- WHAT should be counted? An average after all births, deaths, immigrations, etc? Or a snapshot on Jan 1st? Or July 1st? or Dec 31st?
+
+**Tools Matter**
+
+- The census form itself is both simple and complicated!
+- Trump admin tried hard to add a citizenship question to the form wither to develop a better count of the undocumented OR to lay the groundwork for excluding those populations from congressional representation.
+
+**Process Matters**
+
+- NO single list of people held by the government, not even a list of just citizens
+- Large homeless population very hard to count with mailers!
+- Many undocumented afraid to answer the door when census takers knock
+- Minority groups frequently undercounted because of how hard it is to locate individuals in an urban setting
+
+**Validation Matters**
+
+- Congress has put in place roadblocks to using statistical sampling procedures to verify these wildly innaccurate headcounts.
+
+:::
+
+
+
+## {background-image="Images/01_2-census_mailer.jpg" .center}
+
+::: notes
+
+Clearly counting the population of any large country is INCREDIBLY hard.
+
+<br>
+
+Based on your work for today, talk to me about how we should and should not use our population counts.
+
+### In other words, what is a question we can answer using this data?
+
+<br>
+
+### And what is a question we cannot usefully answer with this data?
+
+<br>
+
+**SLIDE**: Is it accurate enough for reapportionment?
+:::
+
+
+
+## {background-image="Images/01_2-census_apportionment-2020-map01.png" .center background-size='90%'}
+
+::: notes
+
+Probably the most important thing the census population count is used for is changing the apportionment of seats in Congress
+
+- e.g. growing areas get more house members, shrinking ones lose representation
+
+<br>
+
+### Is our census count likely to have been precise enough for this VERY important task (reapportioning reps in Congress)? Why or why not?
+
+<br>
+
+### Can you see here how urban areas appear to be losing out in the current process?
+
+Politics in everything!
+:::
+
+
+
+## Number of countries in the world? {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/01_2-World-map-countries.jpg){style="display: block; margin: 0 auto"}
+
+<br>
+
+1. "Best" answer (with confidence interval)?
+
+2. Key sources of uncertainty? Subject, Tool, Process, Validation
+
+::: notes
+
+Ok groups, next question!
+
+- Still looking for two things
+
+- 5 mins, get to it!
+
+<br>
+
+*ON BOARD*
+
+1. "Best" answer ranges
+    - Present and discuss each
+    
+2. Sources of uncertainty (4 columns)
+    - Subject, Tool, Process, Validation
+
+<br>
+
+#### NOTES
+
+**Subject Definitions Matter**
+
+- What is a state? How much sovereign control is necessary?
+- What about places of ongoing civil conflict (Libya, Ethiopia, South Sudan)?
+- What about territories like Puerto Rico with many obligations to the US (pay taxes, serve in war) but not all the benefits (no social security)?
+
+**Tools Matter**
+
+- How do you translate complex conceptual definitions of statehood into clear and measurable criteria?
+
+**Process Matters**
+
+- If your tool focuses on wide recognition: What do we do about China's pressure campaign against Taiwan including both threats and bribery?
+
+- If your tool focuses on recognition by IOs: Israel's threats against the UN and smaller countries for allowing Palestine observer status at the UN 
+
+- If your tool focuses on economic or military strength: What about Russian support for breakaway "republics" across the old USSR (Transnistria, Abkhazia, Crimea, Donetsk, etc.)?
+
+
+**Validation Matters**
+
+- UN membership is a political exercise not a rigorous definition per international law but carries great weight in many aspects of the world.
+    - See the struggles of the Taliban to claim Afghanistan's seat in the UN
+:::
+
+
+
+## Number of countries in the world? {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/01_2-UN_Map_Wikipedia.png){style="display: block; margin: 0 auto"}
+
+::: notes
+
+Given all this, report back on Q2
+
+### What is a question we can answer using this data?
+
+<br>
+
+### And what is a question we cannot or should not answer with this data?
+:::
+
+
+
+
+## Number of current wars? {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/01_2-ukraine_fighting.webp){style="display: block; margin: 0 auto"}
+
+::: notes
+
+Ok groups, next question!
+- Still looking for two things
+
+- 5 mins, get to it!
+
+<br>
+
+*ON BOARD*
+
+1. "Best" answer ranges
+    - Present and discuss each
+    
+2. Sources of uncertainty (4 columns)
+    - Subject, Tool, Process, Validation
+
+<br>
+
+**SLIDE**: Wikipedia entry
+
+<br>
+
+### OLD NOTES
+
+**Definitions Matter**
+
+- What is "war" in 2023?
+- All of the following can be tied to increased costs in terms of blood and treasure for Russia: Economic sanctions, direct monetary support to Ukraine, direct provision of arms to Ukraine, training of Ukrainian soldiers BUT DO THEY ADD UP TO WAR?
+- Correlates of War project: "sustained combat, involving organized armed forces, resulting in a minimum of 1,000 battle-related fatalities within a twelve month period"
+    - MIDs: Militarized interstate disputes
+
+**Tools Matter**
+
+- How do you translate complex conceptual definitions of "war" into clear and measurable criteria?
+
+**Process Matters**
+
+- How do you get reliable information on what is happening on the ground in Russia (no free press) or Ukraine (active war ongoing)?
+
+**Validation Matters**
+
+- Lots of groups offering "reports" on destruction, alleged war crimes, fatalities, but almost all VERY conflicting.
+:::
+
+
+
+## Number of current wars? {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/01_2-2023_Ongoing_conflicts_around_the_world.png){style="display: block; margin: 0 auto"}
+
+::: notes
+
+The [wikipedia entry of "ongoing armed conflicts"](https://en.wikipedia.org/wiki/List_of_ongoing_armed_conflicts) is now one of the first things to pop up on a Google search of this question.
+
+- Draws on a number of good quality sources but mixes them together in some ways the designers of those measures would probably be concerned by.
+
+<br>
+
+Measuring war is REALLY, REALLY hard
+
+- Should we include ongoing non-lethal violence such as the Chinese navy assaulting Philippines ships in the SCS
+    
+    - Water canons, blinding lasers, close quarters maneuvers but no killing
+
+- Should we include serious acts of economic violence like the US sanctions against Russia over its invasion of Ukraine?
+    
+    - What about NATO providing arms to Ukraine?
+
+- Should we include serious acts of violence happening within a single state's borders such as:
+    
+    - China targeting Uighyur muslims (genocide?)
+    
+    - Myanmar military targeting Rohingya (also genocide?)
+    
+    - And many, many, many more
+    
+- Should we include violence by non-state actors (e.g. terrorism or rebellion) such as that done by ISIS in Iran and Syria or the Pakistani Taliban's attack on the Pakistani government?
+
+<br>
+
+Measuring "war" requires extreme care in defining the subject, tool, process and validation procedures you plan on using.
+
+<br>
+
+Given all this, report back on this final question
+
+### What is a question we can answer using this data?
+
+<br>
+
+### And what is a question we cannot or should not answer with this data?
+
+<br>
+
+**SLIDE**: Ok, let's reinforce what we've discussed about measurement this week
+:::
+
+
+
+## Science as Measurement {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+:::: {.r-fit-text}
+::: {.incremental}
+1. Science means answering questions with data
+
+2. Data is generated by measuring the empirical world
+
+3. All measurements include uncertainty
+
+4. So, all answers include uncertainty
+:::
+::::
+
+::: notes
+
+**REVEAL**: THIS is what it means to do science
+
+- Anyone trying to answer research questions with data in transparent, replicatable ways is doing science
+
+- Regardless of the subject of study.
+
+<br>
+
+**REVEAL**: Unlike other disciplines, science roots its knowledge in what we can observe
+
+- Not just what we can deduce, or what we believe
+
+- *Define empirical: "based on, concerned with, or verifiable by observation or experience rather than theory or pure logic" (OED).*
+
+<br>
+
+**REVEAL x 2**: And here's the kicker.
+
+- Since all measures are uncertain that means **ALL SCIENTIFIC KNOWLEDGE IS UNCERTAIN**
+
+<br>
+
+HOWEVER, that doesn't mean we don't know anything
+
+- Scientific knowledge is valuable because it acknowledges its limitations right up front.
+
+- No hiding what we don't know!
+
+<br>
+
+Science is not about revealing truth, it's about describing the world.
+
+- We prefer descriptions based on how clear they are and how well they can describe their uncertainty
+
+- Scientific progress often comes from us finding better ways to shrink or address the uncertainty
+
+<br>
+
+Fundamentally, that's our job this semester
+
+- My hope is that our work this week has helped you think a bit more deeply about population, the international state system and the nature of war.
+
+- We don't have great answers for those three questions yet, but you should now have a MUCH better sense of what we don't know about each of them and what it would take to build us a better measure of each!
+
+<br>
+
+### Any questions on this?
+
+<br>
+
+**SLIDE**: With that in mind...
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.align='center'}
+knitr::include_graphics('Images/01_2-quote-von-neumann.jpg')
+```
+
+::: notes
+
+I have never come across a quote that spoke more to my experience of being a social scientist.
+
+- This isn't just an excellent quote about math, but an excellent quote about the scientific process and the challenges of causal inference.
+
+- Using data to answer questions is hard, but it just sort of gets easier with time and practice.
+
+<br>
+
+So, hang in there this semester and embrace the journey.
+
+- By the end of the semester you too will have learned enough research design, math and programming skills to make some cool things and answer some challenging questions.
+
+- My promise is that you'll even understand enough of what you're doing to be dangerous!
+:::
+
+
+
+## This semester you will develop skills: {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+- **Evaluating** data for uncertainty,
+
+- **Cleaning** the data for analysis,
+
+- **Describing** the variation in the data,
+
+- **Analyzing** the variation in the data, and
+
+- **Reporting** your findings in clear and compelling ways.
+
+::: notes
+
+We have three learning outcomes for this class and they are listed on the syllabus.
+
+- You should definitely read them.
+
+<br>
+
+HOWEVER, I think this summarizes the hands-on goals for our semester nicely.
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+**For Next Class**
+
+1. Brians et al (2011) Chapter 5
+
+2. Canvas Assignment
+
+:::
+
+::: notes
+
+Everybody take a look at the assignment for next class and let me know if you have any questions!
+
+<br>
+
+Canvas ASSIGNMENT: Submit to Canvas a news event from the last few years that involves a government, anywhere in the world, infringing on the civil rights or liberties of its citizens. You may not submit an event already claimed by someone else in class.
+
+1. APA citation and web link to the event
+
+2. Describe the event
+
+3. Explain the specific right or liberty being infringed upon
+
+
+
+:::

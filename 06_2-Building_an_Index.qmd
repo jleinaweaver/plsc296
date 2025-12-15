@@ -1,0 +1,957 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+
+library(gganimate)
+
+# Data for today
+data1 <- read_excel("../Data_in_Class/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
+
+data2021 <- filter(data1, year == 2021)
+
+fh <- read_excel("../Data_in_Class/Freedom_House/FreedomHouse-Tidy-1972-2023.xlsx")
+
+fh1972 <- filter(fh, year == 1972)
+
+fh2023 <- filter(fh, year == 2023)
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Practicing univariate analyses in R**
+
+- Review: Practice exercises
+
+- New: Freedom House Data
+
+- Canvas: "FreedomHouse-Tidy-1972-2023.xlsx"
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Review Canvas submissions
+
+<br>
+
+Today we continue practicing our univariate analyses tools in R
+
+- **SLIDE**: Let's kick things off with your practice work for today.
+:::
+
+
+## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**Questions to Answer:**
+
+1. Are birth rates rising or falling around the world? (`birth_rate`)
+
+2. Is the world getting richer or more unequal over time? (`wb_income`)
+
+::: notes
+
+**In broad strokes, how did this go?**
+
+- **Were you able to use all of our tools on these two variables?**
+
+<br>
+
+**How did you find making an argument in text with statistics as evidence?**
+
+<br>
+
+**SLIDE**: Let's dig into these questions!
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Are birth rates rising or falling around the world?**
+:::
+
+:::: {.columns}
+::: {.column width="45%"}
+```{r, cache=TRUE, fig.asp=0.618, fig.width=6}
+# # Checking Austin's homework
+# data1 |> filter(year %in% c(1985,2003,2021)) |> group_by(year) |>
+#   summarize(median(death_rate, na.rm = T))
+# 
+# data1 |> filter(year %in% c(1985,2003,2021)) |> group_by(year) |>
+#   summarize(median(birth_rate, na.rm = T))
+
+# Snapshot bar plots
+# Wikipedia points to a place called Child Trends that argues: Birth rates ranging from 10 to 20 births per 1,000 are considered low, while rates from 40 to 50 births per 1,000 are considered high.
+data1 <- data1 |>
+  mutate(
+    birth_groups = case_when(
+      birth_rate <= 20 ~"Low",
+      birth_rate < 40 ~"Moderate",
+      birth_rate >= 40 ~"High"
+    )
+  )
+
+data1 |>
+  filter(year == 1985) |>
+  ggplot(aes(x = birth_rate, fill = birth_groups)) +
+  geom_histogram(bins = 20, color = "white", breaks = seq(0,50,2)) +
+  labs(x = "(per 1,000 people)", y = "Countries", title = "Global Birth Rates (1985)", caption = "Source: The World Bank's WDI (2024)") +
+  xlim(5, 50) +
+  scale_fill_manual(values = c("red3", "red3", "lightblue")) +
+  guides(fill = "none")
+
+data1 |>
+  filter(year == 2021) |>
+  ggplot(aes(x = birth_rate, fill = birth_groups)) +
+  geom_histogram(bins = 20, color = "white", breaks = seq(0,50,2)) +
+  labs(x = "(per 1,000 people)", y = "Countries", title = "Global Birth Rates (2021)", caption = "Source: The World Bank's WDI (2024)") +
+  xlim(5, 50) +
+  scale_fill_manual(values = c("red3", "red3", "lightblue")) +
+  guides(fill = "none")
+```
+:::
+
+::: {.column width="55%"}
+
+<br>
+
+```{r, cache=TRUE, fig.asp=0.8, fig.width=6}
+ggplot(data1, aes(x = birth_rate, fill = birth_groups)) +
+  geom_histogram(bins = 20, color = "white") +
+  transition_time(year) +
+  xlim(5, 50) +
+  scale_fill_manual(values = c("red3", "red3", "lightblue")) +
+  guides(fill = "none") +
+  labs(title = "Global Birth Rates ({as.integer(frame_time)})",
+       x = "(per 1,000 people)", y = "Countries",
+       caption = "Source: WDI (2024)")
+```
+:::
+::::
+
+::: notes
+**So, are birth rates rising or falling around the world?**
+
+- **What was your argument? Why?**
+
+<br>
+
+I'm using benchmarks from a research organization called Child Trends
+
+- They claim to be "the leading research organization in the United States focused solely on improving the lives of children, youth, and families."
+
+- Honestly, I don't know if this is a good source, but this is more a proof of concept rather than a deep analysis of fertility rates.
+
+- They use below 20 and above 40 as birth rates of concern
+
+<br>
+
+**SLIDE**: Global wealth
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Is the world getting richer or more unequal?**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, cache=TRUE, fig.asp=1, fig.width=6}
+# Snapshot bar plots
+# Which countries have increased from "low" to other categories?
+# data1 |>
+#   filter(year %in% c(1985, 2021)) |>
+#   select(year, country, wb_income) |>
+#   pivot_wider(names_from = year, values_from = wb_income) |>
+#   View()
+# Albania: low to upper-mid; India to low-mid; sudan low to low
+# S. Korea low-mid to high, S. Africa low-mid to upper-mid
+
+data1 |>
+  filter(year == 1985) |> 
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (1985)", caption = "Source: The World Bank's WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA)) +
+  annotate("text", x = 1, y = c(10, 25), label = c("Sudan", "India"), color = "white", size = 5) +
+  annotate("text", x = 2, y = c(10, 25), label = c("S. Korea", "S. Africa"), color = "white", size = 5)
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r, cache=TRUE, fig.asp=1, fig.width=6}
+data1 |>
+  filter(year == 2021) |>
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (2021)", caption = "Source: The World Bank's WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA)) +
+  annotate("text", x = 1, y = 10, label = "Sudan", color = "white", size = 5) +
+  annotate("text", x = 2, y = 10, label = "India", color = "white", size = 5) +
+  annotate("text", x = 3, y = 10, label = "S. Africa", color = "white", size = 5) +
+  annotate("text", x = 4, y = 10, label = "S. Korea", color = "white", size = 5)
+```
+:::
+::::
+
+::: notes
+
+**So, is the world getting richer or more unequal over time?**
+
+- **What was your argument? Why?**
+
+<br>
+
+**SLIDE**: We have a serious problem with missing data here!
+
+:::
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Is the world getting richer or more unequal?**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, cache=TRUE, fig.asp=1, fig.width=6}
+# Remove missing data observations
+missing1 <- data1 |>
+  filter(year == 1985, is.na(wb_income)) |>
+  select(country)
+
+anti_join(data1, missing1, by = "country") |>
+  filter(year == 1985) |> 
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3")) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (1985)", caption = "Source: The World Bank's WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High")) 
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r, cache=TRUE, fig.asp=1, fig.width=6}
+anti_join(data1, missing1, by = "country") |>
+  filter(year == 2021) |>
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3")) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (2021)", caption = "Source: The World Bank's WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High"))
+```
+:::
+::::
+
+::: notes
+
+To make these plots I removed all of the countries from the dataset that were missing data in 1985
+
+- Now we can compare the bar plots more easily!
+
+<br>
+
+**Does omitting the missing sample change our conclusions? Why or why not?**
+
+<br>
+
+I'm hopeful everyone is convinced that the most compelling answer to each question requires:
+
+1. Complete sentence explanations of your answers, 
+
+2. Evidence in visualizations, AND 
+
+3. Evidence in descriptive statistics
+
+<br>
+
+ALSO, the utility of an animation depends on the clarity of the trend over time!
+
+<br>
+
+For the purposes of across time analyses there is absolutely nothing wrong with employing a strategy of using snapshots
+
+- However, let's learn a new tool that let's us do all the snapshots simultaneously
+
+<br>
+
+**SLIDE**: The concept of a stacked bar plot
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Snapshots in Time Using Stacked Bars**
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r, cache=TRUE, echo=FALSE, fig.align='center', fig.asp=1.1, fig.retina=3, fig.width=5}
+data1 |>
+  filter(year == 1985) |>
+  ggplot(aes(x = wb_income)) +
+  geom_bar(fill = c("blue3", "red", "darkgoldenrod1", "cadetblue3", "grey")) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (1985)", caption = "Source: WDI (2024)") + 
+  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA))
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r, cache=TRUE, echo=FALSE, fig.align='center', fig.asp=1.1, fig.retina=3, fig.width=5}
+data1$wb_income_f <- factor(data1$wb_income, 
+    levels = c(NA, "High", "Upper-middle", "Lower-middle", "Low"))
+
+data1 |>
+  filter(year == 1985) |>
+  ggplot(aes(x = year, fill = wb_income_f)) +
+  geom_bar() +
+  scale_x_continuous(limits = c(1983.5, 1986.5), labels = NULL) +
+  labs(x = "", y = "Countries", title = "World Bank Income Categories (1985)", caption = "Source: WDI (2024)") +
+  scale_fill_manual(values = c("blue3", "cadetblue3", "darkgoldenrod1", "red", "grey"))
+```
+
+:::
+::::
+
+::: notes
+
+**Does everybody see how these two plots represent the exact same data in equivalent ways?**
+
+- The left plot is the standard version, what we call side-by-side bars or a dodge bar plot
+
+- The right plot stacks all of the bars on top of each other
+
+<br>
+
+Let's use this strategy but expand it for all years!
+
+- **SLIDE**: Let's start with a bar plot of `year` in the World Bank data
+
+:::
+
+
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+ggplot(data1, aes(x = year)) +
+  geom_bar()
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
+ggplot(data1, aes(x = year)) +
+  geom_bar()
+```
+
+::: notes
+
+Ok, interpret this bar plot for me.
+
+- **What do these bars represent?**
+
+<br>
+
+Each bar is a count of observations for each year in the dataset 
+
+- Here we see there are the same number of observations in each year I've provided you
+
+<br>
+
+**SLIDE**: Now, let's put the data back into this plot
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Counts of one variable across time
+ggplot(data1, aes(x = year, fill = wb_income)) +
+  geom_bar()
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
+# Counts of one variable across time
+ggplot(data1, aes(x = year, fill = wb_income)) +
+  geom_bar()
+```
+
+::: notes
+
+Kind of cool, right?
+
+- Think of this like what you've been doing all semester to "fill" in the bars with color
+
+- This tells R to "fill" in the bars with a different variable!
+
+<br>
+
+**Did everybody make this?**
+
+<br>
+
+**What do we need to fix to make this plot more logical?**
+
+- (The levels in our status variable are not in a logical order)
+
+<br>
+
+**SLIDE**: Let's fix it
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Create a new variable using factor()
+data1$income2 <- factor(data1$wb_income, levels = c(NA, "High",
+                "Upper-middle", "Lower-middle", "Low"))
+
+ggplot(data1, aes(x = year, fill = income2)) +
+  geom_bar()
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
+# Create a new variable using factor()
+data1$income2 <- factor(data1$wb_income, 
+    levels = c(NA, "High", "Upper-middle", "Lower-middle", "Low"))
+
+ggplot(data1, aes(x = year, fill = income2)) +
+  geom_bar()
+```
+
+::: notes
+
+*Talk them through creating a new variable*
+
+- Don't overwrite your variables, make new ones!
+
+- The levels represents the order you want
+
+<br>
+
+**Everybody get this?**
+
+<br>
+
+**SLIDE**: Before we analyze, let's fix the colors
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Add colors
+ggplot(data1, aes(x = year, fill = income2)) +
+  geom_bar() +
+  scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", 
+                               "pink", "red3"))
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
+# Add colors
+ggplot(data1, aes(x = year, fill = income2)) +
+  geom_bar() +
+  scale_fill_manual(values = c("deepskyblue4", "deepskyblue1", 
+                               "pink", "red3"))
+```
+
+::: notes
+
+Scale fill manual lets you specify colors by the fill categories.
+
+- You can then enter certain color names using hexadecimal codes or some words
+
+- I put an R color cheatsheet on our Canvas Modules page
+
+<br>
+
+**Back to the visualization, what do we learn from this about the world?**
+
+<br>
+
+**SLIDE**: Let's practice all our skills on new data!
+
+:::
+
+
+
+## {background-image="Images/05_2-Freedom_House1.png" .center}
+
+::: notes
+
+Today we practice our univariate analysis tools by examining some of the data produced by Freedom House.
+
+<br>
+
+**In very broad strokes, what is the purpose of the measures produced by Freedom House?**
+
+- **What are they trying to measure?**
+
+<br>
+
+Freedom House's "Freedom in the World" project is an attempt to quantify "freedom" in countries across the world in terms of "political rights" and "civil liberties"
+
+<br>
+
+**According to Freedom House, what is the difference between "political rights" and "civil liberties"?**
+
+Political Rights in three subcategories:
+    
+1. Electoral Process (3 questions), 
+2. Political Pluralism and Participation (4), and
+3. Functioning of Government (3).
+    
+Civil liberties in four subcategories:
+    
+1. Freedom of Expression and Belief (4 questions),
+2. Associational and Organizational Rights (3), 
+3. Rule of Law (4), and 
+4. Personal Autonomy and Individual Rights (4).)
+
+<br>
+
+If we had chosen Freedom House as our data set we would need to spend quite a bit of time digging into these conceptual labels.
+
+- How distinct are they? 
+
+- Are these valid definitions? Are they reliable?
+
+<br>
+
+Our focus today is to practice our univariate analyses so we'll set methodology aside for the moment.
+:::
+
+
+
+## The Freedom House Data {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+**How is global freedom changing across time?**
+
+- Stacked bar plot of FH `status` across time
+:::
+::: notes
+
+Alright, let's crunch some new data!
+
+- Make sure to reorder the levels (if needed!)
+
+- Go!
+
+<br>
+
+(**SLIDE**: My version)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"))
+
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "Count", fill = "", 
+       caption = "Source: Freedom House (2024)")
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"))
+
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "Count", fill = "", 
+       caption = "Source: Freedom House (2024)")
+```
+
+::: notes
+
+**Did everybody get this?**
+
+<br>
+
+I'm willing to say most readers who haven't explored Freedom House won't know what these levels represent
+
+- **SLIDE**: Let's make it clearer!
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, 
+                      levels = c("F", "PF", "NF"),
+                      labels = c("Free", "Partly Free", 
+                                 "Not Free"))
+
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "Count", fill = "", 
+       caption = "Source: Freedom House (2024)")
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
+# Create a new variable using factor()
+fh$status_f <- factor(fh$status, levels = c("F", "PF", "NF"),
+                      labels = c("Free", "Partly Free", "Not Free"))
+
+ggplot(fh, aes(x = year, fill = status_f)) +
+  geom_bar() +
+  scale_fill_manual(values = c("cornflowerblue", "pink", "red3")) +
+  labs(x = "", y = "Count", fill = "", 
+       caption = "Source: Freedom House (2024)")
+```
+
+::: notes
+
+**So, how is freedom in the world changing over time?**
+
+<br>
+
+- (Missing data in 1981)
+
+- (Spike in 1991 as USSR collapses so maybe some new countries were more free?)
+
+- (Not as sure about that spike in 2023)
+
+<br>
+
+A big problem for us in interpreting these counts is that the number of countries being studied increased DRAMATICALLY between the two ends of our dataset
+
+- 1972 obs: `r nrow(fh1972)`
+
+- 2023 obs: `r nrow(fh2023)`
+
+- +`r round((nrow(fh2023)/nrow(fh1972)-1)*100, 1)`%
+
+<br>
+
+**SLIDE**: Let's practice!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**How are political rights changing across time?**
+
+<br>
+
+1. Convert `pr` into a factor variable `pr_f`
+
+2. Make a stacked bar plot of `year` and `pr_f`
+
+:::
+::: notes
+
+(**SLIDE**: My version)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# A new tool for colors!
+fh$pr_f <- factor(fh$pr, levels = c(7, 6, 5, 4, 3, 2, 1))
+
+ggplot(fh, aes(x = year, fill = pr_f)) +
+  geom_bar() +
+  labs(x = "", y = "", title = "Political Rights Across Time",
+       caption = "Source: Freedom House (2024)", fill = "") +
+  scale_fill_brewer(type = "div", palette = "RdYlBu")
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
+#
+#RColorBrewer::brewer.pal(7, name = "RdYlBu")
+
+fh$pr_f <- factor(fh$pr, levels = c(7, 6, 5, 4, 3, 2, 1))
+
+ggplot(fh, aes(x = year, fill = pr_f)) +
+  geom_bar() +
+  labs(x = "", y = "", title = "Political Rights Across Time",
+       caption = "Source: Freedom House (2024)", fill = "") +
+  scale_fill_manual(values = c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4"))
+```
+
+::: notes
+
+Two new bits of code here.
+
+- Rather than manually specify the colors I'm using a built-in tool called R Color Brewer
+
+- I'm removing the label in the legend with fill = ""
+
+<br>
+
+**What do we learn from this?**
+
+- Remember, smaller numbers are better on this scale.
+
+- (Worrying increase in the worst of the worst)
+
+<br>
+
+Everybody now repeat this exact code but do it for the civil liberties variable (`cl`).
+
+- (**SLIDE**: My version)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+fh$cl_f <- factor(fh$cl, levels = c(7, 6, 5, 4, 3, 2, 1))
+
+ggplot(fh, aes(x = year, fill = cl_f)) +
+  geom_bar() +
+  labs(x = "", y = "", title = "Civil Liberties Across Time",
+       caption = "Source: Freedom House (2024)", fill = "") +
+  scale_fill_brewer(type = "div", palette = "RdYlBu")
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
+fh$cl_f <- factor(fh$cl, levels = c(7, 6, 5, 4, 3, 2, 1))
+
+ggplot(fh, aes(x = year, fill = cl_f)) +
+  geom_bar() +
+  labs(x = "", y = "", title = "Civil Liberties Across Time",
+       caption = "Source: Freedom House (2024)", fill = "") +
+  scale_fill_brewer(type = "div", palette = "RdYlBu")
+```
+
+::: notes
+
+**What do we learn from this?**
+
+<br>
+
+**Everybody feeling pretty comfortable making stacked bar plots?**
+
+<br>
+
+**SLIDE**: Let's now zoom in on some specific cases
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**How is freedom changing in the US across time?**
+:::
+
+<br>
+
+::: {.r-fit-text}
+- Make a line plot of `fh_total` for the US only
+:::
+
+::: notes
+
+A second option for tracking change across time is to focus on a single observation
+
+<br>
+
+- Filter the dataset to only include the US
+
+- geom_line()
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+fh_US <- filter(fh, fh_country == "United States")
+
+ggplot(fh_US, aes(x = year, y = fh_total)) +
+  geom_line() +
+  labs(x = "", y = "Freedom House Total Score (1-14)", 
+       caption = "Source: Freedom House (2024)") +
+  scale_y_continuous(limits = c(1,14), breaks = 1:14)
+```
+:::::
+
+```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
+fh_US <- filter(fh, fh_country == "United States")
+
+ggplot(fh_US, aes(x = year, y = fh_total)) +
+  geom_line() +
+  labs(x = "", y = "Freedom House Total Score (1-14)", 
+       caption = "Source: Freedom House (2024)") +
+  scale_y_continuous(limits = c(1,14), breaks = 1:14)
+```
+
+::: notes
+
+A fairly stable story over time, right?
+
+- Something weird happened in 2016...
+
+<br>
+
+Everybody try this again but find us a country with tons of yearly variation!
+
+<br>
+
+**Report back, what countries are basket cases per this measure?**
+
+- *You make those too!*
+
+<br>
+
+**SLIDE**: Next week we write the first reports
+
+:::
+
+
+
+
+## Report 1 {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
+
+<br>
+
+The reader of your report is a non-expert in data analysis and is not familiar with this particular project, but is very interested in the topic. 
+
+::: notes
+
+Now that we have your project chosen I can make the report prompt much more focused!
+
+- Focus on making an argument that answers THIS question for this type of reader
+
+<br>
+
+**Questions on the big picture aim here?**
+
+<br>
+
+**SLIDE**: The key elements
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
+
+1. The importance of the project in the real-world,
+2. The key contributors of uncertainty in the project's data,
+3. What we learn about the current world from analyzing the most recently available data, and
+4. What we learn about the trajectory of press freedom in the world from analyzing the data across time
+
+::: notes
+
+Your report must have a clear macro structure and, I suggest, a meso structure that mirrors these four required elements. Each of the required elements should be fully explained, all claims should be supported by evidence, and your report should offer the reader your critical analysis of that element.
+
+- Section 1 requires outside evidence for your claims
+
+- Section 2 should be rooted in the methodological material provided by RSF
+
+- Section 3 must include multiple visualizations and descriptive statistics
+
+- Section 4 must include multiple visualizations and descriptive statistics
+
+<br>
+
+At this point we've spent time in class on Sections 1 and 2
+
+- Monday we'll focus on Section 3 (brainstorming and making stuff)
+
+- Wednesday we'll focus on Section 4 (brainstorming and making stuff)
+
+- Friday we wrap it up and get it turned in!
+
+<br>
+
+Your completed draft is due at the end of next week
+
+- So, please take some time this weekend to move forward on this project!
+
+<br>
+
+**Questions on the assignment or our plan?**
+
+:::
+
+

@@ -1,0 +1,1210 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+library(modelr)
+library(ggeffects)
+
+# Input practice WDI data
+wdi <- read_excel("../Data_in_Class/Class11-1-Simple_OLS-WDI_LifeExpectancy/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+
+# Input Bechdel data
+d <- read_excel("../Data_in_Class/FiveThirtyEight-Movie_Box_Office/Movie_Box_Office_Data-538.xlsx", na = "NA")
+
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Ordinary Least Squares (OLS) Regression**
+
+- Extending an OLS regression
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Check Canvas submissions
+
+<br>
+
+**SLIDE**: Let's kick things off with your assignment for today
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res3 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
+
+modelsummary(list("Life Expectancy" = res3),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "tobacco_use_pct" = "Tobacco Use (%)", "compulsory_education_yrs" = "Compulsory Education (years)")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Scatter
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+ggplot(wdi, aes(x = tobacco_use_pct, y = life_expectancy_total)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Tobacco Use (%)", y = "Life Expectancy (years)") +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(ggpredict(res3, terms = "tobacco_use_pct")) +
+  labs(x = "Tobacco Use (%)",
+       y = "Life Expectancy (years)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res3, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+**Did everybody get these results for the tobacco regression?**
+
+<br>
+
+**Interpret the coefficient for me**
+
+- As tobacco use in the adult population increases by 1%, average life expectancy increases by .2 years
+    
+    - So, add 5% more smokers and extend life expectancies by one year!
+
+<br>
+
+**What is obvious from this set of predictions?**
+
+- The effect is POSITIVE and we know, based on the science, that there must be a problem here
+
+<br>
+
+**So, how well does the regression line fit the data?**
+
+- **e.g. missing data, significance, R2, residuals**
+
+<br>
+
+- YES! Serious concerns with patterns in the residual
+
+    - Appears like the regression line is missing a clear non-linear effect
+
+- Also missing a ton of data!
+
+<br>
+
+I cannot emphasize enough the dangers of assuming a regression is a "good" summary of a relationship UNLESS you evaluate the fit of the line
+
+- Here the significance star is especially dangerous
+
+- Too many people see the star and think they've succeeded in finding truth!
+
+- Regression is a tool and ALL tools are imperfect
+
+<br>
+
+Today I want to introduce you to different ways we can extend an OLS regression to fit different kinds of variables and relationships between X and Y
+
+- Let's start with non-linearity
+
+<br>
+
+**Does anybody remember how to curve the formula for a line in algebra?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+
+::: {.panel-tabset}
+
+### Exponential Growth Data
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 <- tibble(
+  x1 = 1:50,
+  x2 = (1:50)^2,
+  y1 = x1 + x2 + rnorm(n = 50, mean = 10, sd = 2)
+)
+
+res10 <- lm(data = d3, y1 ~ x1)
+res11 <- lm(data = d3, y1 ~ x1 + I(x1^2))
+
+d4 <- d3 |>
+  add_predictions(res10, var = "lm") |>
+  add_predictions(res11, var = "squared")
+
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome")
+```
+
+
+### Version 1
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 15, y = 2000, size = 8, color = "red",
+           label = expression("Y = " ~ alpha + beta[1] ~ "x"))
+```
+
+### Version 2
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  geom_line(data = d4, aes(x = x1, y = squared), color = "blue") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 2, y = 2000, size = 8, color = "red", hjust = 0,
+           label = expression("Y = " ~ alpha + beta[1] ~ "x")) +
+  annotate("text", x = 2, y = 1500, size = 8, color = "blue", hjust = 0, label = expression("Y = " ~ alpha + beta[1] ~ "x" + beta[2] ~ "x"^2))
+```
+
+:::
+
+::: notes
+
+Example 1: Exponential growth
+
+- Here I have plotted some toy data that follows an exponential growth curve
+
+- e.g. increases begin slowly but speed up as we move across the levels of the predictor
+
+<br>
+
+**Version 1**: We can definitely fit a simple regression to this data
+
+- Heck, it even comes pretty close to the trend!
+
+- However, you can see here the pattern in the residuals without even needing to check the residuals plot
+
+<br>
+
+**Version 2**: In this form we allow X to have TWO effects on the line
+
+- X impacts Y both in its regular form (e.g. 1, 2, 3, 4) AND also as a square (e.g. 1, 4, 9, 16)
+
+- Early on the squared term has a small impact on the line and that impact gets bigger and bigger
+
+<br>
+
+Note that this formula for a line also allows the effect of each version of X to differ from each other!
+
+- Each X has a SEPARATE beta term in the regression
+
+- This makes this form VERY adaptable
+
+<br>
+
+For example, you could have a strong, positive slope on regular X but a tiny slope on X^2
+
+- That would be a mostly straight line that skews upward very slowly
+
+<br>
+
+Alternatively, you could have a small slope coefficient on X and a huge slope on the squared term
+
+- This is a trend that launches upward like a rocket
+
+<br>
+
+**Do these intuitions make sense?**
+
+<br>
+
+**SLIDE**: We can also do this in the other direction
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+
+::: {.panel-tabset}
+
+### Exponential Decline Data
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 <- tibble(
+  x1 = 1:50,
+  x2 = (1:50)^2,
+  y1 = x1 - x2 + rnorm(n = 50, mean = 10, sd = 2)
+)
+
+res10 <- lm(data = d3, y1 ~ x1)
+res11 <- lm(data = d3, y1 ~ x1 + I(x1^2))
+
+d4 <- d3 |>
+  add_predictions(res10, var = "lm") |>
+  add_predictions(res11, var = "squared")
+
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome")
+```
+
+
+### Version 1
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 2, y = -1500, size = 8, color = "red", hjust = 0, label = expression("Y = " ~ alpha + beta[1] ~ "x"))
+```
+
+### Version 2
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  geom_line(data = d4, aes(x = x1, y = squared), color = "blue") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 2, y = -1500, size = 8, color = "red", hjust = 0,
+           label = expression("Y = " ~ alpha + beta[1] ~ "x")) +
+  annotate("text", x = 2, y = -2000, size = 8, color = "blue", hjust = 0, label = expression("Y = " ~ alpha + beta[1] ~ "x" - beta[2] ~ "x"^2))
+```
+
+:::
+
+::: notes
+
+Example 2: Exponential decline
+
+- Decreases begin slowly but speed up as we move across the levels of the predictor
+
+- Here we see fake data in an exponential decline curve
+
+<br>
+
+**Version 1**: If we fit a linear model we see a vague approximation but with a definite pattern to the error
+
+<br>
+
+**Version 2**: In this form we allow X to have TWO effects on the line
+
+- X impacts Y both in its regular form (e.g. 1, 2, 3, 4) AND THEN by subtracting its squared term (e.g. 1, 4, 9, 16)
+
+- Early on the squared term has a small impact on the line and that impact gets bigger and bigger
+
+<br>
+
+**Make sense?**
+
+<br>
+
+**SLIDE**: Let's apply this to the tobacco regression
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Does tobacco use extend your life expectancy?**
+:::
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res5 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
+
+modelsummary(list("Life Expectancy" = res5),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "tobacco_use_pct" = "Tobacco Use (%)", "compulsory_education_yrs" = "Compulsory Education (years)")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+<br>
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res5, which = 1)
+```
+
+::::
+
+:::::
+
+::: notes
+
+Here is what you produced in your assignment for today
+
+- **See anything suspicious in the residuals?**
+
+<br>
+
+**SLIDE**: Let's fix it!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+
+<br>
+
+The I() Function
+
+- Let's you modify a variable inside the lm() formula
+
+- Combine with "^2" to square the predictor variable
+
+<br>
+
+::: {.r-fit-text}
+
+```{r, echo=TRUE, eval=FALSE}
+res <- lm(data = wdi, 
+          life_expectancy_total ~ tobacco_use_pct + I(tobacco_use_pct^2))
+```
+
+:::
+
+::: notes
+
+Here's the code you need to add a squared term to the tobacco predictor variable inside the lm() function
+
+- **Does everybody understand the code on the slide?**
+
+<br>
+
+Ok, fit this new model, make the predictions and check the residuals!
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res5 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct)
+res6 <- lm(data = wdi, life_expectancy_total ~ tobacco_use_pct + I(tobacco_use_pct^2))
+
+modelsummary(list(res5, res6),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("tobacco_use_pct" = "Tobacco Use (%)", "I(tobacco_use_pct^2)" = "Tobacco Use Squared")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(res6, terms = "tobacco_use_pct")) +
+  labs(x = "Tobacco Use (%)",
+       y = "Life Expectancy (years)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(res6, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+Think of this like a preview of multiple regression
+
+- e.g. adding more variables to a regression
+
+<br>
+
+**Have we now improved the fit of the line to the data?**
+
+- **In other words, is this a better summary of the relationship?**
+
+- Added a significant coefficient, increased the R2 by a lot, reduced the error, fixed the nonlinear residuals!
+
+<br>
+
+**Ok, what is the story of this line?**
+
+- **How does tobacco use relate to life expectancy in our global sample?**
+
+<br>
+
+- At low levels of tobacco use the first coefficient is bigger than the second
+
+    - e.g. tobacco use extends life expectancies on average
+
+- HOWEVER, once you get beyond the mid-20s in tobacco use, the second coefficient starts to outweigh the increases
+
+    - So, even though the squared coefficient is tiny it gets added thousands of times at the high end of the scale
+
+<br>
+
+**Anybody want to take a stab at explaining why we might see this relationship in the real world?**
+
+- **Do we think tobacco use actually improves lives?**
+
+<br>
+
+(Definitely not. My guess is this is a proxy for wealth at the low end)
+
+- As income goes up from a very low point access to entertainment products like tobacco increases
+
+- BUT, at a certain point the effect of the tobacco use harms health and lowers life expectancies
+
+<br>
+
+Pretty cool, right?
+
+- **Questions on adding a squared predictor to curve the line?**
+
+<br>
+
+**SLIDE**: Let's practice!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+# test on unemployment
+res7 <- lm(data = wdi, life_expectancy_total ~ unemployment_pct)
+
+modelsummary(res7,
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("unemployment_pct" = "Unemployment (%)", "I(unemployment_pct^2)" = "Unemployment Squared")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+
+
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(res7, terms = "unemployment_pct")) +
+  labs(x = "Unemployment (%)",
+       y = "Life Expectancy (years)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(res7, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+Last class we fit a straight line regression to the unemployment data and learned very little from it.
+
+- The coefficient is insignificant and the R2 is basically zero
+
+- The predictions plot has a HUGE uncertainty interval
+
+<br>
+
+HOWEVER, the residuals plot suggests there may be a nonlinearity!
+
+- Everybody fit a new unemployment regression with the squared term included!
+
+<br>
+
+**SLIDE**: Results
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::::: {.columns}
+
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res7 <- lm(data = wdi, life_expectancy_total ~ unemployment_pct)
+res7b <- lm(data = wdi, life_expectancy_total ~ unemployment_pct + I(unemployment_pct^2))
+
+modelsummary(list(res7, res7b),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("unemployment_pct" = "Unemployment (%)", "I(unemployment_pct^2)" = "Unemployment Squared")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(res7b, terms = "unemployment_pct")) +
+  labs(x = "Unemployment (%)",
+       y = "Life Expectancy (years)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(res7b, which = 1)
+```
+
+:::
+
+::::
+
+:::::
+
+::: notes
+
+**So, what happened? Has our answer changed?**
+
+- **How does unemployment impact life expectancy?**
+
+<br>
+
+**SLIDE**: Ok, next extension of regression analysis
+
+::: 
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Measuring Sexism at the Movies**
+:::
+
+![](Images/11_2-bechdel.png)
+
+::: notes
+
+Everybody grab the movie box office data on Canvas so we can explore this big question
+
+- This dataset was compiled by FiveThirtyEight a few years back
+
+<br>
+
+**Has anybody encountered the Bechdel Test before?**
+
+- **Can you describe the test for us?**
+
+<br>
+
+Watch a movie and ask three questions:
+
+1. Are there at least two named female characters?
+
+2. Do the two female characters talk to each other?
+
+3. Is the conversation about something other than a man?
+
+<br>
+
+ONLY if the movie answers yes to all three questions does it pass the test.
+
+<br>
+
+**What do you guys think of this as a test of sexism?**
+
+- **Is this a high bar or not?**
+
+<br>
+
+**SLIDE**: Univariate analyses time
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Measuring Sexism at the Movies**
+:::
+
+1. What years are included? (`year`)
+
+2. What proportion of movies passed the Bechdel Test? (`bechdel_test1`)
+
+3. Which step in the test trips up most movies? (`clean_test`)
+
+::: notes
+
+Three questions as a warm-up!
+
+- Go!
+
+<br>
+
+**What years are included? (`year`)**
+
+```{r}
+range(d$year)
+```
+
+<br>
+
+**How many, and what proportion of, movies passed the Bechdel Test? (`bechdel_test`)**
+
+```{r}
+table(d$bechdel_test1)
+proportions(table(d$bechdel_test1))
+```
+
+<br>
+
+**Which step in the test trips up most movies? (`clean_test`)**
+
+- "nowomen" means there are not two named female characters
+
+- "notalk" means the female characters never have a conversation
+
+- "men" means they do talk but only about men
+
+<br>
+
+```{r} 
+table(d$clean_test)
+proportions(table(d$clean_test))
+```
+
+<br>
+
+Time to go bivariate in our analyses
+
+- Thus far we've been fitting regressions with two numeric variables
+
+- **SLIDE**: Now let's see what happens when the predictor variable is categorical
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+**Do sexist movies make more money?**
+
+:::
+
+<br>
+
+1. Regress box office returns (`boxoffice_millions`) on the Bechdel Test (`bechdel_test1`)
+
+2. Make the table and the predictions
+
+3. Evaluate the fit of the regression
+
+::: notes
+
+Everybody run this regression, interpret the results and check the fit of the line
+
+<br>
+
+(**SLIDE**: results)
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+
+```{r, echo=FALSE}
+res4 <- lm(data = d, boxoffice_millions ~ bechdel_test1)
+
+modelsummary(list("Box Office" = res4),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("bechdel_test1Pass" = "Passing the Bechdel Test")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(ggpredict(res4, terms = "bechdel_test1")) +
+  labs(x = "The Bechdel Test",
+       y = "Box Office (Millions USD)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res4, which = 1)
+```
+
+### Other
+
+<br>
+
+```{r, echo=TRUE}
+aggregate(d$boxoffice_millions ~ d$bechdel_test1, FUN = mean)
+```
+
+:::
+::::
+:::::
+
+::: {.r-fit-text}
+**Box Office = 330.95 - 83.22 (Passing the Bechdel Test)**
+:::
+
+::: notes
+
+I've written the result as the formula for a line to see if that helps us understand what we've made here.
+
+- In short, each level of the categorical variable gets its own coefficient
+
+- In this case, the intercept represents the average for movies that failed the test
+
+- **Make sense?**
+
+
+<br>
+
+**So, what is going on here?**
+
+- **What are these regression results telling us?**
+
+<br>
+
+*Step through all*
+
+- The coefficient represents the average change in box office for movies that pass the Bechdel Test
+
+- The intercept represents the average change in box office for movies that fail the Bechdel Test
+
+- SO, regression on a dummy variable estimates the group means (with confidence intervals)
+
+- Compare to group means in "Other" tab
+
+- Hard to interpret the residuals plot (what is the middle of a dummy variable?)
+
+<br>
+
+So, per this regression it appears that sexist movies make way more money on average than movies that treat women like real people!
+
+- **Does this make sense?**
+
+<br>
+
+**SLIDE**: Let's try this again but now using a categorical variable with more levels
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+**What kinds of movie sexism make the most money?**
+
+:::
+
+<br>
+
+1. Regress box office returns (`boxoffice_millions`) on the way some movies fail the Bechdel Test (`clean_test`)
+
+2. Make the table and the predictions
+
+3. Evaluate the fit of the regression
+
+::: notes
+
+Everybody run this regression, interpret the results and check the fit of the line
+
+<br>
+
+(**SLIDE**: results)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+```{r, echo=FALSE}
+res5 <- lm(data = d, boxoffice_millions ~ clean_test)
+
+modelsummary(list("Box Office" = res5),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("binaryPASS" = "Passing the Bechdel Test")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+::: {.r-fit-text}
+**Box Office = 324.1 - 76.4 (Bechdel: Ok) - 17.4 (No Women) + 31.5 (No Talking) - 36.2 (Talk about Men)**
+:::
+
+::: notes
+
+I've written the result as the formula for a line to see if that helps us understand what we've made here.
+
+- When given a categorical variable, R converts the levels into separate dummy variables
+
+- EXCEPT one of the levels is treated as the intercept
+
+- Here the "dubious" movies category is set as the baseline
+
+<br>
+
+*Step through all*
+
+- Only ONE of these predictors can be true at the same time so only ONE coefficient gets added to the intercept
+
+- Remember, the intercept represents the average box office for dubious movies (unclear Bechdel result)
+
+- Pass the test and subtract $76.4 million
+
+- Don't include named women and subtract $17 million
+
+- Have women but don't let them talk and ADD $31.5 million!
+
+- Have women but they only talk about men and subtract $36 million
+
+<br>
+
+**SLIDE**: Before we interpret the results let's change what the intercept represents.
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+```{r, echo=TRUE}
+# Data: d
+# Treat `clean_test` as a factor
+d$clean_test2 <- factor(d$clean_test, 
+      levels = c("ok", "nowomen", "notalk", "men", "dubious"))
+
+# Refit the regression
+res_new <- lm(data = d, boxoffice_millions ~ clean_test2)
+```
+:::
+
+::: notes
+
+We can tell R to treat the categorical variable as a factor
+
+- The advantage here is that we can specify the order of the levels we are interested in
+
+- Whatever lever comes first will be the basleine in the regression
+
+- This sets us up to compare the levels to movies that pass the Bechdel test
+
+<br>
+
+Everybody make the new variable and re-run the regression
+
+<br>
+
+**SLIDE**: Results
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+```{r, echo=FALSE}
+modelsummary(list("Box Office" = res_new),
+             out = "gt",
+             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
+             coef_rename = c("binaryPASS" = "Passing the Bechdel Test")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+::::
+
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(ggpredict(res_new, terms = "clean_test2")) +
+  labs(x = "The Bechdel Test",
+       y = "Box Office (Millions USD)")
+```
+
+### Residuals
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7, cache=TRUE}
+plot(res_new, which = 1)
+```
+
+### Other
+
+<br>
+
+```{r, echo=TRUE}
+aggregate(d$boxoffice_millions ~ d$clean_test2, FUN = mean)
+```
+
+:::
+::::
+:::::
+
+::: notes
+
+**So, what is going on here?**
+
+- **What are these regression results telling us?**
+
+<br>
+
+SO, regression on a categorical variable estimates the group means (with confidence intervals)
+
+- Compare to group means in "Other" tab
+
+- Hard to interpret the residuals plot (what is the middle of a dummy variable?)
+
+<br>
+
+So, per this regression it appears that movies make the most money on average by having women but not letting them have a conversation
+
+- **Does this make sense?**
+
+<br>
+
+**SLIDE**: Wrap-up
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Extending the OLS Model**
+
+<br>
+
+1. Non-linear relationships
+
+    - Use squared predictors (or other polynomials)
+
+2. Regression on categorical variables
+
+    - Group means represented by separate coefficents
+
+:::
+
+::: notes
+
+**Any questions on our work from today?**
+
+<br>
+
+**SLIDE**: Assignment for next class
+
+:::
+
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**Working on our Research Project (2024 Only)**
+
+1. Regress Yale's EPI on RSF's Press Freedom Index
+
+2. Regress one other EPI indicator on RSF's Press Freedom Index
+
+<br>
+
+Submit a polished regression table, residuals plot, predictions plot, and your analysis of the findings.
+
+::: notes
+
+For part 2, only one person per EPI indicator!
+
+- You claim the indicator you want on a Google Sheet linked on Canvas
+
+- First come, first served
+
+:::
+
+
+
+
+
+
+
+

@@ -1,0 +1,926 @@
+---
+format: revealjs
+---
+
+## Data Analysis in Political Science {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+```
+
+<br>
+
+<br>
+
+::: {.r-fit-text}
+Welcome to Data Analysis!
+:::
+
+<br>
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. *Bring rulers and markers to class*
+
+2. Update attendance list before class
+
+<br>
+
+**SLIDE**: Intros
+
+:::
+
+
+
+## Introductions {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+1. Name
+
+2. Year in School
+
+3. Major(s)
+
+4. On a 1 to 10 scale how much do you love statistics?
+:::
+
+::: notes
+
+Let's go around the room for introductions.
+
+I'll go first.
+
+1. I'm Dr. Justin Leinaweaver.
+
+2. FSU undergrad, masters in IR at UCD and PhD at Trinity.
+  + My 13th year at Drury
+
+3. I'm a political scientist
+  + Research interests: international politics, environmental politics and bargaining / negotiations AND quantitative methods
+  
+4. I love stats a lot. 10.
+
+<br>
+
+### Your turn!
+
+- *ON BOARD*: Stats scores!
+
+<br>
+
+**SLIDE**: Before we dig into this data, let's talk about why you're here
+
+:::
+
+
+
+## Required Courses in PLSC {background-image="Images/background-data_blue_v4.png"  .center}
+
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/01_1-PLSC_Major_Required_Courses.png")
+```
+
+::: notes
+
+All poli sci majors must complete this set of required courses
+
+:::
+
+
+
+## Required Courses in PLSC {background-image="Images/background-data_blue_v4.png"  .center}
+
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/01_1-PLSC_Major_Required_Courses2.png")
+```
+
+::: notes
+
+The first three introduce you to the different specialties within political science
+
+<br>
+
+**For those who have taken 101, what kinds of data did you examine in that class?**
+
+- **In other words, what kinds of evidence did you consider when making arguments?**
+
+<br>
+
+**What kinds of data or datasets did you explore in Comparative?**
+
+<br>
+
+**And in IR, what kinds of data or datasets did you explore?**
+
+:::
+
+
+
+## Required Courses in PLSC {background-image="Images/background-data_blue_v4.png"  .center}
+
+<br>
+
+```{r, fig.align='center'}
+knitr::include_graphics("Images/01_1-PLSC_Major_Required_Courses3.png")
+```
+
+::: notes
+
+The second three courses, inquiry, data analysis and research design, are designed to teach you how to do your own research
+
+- Not just to read and consider how others have asked and answered big questions, but how YOU can ask and answer them too
+
+- And that's exactly what you'll have to do in Senior Seminar!
+
+<br>
+
+**What was the aim of the Inquiry class?**
+
+- **What did we ask you to do in that class?**
+
+<br>
+
+The Inquiry class is meant to teach you to set up a high quality research project.
+
+- This means you each designed a compelling research question, 
+
+- You explored the academic literature to find the best current answers to that question, and then 
+
+- Proposed new answers to that question using theory
+
+<br>
+
+In this class, I will introduce you to the concepts and skills you will need to test your theories with empirical evidence
+
+- In other words, you have a question about the world and you've identified the extent of our knowledge so now it's time to push forward and help us create NEW knowledge!
+
+- THAT's what data analysis is about.
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Review the syllabus and Canvas!**
+:::
+
+- Components of the grade,
+- Assignment requirements,
+- Attendance policy,
+- Participation points,
+- Daily plan / readings,
+- Buy the Wheelan book,
+- etc.
+
+::: notes
+
+Please make sure to read the syllabus **before next class**.
+
+- Make sure you're particularly clear on these components.
+
+<br>
+
+We'll kick off class with a chance to discuss the syllabus
+
+- This will be your chance to raise questions or concerns before I assume everybody has agreed to it!
+
+<br>
+
+**Deal?**
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/01_1-monkey_darts_politics.jpg){style="display: block; margin: 0 auto"}
+
+::: notes
+
+Welcome to Data Analysis in Political Science!
+
+<br>
+
+Over the last year (or more) you've taken some political science classes.
+
+- **What I'd like to know is, based on those experiences, what are the kinds of questions political scientists ask about the world?**
+
+- **Feel free to give us the question you developed in 160!**
+
+<br>
+
+**SLIDE**: Big picture goal of the discipline
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+Our **goal** as political scientists:
+
+:::: {.incremental}
+
+- To **generate knowledge** about the social world
+
+- The method is **"science"**
+
+- The key is **"measurement"**
+:::
+::::
+
+::: notes
+
+**REVEAL**: The big goal of political science is to understand how the social world works,
+
+- How do societies make rules?
+
+- How do we enforce the rules? And which rules get enforced?
+
+- Who gets to belong to a given community? Who do we welcome and who do we shun?
+
+- What happens when our obligations to different institutions conflict?
+
+<br>
+
+**REVEAL**: We work to generate knowledge using SCIENCE
+
+- Science is empirical, verifiable, and replicatable
+
+<br>
+
+**REVEAL**: Empirical means rooted in real-world observation
+
+- Using real world observations means ALL QUESTIONS are a measurement problem
+
+<br>
+
+And let me be super clear, measurement doesn't require numbers!
+
+- The moment when you see a friend frown at what you said and you interpret what that means YOU are gathering data and analyzing it in the moment
+
+- This means that getting better at measuring the world will benefit you in EVERY aspect of your life.
+
+<br>
+
+Given this focus, let's kick off our first class today with a simple measurement warm-up!
+
+- **SLIDE**: I would like you to describe the heights of the class
+:::
+
+
+
+## Warm-up Exercise {background-image="Images/background-teal4.png" .center}
+
+<br>
+
+::: {.r-fit-text}
+
+**The Big Aim**
+
+- Describe the distribution of student heights in our class
+
+:::
+
+::: notes
+
+What I would like you to do is describe for me the distribution of heights in this class.
+
+<br>
+
+Ideally, you will be able to provide me with descriptive summaries of our class more useful than an answer of trying to just eyeball the group of you.
+
+<br>
+
+**SLIDE**: Let's begin with a fairly simple method...
+:::
+
+
+
+## Warm-up Exercise {background-image="Images/background-teal4.png" .center}
+
+::: {.r-fit-text}
+**Describe the distribution of student heights in our class**
+
+<br>
+
+Order the students in our class by height (shortest to tallest)
+
+:::
+
+::: notes
+
+To answer this question I will ask you to stand up and organize yourselves into a line by height (from the shortest to the tallest)
+
+- *Let them work on this on their own*
+
+<br>
+
+Ok, let me see your answer:
+
+**FIRST, please describe for me how you completed this task. Be specific.**
+
+<br>
+
+**SECOND, describe for me the sources of uncertainty in this answer?**
+    
+- **In other words, what parts of your answer are you most confident in?**
+
+- **And what parts the least?**
+
+<br>
+    
+**FINALLY, and thanks to your work, what do I know about the distribution of heights in the class that I didn't before?**
+
+<br>
+
+Thanks to this measurement exercise I now know:
+
+- What the middle of our distribution looks like
+
+- How spread around the middle the class is
+
+- The extreme values in the class
+
+- etc.
+
+<br>
+
+**SLIDE**: Let's tweak our exercise and try it again...
+:::
+
+
+## Warm-up Exercise {background-image="Images/background-teal4.png" .center}
+
+**Describe the distribution of student heights in our class**
+
+<br>
+
+What is the specific range of heights of the students in our class (minimum to maximum in inches)?
+
+::: notes
+
+Work together and get ready to report back to me!
+
+- I brought rulers if you need them!
+
+- *Let them work on this on their own*
+
+<br>
+
+Ok, let me see your answer
+
+**FIRST, please describe for me how you completed this task. Be specific.**
+
+<br>
+
+**SECOND, describe for me the sources of uncertainty in this answer?**
+    
+- **In other words, what parts of your answer are you most confident in?**
+
+- **And what parts the least?**
+
+<br>
+    
+**FINALLY, and thanks to your work, what do I know about the distribution of heights in the class that I didn't before?**
+
+- Usefully quantifies the maximum difference in the class (e.g. the range)
+
+    - Important if designing a space shuttle and need to make sure we all fit!
+
+- BUT doesn't tell us anything about the distribution within the range
+
+    - So, a bad description if the question is to get a sense of heights within the range
+    
+<br>
+
+**Make sense?**
+
+- The line-up method gave me useful information about the similarities and differences within the class
+
+- The max range exercise gave me precise descriptions of the limits of the range
+
+<br>
+
+**SLIDE**: One more time!
+:::
+
+
+## Warm-up Exercise {background-image="Images/background-teal4.png" .center}
+
+**Describe the distribution of student heights in our class**
+
+<br>
+
+What is the average height of the students in our class (to the nearest millimeter)?
+
+::: notes
+
+*Let them work on this on their own*
+
+<br>
+
+Ok, let me see your answer
+
+**FIRST, please describe for me how you completed this task. Be specific.**
+
+<br>
+
+**SECOND, describe for me the sources of uncertainty in this answer?**
+    
+- **In other words, what parts of your answer are you most confident in?**
+
+- **And what parts the least?**
+
+<br>
+    
+**Thanks to your work, what do I know about the distribution of heights in the class that I didn't before?**
+
+<br>
+
+**When would this precise measure of average be more useful than the range or the line-up?**
+
+<br>
+
+Again, depends entirely on the question being asked!
+
+- Although in this case, beware false precision!
+:::
+
+
+
+
+## What do we learn about "height" from our warm-up exercises? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+- Order by height
+
+- Range in inches
+
+- Average in millimeter
+
+::: notes
+**Ok, what do we learn about "height" from our warm-up measurement exercises?**
+
+<br>
+
+Describing the "height" of the class can be done in a BUNCH of different ways and not all of them required a ruler!
+
+<br>
+
+We first used rank ordering to describe the class which gave us a sense of the distribution of heights
+
+- Are we a tall or short group collectively?
+
+- Would we make a good basketball team?
+
+<br>
+
+We then shifted to summarizing the heights of the class
+
+- In other words, maybe we don't need to know everyone's height!
+
+<br>
+
+The range is a number that tells us how spread out we are as a group
+
+- Want to sell class t-shirts? The range (min and max) tells you how many sizes to offer
+
+<br>
+
+The average tells us something about the middle of the class
+
+- What is a single number that represents the bulk of the class?
+
+<br>
+
+All three of these measurement approaches gave us useful data
+
+- A big part of being a social scientist is figuring out which method is the "right" one to answer a given question, and
+
+- Scientists spend A LOT of their time working to improve their measurements of the world
+
+:::
+
+
+
+## Science as Measurement {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::::: {.columns}
+:::: {.column width="35%"}
+::: {.r-fit-text}
++ **Subject**
+
++ Tool
+
++ Process
+
++ Validation
+:::
+::::
+
+:::: {.column width="65%"}
+
+![](Images/01_1-Height_subject.jpg){.absolute width="55%" right=0}
+
+::::
+:::::
+
+::: notes
+
+So, how do work to improve the usefulness of our measurements?
+
+- We do it by considering these four things
+
+<br>
+
+I) Useful measurements require clear definitions of the subject you are studying
+
+- I don't care how fancy your statistics are, you can't measure something until you define it
+
+- AND if the definition is poorly specified or illogical than the measurements are useless!
+
+<br>
+
+For our warm-up exercise I asked you to describe the distribution of heights in our "class."
+
+- **Before getting to work, how did you agree a definition of the "class"?**
+
+<br>
+
+"Subject" questions often focus on "who" is in the group:
+
+- Who is in the "class"?
+
+- Is the teacher or TA? We are both learning right alongside you, don't we count?
+
+- Is it anyone enrolled as a student regardless of year in school or major?
+
+<br>
+
+Bottom line, you cannot measure something until you carefully define the subject of your study.
+
+- There's a lot of data out there and people make the mistake of interpreting it without first understanding WHAT it actually focuses on
+
+:::
+
+
+
+## Science as Measurement {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::::: {.columns}
+:::: {.column width="35%"}
+::: {.r-fit-text}
++ Subject
+
++ **Tool**
+
++ Process
+
++ Validation
+:::
+::::
+
+:::: {.column width="65%"}
+
+![](Images/01_1-Height_rulers.jpg){.absolute width="55%" right=0}
+
+::::
+:::::
+
+::: notes
+
+II) Useful measurements require the use of valid tools
+
+- A "valid" tool is one that generates measures that accurately represent the key elements of your definition.
+
+<br>
+
+In our height example:
+
+- Do the rulers focus on measuring length?
+
+- Are the markings clear?
+
+- Do the markings line up with the ends of the ruler well?
+
+- Are the rulers long enough for the job at hand?
+:::
+
+
+
+## Science as Measurement {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::::: {.columns}
+:::: {.column width="35%"}
+::: {.r-fit-text}
++ Subject
+
++ Tool
+
++ **Process**
+
++ Validation
+:::
+::::
+
+:::: {.column width="65%"}
+
+![](Images/01_1-Height_technique_v1.png){.absolute width="40%" right=0}
+
+::::
+:::::
+
+::: notes
+
+III) Useful measurements require reliable processes
+
+- A "reliable" process is clearly explained and generates the same results each time it is used.
+
+<br>
+
+In terms of our height measurements:
+
+- Did everyone agree on a specific height measuring process?
+
+    - Does hair count towards height? 
+    
+    - Do shoes?
+    
+    - What about cultural or religious dress that adds height but that you'd never leave the house without?
+
+- Did everyone follow the process perfectly?
+
+- Are the rulers sufficiently well made that they will not warp through use?
+
+:::
+
+
+
+## Science as Measurement {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+:::: {.columns}
+::: {.column width="35%"}
+::: {.r-fit-text}
++ Subject
+
++ Tool
+
++ Process
+
++ **Validation**
+:::
+:::
+::: {.column width="65%"}
+
+![](Images/01_1-Height_calibration.jpg){.absolute width="55%" right=0}
+
+:::
+::::
+
+::: notes
+
+IV) Useful measurements require external validation
+
+- As a bonus, measurements are most certain when they are consistent with other attempts to measure the same concept.
+
+<br>
+
+Again, for the height exercise:
+
+- Did the manufacturer of the ruler tie their work to an official or external authoritative source? Have the ruler length's been checked?
+
+- Did you check each others' work when measuring?
+
+<br>
+
+**Do all four of these make "big picture" sense?**
+
+- We'll get into the details of these all semester long
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Science answers questions with measurements**
+
+<br>
+
+**Every measurement is uncertain**
+
+<br>
+
+**So, every answer includes uncertainty**
+:::
+
+::: notes
+
+Bottom line time!
+
+- Science is not about revealing "truth", it is about answering questions with data
+
+<br>
+
+Key lesson for all researchers: Every measure is uncertain and that means every answer is also uncertain
+
+<br>
+
+Our job is to create measures that are precise enough to answer the questions we are asking.
+
+<br>
+
+
+
+You clearly have a good enough sense of your height to navigate most parts of your life (e.g. can I fit in this room? Do I need bigger pants?)
+
+- Even a cheap wooden 12" ruler will let us order the class by height! That's the point.
+
+<br>
+
+HOWEVER, a precise class average to a small degree of error will require WAY more effort to produce.
+
+- Key if you're trying to launch a space ship, create fusion or argue that raising the minimum wage will raise or lower unemployment!
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+**To create useful measurements you must:**
+
+1. Define the Concept
+
+2. Specify the Tool
+
+3. Specify the Process
+
+4. Test for Robustness
+
+:::
+
+::: notes
+
+Let's write down some guidelines!
+
+<br>
+
+Useful measurements must always:
+
+- Define the key concept (e.g. what is human height?)
+
+- Specify the tool used (e.g. ruler type, size, material),
+
+- Specify the process employed (e.g. how to stand, where, ruler held, etc.), and
+
+- Consider how it can be validated.
+
+<br>
+
+### Make sense?
+
+<br>
+
+Good, let's try to measure something harder!
+:::
+
+
+
+## Assignment for Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+1. What was the population of the United States of America in 2024?
+
+2. How many countries are there in the world today?
+
+3. How many wars are currently ongoing in the world?
+
+::: notes
+
+Here's your first assignment for the class.
+
+#### To earn your first participation point:
+
+- Due **BEFORE CLASS** on Friday
+
+- Submit to our discussion board on **Canvas**.
+
+- I will give you the rest of class today to work on this.
+
+<br>
+
+### Are the questions clear? Do you understand what I'm asking?
+
+:::
+
+
+
+
+## Assignment for Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+1. Population of the USA in 2024?
+
+2. Number of countries in the world today?
+
+3. Number of wars in the world today?
+
+<br>
+
+**Measurement Elements:**
+
+- Definitions, Tools, Process and Validation
+
+::: notes
+
+To clarify: I'm not asking you to find and adopt someone else's answer.
+
+- This isn't a simple "let me Google that for you" exercise.
+
+<br>
+
+Your job is to think critically about how each of these questions is a significant measurement challenge.
+
+- Think carefully about how an answer to each question depends on the elements we've discussed today: **definitions, tools, process and validation.**
+
+<br>
+
+### Make sense?
+
+<br>
+
+- **SLIDE**: A complete answer requires...
+:::
+
+
+
+## Assignment for Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+1. Population of the USA in 2024?
+2. Number of countries in the world today?
+3. Number of wars in the world today?
+
+**The Assignment Requires:**
+
+- A specific answer, 
+- the source(s) used (APA), and 
+- an argument, focused on measurement, that your answer is useful (3+ sentences).
+
+::: notes
+
+For each question you must provide:
+
+1. A specific answer in a complete sentence, 
+
+2. The source in APA format (see the Purdue OWL for guidance), and
+
+3. An argument that this is a useful answer **focused on the measurement and the data**
+    - **e.g. explain how you used the source(s) to define the concept, select a tool or accept the process they followed and why you are confident in it**
+    - Do not rely on claims of authority (e.g. they are experts), our job is to evaluate the actual measures
+    - 3-5 sentences
+
+<br>
+
+### Questions?
+
+The discussion board on canvas will stop accepting entries when class starts on Friday.
+
+This means the point depends on submitting in time!
+
+Let's get to it!
+:::
+
