@@ -17,13 +17,13 @@ Data, slides and errata for my class at Drury University (PLSC 296: Data Analysi
 
 03_2-Evaluating_WDI_Measures.html
 
-03_3-WDI_Briefing.html
+03_3-Testing_WDI_Relationships.html
 
 04_1-Installing_Configuring_R.html
 
-04_2-Research_Questions.html
+04_2-Descriptive_Stats.html
 
-04_3-Descriptive_Stats.html
+04_3-Descriptive_Stats_Practice.html
 
 05_1-Univariate_Viz_by_Hand.html
 

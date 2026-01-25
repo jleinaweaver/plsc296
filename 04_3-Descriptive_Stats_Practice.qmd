@@ -1,0 +1,779 @@
+---
+format: revealjs
+---
+
+# Today's Agenda {background-image="Images/background-data_blue_v4.png"}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+```
+
+<br>
+
+<br>
+
+**Univariate Analyses**
+
+-   Calculating and analyzing descriptive statistics
+
+<br>
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1.  **Assume they did the readings!**
+    
+    -   Ask clarifying questions but don't start from scratch with the tools.
+    
+2.  Readings
+    
+    -   Wheelan (2014) chapter 2 "Descriptive Statistics"
+    
+    -   Johnson (2012) p361-376
+
+<br>
+
+References
+
+- [Quarto presentations](https://quarto.org/docs/presentations/)
+- [Quarto revealjs](https://quarto.org/docs/presentations/revealjs/)
+
+:::
+
+
+
+# Our Research Project {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+
+-   Report 1: Analyze the Outcome Variable(s)
+
+-   Report 2: Analyze the Predictor Variable(s)
+
+-   Report 3: Test the causal mechanism
+
+:::
+
+::: notes
+Our project this semester builds up, as all good projects must, in an iterative fashion.
+
+-   We begin by analyzing variables on their own, then together
+
+<br>
+
+This iterative process allows us to learn the coding and statistics we need in a slow, deliberate fashion.
+
+-   So, lots of time to boost our confidence in the tools and to practice applying and interpreting them.
+
+<br>
+
+**SLIDE**: To complete the first two reports you will need a set of skills we refer to as univariate analyses
+:::
+
+
+
+## Univariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**Descriptive Statistics**
+    
+- Counts
+- Proportions
+- Means
+- Medians
+- Standard Deviations
+- Percentiles
+- Ranges
+- Interquartile Ranges (IQR)
+:::
+
+::: {.column width="50%"}
+**Visualizations**
+
+- Bar plots
+- Histograms
+- Box plots
+- Line plots
+:::
+
+::::
+
+::: notes
+A univariate analysis is one that focuses on a single variable on its own
+
+<br>
+
+This week these are the tools we'll be learning to code and interpret.
+
+-   This is the complete list of things I will expect to see you use and explain on the first two reports.
+
+<br>
+
+Write these down!
+
+-   Use this like a checklist for yourself as we go
+
+<br>
+
+Your job is to make sure that YOU
+
+1. Can make each one in R, and 
+    
+2. How to interpret their results
+
+<br>
+
+**SLIDE**: Ok, so why do we need univariate analyses?
+:::
+
+
+## What do we do with data? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, echo=FALSE}
+set.seed(543)
+d <- round(runif(265, 100, 250), 0)
+d
+```
+
+::: notes
+Imagine you had collected all of this data 
+
+- As a simple list this is an overwhelming amount of information for anyone to read let alone understand.
+
+- Univariate analyses refer to a series of tools that allow you to summarize a big list of data points into something more digestible
+
+<br>
+
+Imagine this is a list of house prices in the USA
+
+- **Per the reading, what options do you have to summarize this collection of data?**
+
+- **In other words, how could we use descriptive statistics to learn something about house prices in the US today?**
+
+<br>
+
+- The range would tell us the gap between the cheapest and most expensive houses
+    - How big is the inequality gap?
+
+- The mean would tell us the average home price
+
+- The median would tell us the "middle" home price
+
+- The standard deviation tells us how much house prices in the US differ from the average
+    - The bigger the number, the more spread out house prices are around the average
+
+- We could use the range to find the cheapest and most expensive houses and the spread between them
+
+<br>
+
+So, lot's of options!
+
+- **Are you clear on these concepts from the reading?**
+
+<br>
+
+**SLIDE**: The key here is to realize that THIS is the problem statistics was invented to solve!
+:::
+
+
+
+
+# Defining Statistics {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+::: {.r-fit-text}
+
+**Level 1**
+
+Statistics is a set of tools we use to summarize data
+
+:::
+
+::: notes
+*READ SLIDE*
+
+<br>
+
+By summarize I mean to "give a brief statement of the main points of (something)" (Oxford Dictionary).
+
+<br>
+
+So, at its most basic level, statistics is about summary
+
+- AND summary is incredibly useful for developing understanding about the world.
+
+<br>
+
+**SLIDE**: Statistics also carries with it some deeper ambitions!
+
+:::
+
+
+# Defining Statistics {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+**Level 2**
+
+"The practice or science of collecting and analyzing numerical data in large quantities, especially for the purpose of **inferring proportions in a whole from those in a representative sample**" (Oxford Dictionary).
+
+::: notes
+In simpler terms, statistics also gives us the tools to learn things about an entire population based only on the summaries of data from a sample of that population.
+
+-   e.g. This survey of 2,300 Americans tells us how popular Pres Biden is...
+
+<br>
+
+So, those are the big, initial goals.
+
+-   The takeaway is that univariate analyses and descriptive statistics, even if they seem simple, can be INCREDIBLY powerful tools for learning about the world.
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+:::{.r-fit-text}
+**Create an R Script and name it "Descriptive Statistics.R"**
+:::
+
+- Option 1: "File" &#8594; "New File" &#8594; "R Script"
+
+- Option 2:
+
+![](Images/03_3-New_Script.png){.absolute bottom=0 left=200}
+
+
+::: notes
+Let's set off on the right foot!
+
+-   Create a new script file for your notes today and label it descriptive statistics.
+
+<br>
+
+Last week we used R as a calculator on single numbers and on a vector of numbers.
+
+-   Starting today we'll be using R to work with data, but the logic of taking notes and writing code work the exact same
+
+-   If you get confused, don't forget the Healy reading from Friday walks you through the way R does things and why we use functions!
+:::
+
+##  {background-image="Images/background-data_blue_v4.png"}
+
+```{r, fig.align='center', out.width='60%'}
+knitr::include_graphics("Images/04_1-mpg_dataset.png")
+```
+
+```{r}
+mpg |>
+  slice_sample(n = 6) |>
+  select(manufacturer:trans) |>
+  kableExtra::kbl(align = 'c') |>
+  kableExtra::kable_styling(font_size = 25) |>
+  kableExtra::column_spec(1:6, background = "white")
+```
+
+::: notes
+R includes a number of built-in data sets for practice.
+
+-   Each extra package tends to bring more practice data as well.
+
+<br>
+
+The "mpg" data set is provided as part of an extra package.
+
+-   "This dataset contains a subset of the fuel economy data that the EPA makes available on https://fueleconomy.gov/."
+
+-   'mpg' has data on 234 cars (observations) across 11 variables
+
+<br>
+
+**SLIDE**: To access the data set...
+:::
+
+## {background-image="Images/background-data_blue_v4.png" .center .larger}
+
+::: {.r-fit-text}
+```{r, echo=TRUE, eval=FALSE}
+# Load the packages
+library(tidyverse)
+
+# View the dataset in the console
+mpg
+
+# View the dataset in a spreadsheet (sortable columns)
+View(mpg)
+
+# List all of the variables in the dataset
+names(mpg)
+
+# Access any single variable
+mpg$manufacturer
+```
+:::
+
+::: notes
+Everybody copy these notes (with a #) and make sure you can run each piece of code.
+
+-   You will primarily write code in R to either input data or apply functions to that data.
+
+-   As you see here, functions are a word (or words) followed by parentheses.
+
+<br>
+
+### Did it all work for you?
+
+<br>
+
+Relevant notes from Healy:
+
+1.  R is essentially a collection of functions each of which lets you do something useful using data
+    -   View() means show me the data in a spreadsheet
+    -   names() means tell me what variables are in this dataset
+2.  R is case sensitive so you have to write the code EXACTLY
+    -   the "V" in view is capitalized
+3.  We can use \$ to access a single variable at a time in a dataset
+:::
+
+## 3. Variable type determines the tool {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.align='center', out.width='90%'}
+knitr::include_graphics("Images/01_2-levels_measurement.png")
+```
+
+::: notes
+Now, as we start calculating descriptive statistics don't forget our third principle of data analysis
+
+-   Variable Type Determines Tool
+
+<br>
+
+**SLIDE**: Today we start applying this insight
+:::
+
+## 3. Variable type determines the tool {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.r-fit-text}
+```{r, echo=TRUE}
+mpg$manufacturer
+```
+::::
+
+::: notes
+We'll start by summarizing or describing categorical variables
+
+<br>
+
+When you ask R to show you a single variable with "$" it will provide all the observations in a list.
+
+- The numbers in brackets on the side is which number observation starts that row
+
+<br>
+
+### Refresh my memory, why is manufacturer a categorical variable?
+
+-   (e.g. those with observations defined as categories or levels)
+
+<br>
+
+The mpg dataset has the manufacturer information for 234 cars
+
+-   That's a rather hard to digest list
+
+<br>
+
+### Per your readings for today, how do we summarize or describe this categorical variable?
+
+-   (Categorical variables can be summarized as either counts or proportions.)
+
+-   e.g. make a table of counts or proportions
+
+<br>
+
+**SLIDE**: Let's do those things in R!
+:::
+
+## If you have a categorical variable... {background-image="Images/background-data_blue_v4.png"}
+
+:::: {.r-fit-text}
+**1. Count the levels with table()**
+```{r, echo=TRUE}
+table(mpg$manufacturer)
+```
+
+**2. Convert to proportions with proportions()**
+```{r, echo=TRUE}
+proportions(table(mpg$manufacturer))
+```
+::::
+
+::: notes
+**Everybody got the code written down and working?**
+
+<br>
+
+- Our first line of code uses the table function to count the levels in the variable
+
+- Our second line uses a function on a function - Basically the input for proportions is the result of the table function
+
+<br>
+
+**So, what is the most common car manufacturer in this dataset?**
+
+<br>
+
+**What is the least?**
+
+<br>
+
+**Questions? Got it working?**
+
+<br>
+
+**SLIDE**: Let's practice!
+:::
+
+
+
+
+## What count and proportion of cars in `mpg` are four-wheel drive (`drv`)? {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.r-fit-text}
+::: {.fragment .fade-in}
+```{r, echo=TRUE}
+# Make a table of drivetrains
+table(mpg$drv)
+
+# Convert the table of counts into proportions
+proportions(table(mpg$drv))
+```
+:::
+::::
+
+::: notes
+Use the code we just wrote to answer this question
+
+-   Same dataset, just focus on a different categorical variable.
+
+<br>
+
+*Show Results*: That's all there is to it.
+
+-   Descriptive stats on categorical variables is super easy.
+
+-   Count the levels and, optionally, convert the count to a proportion
+
+<br>
+
+It looks like very few of the "popular" cars in this dataset from 1999 - 2008 were rear-wheel drive.
+:::
+
+
+## 3. Variable type determines the tool  {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.r-fit-text}
+
+```{r, echo=FALSE}
+options(width = 75)
+```
+
+```{r, echo=TRUE}
+mpg$cty
+```
+
+::::
+
+::: notes
+
+Now, what if you'd like to summarize a numeric variable instead of a categorical one?
+
+-   Let's go back to our third principle again!
+
+<br>
+
+**Why can't we use the same tools (tables) we just used for categorical variables?**
+
+-   (Long numeric variables will have tons and tons of different values which, in a table, would require a massive number of columns)
+
+-   Not much simpler than just reviewing the data
+
+<br>
+
+**SLIDE**: As you saw in the reading, we have lots of good options for summarizing numeric variables.
+:::
+
+
+
+## If you have a numerical variable... {background-image="Images/background-data_blue_v4.png" .center}
+
+**Measures of Central Tendency**
+
+:::: {.r-fit-text}
+
+**1. Find the average value with mean()**
+```{r, echo=TRUE}
+mean(mpg$cty)
+```
+
+<br>
+
+**2. Find the median value with median()**
+```{r, echo=TRUE}
+median(mpg$cty)
+```
+
+::::
+
+::: notes
+
+Let's find the middle!
+
+**Everybody got the code written down and working?**
+
+<br>
+
+Let's make sure the intuition is clear.
+
+**Per the reading, what's the difference between the median and the mean?**
+
+<br>
+
+**And what do we learn about a numeric variable if the mean and the median are very close to each other?**
+
+-   (No big outliers!)
+:::
+
+
+
+
+## What is the "middle" highway fuel economy (`hwy`) in `mpg`? {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.r-fit-text}
+
+::: {.fragment .fade-in}
+1. Find the average with mean() 
+```{r, echo=TRUE}
+mean(mpg$hwy)
+```
+
+2. Find the median value with median()
+```{r, echo=TRUE}
+median(mpg$hwy)
+```
+:::
+
+::::
+
+::: notes
+So, you can summarize a data distribution with the mean or median as its middle, BUT
+
+-   How do we know if the "middle" is a good summary?
+
+-   **SLIDE**: We need to check the spread of the data!
+:::
+
+
+
+## If you have a numerical variable... {background-image="Images/background-data_blue_v4.png" .center}
+
+**Measures of the Spread**
+
+:::: {.r-fit-text}
+
+**Use summary() for a selection of descriptive stats**
+```{r, echo=TRUE}
+summary(mpg$cty)
+```
+
+<br>
+
+**Use sd() for the standard deviation**
+```{r, echo=TRUE}
+sd(mpg$cty)
+```
+
+::::
+
+::: notes
+
+Everybody write down the code and make sure it works.
+
+<br>
+
+Let's talk about what summary() gives you from the outside in
+
+- On the ends the summary output gives you the minimum and maximum values (e.g. the range)
+    
+- Next comes the 25th and 75th percentiles (e.g. the IQR or middle 50%)
+
+- The middle two values are two measures of the "middle"
+
+<br>
+
+The only fairly standard thing summary() doesn't give you is the std dev
+
+<br>
+
+**Any questions on these descriptive stats covered in the reading?**
+
+<br>
+
+**Notes**
+
+*If they ask about percentiles* 
+
+- The most common definition of a percentile is a number where a certain percentage of scores fall below that number. 
+- In statistics, a k-th percentile (percentile score or centile) is a score below which a given percentage k of scores in its frequency distribution falls (exclusive definition) or a score at or below which a given percentage falls (inclusive definition).
+
+*If they ask about Std Dev*: 
+
+- Hopefully building visualizations in our next two classes will help make this concept clearer! 
+- Long story short, a measure of how far each data point is from the average...
+
+```{r, fig.align='center', out.width='20%'}
+knitr::include_graphics("Images/04-1-Std_Dev_Formula.svg")
+```
+
+:::
+
+
+
+## What is the earliest and latest `year` in the `mpg` dataset? {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.r-fit-text}
+::: {.fragment .fade-in}
+
+```{r, echo=TRUE}
+summary(mpg$year)
+
+min(mpg$year)
+
+max(mpg$year)
+```
+:::
+::::
+
+::: notes
+Practice time!
+
+I'm also using this as a chance to show you the functions for calculating the minimum or maximum alone.
+:::
+
+
+
+## Is it more useful to summarize the number of engine cylinders (`cyl`) as a table() or with summary()? {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.r-fit-text}
+::: {.fragment .fade-in}
+
+```{r, echo=TRUE}
+# Analyze as a numeric variable
+summary(mpg$cyl)
+
+# Analyze as a categorical variable
+table(mpg$cyl)
+```
+:::
+::::
+
+::: notes
+One more quick hit practice!
+
+-   Sometimes it can be hard to tell the difference between a numeric and a categorical variable with levels represented by numbers!
+
+-   Make both and tell me which you would use in a report meant to describe the distribution of cars
+
+<br>
+
+**What conclusion do you draw from these statistics?**
+
+<br>
+
+The table makes clear that most cars are 4, 6 or 8 cylinders and the distribution is quite even across them (in this dataset)
+
+-   Measures of the "middle" in a sense misrepresent these categories
+
+-   The "average" of a Ford F150 and Kia Sorento doesn't really mean what we might think it does
+
+<br>
+
+The lesson: Sometimes categorical variables use numbers!
+
+-   Be careful.
+:::
+
+
+
+## Descriptive Statistics {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+::: {.r-fit-text}
+
+**Functions for Categorical Variables**
+
+- table() and proportions()
+
+**Functions for Numeric Variables**
+
+- summary() and sd(), OR
+- min(), max(), mean(), median(), quantile()
+
+:::
+
+::: notes
+
+**Any questions on these functions and how to interpret what they produce?**
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**For Next Class**
+
+1. Johnson (2012) p376-392
+
+2. Complete the practice exercises
+
+:::
+
+::: notes
+
+Next class we move to univariate visualizations!
+
+- **Questions on the assignment?**
+
+<br>
+
+**SLIDE**: If needed, next slide has the exercises. Might be better to point them to the Canvas board.
+
+:::
+
+
+
+## Practice Exercises {background-image="Images/background-data_blue_v4.png"}
+
+1. What proportion of US presidents since 1953 have been Republicans? (Built-in Data: presidential, Variable: party)
+
+2.  Why are the mean and median total populations in the midwest so different from each other? (Built-in Data: midwest, Variable: poptotal)
+
+3.  How many hours per day do you have to sleep to sleep longer than 75% of studied mammals? (Built-in Data: msleep, Variable: sleep_total)
+
+4.  Which mammal sleeps the least and which the most? (Built-in Data: msleep, Variable: sleep_total)
