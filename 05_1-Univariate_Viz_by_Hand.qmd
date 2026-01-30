@@ -36,163 +36,79 @@ Prep for Class
 
 <br>
 
-**SLIDE**: Let's talk about your practice exercises!
+**SLIDE**: Let's start by touching base on your practice work for today
 :::
 
 
-## Practice Exercises {background-image="Images/background-data_blue_v4.png"}
 
-1. What proportion of US presidents since 1953 have been Republicans? (Built-in Data: presidential, Variable: party)
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-2.  Why are the mean and median total populations in the midwest so different from each other? (Built-in Data: midwest, Variable: poptotal)
+```{r}
+d <- read_excel("../../DATA/2026-Spring/WDI/Week3-Class_Selections/Spring2026-WDI_Data_Class_Selections-SHORT_LABELS.xlsx", na = "NA")
 
-3.  How many hours per day do you have to sleep to sleep longer than 75% of studied mammals? (Built-in Data: msleep, Variable: sleep_total)
+d |>
+  select(-ccode, -year) |>
+  pivot_longer(cols = `Electricity (% pop)`:`Urban population`, names_to = "WDI", values_to = "Value") |>
+  group_by(WDI) |>
+  summarize(
+    N = sum(!is.na(Value)), 
+    Mean = mean(Value, na.rm = TRUE),
+    SD = sd(Value, na.rm = TRUE),
+    Min = min(Value, na.rm = TRUE),
+    pct25 = quantile(Value, probs = .25, na.rm = TRUE),
+    Median = median(Value, na.rm = TRUE),
+    pct75 = quantile(Value, probs = .75, na.rm = TRUE),
+    Max = max(Value, na.rm = TRUE)
+  ) |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 20)
 
-4.  Which mammal sleeps the least and which the most? (Built-in Data: msleep, Variable: sleep_total)
+```
 
 ::: notes
 
-For today I asked you to practice our coding skills and descriptive stats from last class.
+Everybody check your descriptive stats table and see if we match and then we'll talk through your answers to the questions
 
 <br>
 
-### Did everybody finish the assignment? 
-:::
+Discuss Each:
 
+1. Which variables are missing too much data, or too much of the necessary data (selection bias), for us to claim that these descriptive statistics represent variation across the world?
 
+    - Selection Bias: Did you check to see WHICH countries are missing data?
 
-## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+2. Which variable is the most positively skewed? What does that mean in real world terms?
 
-<br>
+    - Distributions with a longer, or skinnier, right-hand tail have a positive skew
+    - The mean > median suggests a positive skew as outliers pull it that way
 
-**What proportion of US presidents since 1953 have been Republicans?**
+3. Which variable is the most negatively skewed? What does that mean in real world terms?
 
-<br>
+    - Distributions with a skinnier left-hand tail have a negative skew
+    - The mean < median suggests a negative skew as outliers pull it that way
 
-::: {.r-fit-text}
-```{r, echo=TRUE}
-proportions(table(presidential$party))
-```
-:::
+4. Which variable holds the most variation across the sample (e.g. countries most dispersed across its values)?
 
-::: notes
-**Everybody get this?**
-:::
-
-
-
-## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+5. How substantively different is life in the bottom quartile countries (25th percentile) from those in the top quartile (75th percentile)?
 
 <br>
 
-**Why are the mean and median total populations in the midwest so different from each other?**
+**Ok, how are we doing with calculating and interpreting descriptive statistics?**
 
 <br>
 
-::: {.r-fit-text}
+Well, either way, I'm confident our work this week is going to give all of you a better sense of these statistics!
 
-```{r, echo=TRUE}
-summary(midwest$poptotal)
+- **SLIDE**: Our work this week shifts us to data visualization
 
-sd(midwest$poptotal)
-```
-
-:::
-
-::: notes
-**So, what's your answer to this question?**
-
-<br>
-
-On average, the cities in the midwest differ from the mean by nearly 300k!
-
-- Huge variance in city sizes
-
-- Some VERY small (sub-2k) and some MASSIVE (5+ million)
-:::
-
-
-## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-**How many hours per day do you have to sleep to sleep longer than 75% of studied mammals?**
-
-<br>
-
-::: {.r-fit-text}
-
-```{r, echo=TRUE, eval=TRUE}
-summary(msleep$sleep_total)
-
-quantile(msleep$sleep_total, probs = .75)
-```
-:::
-
-::: notes
-
-The third quartile IS the 75th percentile
-
-- Here I'm also showing you the function to calculate ANY percentile
-
-<br>
-
-Interpret this result for me
-
-### What does this 13.75 mean?
-:::
-
-
-
-## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-**Which mammal sleeps the least and which the most?**
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=FALSE, eval=TRUE}
-# Identify the range and view the data
-msleep |>
-  select(name, sleep_total) |>
-  arrange(sleep_total) |>
-  slice_head(n = 10) |>
-  kbl(align = c('l', 'c')) |>
-  kableExtra::kable_styling(font_size = 22)
-```
-:::
-
-::: {.column width="50%"}
-```{r, echo=FALSE, eval=TRUE}
-# Identify the range and view the data
-msleep |>
-  select(name, sleep_total) |>
-  arrange(desc(sleep_total)) |>
-  slice_head(n = 10) |>
-  kbl(align = c('l', 'c')) |>
-  kableExtra::kable_styling(font_size = 22)
-```
-:::
-::::
-
-::: notes
-
-The most direct approach is probably to use the View() function and click the arrow next to sleep_total to sort the data
-
-<br>
-
-**SLIDE**: Alright let's move to our new work for today!
 :::
 
 
 
 
-## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo = FALSE, fig.align = 'center', out.width = '50%'}
-knitr::include_graphics("Images/03_1-data_viz.jpg")
-```
+![](Images/03_1-data_viz.jpg){style="display: block; margin: 0 auto"}
 
 <br>
 
@@ -213,7 +129,7 @@ knitr::include_graphics("Images/03_1-By_hand.jpg")
 
 :::: {.column width="60%"}
 ::: {.incremental}
-1. Principle 3 in action
+1. Variable type determines tool
 
 2. Learn to think like a programmer
 
@@ -256,19 +172,17 @@ Please don't aim for making art today.
 
 
 
-## Principle 3 {background-image="Images/background-data_blue_v4.png" .center}
-
-**Variable Type Determines Tool**
+## Univariate Analysis {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-**Univariate Visualizations**
+**The "right" visualization depends on the variable type**
 
-+ If a **categorical** variable, make a **bar plot**
++ Nominal or Ordinal Variable: Bar Plot
 
-+ If a **numeric** variable, make a **box plot** or **histogram**
++ Interval-level Variable: Box Plot or Histogram
 
-+ If a **numeric variable across time**, make a **line plot**
++ Interval-level Variable across time: Line Plot
 
 ::: notes
 
@@ -282,7 +196,8 @@ Here is our plan of attack for today.
 
 <br>
 
-### Everybody have this written down?
+**Everybody have this written down?**
+
 :::
 
 
@@ -291,7 +206,7 @@ Here is our plan of attack for today.
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Categorical Variable: Make a Bar Plot**
+**Nominal or Ordinal Variable: Bar Plot**
 :::
 
 :::: {.columns}
@@ -317,7 +232,7 @@ Here is our plan of attack for today.
 
 ::: notes
 
-Bar plots, as the Johnson reading explains, represent the number (or proportion) of observations in each level using the height of a bar.
+Bar plots, as the textbook explains, represent the number (or proportion) of observations in each level using the height of a bar.
 
 <br>
 
@@ -333,14 +248,15 @@ Drawing a bar plot is super easy:
 
 <br>
 
-### Make sense?
+**Make sense?**
+
 :::
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Categorical Variable: Make a Bar Plot**
+**Nominal or Ordinal Variable: Bar Plot**
 :::
 
 <br>
@@ -377,7 +293,7 @@ Everybody make us this bar plot
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Categorical Variable: Make a Bar Plot**
+**Nominal or Ordinal Variable: Bar Plot**
 
 ```{r, echo=TRUE}
 table(mpg$drv)
@@ -396,6 +312,7 @@ mpg |>
 ```
 
 ::: notes
+
 **How did we do?**
 
 I ordered my bars from least to most to help aid ease of interpretation.
@@ -411,7 +328,7 @@ Let's practice this one more time!
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Categorical Variable: Make a Bar Plot**
+**Nominal or Ordinal Variable: Bar Plot**
 :::
 
 <br>
@@ -449,7 +366,7 @@ Everybody make us this bar plot
 ## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 ::: {.r-fit-text}
-**Categorical Variable: Make a Bar Plot**
+**Nominal or Ordinal Variable: Bar Plot**
 :::
 
 <br>
@@ -496,7 +413,8 @@ proportions(table(presidential$party))
 
 <br>
 
-### Everybody comfortable with what bar plots are used for, how you make them and how we interpret them?
+**Everybody comfortable with what bar plots are used for, how you make them and how we interpret them?**
+
 :::
 
 
@@ -578,13 +496,13 @@ To build a bar plot for numeric data we group numbers that are close together in
 
 <br>
 
-This example from the book chapter shows a histogram of women's ages.
+This example from a different textbook shows a histogram of women's ages.
 
 - It looks like five bars per 15 years so I'm guessing the bins are each five years wide.
 
 <br>
 
-### Does that make sense?
+**Does that make sense?**
 
 <br>
 

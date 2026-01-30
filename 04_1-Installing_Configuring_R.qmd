@@ -1,5 +1,7 @@
 ---
-format: revealjs
+format: 
+  revealjs:
+    code-line-numbers: false
 ---
 
 # Today's Agenda {background-image="Images/background-data_blue_v4.png"}
@@ -17,9 +19,9 @@ library(modelsummary)
 
 **Getting Ready for Univariate Data Analysis**
 
-- Levels of measurement
+- R Basics
 
-- Installing and configuring R and RStudio
+- Levels of measurement
 
 :::
 
@@ -32,48 +34,47 @@ Justin Leinaweaver (Spring 2026)
 ::: notes
 Prep for Class
 
-1. Review Canvas submissions
+1. Review Canvas submissions (especially to make sure they successfully installed R and RStudio)
 
 2. BEFORE CLASS change eval=FALSE to TRUE for final run of slides to include animation
 
+3. Add FH data and R file from Posit Cloud exercise (class 2-1) to Canvas Modules for today
+
 <br>
 
-This week we shift from the importance of measurement as a concept 
-
-
-
+**SLIDE**: Let's finish setting up RStudio
 
 :::
 
 
 
-## Install the Software {background-image="Images/background-data_blue_v4.png" .smaller .center}
+## Setting Up the Software {background-image="Images/background-data_blue_v4.png" .center}
 
-**Mac and Windows Users**
+<br>
 
-1. Download and install R
+::: {.r-fit-text}
 
-    - Windows: https://cran.wustl.edu/bin/windows/base/R-4.4.2-win.exe
+1. Open RStudio
 
-    - Mac: https://cran.wustl.edu/bin/macosx/big-sur-arm64/base/R-4.4.2-arm64.pkg 
+2. In the console (bottom-left window) run:
 
-2. Download and install RStudio
+:::
 
-    - Windows: https://download1.rstudio.org/electron/windows/RStudio-2024.12.0-467.exe
+```{r, echo=TRUE, eval=FALSE}
+install.packages("readxl")
 
-    - Mac: https://download1.rstudio.org/electron/macos/RStudio-2024.12.0-467.dmg
-    
-**Chromebook Users or Problems Installing the Software**
-
-1. Request a laptop to use in class, OR
-
-2. Sign up for a free "Cloud FREE" account on Posit: https://posit.cloud/
+install.packages("tidyverse")
+```
 
 ::: notes
 
-Let us know if you get stuck!
+**Is everybody up and running with RStudio on their laptops?**
 
-- Once you succeed in installing the software, go help somebody else!
+<br>
+
+Last set-up piece is to install the two extra packages we've been using on the Cloud so far
+
+- Let us know if you get stuck with this!
 
 <br>
 
@@ -189,11 +190,11 @@ And the Economist, the Financial Times, and on and on and on
 :::
 
 
-## You will make animated plots! {background-image="Images/background-data_blue_v4.png" .center}
+## R can make awesome stuff {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-```{r, fig.retina=3, fig.align='center', fig.asp=0.4, out.width='100%', fig.width=8, eval=FALSE, cache=TRUE}
+```{r, fig.retina=3, fig.align='center', fig.asp=0.4, out.width='100%', fig.width=8, eval=TRUE, cache=TRUE}
 library(gganimate)
 library(gapminder)
 
@@ -218,7 +219,9 @@ Along the way this semester we'll pepper in some fun approaches to using animati
 :::
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
+## Why two pieces of software? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
 
 :::: {.columns}
 ::: {.column width="45%"}
@@ -248,7 +251,12 @@ I know it seems weird that I've asked you to install two pieces of software to u
 
 :::
 
-## {background-image="Images/background-data_blue_v4.png" .center}
+
+
+
+## Why two pieces of software? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
 
 ![](Images/03_3-R_Engine.png)
 
@@ -274,123 +282,6 @@ So, this semester you are learning to code in R but we'll be working in RStudio.
 
 :::
 
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-![](Images/03_3-rstudio_blank.png){style="display: block; margin: 0 auto"}
-
-::: notes
-**Does everybody have RStudio open?**
-
-- It should look something like this.
-
-<br>
-
-By default, RStudio uses a four pane layout but we'll spend most of our time using two of them.
-
-<br>
-
-To start I want us to make a bunch of configuration changes that I think will make your life easier.
-
-- I will post today's slides on Canvas for future reference
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png"}
-
-<br>
-
-Open RStudio
-
-- "Tools" &rarr; "Global Options"
-
-- "General": Uncheck all
-
-![](Images/02_1-global_options1.png){.absolute bottom=0 right=0 width="540"}
-
-::: notes
-
-Let's go into the options!
-
-<br>
-
-Unchecking all the boxes here tells RStudio we want to start from scratch whenever we open the program
-
-- Good practice for doing science
-    - You need to keep yourself rooted in good file organization practices, no shortcuts!
-
-- Even better practice when working in a computer lab!
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png"}
-
-<br>
-
-"Code" page
-
-- &#10004; soft-wrap R source files
-
-![](Images/02_1-global_options2.png){.absolute bottom=0 right=0 width="540"}
-
-::: notes
-
-Wraps the text in your code to make it easier to read.
-
-- Trust me.
-
-:::
-
-
-
-
-## {background-image="Images/background-data_blue_v4.png"}
-
-<br>
-
-"Pane Layout" page
-
-- Top-right: "Console"
-
-![](Images/02_1-global_options3.png){.absolute bottom=0 right=0 width="540"}
-
-::: notes
-
-Using the four drop-down windows you can reorganize the layout of the windows.
-
-- I'd like you to start with this change so we can keep our notes side-by-side with the R Console.
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png"}
-
-<br>
-
-"Rmarkdown" page
-
-- Uncheck "Show output..."
-
-![](Images/02_1-global_options4.png){.absolute bottom=0 right=0 width="540"}
-
-::: notes
-
-Another option RStudio is doing to try and help you that I think is annoying.
-
-- Keep the code output in the console, not mixed into your notes.
-
-- Again, trust me for now, feel free to change it later when you get comfortable
-
-:::
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-![](Images/02_1-RStudio_setup.png){style="display: block; margin: 0 auto"}
 
 
 
@@ -404,13 +295,10 @@ Another option RStudio is doing to try and help you that I think is annoying.
 ::: {.column width="50%"}
 Include:
 
-- A top-level folder for the class,
+- A top-level folder for the class, and
 
-- A folder for the data,
+- A folder for different units in class
 
-- A folder for class notes, and
-
-- A folder for each report
 :::
 
 ::: {.column width="50%"}
@@ -426,35 +314,90 @@ I'm going to ask everyone to adopt this file organization structure for the seme
 
 - ALL code we write will assume this is where your files and data live.
 
-### Questions on this?
+<br>
+
+**Questions on this?**
 
 <br>
 
-These notes and data CANNOT live on the lab computer.
-
-- These computers get wiped and refreshed from time-to-time to keep them running well.
-
-- DON'T lose your data because of this!
-
-<br>
-
-My advice, if you're going to work on the lab computers.
-
-- Set up this folder structure on a usb key, AND
-
-- At the end of every class upload the changes to your cloud account (OneDrive)
-
-<br>
-
-REMEMBER, lost data/notes/reports due to poor data practices are on you!
-
-<br>
-
-### Any questions on the set-up / configuration stuff we've covered so far?
-
-Ok, let's make some stuff!
+**SLIDE**: Cloud backup is REQUIRED
 
 :::
+
+
+
+## Organize your Semester {background-image="Images/background-data_blue_v4.png" .center}
+
+**You MUST backup your files online!**
+
+<br>
+
+![](Images/04_1-cloud-storage.jpg){style="display: block; margin: 0 auto"}
+
+<br>
+
+OneDrive is part of Office 365: 
+
+https://www.drury.edu/tech-services/computer-software/
+
+::: notes
+
+Cloud backups of your files in this class is a REQUIREMENT in the syllabus
+
+- You are REQUIRED to back up all of your files to a cloud service after EVERY class
+
+- I will not accept lost files or broken computers as acceptable excuses for incomplete records and missed deadlines.
+
+<br>
+
+I don't care which backup service you use
+
+- Dropbox, OneDrive, iCloud, etc
+
+<br>
+
+Important note: OneDrive is FREE for Drury students as part of your Office 365 subscription!
+
+
+<br>
+
+**SLIDE**: Ok, let's test your setup
+
+:::
+
+
+
+## Test your setup {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+1. Create a new folder: Freedom House
+
+2. Download the files from Canvas
+
+    - Freedom_House_Data-2025.xlsx
+    - Analyzing Freedom House Data.R
+
+3. Double-click the R file to open RStudio
+
+4. Run all the code in the file
+:::
+::: notes
+
+*Read slide*
+
+<br>
+
+Opening RStudio by clicking on an R file makes your RStudio look in that folder for the data file
+
+- **Did this work for everybody?**
+
+<br>
+
+**SLIDE**: Let's talk now about the basics of working in R
+
+:::
+
+
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
@@ -504,68 +447,8 @@ In future, anytime you double-click to open a .R file it should open it directly
 
 :::
 
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-![](Images/03_3-RStudio_Practice1.png){style="display: block; margin: 0 auto"}
-
-::: notes
-
-Hopefully, everybody is now looking at an RStudio screen like this.
-
-- My apologies that on the slide the file is labeled "Practice.R" instead of the "Getting Started.R"
-
-<br>
-
-And remember, you write your notes on the left and the R console produces stuff on the right
-
-<br>
-
-My request is that you create a new script file for each day of class and use that to take notes and practice code.
-
-- Don't just keep adding onto the same one, it can get unwieldy.
-
-:::
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-![](Images/03_3-RStudio_Practice2.png){style="display: block; margin: 0 auto"}
-
-::: notes
-
-You can take notes in an R script (and you SHOULD!) using the hash symbol.
-
-- Each line you want to write that is NOT R code must start with a hash.
-
-<br>
-
-Get in the habit of annotating your code!
-
-- Every time you write a line of code to do something add a note above it telling you what it does
-
-- This is an invaluable habit!
-
-<br>
-
-Remember, each day's notes (e.g. script file) are a resource for you going forward.
-
-- Your work in class is designed to help you create a record of all the skills we will learn that you may want to use in Senior Seminar!
-
-- So, label your script files so you know where to go in future when you need something specific
-
-<br>
-
-For example, next week we will use code to calculate descriptive statistics.
-
-- e.g. mean, median, percentiles, IQRs, SD, etc
-
-- I will suggest you label your notes file for that class as "Descriptive statistics"!
-
-<br>
-
-### Make sense?
-
-:::
 
 ## Using R as a Calculator {background-image="Images/background-data_blue_v4.png" .center}
 
@@ -611,6 +494,7 @@ R is an insanely overpowered calculator.
 <br>
 
 Everybody copy down these notes.
+
 - Feel free to swap in whatever numbers you want.
 
 <br>
@@ -618,42 +502,6 @@ Everybody copy down these notes.
 Notice the color difference between lines that are code and lines with a hash that are comments or notes
 :::
 
-
-
-## Running your Code {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-![](Images/03_3-Run_Selected_Lines.png){style="display: block; margin: 0 auto"}
-
-- **Option 1:** Cursor on line 740, Ctrl-Enter
-
-- **Option 2:** Use the "Run" menu
-
-
-::: notes
-
-Let's get our answers!
-
-- Each of these lines IS programming code! Congrats!
-
-<br>
-
-We need to send your code to the console so R can "run" it.
-
-<br>
-
-Option 1: Put your mouse cursor on the line you want to run and press Ctrl-Enter
-
-<br>
-
-Option 2: Click the first line on the 'Run' menu.
-
-<br>
-
-Everybody take a minute to practice running the code you've written
-
-:::
 
 
 ## Using R for simple relationships {background-image="Images/background-data_blue_v4.png" .center}
@@ -752,101 +600,92 @@ Imagine 'x1' here is a single variable describing the heights in inches for five
 
 <br>
 
-### Make sense?
+**Make sense?**
 
 <br>
 
 Copy all this down and make sure you can run the code.
-:::
-
-
-
-## Installing Extra Packages {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, echo=TRUE, eval=FALSE}
-# Install packages with extra tools
-
-# Readxl let's you input Excel files into R
-install.packages("readxl")
-
-# Tidyverse makes tons of statistics work easier
-install.packages("tidyverse")
-```
-
-::: notes
-
-One more configuration step, we need to install two packages.
-
-- Packages are collections of extra features that you can add to R when you need them.
 
 <br>
 
-After a new install of R, we need to do each of these one time. Unless you update R you won't have to install these again.
-
-- We'll start using these Friday.
-
-<br>
-
-Run each of these lines and let me know when they are done.
+**SLIDE**: Introduction to univariate analyses
 
 :::
 
 
 
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-## 2. Tidy your data before exploring it {background-image="Images/background-data_blue_v4.png" .center}
+::: {.r-fit-text}
+**Univariate Analyses: Levels of Measurement**
 
-<br>
+- Nominal variables
 
-![](Images/01_2-tidy.png){style="display: block; margin: 0 auto"}
+- Ordinal variables
 
-::: notes
-**How did the data cleaning / tidying exercise go?**
+- Interval-level variables
 
-<br>
-
-Let's see what you made!
-
-- Everybody open their tidied data and let's walk around to see!
-
-<br>
-
-**SLIDE**: My version
+    - Discrete or Continuous
 
 :::
 
-
-
-## The World Press Freedom Index {background-image="Images/background-data_blue_v4.png" .center}
-
-![](Images/03_2-World_Press2024.png){style="display: block; margin: 0 auto"}
-
 ::: notes
 
-Easy case for us today!
+For today I had you read an excerpt from Chapter 2 of the textbook that discusses variables by their level of measurement
 
-- The current year is basically tidy
-
-<br>
-
-*IF CLEANING WAS REQUIRED*
-
-Here's my version focused on the most recent observations only.
-
-- I'll post this on Canvas so we can all work off the same copy of the data.
+- **Any questions on the three main types of variable discussed there?**
 
 <br>
 
-I also pulled all of the data from the website to cover the last ten years and is posted on Canvas as well.
+**Out of curiosity, and if the goal is to describe the world accurately, which level of measurement is best?**
+
+- (It depends!)
+
+- Our preference is as much precision as possible (e.g. interval)
+
+- But some things cannot be measured with a great deal of precision.
 
 <br>
 
-This is a MUCH longer datasheet, but that doesn't matter to R!
+**Per your Canvas submissions, what's an example of a nominal variable from one of our datasets so far this semester?**
 
-- Over 1,800 rows of data
+<br>
 
-- **SLIDE**: Programming is awesome for data science
+**And an example of an ordinal variable?**
 
+<br>
+
+**And an example of an interval-level variable?**
+
+- **Is that continuous or discrete?**
+
+<br>
+
+**SLIDE**: For next class
+
+<br>
+
+*Chapter Notes*
+
+Nominal-Level Variables 
+
+- Nominal variables are the least precise.
+- A nominal-level variable communicates differences between units of analysis on the characteristics being measured.
+- The values are mutually exclusive and completely exhaustive. 
+- Some nominal variables are binary.
+- Gender is a good example
+
+Ordinal-Level Variables
+
+- Variables measured at the ordinal level may be rank ordered. That is, someone or something may have more or less of the characteristic being measured by the variable.  
+- Think about the level of education individuals have completed. One may have completed an advanced graduate degree while another may have dropped out of high school. The one with the graduate degree has more education than the one who dropped out of high school.
+
+Interval-Level Variables
+
+- Interval-level variables provide precise measurements of a characteristic, such as age or income, or any other characteristic, which can be measured along a continuous spectrum.
+- Some interval-level variables have discrete values or continuous values. 
+    - Discrete values usually count the number of times something has occurred.
+    - Continuous values can have an infinite number of unique values and can be precisely estimated with decimal places
 :::
 
 
@@ -858,26 +697,15 @@ This is a MUCH longer datasheet, but that doesn't matter to R!
 
 ::: {.r-fit-text}
 
-**Get ready for univariate analyses!**
+**Univariate Analyses: Descriptive Statistics**
 
-1. Wheelan (2014) Chapter 2 “Descriptive Statistics”
+- Finish Chapter 2 (Pollock and Edwards)
 
-2. Johnson (2012) p361-376
-
-3. Play with R / RStudio!
+- Complete three end of chapter exercises
 :::
 
 ::: notes
 
-Monday we start doing statistics in R!
-
-- Two readings to get you ready to work.
-
-<br>
-
-Also, take some time to explore and play with the software
-
-- The faster you get comfortable with it, the more powerful you become!
 
 <br>
 
