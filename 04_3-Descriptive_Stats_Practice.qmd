@@ -40,21 +40,17 @@ Prep for Class
 
 
 
-## {background-image="Images/background-data_blue_v4.png" .smaller}
+## For Today {background-image="Images/background-data_blue_v4.png"}
 
-1. What proportion of US presidents since 1953 have been Republicans? (Built-in Data: presidential, Variable: party)
+1. Which party has controlled the presidency the most since 1953?
 
-2. Why are the mean and median total populations in the midwest so different from each other? (Built-in Data: midwest, Variable: poptotal)
+2. What do most counties in the midwest look like in population terms?
 
-3. How significant is the problem of poverty in the US midwest? (Built-in Data: midwest, Variables: percbelowpoverty, percchildbelowpovert)
+3. How significant is the problem of poverty in the US midwest?
 
-4. How many hours per day do you have to sleep to sleep longer than 75% of studied mammals? (Built-in Data: msleep, Variable: sleep_total)
+4. How many hours per day do you have to sleep to sleep longer than 75% of studied mammals? Which mammals do you sleep most like in terms of length?
 
-5. Which mammal sleeps the least and which the most? (Built-in Data: msleep, Variable: sleep_total)
-
-6. What is the median number of carburetors in the `mtcars` dataset? (Built-in Data: mtcars, Variable: carb) 
-
-7. How much better fuel economy do cars get when driving on the highway versus driving in the city? Your answer must be clear and must defend your choice of which statistics you have chosen to focus on. (Built-in Data: mpg, Variables: cty, hwy)
+5. How much better is the fuel economy of cars driving on the highway versus driving in the city?
 
 ::: notes
 
@@ -71,7 +67,7 @@ Prep for Class
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-**What proportion of US presidents since 1953 have been Republicans?**
+**Which party has controlled the presidency the most since 1953?**
 
 (Built-in Data: presidential, Variable: party)
 
@@ -82,14 +78,20 @@ proportions(table(presidential$party))
 ```
 
 ::: notes
-**Everybody get this?**
+
+**How did you attack this?**
+
+<br>
+
+**Is this a "good" answer? Why or why not?**
+
 :::
 
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-**Why are the mean and median total populations in the midwest so different from each other?**
+**What do most counties in the midwest look like in population terms?**
 
 (Built-in Data: midwest, Variable: poptotal)
 
@@ -106,6 +108,7 @@ sd(midwest$poptotal)
 ```
 
 ::: notes
+
 **So, what's your answer to this question?**
 
 <br>
@@ -115,6 +118,20 @@ On average, the cities in the midwest differ from the mean by nearly 300k!
 - Huge variance in city sizes
 
 - Some VERY small (sub-2k) and some MASSIVE (5+ million)
+
+<br>
+
+**Which way do the counties in the midwest skew: Positive or negative?**
+
+- **What does that mean in real-world terms?**
+
+- (Huge positive skew! Some really big counties out there!)
+
+<br>
+
+**So, most counties look like what in population terms?**
+
+
 :::
 
 
@@ -180,78 +197,19 @@ Interpret this result for me
 
 **What does this 13.75 mean?**
 
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-**Which mammal sleeps the least and which the most?**
-
-(Built-in Data: msleep, Variable: sleep_total)
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=FALSE, eval=TRUE}
-# Identify the range and view the data
-msleep |>
-  select(name, sleep_total) |>
-  arrange(sleep_total) |>
-  slice_head(n = 10) |>
-  kbl(align = c('l', 'c')) |>
-  kableExtra::kable_styling(font_size = 22)
-```
-:::
-
-::: {.column width="50%"}
-```{r, echo=FALSE, eval=TRUE}
-# Identify the range and view the data
-msleep |>
-  select(name, sleep_total) |>
-  arrange(desc(sleep_total)) |>
-  slice_head(n = 10) |>
-  kbl(align = c('l', 'c')) |>
-  kableExtra::kable_styling(font_size = 22)
-```
-:::
-::::
-
-::: notes
-
-The most direct approach is probably to use the View() function and click the arrow next to sleep_total to sort the data
-
 <br>
 
-**SLIDE**: 
+**So, which animals do you come closest to in sleep terms?**
 
 :::
 
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-**What is the median number of carburetors in the `mtcars` dataset?**
-
-(Built-in Data: mtcars, Variable: carb) 
-
-<br>
-
-```{r, echo=TRUE}
-cumsum(proportions(table(mtcars$carb)))
-```
-
-::: notes
-
-Per the book the median of an ordinal variable is where the cumulative sum crosses the 50th percentile
-
-
-:::
-
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-**How much better fuel economy do cars get when driving on the highway versus driving in the city?**
+**How much better is the fuel economy of cars driving on the highway versus driving in the city?**
 
 (Built-in Data: mpg, Variables: cty, hwy)
 
@@ -271,6 +229,11 @@ sd(mpg$hwy)
 
 ::: notes
 
+**So, what's your answer to this question?**
+
+<br>
+
+**Which comparison is the "right" one? Why?**
 
 :::
 

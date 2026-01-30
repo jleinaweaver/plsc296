@@ -46,7 +46,7 @@ Prep for Class
 ```{r}
 d <- read_excel("../../DATA/2026-Spring/WDI/Week3-Class_Selections/Spring2026-WDI_Data_Class_Selections-SHORT_LABELS.xlsx", na = "NA")
 
-d |>
+table1 <- d |>
   select(-ccode, -year) |>
   pivot_longer(cols = `Electricity (% pop)`:`Urban population`, names_to = "WDI", values_to = "Value") |>
   group_by(WDI) |>
@@ -59,7 +59,9 @@ d |>
     Median = median(Value, na.rm = TRUE),
     pct75 = quantile(Value, probs = .75, na.rm = TRUE),
     Max = max(Value, na.rm = TRUE)
-  ) |>
+  ) 
+
+table1 |>
   kable(digits = 1) |>
   kableExtra::kable_styling(font_size = 20)
 
@@ -71,29 +73,80 @@ Everybody check your descriptive stats table and see if we match and then we'll 
 
 <br>
 
-Discuss Each:
-
-1. Which variables are missing too much data, or too much of the necessary data (selection bias), for us to claim that these descriptive statistics represent variation across the world?
-
-    - Selection Bias: Did you check to see WHICH countries are missing data?
-
-2. Which variable is the most positively skewed? What does that mean in real world terms?
-
-    - Distributions with a longer, or skinnier, right-hand tail have a positive skew
-    - The mean > median suggests a positive skew as outliers pull it that way
-
-3. Which variable is the most negatively skewed? What does that mean in real world terms?
-
-    - Distributions with a skinnier left-hand tail have a negative skew
-    - The mean < median suggests a negative skew as outliers pull it that way
-
-4. Which variable holds the most variation across the sample (e.g. countries most dispersed across its values)?
-
-5. How substantively different is life in the bottom quartile countries (25th percentile) from those in the top quartile (75th percentile)?
+**Q1: Which variables are missing too much data, or too much of the necessary data (selection bias), for us to claim that these descriptive statistics represent variation across the world?**
 
 <br>
 
-**Ok, how are we doing with calculating and interpreting descriptive statistics?**
+**Did you check to see WHICH countries are missing data when answering this question?**
+
+- **Missing at random is less concerning than missing systematically (e.g. all poor countries)**
+
+<br>
+
+**Q2: Which variable holds the most variation across the sample? In other words, which variable spreads the countries of the world out the most across its range (e.g. dispersion)?**
+
+- (Clearly this question is WAY easier with a visualization but you weren't allowed to do that yet!)
+
+- (I would look for variables with a wide range AND a wide IQR)
+
+<br>
+
+**SLIDE**: Q3
+
+:::
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+
+table1 |>
+  select(WDI, pct25, pct75) |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 23)
+
+```
+
+::: notes
+
+For Question 3 I asked you to focus on the countries above and below the interquartile range (IQR)
+
+- The middle 50% of cases is often a useful way to think about the "middle" of the distribution
+
+<br>
+
+**Q3: According to this data, how substantively different is life in the bottom quartile countries (25th percentile) from those in the top quartile (75th percentile)?**
+
+<br>
+
+**SLIDE**: Back to the table
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+
+table1 |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 20)
+
+```
+
+::: notes
+
+For the final question I asked you to reflect on the variable you selected and analyzed in Week 3.
+
+- **Did calculating the full descriptive statistics change the way any of you thought about your variable? Why or why not?**
+
+- **Any good examples of variables with a strong positive or negative skew?**
+
+    - Distributions with a longer, or skinnier, right-hand tail have a positive skew
+    - The mean > median suggests a positive skew as outliers pull it that way
+    - Distributions with a skinnier left-hand tail have a negative skew
+    - The mean < median suggests a negative skew as outliers pull it that way
 
 <br>
 
@@ -130,6 +183,9 @@ knitr::include_graphics("Images/03_1-By_hand.jpg")
 :::: {.column width="60%"}
 ::: {.incremental}
 1. Variable type determines tool
+
+    - Nominal/Ordinal: Bar Plot
+    - Interval: Box Plot or Histogram
 
 2. Learn to think like a programmer
 
@@ -168,37 +224,12 @@ Please don't aim for making art today.
 <br>
 
 **REVEAL**: The better you learn how specific descriptive stats connect to specific viz, the sooner you will learn to "see" the visualization in a table of descriptive statistics.
-:::
-
-
-
-## Univariate Analysis {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-**The "right" visualization depends on the variable type**
-
-+ Nominal or Ordinal Variable: Bar Plot
-
-+ Interval-level Variable: Box Plot or Histogram
-
-+ Interval-level Variable across time: Line Plot
-
-::: notes
-
-Here is our plan of attack for today.
-
-- We will first draw bar plots of categorical variables,
-
-- Then histograms and box plots for numeric variables, and
-
-- Finally, line plots of numeric variables that change across time.
-
-<br>
-
-**Everybody have this written down?**
-
+**SLIDE**: Let's get drawing!
 :::
+
 
 
 
@@ -209,26 +240,7 @@ Here is our plan of attack for today.
 **Nominal or Ordinal Variable: Bar Plot**
 :::
 
-:::: {.columns}
-::: {.column width="45%"}
-
-<br>
-
-::: {.r-fit-text}
-**Bar Plots**
-
-1. Counts
-
-2. Proportions
-:::
-:::
-
-::: {.column width="55%"}
-
-![](Images/03_1-Johnson-Bar_plot.png)
-
-:::
-::::
+![](Images/05_1-PollockEdwards-Figure_02_02.jpg){style="display: block; margin: 0 auto"}
 
 ::: notes
 
@@ -259,11 +271,13 @@ Drawing a bar plot is super easy:
 **Nominal or Ordinal Variable: Bar Plot**
 :::
 
-<br>
-
-**By hand**, draw a bar plot of drive train levels (drv) for the cars in the mpg dataset.
+**By hand**, draw a bar plot of drive train levels for the cars in the mpg dataset.
 
 1. Count the levels
+
+```{r, echo=TRUE}
+table(mpg$drv)
+```
 
 2. Draw X axis with labels
 
@@ -286,6 +300,10 @@ Everybody make us this bar plot
 *After 2 minutes, you make it on the board*
 
 - *Have the class walk you through what to do*
+
+<br>
+
+**SLIDE**: R Version
 :::
 
 
@@ -294,13 +312,9 @@ Everybody make us this bar plot
 
 ::: {.r-fit-text}
 **Nominal or Ordinal Variable: Bar Plot**
-
-```{r, echo=TRUE}
-table(mpg$drv)
-```
 :::
 
-```{r, fig.width=4, fig.asp=1, fig.align='center'}
+```{r, fig.width=4, fig.asp=.7, fig.align='center'}
 mpg |>
   ggplot(aes(x = drv)) +
   geom_bar(width = .5, fill = c("blue1", "skyblue3", "lightblue")) +
@@ -358,6 +372,10 @@ Everybody make us this bar plot
 *After 2 minutes, you make it on the board*
 
 - *Have the class walk you through what to do*
+
+<br>
+
+**SLIDE**: R Version
 
 :::
 
@@ -422,18 +440,28 @@ proportions(table(presidential$party))
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Bar Plot?**
+**Interval Variable: Make a Bar Plot?**
 :::
 
 <br>
 
-Why can't we simply make a bar plot for total population (`poptotal`) in the `midwest` data set?
+Why can't we make a bar plot for total population (`poptotal`) in the `midwest` data set?
+
+<br>
+
+```{r, echo=TRUE, eval=FALSE}
+table(midwest$poptotal)
+```
 
 ::: notes
 
 Everybody try it!
 
 - Use the table function to count the levels in midwestern populations
+
+- **Why can't we turn this into a bar plot?**
+
+- (**SLIDE**)
 
 :::
 
@@ -442,7 +470,7 @@ Everybody try it!
 ## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Bar Plot?**
+**Interval Variable: Make a Bar Plot?**
 
 ```{r, echo=TRUE}
 table(midwest$poptotal)
@@ -462,11 +490,8 @@ In the realm of numerical data there may not be any overlap in numbers in the da
 
 <br>
 
-**Make sense?**
+**SLIDE**: To address this problem we build histograms
 
-<br>
-
-**So, what do we do?**
 :::
     
 
@@ -475,14 +500,12 @@ In the realm of numerical data there may not be any overlap in numbers in the da
 ## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Histogram**
+**Interval Variable: Make a Histogram**
 :::
 
 <br>
 
-```{r, fig.align = 'center'}
-knitr::include_graphics("Images/03_1-Johnson-Histogram.png")
-```
+![](Images/05_1-PollockEdwards-Figure_02_05.jpg){style="display: block; margin: 0 auto"}
 
 ::: notes
 
@@ -496,35 +519,37 @@ To build a bar plot for numeric data we group numbers that are close together in
 
 <br>
 
-This example from a different textbook shows a histogram of women's ages.
+The textbook here gives an example with two different bin widths
 
-- It looks like five bars per 15 years so I'm guessing the bins are each five years wide.
+- Far left is a 4% bin, middle is a 2%
+
+- Smaller bins tends to better reflect the variations in the distribution BUT also can mislead if it creates the impression of more variation than there really is
+
+- Choosing the "right" bin width depends on the data and what you're trying to explain
 
 <br>
 
-**Does that make sense?**
-
-<br>
-
-Let's practice building a histogram to see if that helps drive the intuition home for you.
+**SLIDE**: Let's build a histogram by hand to clarify this concept of "bins"
 :::
+
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Histogram**
-
-<br>
+**Interval Variable: Make a Histogram**
+:::
 
 1. Make a binned table of city fuel economy (mpg dataset)
-    - Bin 1: 0 - 10
-    - Bin 2: 11 - 20
-    - Bin 3: 21 - 30
-    - Bin 4: 31 - 40
 
-2. Make a bar plot of these bins
-:::
+|Bin|City Fuel Economy|Count|
+|:--:|:---:|:---:|
+|1|0 - 10|?|
+|2|11 - 20|?|
+|3|21 - 30|?|
+|4|31 - 40|?|
+
+2. Make a bar plot of these counts by bin
 
 ::: notes
 
@@ -547,6 +572,10 @@ Everybody make us this histogram (e.g. a bar plot of bins)
 *After 2 minutes, you make it on the board*
 
 - *Have the class walk you through what to do*
+
+<br>
+
+**SLIDE**: R result
 :::
 
 
@@ -555,7 +584,7 @@ Everybody make us this histogram (e.g. a bar plot of bins)
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Histogram**
+**Interval Variable: Make a Histogram**
 :::
 
 :::: {.columns}
@@ -608,7 +637,7 @@ mpg |>
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Histogram**
+**Interval Variable: Make a Histogram**
 :::
 
 :::: {.columns}
@@ -645,7 +674,7 @@ Using software you can easily adjust the size of the bins in order to find a ver
 
 <br>
 
-### Is everybody clear on how a histogram is like a bar plot applied to a numeric variable?
+**Is everybody clear on how a histogram is like a bar plot applied to a numeric variable?**
 
 <br>
 
@@ -659,43 +688,28 @@ So, a histogram is a binned bar plot and it attempts to show us the shape of the
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Box Plot**
+**Interval Variable: Make a Box Plot**
 :::
 
-:::: {.columns}
-::: {.column width="50%"}
-
-<br>
-
-**Box Plots**
-
-- 25th percentile
-
-- Median (50th)
-
-- 75th percentile
-
-- IQR x 1.5
-:::
-
-::: {.column width="50%"}
-
-![](Images/03_1-Johnson-Box_plot.png)
-
-:::
-::::
+![](Images/05_1-PollockEdwards-Figure_02_08.jpg){style="display: block; margin: 0 auto"}
 
 ::: notes
 
 An alternative to the histogram is the box plot.
 
-- Much simpler to make (by hand) and conveys much of the same information, BUT
+- Much simpler to make (by hand),
 
-- Typically harder for untrained people to understand
+- Conveys much of the same information, and
+
+- Make comparing multiple distributions on one plot super easy
 
 <br>
 
-**Any questions on the components of a box plot?**
+BUT, WAY harder for untrained people to understand!
+
+<br>
+
+**Any questions on the components of a box plot from your reading about it in the textbook chapter?**
 
 <br>
 
@@ -708,22 +722,22 @@ An alternative to the histogram is the box plot.
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Box Plot**
+**Interval Variable: Make a Box Plot**
 :::
 
 <br>
 
-**By hand**, draw a box plot of city fuel economy in the mpg data set
+**By hand**, draw a box plot of city fuel economy (mpg data)
 
-1. Calculate the median, the 25th and 75th percentiles
+1. Use summary() to get all needed stats
 
-2. Draw X axis to include the full range of values
+2. Draw y axis to include the full range of values
 
 3. Draw the median as a small line
 
 4. Draw the box around the IQR
 
-5. Add the whiskers (1.5x the IQR)
+5. Add the hinges (1.5x the IQR)
 
 ::: notes
 
@@ -736,13 +750,14 @@ Remember, the summary() function gets you everything you need.
 ## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 ::: {.r-fit-text}
-**Numerical Variable: Make a Box Plot**
+**Interval Variable: Make a Box Plot**
 :::
+
+<br>
 
 :::: {.columns}
 ::: {.column width="65%"}
 
-::::: {.r-fit-text}
 ```{r, echo=TRUE}
 # Summary stats
 summary(mpg$cty)
@@ -751,29 +766,48 @@ summary(mpg$cty)
 <br>
 
 ```{r, echo=TRUE}
-# Calculate the tails
-quantile(mpg$cty, probs = .25) - IQR(mpg$cty)*1.5
-
-quantile(mpg$cty, probs = .75) + IQR(mpg$cty)*1.5
+# Calculate the lower hinge (25th - 1.5 x IQR)
+14 - (19-14) * 1.5
 ```
-:::::
+
+<br>
+
+```{r, echo=TRUE}
+# Calculate the upper hinge (75th + 1.5 x IQR)
+19 + (19-14) * 1.5
+```
+
 :::
 
 ::: {.column width="35%"}
 ```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=1, out.width='100%', fig.align='center'}
-mpg |>
-  ggplot(aes(y = 1, x = cty)) +
-  geom_boxplot(fill = "orange3") +
-  theme_bw() +
-  labs(x = "Fuel Economy (City)", y = "") +
-  scale_y_continuous(limits = c(0.25, 1.75), breaks = c(0, .5, 1, 1.5, 2), labels = rep("", 5)) +
-  scale_x_continuous(limits = c(0, 40))
+# mpg |>
+#   ggplot(aes(x = 1, y = cty)) +
+#   geom_boxplot(fill = "orange3") +
+#   theme_bw() +
+#   labs(x = "Fuel Economy (City)", y = "") +
+#   scale_x_continuous(limits = c(0.25, 1.75), breaks = c(0, .5, 1, 1.5, 2), labels = rep("", 5)) +
+#   scale_y_continuous(limits = c(0, 40))
+
+boxplot(mpg$cty)
 ```
 :::
 ::::
 
 ::: notes
 **How did we do?**
+
+<br>
+
+Two important notes on this:
+
+1. You will almost certainly never be asked to do this by hand again, and
+
+2. It is VITAL you know HOW to do this by hand to understand what these plots show!
+
+<br>
+
+**SLIDE**: Compare the histogram and the box plot
 
 :::
 
@@ -782,7 +816,7 @@ mpg |>
 ## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 ::: {.r-fit-text}
-**Numerical Variable: Histograms and Box Plots**
+**Interval Variable: Histograms and Box Plots**
 :::
 
 <br>
@@ -855,21 +889,103 @@ knitr::include_graphics("Images/04_2-Fuel_Economy.gif")
 
 <br>
 
-### Under what conditions should we prefer a histogram and when a box plot?
-
-<br>
-
 We'll find that the value of a box plot increases DRAMATICALLY when comparing multiple distributions
 
 - Put a pin in that for now...
+
+<br>
+
+**SLIDE**: Wrapping up
+
 :::
 
 
 
+
+## Why draw visualizations by hand? {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+::::: {.columns}
+:::: {.column width="40%"}
+```{r, echo = FALSE, fig.align = 'center', out.width = '100%'}
+knitr::include_graphics("Images/03_1-By_hand.jpg")
+```
+::::
+
+:::: {.column width="60%"}
+1. Variable type determines tool
+
+    - Nominal/Ordinal: Bar Plot
+    - Interval: Box Plot or Histogram
+
+2. Learn to think like a programmer
+
+3. Learn to "see" descriptive statistics
+::::
+:::::
+
+::: notes
+
+**Ok, how are we doing?**
+
+- **Does everybody understand what a bar plot, histogram and box plot can be used to show?**
+
+<br>
+
+**Is the drawing by hand helping reinforce the power of the descriptive statistics?**
+
+<br>
+
+**SLIDE**: Assignment for next class
+
+:::
+
+
+
+## For Next Class{background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+1. Submit to Canvas two visualizations of your WDI variable
+
+    i. A histogram, AND
+    
+    ii. A box plot
+
+2. Healy (2019) [Sections 3.1 - 3.4](https://socviz.co/makeplot.html)
+
+::: notes
+
+*Read slide*
+
+<br>
+
+From this point forward, a big part of your job in this class is to spend time after EVERY CLASS making sure you understand what we did today.
+
+<br>
+
+That means reviewing your notes to make sure you understand 
+
+1. why we ran the code we did, 
+
+2. how to run the code, AND 
+
+3. how to interpret the results. 
+
+<br>
+
+**Questions on the assignment?**
+
+:::
+
+
+## Old Slides
+
 ## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 ::: {.r-fit-text}
-**Numeric Variables Across Time: Line Plots**
+**Interval Variables Across Time: Line Plots**
 :::
 
 <br>
@@ -901,7 +1017,7 @@ Technically this is our first BIVARIATE visualization because it depends on two 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Numeric Variables Across Time: Line Plots**
+**Interval Variables Across Time: Line Plots**
 :::
 
 <br>
@@ -920,7 +1036,7 @@ Draw a line plot of US unemployment (`unemploy`) for the most recent 12 months i
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Numeric Variables Across Time: Line Plots**
+**Interval Variables Across Time: Line Plots**
 :::
 
 :::: {.columns}
@@ -962,57 +1078,4 @@ economics |>
 
 - Line plots super easy, no?
 
-:::
-
-
-## Principle 3 {background-image="Images/background-data_blue_v4.png" .center}
-
-**Variable Type Determines Tool**
-
-<br>
-
-**Univariate Visualizations**
-
-+ If a **categorical** variable, make a **bar plot**
-
-+ If a **numeric** variable, make a **box plot** or **histogram**
-
-+ If a **numeric variable across time**, make a **line plot**
-
-::: notes
-**Any questions on the univarate analyses we've explored today?**
-
-:::
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**For Next Class**
-
-<br>
-
-1. Review ALL notes and code from today
-
-2. Healy (2019) [Sections 3.1 - 3.4](https://socviz.co/makeplot.html)
-
-:::
-
-::: notes
-
-From this point forward, a big part of your job in this class is to spend time after EVERY CLASS making sure you understand what we did today.
-
-<br>
-
-That means reviewing your notes to make sure you understand 
-
-1. why we ran the code we did, 
-
-2. how to run the code, AND 
-
-3. how to interpret the results. 
-
-<br>
-
-### Questions on the assignment?
 :::
