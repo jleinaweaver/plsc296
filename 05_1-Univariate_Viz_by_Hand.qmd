@@ -2,49 +2,14 @@
 format: revealjs
 ---
 
-## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r}
 library(tidyverse)
 library(readxl)
 library(kableExtra)
-library(modelsummary)
-```
 
-<br>
-
-::: {.r-fit-text}
-
-**Univariate Analyses**
-
-- Building univariate visualizations
-
-:::
-
-<br>
-
-::: r-stack
-Justin Leinaweaver (Spring 2026)
-:::
-
-::: notes
-Prep for Class
-
-1. Bring paper and rulers to class
-
-2. Review Canvas submissions
-
-<br>
-
-**SLIDE**: Let's start by touching base on your practice work for today
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r}
-d <- read_excel("../../DATA/2026-Spring/WDI/Week3-Class_Selections/Spring2026-WDI_Data_Class_Selections-SHORT_LABELS.xlsx", na = "NA")
+d <- read_excel("../../DATA/2026-Spring/WDI/Week03-Class_Selections/Spring2026-WDI_Data_Class_Selections-SHORT_LABELS.xlsx", na = "NA")
 
 table1 <- d |>
   select(-ccode, -year) |>
@@ -68,10 +33,36 @@ table1 |>
 ```
 
 ::: notes
+Prep for Class
 
-Everybody check your descriptive stats table and see if we match and then we'll talk through your answers to the questions
+1. Bring paper and rulers to class
+
+2. Review Canvas submissions
 
 <br>
+
+As you come in let's start checking our results!
+
+- Open up your descriptive stats table and compare to mine on the screen
+
+<br>
+
+**SLIDE**: Let's discuss your analyses
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+
+table1 |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 20)
+
+```
+
+::: notes
 
 **Q1: Which variables are missing too much data, or too much of the necessary data (selection bias), for us to claim that these descriptive statistics represent variation across the world?**
 
@@ -96,26 +87,56 @@ Everybody check your descriptive stats table and see if we match and then we'll 
 :::
 
 
+
 ## {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+**Better is higher (typically)**
 
 ```{r}
 
+lower_better <- c("Age dependency ratio", "Consumer price index", "Employment agriculture", "Intentional homicides", "Maternal mortality ratio")
+
 table1 |>
+  filter(!(WDI %in% lower_better)) |>
   select(WDI, pct25, pct75) |>
   kable(digits = 1) |>
   kableExtra::kable_styling(font_size = 23)
 
 ```
+:::
+
+::: {.column width="50%"}
+**Better is lower (typically)**
+
+```{r}
+
+table1 |>
+  filter(WDI %in% lower_better) |>
+  select(WDI, pct25, pct75) |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 23)
+
+```
+:::
+::::
 
 ::: notes
 
-For Question 3 I asked you to focus on the countries above and below the interquartile range (IQR)
+For Question 3 I asked you to focus on the countries above and below the "middle" of the distribution
 
-- The middle 50% of cases is often a useful way to think about the "middle" of the distribution
+- The middle 50% of cases, e.g. between the 25th and 75th percentiles, is referred to as the interquartile range (IQR)
 
 <br>
 
-**Q3: According to this data, how substantively different is life in the bottom quartile countries (25th percentile) from those in the top quartile (75th percentile)?**
+I don't want to pretend these measures can be so easily divided
+
+- Fertility rates above replacement are good but if they get too high they can be a big problem
+
+<br>
+
+**Q3: According to these measures, how substantively different is life for the countries doing "worst" (bottom quartile) from those doing the "best" (top quartile)?**
 
 <br>
 

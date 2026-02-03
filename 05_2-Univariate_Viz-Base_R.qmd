@@ -1,0 +1,776 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+
+d <- read_excel("../../DATA/2026-Spring/WDI/Week03-Class_Selections/Spring2026-WDI_Data_Class_Selections.xlsx", na = "NA")
+
+d2 <- read_excel("../../DATA/2026-Spring/WDI/Week03-Class_Selections/Spring2026-WDI_Data_Class_Selections-SHORT_LABELS.xlsx", na = "NA")
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Univariate Analyses**
+
+- Visualizations: Base R Functions
+
+- Create a new R file: Univariate_Visualizations.R
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Review Canvas submissions
+
+<br>
+
+Over the last two weeks we've been exploring univariate analyses
+
+- Last week we did this using descriptive statistics and, now, this week we add visualizations
+
+<br>
+
+Last class we built visualizations of data by hand in order to reinforce the intuitions of each tool.
+
+- And for today I asked each of you to draw a histogram and a box plot for your selected WDI variable
+
+- **How did that go? How hard was creating and counting the bins for your variable?**
+
+<br>
+
+We'll share those in a bit, but first we need to discuss some basic R code for making visualizations
+
+- These functions are quick and dirty meaning they are super easy to run but don't allow you much room to modify or improve the plots
+
+<br>
+
+**Does everybody have RStudio running and a new script file ready for your notes?**
+
+<br>
+
+**SLIDE**: Let's jot down some notes!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Univariate Visualizations: Base R Functions**
+:::
+
+<br>
+
+Add the following to your notes:
+
+```{r, echo=TRUE}
+# Base R Functions for Visualization
+
+# Nominal/Ordinal Variables
+# Bar Plot: barplot()
+
+# Interval-level Variables
+# Histogram: hist()
+# Box plot: boxplot()
+
+# Load the tidyverse for practice data
+library(tidyverse)
+```
+
+::: notes
+
+Write these down at the top of the R file and load the tidyverse package
+
+<br>
+
+The functions we work with today are meant to be quick and dirty tools
+
+- None of these are appropriate for producing high quality visualizations
+
+- We'll introduce GGPLOT on Friday for doing those
+
+<br>
+
+**SLIDE**: Ok, let's test out each of these simple functions
+
+:::
+
+
+
+## Base R: Making a Bar Plot {background-image="Images/background-data_blue_v4.png"}
+
+```{r, echo=TRUE}
+# 1. Make a frequency table
+table(mpg$drv)
+```
+
+<br>
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.85, out.width="75%", fig.width=5}
+# 2. Input the table in barplot()
+barplot(table(mpg$drv))
+```
+
+::: notes
+
+You don't have to make the table first, BUT I strongly suggest it
+
+- Make sure the table is doing what you want it to do BEFORE you make the visualization
+
+- This way you have control each step of the way (e.g. frequency count, proportions or cumulative sums)
+
+<br>
+
+**Everybody have that working?**
+
+<br>
+
+Now copy and paste this code 2x and make me two more bar plots
+
+1. A bar plot of proportions, and 
+
+2. A bar plot of cumulative proportions
+
+<br>
+
+(**SLIDE**)
+
+:::
+
+
+
+## Base R: Making a Bar Plot {background-image="Images/background-data_blue_v4.png" .smaller}
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=TRUE, fig.align='center', fig.asp=1, out.width="85%", fig.width=5}
+# Frequency Table: Proportions
+barplot(proportions(table(mpg$drv)))
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=TRUE, fig.align='center', fig.asp=1, out.width="85%", fig.width=5}
+# Frequency Table: Cumulative Proportions
+barplot(cumsum(proportions(table(mpg$drv))))
+```
+:::
+::::
+
+::: notes
+
+**Any questions on the base bar plot function?**
+
+- Make the table and send it to barplot()
+
+- Pretty easy!
+
+<br>
+
+**SLIDE**: Ok, let's shift to interval level variables
+
+:::
+
+
+
+## Base R: Making a Histogram {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.75, fig.width=6}
+# Make a histogram in base R
+hist(midwest$percollege)
+```
+
+::: notes
+
+The hist() function is even simpler!
+
+- No pre-processing is required, just give it an interval variable and it will bin the values for you
+
+- The default histogram chooses the number of bins using the Sturges formula which bases its pick on the range of the data
+
+<br>
+
+**SLIDE**: But you can control the number of bins
+
+:::
+
+
+
+## Adjusting the bins in a histogram {background-image="Images/background-data_blue_v4.png" .smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=TRUE}
+hist(midwest$percollege, breaks = 5)
+```
+
+```{r, echo=TRUE}
+hist(midwest$percollege, breaks = 15)
+```
+:::
+
+::: {.column width="50%"}
+
+```{r, echo=TRUE}
+hist(midwest$percollege, breaks = 10)
+```
+
+```{r, echo=TRUE}
+hist(midwest$percollege, breaks = 30)
+```
+:::
+::::
+
+::: notes
+
+The "breaks" argument let's you decide how many bins you would like.
+
+- R will do its best to give you what you're asking for but might not be exact
+
+<br>
+
+The "right" number of bins depends on what you are trying to illustrate
+
+- As Pollock and Edwards note on p48, the "right" number depends on the details you are trying to illustrate
+
+- If the goal is a high-level overview of the broad pattern use fewer bins
+
+- If the goal is a more fine-grained description of the variations within the broader pattern use more bins
+
+<br>
+
+**Any questions on making a histogram in base R?**
+
+<br>
+
+**SLIDE**: Box plots
+
+:::
+
+
+
+
+## Base R: Making a Box Plot {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.75, fig.width=6}
+# Make a box plot in base R
+boxplot(midwest$percollege)
+```
+
+::: notes
+
+The boxplot() function is equally simple
+
+- Just give it an interval variable and it will make the box
+
+<br>
+
+**Everybody got this?**
+
+<br>
+
+**SLIDE**: The box plot function in base R is pretty frustrating to make look good, BUT it does have at least one cool feature
+
+:::
+
+
+
+## Base R: Making a Box Plot {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.75, fig.width=6}
+# Add multiple boxes in base R
+boxplot(midwest$perchsd, midwest$percollege, midwest$percprof)
+```
+
+::: notes
+
+The base box plot function lets you add multiple variables to the same plot
+
+- This is a SUPER handy way to compare the IQR of multiple variables
+
+- It puts the boxes in the order you list them in the function
+
+<br>
+
+Here I've added boxes for the percent of the midwestern counties by HS diploma, college degree and professional degree
+
+- Pretty clear to see the proportion of midwestern counties by education levels
+
+- The college completion rate is way lower than I would have expected
+
+<br>
+
+**Any questions on the box plot function?**
+
+<br>
+
+**SLIDE**: Let's take this code to your assignment for today
+
+:::
+
+
+
+
+## Visualizing our WDI Variables {background-image="Images/background-data_blue_v4.png"}
+
+"File" &#x2192; "Import Dataset" &#x2192; "From Excel"
+
+![](Images/05_2-Input_WDI_Data.png){style="display: block; margin: 0 auto"}
+
+```{r}
+# Copy descriptive stats table from 5-1
+table1 <- d2 |>
+  select(-ccode, -year) |>
+  pivot_longer(cols = `Electricity (% pop)`:`Urban population`, names_to = "WDI", values_to = "Value") |>
+  group_by(WDI) |>
+  summarize(
+    N = sum(!is.na(Value)), 
+    Mean = mean(Value, na.rm = TRUE),
+    SD = sd(Value, na.rm = TRUE),
+    Min = min(Value, na.rm = TRUE),
+    pct25 = quantile(Value, probs = .25, na.rm = TRUE),
+    Median = median(Value, na.rm = TRUE),
+    pct75 = quantile(Value, probs = .75, na.rm = TRUE),
+    Max = max(Value, na.rm = TRUE)
+  ) 
+
+# Use this code to identify which variables to highlight
+# Ideally one example for each: normal, positive skew, negative skew, uniform
+# d2 |>
+#   select(-ccode, -year) |>
+#   pivot_longer(cols = `Electricity (% pop)`:`Urban population`, names_to = "WDI", values_to = "values") |>
+#   ggplot(aes(x = values)) +
+#   geom_histogram() +
+#   theme_bw() +
+#   facet_wrap(~ WDI, scales = "free")
+```
+
+::: notes
+
+Ok, everybody import the WDI data we selected in Week 3.
+
+- You'll have to know where in your class folders you saved the dataset!
+
+- Point to the file with the "Browse..." button
+
+- MAKE SURE TO INCLUDE THE "NA" in the NA field BEFORE you import the data!
+
+<br>
+
+Once you have the data imported make a histogram and box plot of your chosen variable with our base R functions
+
+- **Does it look like what you made by hand? Why or why not?**
+
+<br>
+
+**SLIDE**: Let's now use this data to practice the code AND to connect back to the descriptive stats
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Proportion of seats held by women in national parliaments (%)**
+:::
+
+<br>
+
+:::::: {.fragment}
+
+```{r}
+# table1$WDI
+
+table1 |>
+  filter(WDI == "Women in  parliaments") |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 25)
+```
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9}
+hist(d2$`Women in  parliaments`)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9}
+boxplot(d2$`Women in  parliaments`)
+```
+:::
+::::
+
+::::::
+
+::: notes
+
+Everybody focus on the variable: "Proportion of seats held by women in national parliaments (%)"
+
+- Three tasks:
+
+1. Calculate the descriptive stats, 
+
+2. Make a histogram, and 
+
+3. Make a box plot
+
+<br>
+
+(**REVEAL: Everbody get these results?**)
+
+<br>
+
+**Ok, connect the dots for me here. How do I use the descriptive stats to visualize the data?**
+
+- The mean and median overlap so no huge outliers, BUT
+
+- The first quartile is about 15 and the fourth quartile is almost 30 so some positive skew
+
+    - This tells us that most countries are on the low end but a few are on the high end
+
+<br>
+
+**How well does the "middle" of this distribution summarize the whole thing?**
+
+- **In other words, if all we knew was the average for this variable would we have a good sense of the data? Why or why not?**
+
+<br>
+
+The data is somewhat normally distributed
+
+- Mean and median very close, tails are small
+
+- The "middle" does represent this data well as the SD is pretty small
+
+- Some positive skew here as the final 25% of cases are way higher than the rest!
+
+<br>
+
+I hope your takeaway here is that both pieces of the univariate analysis are needed to have a sense of the data
+
+- The visualization helps us see the patterns, and
+
+- The descriptives allow us to get much more fine-grained
+
+<br>
+
+**Questions on this?**
+
+<br>
+
+**SLIDE**: Let's now look at a very different distribution
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Maternal mortality ratio (modeled estimate, per 100,000 live births)**
+:::
+
+<br>
+
+:::::: {.fragment}
+
+```{r}
+# table1$WDI
+
+table1 |>
+  filter(WDI == "Maternal mortality ratio") |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 25)
+```
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9}
+hist(d2$`Maternal mortality ratio`)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9}
+boxplot(d2$`Maternal mortality ratio`)
+```
+:::
+::::
+
+::::::
+
+::: notes
+
+Everybody focus on the variable: "Maternal mortality ratio (modeled estimate, per 100,000 live births)"
+
+- Three tasks:
+
+1. Calculate the descriptive stats, 
+
+2. Make a histogram, and 
+
+3. Make a box plot
+
+<br>
+
+(**REVEAL: Everbody get these results?**)
+
+<br>
+
+**Ok, connect the dots for me here. How do I use the descriptive stats to visualize the data?**
+
+- HUGE positive skew evident in the stats
+
+    - mean > median
+    
+    - First 75% cases cover 158 levels, top 25% cases cover 858!
+
+- SD is MASSIVE
+
+<br>
+
+**In this case, which stat best represents the "middle" of the distribution?**
+
+- **In other words, and in your estimation, what value best summarizes the bulk of cases?**
+
+- (Tough call but I'd probably use the median BUT with a note about the HUGE positive skew)
+
+<br>
+
+**Questions on connecting these stats to this visualization?**
+
+<br>
+
+**SLIDE**: Let's do another!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**People using at least basic drinking water services, urban (% of urban population)**
+:::
+
+<br>
+
+:::::: {.fragment}
+
+```{r}
+# table1$WDI
+
+table1 |>
+  filter(WDI == "Basic drinking water") |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 25)
+```
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9, out.width="90%"}
+hist(d2$`Basic drinking water`)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9, out.width="90%"}
+boxplot(d2$`Basic drinking water`)
+```
+:::
+::::
+
+::::::
+
+::: notes
+
+Everybody focus on the variable: "People using at least basic drinking water services, urban (% of urban population)"
+
+- Three tasks:
+
+1. Calculate the descriptive stats, 
+
+2. Make a histogram, and 
+
+3. Make a box plot
+
+<br>
+
+(**REVEAL: Everbody get these results?**)
+
+<br>
+
+**Ok, connect the dots for me here. How do I use the descriptive stats to visualize the data?**
+
+- The middle per the IQR is tiny! 93 to 99.8
+
+- VERY negatively skewed data!
+
+<br>
+
+**Questions on connecting these stats to this visualization?**
+
+<br>
+
+**SLIDE**: Last one
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Urban population (% of total population)**
+:::
+
+<br>
+
+:::::: {.fragment}
+
+```{r}
+# table1$WDI
+
+table1 |>
+  filter(WDI == "Urban population") |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 25)
+```
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9, out.width="90%"}
+hist(d2$`Urban population`)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9, out.width="90%"}
+boxplot(d2$`Urban population`)
+```
+:::
+::::
+
+::::::
+
+::: notes
+
+Everybody focus on the variable: "Urban population (% of total population)"
+
+- Three tasks:
+
+1. Calculate the descriptive stats, 
+
+2. Make a histogram, and 
+
+3. Make a box plot
+
+<br>
+
+(**REVEAL: Everbody get these results?**)
+
+<br>
+
+**Ok, summarize this one for me**
+
+- **What is our takeaway about the global experience of urban vs rural populations?**
+
+<br>
+
+Bottom line, I'm hoping you all can see how both the descriptive stats and the visualizations reinforce each other
+
+- By doing both you should be able to get an excellent sense of the variation in the measure
+
+- **Questions on this work today?**
+
+<br>
+
+**SLIDE**: For next class
+
+:::
+
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+**Practice Univariate Analyses**
+
+**NEW Data (Five variables)**: SP2026-Wk05-WDI_Data.xlsx
+
+<br>
+
+For **EACH** variable:
+
+1. Descriptive statistics,
+
+2. Visualization, and
+
+3. Reflection on the result
+
+
+::: notes
+
+CANVAS Assignment: Practice Univariate Analyses
+
+The attached dataset includes FIVE measures taken from the World Bank's WDI database. 
+
+FOR EACH VARIABLE:
+
+1. calculate the appropriate descriptive statistics, 
+2. visualize the distribution, and 
+3. explain what we learn about the state of the world from your univariate analyses (3+ sentences)
+
+- Submit your results as a PDF document (including the code you used and paste in the visualizations you created)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

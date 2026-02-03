@@ -532,9 +532,22 @@ Democratic Republican
 </ul>
 </div>
 <div class="fragment">
-<p><strong>Calculate the “N” (the observations NOT missing data):</strong></p>
+<p><strong>1) Calculate the “N” (the observations NOT missing data):</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">colSums</span>(<span class="sc">!</span><span class="fu">is.na</span>(d))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>2) Missing data breaks the sd() function</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a><span class="fu">sd</span>(d<span class="sc">$</span><span class="st">`</span><span class="at">Access to electricity (% of population)</span><span class="st">`</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">sd</span>(d<span class="sc">$</span><span class="st">`</span><span class="at">Access to electricity (% of population)</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 23.16286</code></pre>
+</div>
 </div>
 </div>
 <aside class="notes">
@@ -546,11 +559,18 @@ Democratic Republican
 <li><p>sd() is the missing piece</p></li>
 </ul>
 <p><br></p>
-<p>Here’s one bit of extra R code to make things easier</p>
+<p>Two pieces of code to help you complete this assignment</p>
 <ul>
 <li><p><strong>REVEAL</strong>: FIRST, here is the code you need to count the observations in each variable that is NOT missing data</p></li>
 <li><p>The “d” here is what I named the dataset in R, replace that with whatever you named your dataset</p></li>
 <li><p>You’ll see from this that some of these variables are missing A LOT of data</p></li>
+</ul>
+<p><br></p>
+<p><strong>REVEAL</strong>: SECOND, most of the descriptive stats functions will return an “NA” if you are missing data</p>
+<ul>
+<li><p>This is a GOOD thing! You want to know when you have a missing data problem!</p></li>
+<li><p>You have to tell R to ignore the missing data to use sd() and that means you are choosing to lose some of your sample</p></li>
+<li><p><strong>Make sense?</strong></p></li>
 </ul>
 <p><br></p>
 <p><strong>Any questions on the assignment for today?</strong></p>
@@ -584,13 +604,13 @@ Democratic Republican
 <aside class="notes">
 <p>Canvas Assignment: Analyzing our Descriptive Statistics from the WDI</p>
 <p>Submit a descriptive statistics table providing the N, mean, sd, minimum, 25th percentile, median, 75th percentile and maximum value for each of the variables in our WDI dataset.</p>
-<p>Use that table to answer the following questions with short arguments. While each answer may be concise, please ensure that you are fully explaining your answers to each question. Also, this assignment should be submitted as a pdf document to preserve your formatting of the document (in Word use “export as pdf”).</p>
+<p>Use that table to answer the following questions with short arguments. While each answer may be concise, please ensure that you are fully explaining your answers to each question.</p>
+<p>Also, this assignment should be submitted as a pdf document to preserve your formatting of the document (in Word use “export as pdf”).</p>
 <ol type="1">
 <li><p>Which variables are missing too much data, or too much of the necessary data (selection bias), for us to claim that these descriptive statistics represent variation across the world?</p></li>
-<li><p>Which variable is the most positively skewed? What does that mean in real world terms?</p></li>
-<li><p>Which variable is the most negatively skewed? What does that mean in real world terms?</p></li>
-<li><p>Which variable holds the most variation across the sample (e.g.&nbsp;countries most dispersed across its values)?</p></li>
-<li><p>How substantively different is life in the bottom quartile countries (25th percentile) from those in the top quartile (75th percentile)?</p></li>
+<li><p>Which variable holds the most variation across the sample? In other words, which variable spreads the countries of the world out the most across its range (e.g.&nbsp;dispersion)?</p></li>
+<li><p>According to these measures, how substantively different is life for the countries doing “worst” from those doing the “best”? Compare the countries in the bottom quartile (25th percentile) to those in the top quartile (75th percentile) across the measures and remember that some of our measures work in reverse (higher numbers are “worse”).</p></li>
+<li><p>Focus on the variable you selected and analyzed in Week 3. What do we learn about the world from the descriptive statistics for your variable?</p></li>
 </ol>
 <style type="text/css">
         span.MJX_Assistive_MathML {

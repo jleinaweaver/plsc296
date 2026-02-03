@@ -1,0 +1,925 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+
+d <- read_excel("../../DATA/2026-Spring/WDI/Week05-Univariate_Practice/SP2026-Wk05-WDI_Data.xlsx", na = "NA")
+
+# Shorten labels
+d2 <- d |>
+  rename("Birth Rate" = "Birth rate, crude (per 1,000 people)",
+         "Death Rate" = "Death rate, crude (per 1,000 people)",
+         "GNI pc" = "GNI per capita, Atlas method (current US$)",
+         "Measles Immunity" = "Immunization, measles (% of children ages 12-23 months)")
+
+# Descriptives
+table1 <- d2 |>
+  select(-ccode, -year) |>
+  pivot_longer(cols = `Birth Rate`:`Measles Immunity`, names_to = "WDI", values_to = "Value") |>
+  group_by(WDI) |>
+  summarize(
+    N = sum(!is.na(Value)), 
+    Mean = mean(Value, na.rm = TRUE),
+    SD = sd(Value, na.rm = TRUE),
+    Min = min(Value, na.rm = TRUE),
+    pct25 = quantile(Value, probs = .25, na.rm = TRUE),
+    Median = median(Value, na.rm = TRUE),
+    pct75 = quantile(Value, probs = .75, na.rm = TRUE),
+    Max = max(Value, na.rm = TRUE)
+  )
+
+# To make temp code from last year run
+wdi <- d
+wdi2023 <- d
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Polishing Univariate Visualizations**
+
+- ggplot and the grammar of graphics
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Check Canvas submissions
+
+<br>
+
+Lots to do so let's dive in with your practice exercises for today!
+
+- **SLIDE**: Let's start with births and deaths
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Birth and Death Rates (per 1,000 people)**
+:::
+
+```{r}
+# table1$WDI
+table1 |>
+  filter(WDI %in% c("Birth Rate", "Death Rate")) |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 25)
+```
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9}
+hist(d2$`Birth Rate`)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9}
+hist(d2$`Death Rate`)
+```
+:::
+::::
+
+::: notes
+
+**Describe for me the global experience of births and deaths in 2023**
+
+- **What do we learn about the world from the variation in these two measures?**
+
+<br>
+
+**SLIDE**: Did anybody try comparing them in a single box plot?
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Birth and Death Rates (per 1,000 people)**
+:::
+
+```{r}
+# table1$WDI
+table1 |>
+  filter(WDI %in% c("Birth Rate", "Death Rate")) |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 25)
+```
+
+```{r, fig.retina=3, fig.width=7, fig.asp=.75, fig.align='center'}
+boxplot(d2$`Birth Rate`, d2$`Death Rate`, names = c("Birth Rate", "Death Rate"))
+```
+
+::: notes
+
+According to the World Bank "Subtracting the crude death rate from the crude birth rate provides the rate of natural increase, which is equal to the rate of population change in the absence of migration."
+
+- So, on balance we see the growth of the global population in 2023
+
+<br>
+
+Box plots are handy, right!?!
+
+<br>
+
+**SLIDE**: Let's talk measles immunizations
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Immunization, measles (% of children ages 12-23 months)**
+:::
+
+```{r}
+# table1$WDI
+table1 |>
+  filter(WDI %in% c("Measles Immunity")) |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 25)
+```
+
+```{r, fig.retina=3, fig.width=7, fig.asp=.75, fig.align='center'}
+hist(d2$`Measles Immunity`, breaks = 24)
+```
+
+::: notes
+
+**Did everybody get these results?**
+
+<br>
+
+**Tell me about the distribution of measles immunity in the world in 2023**
+
+<br>
+
+**If I tell you that it requires a 95% immunization to achieve herd immunity, how screwed were we in 2023?**
+
+- **What proportion of countries were below 95%?**
+
+- (It's about 68% of the world in 2023)
+
+```{r}
+quantile(d2$`Measles Immunity`, prob = .68, na.rm=TRUE)
+```
+
+<br>
+
+I believe Missouri is now below 90% so that's fun...
+
+<br>
+
+**SLIDE**: Let's wrap up with wealth!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**GNI per capita, Atlas method (current US$)**
+:::
+
+```{r}
+# table1$WDI
+table1 |>
+  filter(WDI %in% c("GNI pc")) |>
+  kable(digits = 1) |>
+  kableExtra::kable_styling(font_size = 25)
+```
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=6, fig.asp=.9}
+hist(d2$`GNI pc`)
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.retina=3, fig.width=8, fig.asp=.9}
+wb_income_f <- factor(d2$wb_income, 
+      levels = c("Low Income", "Lower Middle Income", "Upper Middle Income", "High Income"),
+      labels = c("Low\nIncome", "Lower\nMiddle", "Upper\nMiddle", "High\nIncome"))
+
+barplot(table(wb_income_f))
+```
+:::
+::::
+
+::: notes
+
+**Did everybody get these results?**
+
+- We'll fix up your bar plots later today
+
+<br>
+
+**Tell me about the distribution of wealth in the world in 2023**
+
+<br>
+
+**Which is the more accurate picture of global wealth? Why?**
+
+<br>
+
+Ok, there's nothing wrong with the base R functions for getting a quick sense of your data
+
+- BUT, for more complicated graphics and for more professional graphics we will need better tools
+
+- **SLIDE**: Let's talk about ggplot2
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo = FALSE, fig.align = 'center'}
+knitr::include_graphics("Images/03_2-ggplot_logo.png")
+```
+
+::: notes
+
+The package of tools we'll be using is called "ggplot2"
+
+- These tools essentially break visualization down into smaller pieces
+
+- This makes building a plot a bit more complicated, BUT
+
+- It also makes building the plot infinitely customizable
+
+<br>
+
+You can make a visualization that includes all the data pieces you want and tweaks the graphical choices
+
+<br>
+
+**Questions on the basics of ggplot2 as introduced in the Healy reading?**
+
+<br>
+
+**SLIDE**: The steps behind plotting with ggplot2
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+**ggplot() for making visualizations**
+
+**Step 1**: Map the Data
+
+**Step 2**: Add a geometric object
+
+**Step 3**: Customize the visualization
+
+:::
+
+::: notes
+
+Conceptually, the process is actually pretty simple
+
+- Every visualization includes three elements
+
+- First, a map of the data (e.g. what is the dataset and what are the variables to include)
+
+- Second, a geometric object (e.g. what do you want ggplot to draw?)
+
+- Third, customizations to your heart's content!
+
+<br>
+
+In future, when your code isn't working remember this three steps
+
+- A good way to solve errors is to temporarily remove step 2 and 3 code and see if the basic plot works
+
+- THEN re-add step 2 code and see if that works
+
+- THEN re-add step 3 line by line to see where it breaks!
+
+<br>
+
+**SLIDE**: Let's learn the code for the first two steps while we remake the basic plots 
+
+:::
+
+
+
+## GGplot2: Make a Bar Plot {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.75, fig.width=5}
+# Load the needed packages
+library(tidyverse)
+
+# Map the Data
+ggplot(data = mpg, aes(x = drv))
+```
+
+::: notes
+
+Note: You have to load the tidyverse to use ggplot but you only have to do this once.
+
+- Everybody run these two lines of code and make sure you have this empty plot
+
+<br>
+
+The ggplot function has essentially two arguments you have to fill in
+
+1. "data = " is where you identify the dataset you are working with
+
+2. The aes() function is where you specify the aesthetics of the plot
+
+    - The aesthetics are the elements in the plot that are represented by variables
+    
+<br>
+
+So, here I have told ggplot to use the mpg dataset and to put the "drv" variable on the x axis
+
+- Does everybody see how this looks liken how we made a bar plot by hand?
+
+<br>
+
+**SLIDE**: Let's add the bar plot geometric object
+
+:::
+
+
+
+## GGplot2: Make a Bar Plot {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.75, fig.width=5}
+# Map the Data and add a geometric object
+ggplot(data = mpg, aes(x = drv)) + geom_bar()
+```
+
+::: notes
+
+Think of this simply like doing basic math
+
+- ggplot asks us to add together the different components of our visualizations
+
+- **Everybody got this?**
+
+<br>
+
+**SLIDE**: Ok, histogram time!
+
+:::
+
+
+
+
+## GGplot2: Make a Histogram {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.75, fig.width=5}
+# Map the Data and add a geometric object
+ggplot(data = midwest, aes(x = percbelowpoverty))
+```
+
+::: notes
+
+**Everybody get the empty plot?**
+
+- Can you see ggplot pre-filling in the x-axis based on the range of the data?
+
+<br>
+
+**SLIDE**: And let's add the geometric object
+
+:::
+
+
+
+## GGplot2: Make a Histogram {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.75, fig.width=5}
+# Map the Data and add a geometric object
+ggplot(data = midwest, aes(x = percbelowpoverty)) + geom_histogram()
+```
+
+::: notes
+
+**Make sense?**
+
+<br>
+
+**SLIDE**: We control the number of bins in ggplot's histogram using the "bins" argument
+
+:::
+
+
+
+
+## Control the Number of Bins  {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.75, fig.width=5}
+ggplot(data = midwest, 
+       aes(x = percbelowpoverty)) + 
+  geom_histogram(bins = 7)
+```
+
+:::
+::: {.column width="50%"}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.75, fig.width=5}
+ggplot(data = midwest, 
+       aes(x = percbelowpoverty)) + 
+  geom_histogram(bins = 25)
+```
+
+:::
+::::
+
+::: notes
+
+**Questions on this code?**
+
+<br>
+
+**SLIDE**: The switch to a box plot is just as easy as changing the geometric object
+
+:::
+
+
+
+## GGplot2: Make a Box Plot {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.75, fig.width=5}
+# Map the Data and add a geometric object
+ggplot(data = midwest, aes(x = percbelowpoverty)) + geom_boxplot()
+```
+
+::: notes
+
+**Make sense?**
+
+<br>
+
+**SLIDE**: Summing up the basic ggplot code
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**ggplot() for making visualizations**
+
+**Step 1**: Map the Data
+
+**Step 2**: Add a geometric object
+
+**Step 3**: Customize the visualization
+
+<br>
+
+```{r, echo=TRUE, eval=FALSE}
+# Bar plot
+ggplot(data = mpg, aes(x = drv)) + 
+  geom_bar()
+
+# Histogram
+ggplot(data = midwest, aes(x = percbelowpoverty)) + 
+  geom_histogram()
+
+# Box plot
+ggplot(data = midwest, aes(x = percbelowpoverty)) + 
+  geom_boxplot()
+```
+
+::: notes
+
+**Ok, how are we doing with making basic univariate visualizations in ggplot?**
+
+<br>
+
+**SLIDE**: As a segue into step 3, let's talk about my expectations for your visualizations
+
+:::
+
+
+
+
+## High quality visualizations include... {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=1.1, fig.width=5, out.width="85%", fig.cap="*Figure 1. A title like a thesis statement for the visualization* A count of countries by regional grouping from the United Nations (2009-2011) that shows the great majority of countries in the UN are located in Africa and Asia."}
+# The labs() function
+library(carData)
+
+ggplot(data = UN, aes(y = region)) +
+  geom_bar() +
+  labs(x = "x Axis Label", y = "y Axis Label")
+
+# caption = "Source: Where did the data come from?"
+```
+
+:::
+
+::: {.column width="50%"}
+
+::: {.r-fit-text}
+1. Clear axis labels, and
+
+2. A figure caption with
+
+    - Informative title
+
+    - Data sources
+    
+    - Description
+    
+    - Conclusions
+:::
+:::
+::::
+
+::: notes
+
+From this point forward, anytime you submit a visualization it must be polished enough that you could present it to a professional audience.
+
+- *Read through the slide*
+
+- We can get even fancier, but this represents my minimum expectations from you this semester.
+
+<br>
+
+**Any questions on these required elements?**
+
+<br>
+
+The figure caption is easiest to add in Word when you insert the image into your document
+
+- **SLIDE**: But the axis labels require R code
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Step 3: Customize the visualization**
+:::
+
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.618, fig.width=6}
+ggplot(data = mpg, aes(x = drv)) + 
+  geom_bar()
+```
+
+::: notes
+
+Let's go back to our bar plot using the built-in data
+
+<br>
+
+**SLIDE**: Let's first clean up the axis labels
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Step 3: Customize the visualization**
+:::
+
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.618, fig.width=6}
+ggplot(data = mpg, aes(x = drv)) + 
+  geom_bar() +
+  labs(x = "Drive Train Category", y = "Count")
+```
+
+::: notes
+
+Anyone viewing the visualization should be able to understand what is being displayed just by looking at your plot's labels
+
+- The axis labels help, but we can still make this plot easier to read
+
+<br>
+
+This is a nominal variable so there isn't a natural order to these levels
+
+- In that case, I think the bars should be ordered from least to most (or vice versa)
+
+<br>
+
+**SLIDE**: Let's change the order of the bars
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Step 3: Customize the visualization**
+:::
+
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.618, fig.width=6}
+ggplot(data = mpg, aes(x = drv)) + 
+  geom_bar() +
+  labs(x = "Drive Train Category", y = "Count") +
+  scale_x_discrete(limits = c("r", "4", "f"))
+```
+
+::: notes
+
+Next problem is no regular person knows these one letter codes
+
+- **SLIDE**: So, let's now change the names of each bar
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**Step 3: Customize the visualization**
+:::
+
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.618, fig.width=6}
+ggplot(data = mpg, aes(x = drv)) + 
+  geom_bar() +
+  labs(x = "Drive Train Category", y = "Count") +
+  scale_x_discrete(limits = c("r", "4", "f"), 
+                   label = c("Rear Wheel", "Four Wheel", "Front Wheel"))
+```
+
+::: notes
+
+**Everybody with me on this?**
+
+- Let's call this the baseline clarity we require for our visualizations
+
+<br>
+
+**SLIDE**: Ok, let's practice!
+
+:::
+
+
+
+## Practice a Polished Bar Plot {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Make a bar plot of the `wb_income` variable in the WDI data you analyzed for class today
+
+1. Clean up the axis labels,
+
+2. Re-order the bars, and
+
+3. Remove the NA bar
+
+::: notes
+
+**SLIDE**: My version
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.618, fig.width=6}
+ggplot(data = d, aes(x = wb_income)) + 
+  geom_bar() +
+  labs(x = "World Bank Income Categories", y = "Count") +
+  scale_x_discrete(limits = c("Low Income", "Lower Middle Income", "Upper Middle Income", "High Income"),
+                   label = c("Low", "Lower Middle", "Upper Middle", "High"))
+```
+
+::: notes
+
+**Everybody get something like this?**
+
+<br>
+
+**Questions on this code?**
+
+<br>
+
+**SLIDE**: Get a little fancier...
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.7, fig.width=6}
+ggplot(data = d, aes(x = wb_income)) + 
+  geom_bar(width = .6, fill = "darkblue") +
+  labs(x = "World Bank Income Categories", y = "Count") +
+  scale_x_discrete(limits = c("Low Income", "Lower Middle Income", "Upper Middle Income", "High Income"),
+                   label = c("Low", "Lower Middle", "Upper Middle", "High")) +
+  theme_bw()
+```
+
+::: notes
+
+I prefer a thinner bar with a little color against a white background
+
+- Bar thickness is the "width" argument
+
+- "fill" is the color you want to fill in the bar with
+
+- There are a bunch of built-in themes but I like this black and white version to be very useful
+
+<br>
+
+**Questions?**
+
+<br>
+
+**SLIDE**: Let's practice again!
+
+:::
+
+
+
+## Practice a Polished Histogram {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Make a histogram of the `Immunization, measles (% of children ages 12-23 months)` variable in the WDI data you analyzed for class today
+
+::: notes
+
+**SLIDE**: My version
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+```{r, echo=TRUE, fig.retina=3, fig.align='center', fig.asp=0.7, fig.width=6}
+ggplot(data = d, aes(x = `Immunization, measles (% of children ages 12-23 months)`)) +
+  geom_histogram(color = "white", bins = 10) +
+  labs(x = "Measles Immunizations (% of children under 2)", y ="Count") +
+  theme_bw()
+```
+
+::: notes
+
+**How are we doing?**
+
+- I used the color argument to outline each bar in the histogram, and
+
+- Used fewer bins to get an overview of the distribution
+
+<br>
+
+**SLIDE**: Once you have the visualization done it's time to export it
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/04_3-export_image1.png){style="display: block; margin: 0 auto"}
+
+::: notes
+
+Three useful options through the export menu.
+
+- Comes down to your preference.
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/04_3-export_image2.png){style="display: block; margin: 0 auto"}
+
+::: notes
+
+If saving as an image it defaults to png.
+
+- You can then click and drag the size of this window to adjust the dimensions of the image.
+
+- The bigger the picture, the higher the resolution (and file size)
+
+- So, make sure to get the image the right size and sharpness here before importing into Word
+
+<br>
+
+**SLIDE**: So, you're working from home and you get stuck, what should you do?
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<br>
+
+<br>
+
++ Recipes 3.3 for bar plots
+
++ Recipe 6.1 for histograms
+
++ Recipe 6.6 for box plots
+
++ Recipe 4.1 for line Plots
+
++ Recipe 10.26 for outputting visualizations
+:::
+
+::: {.column width="50%"}
+
+![](Images/04_3-R_Graphics_Cookbook.jpg)
+
+:::
+::::
+
+::: notes
+
+SUPER useful reference book.
+
+- Freely available online
+
+- Laid out like a cookbook.
+    - Each section is a recipe designed to help you solve a specific problem.
+
+- I've linked to some very helpful ones throughout our syllabus.
+
+<br>
+
+Something not working? Notes incomplete?
+
+- Try the cookbook!
+
+- Just copy the recipes into your notes, update the names of the data and variables and it should work!
+
+<br>
+
+**SLIDE**: For next class
+
+:::
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Pollock and Edwards (2026): Read Chapter 3
+
+- Submit Exercises 2, 4 and 5 to Canvas
+
+::: notes
+
+Canvas Assignment: Chapter 3 Assessment
+
+1. Submit your answers to Exercise 2 on p78
+2. Submit your answers to Exercise 4 on p79
+3. Submit your answers to Exercise 5 on p79
+4. Was there anything specific in the chapter that didn't make sense or that you'd like to make sure we discuss in class?
+
+:::
+
+
+
