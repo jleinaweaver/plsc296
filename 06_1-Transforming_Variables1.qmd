@@ -11,26 +11,22 @@ library(kableExtra)
 library(modelsummary)
 
 # Data for today
-library(carData)
+#library(carData)
 
-data1 <- read_excel("../Data_in_Class/World_Development_Indicators/WDI-Tidy_Data_Extract-2024-02-07.xlsx", na = "NA")
-
-data2021 <- filter(data1, year == 2021)
+d <- read_excel("../../DATA/2026-Spring/WDI/Week05-Univariate_Practice/SP2026-Wk05-WDI_Data.xlsx", na = "NA")
 ```
 
 <br>
 
 ::: {.r-fit-text}
 
-**Practicing univariate analyses in R**
-
-- Review: Practice exercises
-
-- New: Tools for modeling across time data
-
-- Canvas: "WDI-Tidy_Data_Extract-2024-02-06.xlsx"
+**Creating, Transforming and Indexing Variables**
 
 :::
+
+- New Script: "Creating and Transforming Variables.R"
+
+- Add `library(tidyverse)` to the top of the new script
 
 <br>
 
@@ -43,485 +39,408 @@ Prep for Class
 
 1. Review Canvas submissions
 
-2. IFF you have time, consider adding some of the best submissions as slides to share and celebrate in class!
-
 <br>
 
-Last class, we began exploring data from the World Bank's WDI database.
+**SLIDE**: Aims for this week
 
-- A very useful repository of national statistics from something around 217 "economies" around the world.
-
-<br>
-
-Today I want us to:
-
-1. Review your practice exercises,
-
-2. Discuss how to use what you are producing to make arguments, and
-
-3. Learn some tools for analyzing data across time
-
-<br>
-
-**SLIDE**: Let's refresh our rules for making high quality visualizations
 :::
+
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, fig.align='center'}
-knitr::include_graphics("Images/06_1-bad_plot.png")
-```
+**Univariate Analyses**
+
+- Descriptive statistics (means, medians, modes, counts, SDs, etc)
+
+- Visualizations (bar plots, box plots, histograms)
+
+<br>
+
+::: {.fragment}
+**This Week**
+:::
+
+::: {.incremental}
+1. Modifying variables to help us analyze and present them
+
+2. Creating new variables to better measure our concepts
+:::
 
 ::: notes
 
-**Evaluate this visualization for me.**
+Thanks to the work you've done in univariate analysis you now have an array of tools for summarizing data
 
-- **What does it do well? What does it do poorly?**
-
-<br>
-
-This visualization gives me nightmares
-
-- Don't use 3-d if the 3-d provides ZERO new information
-
-- Make the axis scales logical!
-
-- I don't think these are continents...
-
-- Where does this data come from?
-
-- What do these bars actually show?
-
-- Why are there drop shadows?!?!?
+- e.g. descriptive statistics, frequency tables, bar plots, histograms and box plots
 
 <br>
 
-My hope is that as we work with data and grapple with the importance of uncertainty for our knowledge you will begin to see just how AWFUL many visualizations are.
+To really get the most out of those univariate tools we need to add some new skills this week
 
-- **SLIDE**: To refresh
+<br>
+
+**REVEAL** x 2: Today we'll focus on modifying variables to make them easier to analyze and understand
+
+- e.g. rescaling variables, transforming scales and converting numbers into categories
+
+<br>
+
+**REVEAL**: Wednesday and Friday we'll focus on creating new variables to better measure our concepts
+
+- e.g. Combining variables to build an index like how Freedom house builds its measures of global freedom
+
+<br>
+
+Our work today is designed to help you solve specific problems you will run into when doing data analysis work
+
+<br>
+
+**SLIDE**: The first problem
 
 :::
 
 
 
-## High quality visualizations include... {background-image="Images/background-data_blue_v4.png" .center .smaller}
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Problem**
+
+- Labels (and statistics) are hard to read and understand
 
 :::: {.columns}
 ::: {.column width="50%"}
-```{r, fig.align='center', fig.asp=1.1, fig.width=6, fig.cap="Figure 1. A count of countries by regional grouping from the United Nations (2009-2011) that shows the great majority of countries in the UN are located in Africa and Asia."}
-# The labs() function
-library(carData)
+```{r, fig.align='center', fig.retina=3, fig.asp=.85, fig.width=5, out.width="70%"}
+midwest |>
+  ggplot(aes(x = poptotal)) +
+  geom_histogram(color = "white") +
+  theme_bw() +
+  labs(x = "Total Population (midwest counties)", y = "Count")
+```
+:::
 
-ggplot(data = UN, aes(y = region)) +
-  geom_bar() +
-  labs(x = "x Axis Label", y = "y Axis Label", 
-       title = "A title like a thesis statement for the visualization")
+::: {.column width="50%"}
+```{r}
+midwest |>
+  summarize(
+    N = sum(!is.na(poptotal)),
+    Mean = mean(poptotal),
+    SD = sd(poptotal),
+    Min = min(poptotal),
+    Max = max(poptotal)
+  ) |>
+  t() |>
+  kable()
+```
+:::
+::::
 
-# caption = "Source: Where did the data come from?"
+**Solution**
+
+- Rescale the variable: Move the decimal
+
+::: notes
+
+*Read slide*
+
+<br>
+
+**SLIDE**: Ok, how do we do this?
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=7}
+# Create a new variable: Population in Thousands
+midwest$poptotal_k <- midwest$poptotal / 1000
+
+# Univariate analyses
+summary(midwest$poptotal_k)
+
+hist(midwest$poptotal_k)
+```
+
+::: notes
+
+At this point everyone should understand:
+
+- That you can access specific variables in a dataset with the "$" sign, and
+
+- That you can modify variables using calculator type functions
+
+- Now we're just adding in that we can save this new variable in the same dataset we started with
+
+- **Does this make sense?**
+
+<br>
+
+Now, let's look at the results
+
+- These summary stats are WAY easier to read, especially around the middle
+
+- BUT I don't love these figure axis labels
+
+    - Thinking about population as 1,000 thousands is confusing
+
+<br>
+
+In text I would definitely discuss the summary stats in thousands for this class, but I'd check rescaling into millions for the figure
+
+- Everybody redo this code BUT convert poptotal into millions
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=7}
+# Create a new variable: Population in Millions
+midwest$poptotal_m <- midwest$poptotal / 1e6
+
+# Univariate analyses
+summary(midwest$poptotal_m)
+
+hist(midwest$poptotal_m)
+```
+
+::: notes
+
+**Everybody get this?**
+
+<br>
+
+I really like the histogram labels now.
+
+- It clearly communicates to me that most counties are below 500,000 and there are a collection of HUGE outliers
+
+<br>
+
+Bottom line: Don't be afraid to move the decimal place on your variable if it makes the visualizations easier to read!
+
+<br>
+
+**SLIDE**: Problem 2
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Problem**
+
+- Distribution is so right-skewed we can't see the actual variation
+
+```{r, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=5}
+midwest |>
+  ggplot(aes(x = poptotal_m)) +
+  geom_histogram(color = "white") +
+  theme_bw() +
+  labs(x = "Total Population (midwest counties, millions)", y = "Count")
+```
+
+**Solution**
+
+- Rescale the variable: Change the scale (log)
+
+::: notes
+
+Problem 2: The distribution is so right-skewed we can't see the differences between the bulk of the sample
+
+<br>
+
+Sticking with the poptotal variable
+
+- **Remind me, what does it mean to say this variable is right skewed? What's the problem here?** 
+
+- (The outliers are hiding the actual variation!)
+
+- The counties at the low end aren't all the same and we want to see that variation too!
+
+<br>
+
+**SLIDE**: Let's fix it
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=7}
+# Create a new variable: Population in natural logs
+midwest$poptotal_log <- log(midwest$poptotal)
+
+# Univariate analyses
+summary(midwest$poptotal_log)
+
+hist(midwest$poptotal_log)
+```
+
+::: notes
+
+**Did everybody get this?**
+
+<br>
+
+**SLIDE**: Let's briefly unpack this
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+**Original Scale**
+
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.8, fig.width=5}
+summary(midwest$poptotal)
+
+#hist(midwest$poptotal)
+
+ggplot(midwest, aes(x = poptotal)) +
+  geom_histogram(color = "white") +
+  theme_bw()
+```
+:::
+
+::: {.column width="50%"}
+**Log Scale**
+
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.8, fig.width=5}
+summary(midwest$poptotal_log)
+
+#hist(midwest$poptotal_log)
+
+ggplot(midwest, aes(x = poptotal_log)) +
+  geom_histogram(color = "white", bins = 10) +
+  theme_bw() +
+  scale_x_continuous(breaks = 8:15)
+```
+:::
+::::
+
+::: {.fragment}
+```{r, echo=TRUE}
+exp(8)
+
+exp(9)
+```
+:::
+
+::: notes
+
+The key here is that both of these distributions describe the same data
+
+- Taking the log has not changed the order of the counties at all
+
+- We are simply examining the differences between them on the log scale instead of the normal counting scale
+
+<br>
+
+The log scale expands differences at the low end and shrinks the differences at the high end
+
+- So this tall bar of small counties gets unpacked so we can see how much they differ from each other
+
+- And the huge outliers are still there but get pulled back towards the rest of the distribution
+
+<br>
+
+**REVEAL**: We use exponentiation to undo the log conversion
+
+- Here I'm showing you the population associated with a log value of 8 and a log value of 9
+
+- Moving from log 8 to log 9 means your county size increases from 3k people to 8k people
+
+- So, at the low end of the log scale small changes move you up the distirbution
+
+<br>
+
+**SLIDE**: At the other end of the scale
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="50%"}
+**Original Scale**
+
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.8, fig.width=5}
+summary(midwest$poptotal)
+
+#hist(midwest$poptotal)
+
+ggplot(midwest, aes(x = poptotal)) +
+  geom_histogram(color = "white") +
+  theme_bw()
 ```
 
 :::
 
 ::: {.column width="50%"}
+**Log Scale**
 
-::: {.r-fit-text}
-1. Informative titles,
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.8, fig.width=5}
+summary(midwest$poptotal_log)
 
-2. Clear axis labels, and
+#hist(midwest$poptotal_log)
 
-3. A figure caption with
-
-    - Data sources
-    
-    - Description, and
-    
-    - Conclusions
-:::
+ggplot(midwest, aes(x = poptotal_log)) +
+  geom_histogram(color = "white", bins = 10) +
+  theme_bw() +
+  scale_x_continuous(breaks = 8:15)
+```
 :::
 ::::
-
-::: notes
-As we discussed last class, we will produce high quality data visualizations in this class
-
-- This means that every chance we have to make something, we want to be producing visualizations that would look good in any presentation, report, book, web post, poster, etc.
-
-- e.g. practice as you mean to go on!
-
-<br>
-
-**Any questions on these expectations?**
-
-<br>
-
-**Were you able to implement these in your submissions for today?**
-
-:::
-
-
-
-
-## Based on your analyses of this data, what is the state of global development in 2021? {background-image="Images/background-data_blue_v4.png" .center}
-
-::: notes
-
-**Ok, how did your assignment for today go?**
-
-- **Any trouble copying images into Canvas? Or polishing the visualizations?**
-
-<br>
-
-**Based on this data and your analyses, what would you argue is the current state of global development?**
-
-- **Is the world currently in pretty good or bad shape?**
-
-- e.g. measles_herd_immunity, measles_immunizations_pct, WB Income, gdp_per_capita, birth_rate, death_rate
-
-<br>
-
-*Encourage this discussion, Get different answers!*
-
-- *Summary stats at bottom*
-
-<br>
-
-Ultimately, one of the challenges for us as data scientists is in trying to answer what seem like simple questions using data.
-
-- As I'm sure you saw from this exercise, data doesn't speak for itself
-
-- Interpreting data requires understanding the context of the measurement AND the context of the problem
-
-<br>
-
-So, how do we give the reader the context they need to understand what we see in the data?
-
-- **SLIDE**: Today I want to talk through some of the options you have to do this
-
-<br>
 
 ```{r, echo=TRUE}
-summary(data2021$gdp_per_capita)
-summary(data2021$measles_immunizations_pct)
-table(data2021$measles_herd_immunity)
-summary(data2021$measles_immunizations_pct)
-summary(data2021$birth_rate)
-summary(data2021$death_rate)
-```
+exp(13)
 
-:::
-
-
-
-## Is this "good"? Are we doing well? {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.75, out.width='100%', fig.width=8}
-data2021$measles1 <- if_else(data2021$measles_immunizations_pct < 96, "risk", "immune")
-
-data2021 |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries")
+exp(14)
 ```
 
 ::: notes
 
-Let's start with our simple histogram of measles immunizations in 2021
+At the high end your population size must grow massively to move you further up the scale
 
-- **In simplest terms, describe what you see here**
-
-- (A left-skewed distribution)
-
-- (Mode appears to be near 100%)
-
-- (At least a few countries very, very low)
-
-<br>
-
-These simple descriptions are the baseline for what you should be able to do.
-
-- You should absolutely be able to describe the picture, but that is not enough
-
-- YOUR JOB as the data analyst is to ANALYZE and INTERPRET the data you see here
-
-<br>
-
-**What did we use when analyzing measles last class to make an argument about good vs bad performance?**
-
-- **In other words, what context did we provide the reader?**
-
-- (**SLIDE**: The herd immunity threshold of 95%)
-
-:::
-
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Analysis Option 1: Benchmark the Data**
-:::
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
-data2021$measles1 <- if_else(data2021$measles_immunizations_pct < 96, "risk", "immune")
-
-data2021 |>
-  ggplot(aes(x = measles_immunizations_pct, fill = measles1)) +
-  geom_histogram(bins = 15, color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "The level of vulnerability in some countries is\n staggeringly high") +
-  guides(fill = "none") +
-  scale_fill_manual(values = c("blue", "red"))
-```
-:::
-
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
-data2021 |>
-  ggplot(aes(x = measles_herd_immunity)) +
-  geom_bar(fill = c("red", "blue", "blue")) +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Too many countries remain vulnerable \n to measles outbreaks (< 95% vaccinated)")
-```
-:::
-::::
-
-::: notes
-
-Your first option when analyzing univariate analyses like these is to give your reader the context they need to interpret what they see.
-
-- In this case, herd immunity or the % needed to ensure a contagion would not spread out of control
-
-- This 95% figure represents a benchmark for interpreting this data
-
-- Benchmark: a standard or point of reference against which things may be compared or assessed.
-
-<br>
-
-Without the context of the herd immunity threshold it would be much harder for us to interpret and explain the substantive importance of these visualizations
-
-- WITH the context we can polish these plots to make ABSOLUTELY clear what we learn from them
-
-<br>
-
-**Does this make sense?**
-
-- My expectation for your assignments in this class is that you are good at describing the data AND analyzing it!
-
-<br>
-
-**What benchmark did I give you for the global wealth data?**
-
-- (**SLIDE:** World bank Income Categories)
-:::
-
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Analysis Option 1: Benchmark the Data**
-:::
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
-data2021 |>
-  ggplot(aes(x = gdp_per_capita)) +
-  geom_histogram(bins = 15, fill = "green3", color = "white") +
-  labs(x = "GDP per Capita", y = "Countries", caption = "Source: The World Bank's WDI (2024)") +
-  scale_x_continuous(labels = scales::dollar_format(scale = 1/1000, suffix = "k"))
-```
-:::
-
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=1, out.width='100%', fig.width=5}
-data2021 |>
-  ggplot(aes(x = wb_income)) +
-  geom_bar(fill = "green3") +
-  labs(x = "World bank Income Categories", y = "Countries", caption = "Source: The World Bank's WDI (2024)") + 
-  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", "High", NA), labels = c("Low\n(< $1k)\n", "Lower-middle\n(< $4.1k)", "Upper-middle\n(< $12.7k)", "High\n(> $12.7k)", "NA"))
-
-# WB categories
-# - Low: up to 1,045
-# - Low-mid: up to 4,095
-# - Upper-mid: up to 12,695
-# - High: 12,695+
-```
-:::
-::::
-
-::: notes
-
-I'll give you the code to reorder the bars in a bar plot in one sec, but first...
-
-- **Which of these is the "better" answer to the question, what is the state of global development in 2021?**
-
-- **In other words, which is the more "accurate" takeaway? Is most of the world "rich" or "poor"?**
-
-<br>
-
-- If you only give someone the histogram we see a very poor world with a few very wealthy outliers
-
-- If you only give someone the bar plot we see a fairly rich world with a few very poor countries
-
-- We need BOTH to wrap our heads around the distributions of wealth around the world
-
-- The plot on the left helps us see the political nature of the categories produced by the World Bank
-
-- The plot on the right helps us think about development in a more nuanced way than just dollars in a bank account
-
-<br>
-
-**How are we doing with this?**
-
-- **Is everybody clear on the difference between describing the plot and analyzing it?**
-
-<br>
-
-KEY TAKEAWAY: Analysis often requires context and benchmarks are one very useful way to provide that context!
-
-- The handy thing here is that this just requires you to pair two visualizations together, no new code required!
-
-<br>
-
-**SLIDE**: Here is the code you need to re-order the bars in a bar plot
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::::: {.r-fit-text}
-```{r, echo=TRUE, eval=FALSE}
-# Use scale_x_discrete to reorder bars in bar plot
-ggplot(data2021, aes(x = wb_income)) +
-  geom_bar(fill = "green3") +
-  scale_x_discrete(limits = c("Low", "Lower-middle",
-                              "Upper-middle", "High", NA))
-```
-:::::
-
-```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
-# Use scale_x_discrete to reorder bars in bar plot
-ggplot(data2021, aes(x = wb_income)) +
-  geom_bar(fill = "green3") +
-  scale_x_discrete(limits = c("Low", "Lower-middle", "Upper-middle", 
-                              "High", NA))
-```
-
-::: notes
-
-To keep the code readable on the slide I added space between upper-middle and high, you don't need that space
-
-- You can just keep it all on one line
-
-<br>
-
-**SLIDE**: Our second option for adding context to a visualization
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Analysis Option 2: Label an Observation**
-:::
-
-::: {.panel-tabset}
-
-### GDP per capita
-
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.618, out.width="68%", fig.width=7}
-d_us <- data2021 |> filter(country == "United States")
-d_china <- data2021 |> filter(country == "China")
-
-data2021 |>
-  ggplot(aes(x = gdp_per_capita)) +
-  geom_histogram(bins = 15, fill = "green3", color = "white") +
-  labs(x = "GDP per Capita", y = "Countries", title = "Global Wealth (2021): China vs the US") +
-  #annotate("segment", x = 67000, xend = 67000, y = 35, yend = 13, arrow = arrow(length = unit(0.5, "cm"))) +
-  annotate("text", x = 67000, y = 12, label = "US") +
-  annotate("text", x = 17000, y = 48, label = "CHN") +
-  scale_x_continuous(labels = scales::dollar_format(scale = 1/1000, suffix = "k"))
-```
-
-### Births
-
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.618, out.width="68%", fig.width=7}
-data2021 |>
-  ggplot(aes(x = birth_rate)) +
-  geom_histogram(bins = 15, fill = "red3", color = "white") +
-  labs(x = "Birth Rate (per 1,000)", y = "Countries", title = "Global Development (2021): China vs the US") +
-  ylim(0, 60) +
-  annotate("text", x = 11.5, y = 52, label = "US") +
-  annotate("text", x = 8.5, y = 34, label = "CHN")
-```
-
-:::
-
-::: notes
-
-Another option is to label specific observations
-
-- For an American audience I can imagine this helping us think about the world relative to our own experiences.
-
-- *Show each of the two plots*
-
-<br>
-
-Whereas the benchmark approach required a number as context
-
-- This approach uses an observation as context
+- Moving from log 13 to log 14 means your county size increases from 440k people to 1.2 million people!
 
 - **Make sense?**
 
 <br>
 
-**SLIDE**: Code for adding text to a plot
-:::
+The cool thing here is you can use a simple rule of thumb to interpret changes on the log scale
 
+- Each one unit move on the log scale is approximately a tripling of the underlying score
 
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::::: {.r-fit-text}
-```{r, echo=TRUE, eval=FALSE}
-# Adding text to a plot
-ggplot(data2021, aes(x = death_rate)) +
-  geom_histogram(bins = 15) +
-  annotate("text", x = 10.3, y = 25, label = "US")
-```
-:::::
-
-```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
-ggplot(data2021, aes(x = death_rate)) +
-  geom_histogram(bins = 15) +
-  annotate("text", x = 10.3, y = 25, label = "US")
-```
-
-::: notes
-
-Here is the code you need to add text to any plot
-
-- Specify you are adding "text"
-
-- Pinpoint the spot using x and y coordinates
+- Technically a natural log relies on Euler's constant of 2.72... but tripling is a useful approximation
 
 <br>
 
-Test it out.
+So, in sum, we take the log if the distribution is right-skewed and this puts all of the values on the log scale
 
-- Try adding random text somewhere on the plot, and
+- We read increases on the log scale as tripling the score
 
-- an arrow
+- This will be something we do A LOT when we get to bivariate and multivariate analyses especially with regression
 
 <br>
 
-**SLIDE**: Let's add some different text with other options too!**
+**Big picture questions on the log transformation?**
+
+<br>
+
+**SLIDE**: Problem 3
 
 :::
 
@@ -529,71 +448,271 @@ Test it out.
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-::::: {.r-fit-text}
-```{r, echo=TRUE, eval=FALSE}
-# Adding text to a plot
-ggplot(data2021, aes(x = death_rate)) +
-  geom_histogram(bins = 15) +
-  annotate("text", x = 18, y = 40, label = "Average: 8.7 years",
-           size = 7, color = "red") +
-  annotate("text", x = 18, y = 35, label = "SD: 3.3 years",
-           size = 7, color = "red")
-```
-:::::
+**Problem**
 
-```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
-ggplot(data2021, aes(x = death_rate)) +
-  geom_histogram(bins = 15) +
-  annotate("text", x = 18, y = 40, label = "Average: 8.7 years",
-           size = 7, color = "red") +
-  annotate("text", x = 18, y = 35, label = "SD: 3.3 years",
-           size = 7, color = "red")
+- You want to focus on one level or region of a distribution
+
+```{r, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=5}
+mpg |>
+  ggplot(aes(x = drv)) +
+  geom_bar() +
+  theme_bw() +
+  labs(x = "Drive Trains", y = "Count")
+```
+
+**Solution**
+
+- Create a dummy variable with ifelse()
+
+::: notes
+
+PROBLEM: You are interested in investigating one part of a distribution only
+
+<br>
+
+For example here, let's say we want to focus our analysis on front wheel drive cars only
+
+- SOLUTION: to address this we'll create a dummy variable with ifelse()
+
+<br>
+
+**SLIDE**: Let's start by talking about the if_else function
+
+:::
+
+
+
+## Using if_else to evaluate your data {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, echo=TRUE}
+# Create a vector of numbers
+x <- c(1, 3, 5, 7, 9)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Evaluate the numbers in the vector
+x > 5
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Use if_else to evaluate AND re-label
+if_else(x > 5, "Above median", "Below median")
 ```
 
 ::: notes
 
-**SLIDE**: Your third option for adding context for analysis is to give the reader across time data!
+*Step through the code*
+
+<br>
+
+The if_else function is a super handy piece of code to learn
+
+- It basically has three elements
+
+- Element 1 is a test with a true or false answer
+
+- Element 2 is what you want to happen if the answer is true
+
+- Element 3 is what you want to happen if the answer is false
+
+<br>
+
+Essentially if_else gives us a way to evaluate the observations in a variable and to recode them as something else
+
+- **Make sense?**
+
+<br>
+
+**SLIDE**: Let's apply this to our problem
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=7}
+# Focus on one level of a nominal or ordinal variable 
+mpg$front_wheel <- if_else(mpg$drv == "f", "Front Wheel", "Other")
+
+# Univariate analyses
+table(mpg$front_wheel)
+
+barplot(table(mpg$front_wheel))
+```
+
+::: notes
+
+So, this code creates a new variable
+
+- The if_else test says that when the drive train value in the mpg dataset is "f" the observation should be marked "front wheel"
+
+- When it is false, it should be marked as other
+
+<br>
+
+**Everybody get this code to work?**
+
+<br>
+
+**If you wanted to focus on rear wheel drive cars, what would you change the if_else test to?**
+
+- ("r")
+
+<br>
+
+**SLIDE**: You can also convert an interval variable into a dummy
+
 :::
 
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-**Analysis Option 3: Snapshots Across Time**
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=7}
+# Focus on a region of an interval variable 
+mpg$biggest_engines <- if_else(mpg$displ >= 4.6, 
+                               "Top 25%", "Bottom 75%")
 
-::::: {.r-fit-text}
-```{r, echo=TRUE, eval=FALSE}
-# Subset the data by one year
-data1985 <- filter(data1, year == 1985)
+# Univariate analyses
+table(mpg$biggest_engines)
 
-ggplot(data1985, aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white")
-```
-:::::
-
-```{r, cache=TRUE, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=8}
-# Subset the data by one year
-data1985 <- filter(data1, year == 1985)
-
-ggplot(data1985, aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white")
+barplot(table(mpg$biggest_engines))
 ```
 
 ::: notes
 
-The third way we can add context to our analyses is with across time data
+We can also convert interval variables into a dummy variable
 
-- In other words, we can compare observations to themselves at different points in time
+- Instead of the double equals sign we use the relational symbols we practiced a few weeks ago
 
-<br>
-
-The WDI dataset I provided you has country-year data going back to 1985
-
-- So let's use that data to see how measles vaccinations have changed over time!
+- e.g. less than, greater than, etc
 
 <br>
 
-**Everybody clear on how to extract subsets of the data using the filter?**
+**Everybody get this code to work?**
+
+<br>
+
+**SLIDE**: Ok, last problem for today
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Problem**
+
+- You want to convert an interval variable into an ordinal variable
+
+```{r, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=5}
+mpg |>
+  ggplot(aes(x = displ)) +
+  geom_histogram(color = "white", bins = 10) +
+  theme_bw() +
+  labs(x = "Engine Displacement", y = "Count")
+```
+
+**Solution**
+
+- Cut the interval variable into labelled bins
+
+::: notes
+
+PROBLEM: You want to collapse an interval variable into an ordinal variable
+
+- This is essentially what you were asked to do in textbook exercises 2 and 4
+
+<br>
+
+Let's say we want to break engine sizes into four equally sized groups
+
+- The quartiles do exactly this, but we want to label each car by its quartile
+
+- **SLIDE**: The code
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE}
+# Calculate the quartiles
+summary(mpg$displ)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Cut the interval
+cut(x = mpg$displ, breaks = c(1.5, 2.4, 3.3, 4.6, 7.2))
+```
+
+::: notes
+
+First we use summary to find the quartiles, then we use cut to split the interval into bins
+
+- IMPORTANT 1: Go a bit below the minimum and above the maximum to capture those values
+
+- IMPORTANT 2: You must have one more "break" than you have groups!
+
+    - The observations are being put into the bins between the values you have specified
+    
+    - SO, an engine with a 2 litre engine goes between 1.5 and 2.4
+    
+<br>
+
+**Does this process make sense?**
+
+<br>
+
+**SLIDE**: Add labels
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=7}
+# Save the new ordinal variable
+mpg$engine_size <- cut(x = mpg$displ, 
+                       breaks = c(1.5, 2.4, 3.3, 4.6, 7.2),
+                       labels = c("1st Q", "2nd Q", "3rd Q", "4th Q"))
+
+# Univariate analyses
+table(mpg$engine_size)
+
+barplot(table(mpg$engine_size))
+```
+
+::: notes
+
+**Everybody get this code to work?**
+
+<br>
+
+The cut function takes some practice, so let's do that
+
+- Everybody cut the `poptotal` variable from the midwest dataset into its four quartiles
+
+- Go!
+
+<br>
+
+(**SLIDE**)
 
 :::
 
@@ -601,171 +720,65 @@ The WDI dataset I provided you has country-year data going back to 1985
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-**Analysis Option 3: Snapshots Across Time**
-:::
+```{r, echo=TRUE, fig.align='center', fig.retina=3, fig.asp=.618, fig.width=7}
+# Save the new ordinal variable
+midwest$pop_size <- cut(x = midwest$poptotal, 
+    breaks = c(1700, 18840, 35324, 75651, 5105067),
+    labels = c("1st Q", "2nd Q", "3rd Q", "4th Q"))
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.85, fig.width=5}
-data1 |>
-  filter(year == 1985) |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (1985)")
-```
-:::
+# Univariate analyses
+table(midwest$pop_size)
 
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.85, fig.width=5}
-data1 |>
-  filter(year == 2021) |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 15, fill = "blue", color = "white") +
-  labs(x = "Measles Immunizations (% under 2 years)", y = "Countries", title = "Global Health (2021)")
-```
-:::
-::::
-
-::: notes
-**Why does having both of these visualizations make our analyses so much more useful?**
-
-- (Allows us to track a distribution across time)
-
-- (The world has made incredible progress in fighting measles but there is much left to do!)
-
-<br>
-
-**SLIDE**: We can do better than two snapshots though, right?
-:::
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Analysis Option 3: Snapshots Across Time**
-:::
-
-::::: {.r-fit-text}
-```{r, echo=TRUE, eval=FALSE}
-# Install the animation packages (one time)
-install.packages("gifski")
-install.packages("gganimate")
-
-# Load the packages
-library(gifski)
-library(gganimate)
-
-# Histogram across time
-ggplot(data1, aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 30) +
-  transition_time(year) +
-  labs(y = "Count", x = "Measles Immunizations",
-  title = "Year: {as.integer(frame_time)}")
-```
-:::::
-
-::: notes
-
-The key here is the "transition_time" function
-
-- THAT's the piece that creates the animation as a gif
-
-<br>
-
-**SLIDE**: Results!
-:::
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Analysis Option 3: Snapshots Across Time**
-:::
-
-```{r, cache=TRUE, eval=TRUE, fig.retina=3, fig.align='center', fig.asp=0.618, fig.width=8, out.width='80%'}
-# Load the package
-library(gganimate)
-
-# Histogram across time
-data1 |>
-  ggplot(aes(x = measles_immunizations_pct)) +
-  geom_histogram(bins = 30, fill = "blue", color = "white") +
-  transition_time(year) +
-  labs(title = "Year: {as.integer(frame_time)}",
-       x = "Measles Immunizations (% under 2 years)", y = "Countries",
-       caption = "Source: WDI (2024)")
+barplot(table(midwest$pop_size))
 ```
 
 ::: notes
-**What does this help us see in the data?**
+
+**Did everybody get this code?**
 
 <br>
 
-Animations are fun and a great tool for presentations, but not as much for written reports.
+Most of our tools and techniques for today are about setting the table for the analyses to come.
+
+- Once we start analyzing relationships we'll be doing quite a bit of variable transformations.
 
 <br>
 
-**SLIDE**: We need to practice all this!
+**SLIDE**: For next class
+
 :::
 
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
 
-**For Next Class**
+<br>
 
-1. Practice data analysis exercises
+1. Practice today's code on our Canvas assignment
 
-2. *The Freedom in the World* Methodology
+    - Data: SP2026-Wk05-WDI_Data.xlsx
+    
+2. Read the background document on the Annual National Election Survey (ANES)
 
-:::
-
-![](Images/05_2-Freedom_House.png)
+3. Read through the ANES variables list on Canvas
 
 ::: notes
 
-For next class:
+Canvas Assignment: Practice modifying variables for better analyses
 
-- Data exercises to practice our analysis tools from today
+All figures submitted in this exercise must be made using ggplot and polished in line with class requirements (clear axis labels and a complete figure caption with informative title, key takeaway and data sourcing)
 
-- Then I want you to read the Freedom House Methodology page so we can explore that data in class
+1. Compare a histogram of "GNI per capita, Atlas method (current US$)" in thousands of dollars to a second histogram using the logged version of the variable. Submit both histograms and explain what we learn about income in the world from these two views of the data.
+2. Make a dummy variable that splits the WDI sample into two groups by level of measles immunization. Label all countries at or above 95% on "Immunization, measles (% of children ages 12-23 months)" as "Herd immunity" and the rest as "At risk". Submit a bar plot of your new variable and explain what we learn from this distribution.
+3. Replicate the "wb_income" variable in our WDI sample using the cut function and the data in "GNI per capita, Atlas method (current US$)". Submit the code you used to make the new variable and make an argument that you believe this ordinal variable is (or isn't) a "better" way to think about global development.
 
-<br>
+World Bank Gross National Income Categories for 2023
 
-**SLIDE**: The exercises
-:::
+- Low income (L) <= 1,145
+- Lower middle income (LM) 1,146 - 4,515
+- Upper middle income (UM) 4,516 - 14,005
+- High income (H) > 14,005
 
 
-
-## Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-**Questions to Answer:**
-
-1. Are birth rates rising or falling around the world? (`birth_rate`)
-
-2. Is the world getting richer or more unequal over time? (`wb_income`)
-
-::: notes
-Use each question as your chance to practice all of our tools:
-
-- Descriptive Statistics: Calculate the minimum, the median and the maximum for each variable at three snapshots in time (1985, 2003, 2021)
-
-- Bar plots: Visualize `wb_income` at three snapshots in time (1985, 2003, 2021)
-
-- Histograms: Visualize `death_rate` at three snapshots in time (1985, 2003, 2021)
-
-- Animation: Transform one of the visualizations into an animation across all the years in the dataset
-
-<br>
-
-**THEN, submit your answer to each question with only the evidence you need to support your analyses. (3+ sentences each)**
-
-<br>
-
-**Questions on the assignment?**
 :::

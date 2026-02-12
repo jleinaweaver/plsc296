@@ -9,6 +9,8 @@ library(tidyverse)
 library(readxl)
 library(kableExtra)
 library(modelsummary)
+
+load(file = "../../DATA/2026-Spring/Miller_Saunders_Farhart2016/Miller_Saunders_Farhart2016.RData")
 ```
 
 <br>
@@ -61,6 +63,53 @@ Quick aside before we get started today
 **SLIDE**: Let's start today with an overview of your first report
 
 :::
+
+
+
+## Political Knowledge {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.align='center', fig.asp=.75, fig.width=7}
+# Recode nominal variables into dummies
+d$Majority_House2 <- if_else(d$Majority_House == "Republican Party", 1, 0)
+d$More_Conservative2 <- if_else(d$More_Conservative == "Republican Party", 1, 0)
+d$JRoberts_Job2 <- if_else(d$JRoberts_Job == "Chief Justice of the Supreme Court", 1, 0)
+d$Pres_Russia2 <- if_else(d$Pres_Russia == "Vladimir Putin", 1, 0)
+d$Speaker2 <- if_else(d$Speaker == "John Boehner", 1, 0)
+d$JBiden_Job2 <- if_else(d$JBiden_Job == "Vice President of the United States", 1, 0)
+d$DCameron_Job2 <- if_else(d$DCameron_Job == "Prime Minister of the United Kingdom", 1, 0)
+d$Nominates_Judges2 <- if_else(d$Nominates_Judges == "The President", 1, 0)
+d$Senate_Term2 <- if_else(d$Senate_Term == "6 years", 1, 0)
+d$Reviews_Laws2 <- if_else(d$Reviews_Laws == "The Supreme Court", 1, 0)
+d$Veto_Override2 <- if_else(d$Veto_Override == "2/3", 1, 0)
+d$Sec_State2 <- if_else(d$Sec_State == "John Kerry", 1, 0)
+d$Sec_Treasury2 <- if_else(d$Sec_Treasury == "Jacob Lew", 1, 0)
+d$PM_Canada2 <- if_else(d$PM_Canada == "Stephen Harper", 1, 0)
+
+d$knowledge_index <- d$Majority_House2 + d$More_Conservative2 + d$JRoberts_Job2 + d$Pres_Russia2 + d$Speaker2 + d$JBiden_Job2 + d$DCameron_Job2 + d$Nominates_Judges2 + d$Senate_Term2 + d$Reviews_Laws2 + d$Veto_Override2 + d$Sec_State2 + d$Sec_Treasury2 + d$PM_Canada2
+
+summary(d$knowledge_index)
+
+ggplot(data = d, aes(x = knowledge_index)) +
+  geom_bar() +
+  theme_bw() +
+  labs(x = "Political Knowledge (0-14)", y = "Count") +
+  scale_x_continuous(breaks = 0:14)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
