@@ -8,15 +8,19 @@ format: revealjs
 library(tidyverse)
 library(readxl)
 library(kableExtra)
+
+load(file = "../../DATA/2026-Spring/ANES/ANES2020_Data_Extract.RData")
 ```
 
 <br>
 
 ::: {.r-fit-text}
 
-**Bivariate Analyses**
+**Introduction to Bivariate Analyses**
 
-- Descriptive Statistics and Correlations
+- Generating cross-tabs and group statistics
+
+- Create a new R file: Bivariate_Descriptive_Stats.R
 
 :::
 
@@ -29,143 +33,13 @@ Justin Leinaweaver (Spring 2026)
 ::: notes
 Prep for Class
 
-1. Update research question on slide 2
-
-Readings:
-
-- Wheelan chapter 4 "Correlation"
-- Wheelan chapter 5 "Basic Probability"
-
-:::
-
-
-
-## Our Research Question {background-image="Images/background-data_blue_v4.png" .center}
+1. Review Canvas assignment submissions
 
 <br>
 
-**Does a free press promote better environmental quality around the world?**
+Last class we did a crash course in the concepts we will need to perform useful bivariate analyses
 
-```{r, fig.align='center', fig.width = 10, fig.height=2}
-## Manual DAG
-d1 <- tibble(
-  x = c(-3, 3),
-  y = c(1, 1),
-  labels = c("Press\nFreedom", "Environmental\nQuality")
-)
-
-ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = -1.9, xend = 1.85, y = 1, yend = 1, arrow = arrow())
-```
-
-
-::: notes
-
-As we build toward answering our research question with data we will need to pick up some new concepts and tools!
-
-- New concepts: Probability and correlation
-
-- New tools: Bivariate descriptive statistics
-
-<br>
-
-**Everybody ready to go with a new script file?**
-
-- I would suggest you put "bivariate analyses" in the name so its easy to find in future!
-:::
-
-
-
-## Tidyverse Dataset: mpg {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-```{r, echo=FALSE}
-set.seed(134)
-
-mpg |>
-  slice_sample(n = 9) |>
-  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
-  kableExtra::kable_styling(font_size = 24)
-```
-
-::: notes
-I'd love to play with more exciting data today and Wednesday, but because we are building your notes for the future I want to use built-in data
-
-- This way, in future, the code should always work
-
-- If we explored external datasets then you'd need the code PLUS the dataset in order to refresh your memory with these notes
-
-<br>
-
-To refresh our memories, the `mpg` dataset is part of the tidyverse package
-
-- The data was produced by the EPA and tracks fuel economy data for 38 popular models of cars in  1999 and 2008.
-
-<br>
-
-The Variables
-
-- Displacement is a proxy for engine size
-- Number of cylinders
-- Type of transmission
-- Type of drive train
-- city and highway fuel economy
-:::
-
-
-## 3. Variable type determines the tool {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.align='center', out.width='90%'}
-knitr::include_graphics("Images/01_2-levels_measurement.png")
-```
-
-::: notes
-Just as we did previously, we will be guided in learning our new tools by this rule of data science!
-
-- If you know the variable types you are analyzing, choosing the right tool is done for you!
-:::
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Categorical x Categorical**
-
-<br>
-
-```{r, echo=FALSE}
-set.seed(134)
-
-mpg |>
-  slice_sample(n = 10) |>
-  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
-  column_spec(6:7, background = "pink") |>
-  kableExtra::kable_styling(font_size = 22)
-```
-
-::: notes
-
-Analysis of the relationship between two categorical variables
-
-<br>
-
-**Remind me, what is the only thing we can do to summarize a categorical variable?**
-
-- (Count the levels!)
-
-<br>
-
-**And what is the function that does that for us?**
-
-- (table!)
-
-<br>
-
-**SLIDE**: Let's now extend the table function to count the levels in TWO categorical variables
+- **SLIDE**: I want to keep emphasizing that bivariate builds on univariate analysis, ito doesn't replace it
 
 :::
 
@@ -173,336 +47,489 @@ Analysis of the relationship between two categorical variables
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
+**Univariate Analyses**
+
+- Evaluating measures of the empirical world, AND 
+
+- Using statistics to summarize or describe their distributions
+
+<br>
+
+**Bivariate Analyses**
+
+- "...involves the analysis of two variables (often denoted as X, Y), for the purpose of determining the empirical relationship between them" (Babbie 2009).
+
+::: notes
+
+Until you have done a thorough univariate analysis, you should NOT be doing a bivariate analysis
+
+<br>
+
+**Remind me, why is it so crucial to begin every data project with univariate analysis?**
+
+<br>
+
+If the data isn't valid, reliable or showing actual variation then there's nothing to be done with it!
+
+- Be DEEPLY suspicious of people with fancy stats who can't describe the data generating process!
+
+- If you don't understand the measurement then you shouldn't be interpreting it
+
+<br>
+
+One of the big problems with "AI" automatic data analysis
+
+- Like handing a gun to a toddler...
+
+<br>
+
+**SLIDE**: Our other big point of emphasis last class focused on DAGs
+
+:::
+
+
+
+## Directed Acycylic Graphs (DAGs) {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+![](Images/07_1-PollockEdwards-Figure_04_08.jpg)
+
+::: notes
+
+These directed acyclic graphs give us a technique for making and evaluating causal arguments
+
+- As we develop these arguments we will often brainstorm possibly related variables
+
+- These "types" of connection can help us clarify those relationships
+
+<br>
+
+**Any questions on what we covered last class?**
+
+- e.g. chains, colliders and forks?
+
+    - Collider: two IVs independently influence a single DV without being directly related
+    - Chain: A chain is a linear sequence where one variable affects another
+    - Fork: Fork occurs when a shared cause influences two separate variables that are not directly connected
+
+- e.g. probabilistic vs deterministic models
+
+- e.g. inductive vs deductive reasoning
+
+<br>
+
+**SLIDE**: Today we introduce the tools you'll need for bivariate descriptive statistics
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
 ::: {.r-fit-text}
-**Bivariate Analyses: Categorical x Categorical**
+**Bivariate Analyses: Descriptive Statistics**
 :::
 
 <br>
 
-:::: {.columns}
-::: {.column width="55%"}
-
-**Univariate Analyses**
-
-```{r}
-options(width = 40)
-```
+Add the following to your notes:
 
 ```{r, echo=TRUE}
-table(mpg$trans)
+# Bivariate Descriptive Statistics
+
+# Categorical x Categorical
+# Cross-tabs: table(), proportions(margin = 2)
+
+# Interval x Categorical
+# Group statistics: aggregate() with summary()
+
+# Load the tidyverse for practice data
+library(tidyverse)
 ```
 
-```{r, echo=TRUE}
-table(mpg$drv)
-```
+::: notes
+
+*Read the slide*
+
+- Categorical is an umbrella term for both nominal and ordinal variables
+
+<br>
+
+Only differences from univariate analysis:
+
+1. We need the "margin" argument in proportions()
+
+2. We'll use the aggregate function with the summary stats
+
+<br>
+
+**SLIDE**: To introduce these bivariate tools we'll start with built-in data
 
 :::
 
-::: {.column width="45%"}
 
-**Bivariate Analyses**
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+### **What explains why some diamonds are more expensive than others?**
+
+<br>
 
 ```{r, echo=TRUE}
-# Cross-tabulation Table
-table(mpg$trans, mpg$drv)
+diamonds
 ```
 
+::: notes
+
+We will introduce the bivariate tools as means for analyzing relationships.
+
+- That means we need a question to answer and an outcome to explain!
+
+- So, what explains the variation in the prices of diamonds?
+
+<br>
+
+The `diamonds` dataset includes the prices and other characteristics of nearly 54,000 diamonds
+
+- If you've loaded the tidyverse you should have access to the diamonds data
+
+- Everybody make sure!
+
+<br>
+
+Here we see that `price` is an interval variable
+
+- **SLIDE**: To give us extra options for bivariate analysis let's make an ordinal version of the `price` variable
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+### Create an ordinal version of price
+
+```{r, echo=TRUE}
+summary(diamonds$price)
+```
+
+<br>
+
+```{r, echo=TRUE}
+diamonds$price2 <- cut(diamonds$price,
+    breaks = c(0, 950, 2401, 5324, 19000),
+    labels = c("25th", "50th", "75th", "100th"))
+
+# Check the new variable
+table(diamonds$price2)
+```
+
+::: notes
+
+Here I am using the summary function to identify the quartiles in diamond prices
+
+- Everybody create the new variable and make sure it worked.
+
+<br>
+
+**SLIDE**: Now we have two versions of the outcome to play with
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+### **What explains why some diamonds are more expensive than others?**
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.asp=1, fig.width=6}
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(color = "black", fill = "darkgrey", bins = 15) +
+  theme_bw() +
+  labs(x = "Prices ($)", y = "Count") +
+  scale_x_continuous(labels = scales::dollar_format(scale = 1/1000, suffix = "k"))
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.asp=1, fig.width=6}
+ggplot(diamonds, aes(x = price2)) +
+  geom_bar(fill = "darkgrey", width = .6) +
+  theme_bw() +
+  labs(x = "Diamond Prices in Quantiles", y = "Count")
+```
 :::
 ::::
 
 ::: notes
-Adding a second variable to the table function is quite simple
 
-- On the left we see that 58 cars are manual transmission with five gears
-
-- On the right we see how that 58 cars is distributed across the different drive trains
+Here I've just made a quick univariate visualization of the two versions of the outcome variable
 
 <br>
 
-This is what we refer to as a cross-tabulation or cross-tab
+We'll use the interval version of price to allow us to develop a precise model of specific value
+
+- To the dollar!
+
+<br>
+
+We'll use the ordinal version to examine broader trends in the data
+
+- e.g. what characteristics broadly determine the value of a diamond?
+
+- Useful because it means the outliers don't move the analysis as much
+
+- Dangerous because we're throwing away data and pretending that all of the outliers fit in one box is a BIG assumption
+
+<br>
+
+**SLIDE**: Let's talk diamond value
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+### **What explains why some diamonds are more expensive than others?**
+
+![](Images/07_2-Dimaonds_4cs.png){style="display: block; margin: 0 auto"}
+
+::: notes 
+
+And here we have the four C's of diamond value
+
+- Diamonds are evaluated per their cut, color, clarity and carats (or weight)
+
+<br>
+
+Let's start by building a model using the `cut` variable
+
+- Diamonds can be classified by the quality of their cuts running from fair to ideal (5 levels)
+
+- Lesser cuts will either be too shallow or too deep to sparkle really well
+
+<br>
+
+**SLIDE**: `Cut` is an ordinal variable and we'll start by using that to explain our ordinal variable version of price
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Bivariate Analyses: Categorical x Categorical**
+
+```{r, echo=TRUE}
+# Cross-tabs
+table(diamonds$price2, diamonds$cut)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Cross-tabs (overall %s)
+proportions(table(diamonds$price2, diamonds$cut))
+```
+
+::: notes
+
+As always, the variable type determines the tool you want to use
+
+- So, when summarizing the relationship between two categorical variables we stick with our old friends table and proportions
+
+- A table with two variables is called a cross-tab
+
+<br>
+
+Adding a second variable to the table function is quite simple, it is just a comma separated list
+
+- The first variable defines the rows and the second the columns
+
+- As the textbook makes clear, your levels of the outcome variable should be on the rows, predictor levels are the columns
+
+- If you convert the table to proportions then what you get is each cell of the table divided by the total number of observations
+
+<br>
+
+**Did everybody get these results?**
+
+<br>
+
+Reading the count table is quite easy to understand
+
+- *Read across the 25th percentile of diamonds: 88 received a "fair" cut, 1,057 a "good" cut, etc*
+
+- **Is that what you'd expect to see if the quality of the cut impacts the price of a diamond?**
+
+- (Nope! Shouldn't this be backwards with cheap diamonds in the fair cut category???)
+
+<br>
+
+To read the proportion table just remember that each % is out of the whole sample
+
+- Top-left: Almost none of the diamonds in the dataset are in the cheapest quartile with a "fair" cut
+
+- Bottom-right corner: 9% of ALL the diamonds in the dataset are "ideal" cut and in the most expensive quartile
 
 - **Make sense?**
 
 <br>
 
-**Which combinations of transmission and drive train are the most common in this data set?**
+**SLIDE**: We need one more tweak if we want to analyze this relationship using a cross-tab
 
-<br>
-
-**Remind me again, how do we convert a table of counts into a table of proportions?**
-
-- (**SLIDE**: proportions())
-
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Categorical x Categorical**
-
-<br>
-
-```{r}
-options(width = 90)
-```
-
-::: {.r-fit-text}
-
-```{r, echo=TRUE}
-# Convert cross-tabs into overall proportions (%s)
-proportions(table(mpg$trans, mpg$drv))
-```
-
-:::
-
-::: notes
-Proportions converted the counts to proportions of the entire data set.
-
-<br>
-
-**Any questions on this code or how to interpret the output?**
-
-<br>
-
-**SLIDE**: Practice
-:::
-
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Categorical x Categorical**
-
-<br>
-
-What **proportion** of SUVs (`class`) are four wheel drive (`drv`)?
-
-::: notes
-Alright, use these tools to answer this question!
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Categorical x Categorical**
-
-<br>
-
-What **proportion** of SUVs (`class`) are four wheel drive (`drv`)?
-
-```{r, echo=TRUE}
-proportions(table(mpg$class, mpg$drv))
-```
-
-::: notes
-**Ok, why is the answer to my question definitely not 22%?**
-
-- (These are proportions OVERALL)
-
-- (e.g. 22% of ALL the cars in the mpg dataset are 4wd SUVs)
-
-<br>
-
-**SLIDE**: What we want is for R to calculate proportions separately for each class of cars.
 :::
 
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE}
-# Proportions by Row
-proportions(table(mpg$class, mpg$drv), margin = 1)
-```
+**Bivariate Analyses: Categorical x Categorical**
 
 ```{r, echo=TRUE}
-# Proportions by Column
-proportions(table(mpg$class, mpg$drv), margin = 2)
+# Cross-tabs
+table(diamonds$price2, diamonds$cut)
 ```
-
-::: notes
-
-The 'margin' argument let's you recalculate proportions by either the rows or the columns
-
-<br>
-
-Row margins means each class of car is estimated separately
-
-- 82% of SUVs in the sample are 4wd
-
-- 100% minivans are front wheel drive
-
-<br>
-
-Column margins means each drive train type is estimated separately
-
-- 50% of 4wd cars are SUVs
-
-- Most front weel drive cars are compact (33%), midsize (36%) or subcompact (21%)
-
-<br>
-
-**Any questions on using table and proportions to perform bivariate analyses on two categorical variables?**
-
-- Sometimes you want proportions overall and sometimes you'll want proportions across categories
-
-- Either case, the code is simple!
-
-<br>
-
-**SLIDE**: Let's tie this to the Wheelan chapter on probability you read for class today.
-:::
-
-
-
-## "Probability is the study of events and outcomes involving an element of uncertainty" {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.align='center'}
-knitr::include_graphics("Images/08_2-probability.jpg")
-```
-
-<br>
-
-Source: Wheelan (2014), 71
-
-::: notes
-Wheelan defines "probability" as "the study of events and outcomes involving an element of uncertainty"
-
-<br>
-
-**Any big picture questions on the material in the Wheelan chapter before we use it?**
-:::
-
-
-## "Probability is the study of events and outcomes involving an element of uncertainty" {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
 ```{r, echo=TRUE}
-# Proportions by Row
-proportions(table(mpg$class, mpg$drv), margin = 1)
+# Cross-tabs (overall %s)
+proportions(table(diamonds$price2, diamonds$cut), margin = 2)
 ```
 
 ::: notes
 
-**How confident should we be in using these proportions as estimates of the "true" probabilities?**
+Per Rule 3 in the textbook we need to calculate the proprtions separately for each level of the predictor variable, NOT overall
 
-- **In other words, how confident are you that 83% of the SUVs on the roads today are 4wd?**
+- The margin argument let's you specify proportions by row or column
 
-<br>
+- We're using "2" which means by column
 
-`mpg` dataset...
+- We can tell that worked because if you add each column separately they will sum to 100%
 
-- Only includes a sample from two years: 1999 and 2008
-
-- We have no idea how the researchers chose these specific models: 38 "popular" cars
-
-- We have no idea how the EPA chose the cars to study here
+- For all of our work testing hypotheses you will always use margin = 2 (assuming the DV levels are the rows)
 
 <br>
 
-I hope this is helping to reinforce a REALLY important idea for us
+This means you can think about each column as representing how diamonds of that cut quality are distributed through the levels of price
 
-- The tools of statistics are frequently used to help us estimate real-world probabilities using things like proportions in a dataset
+- 65% of fair cut diamonds are in the top 50% of prices!
 
-- HOWEVER, without understanding the measures in our data we really can't say anything about how they represent the probabilities
-
-- BUT, once we understand the measures we CAN say something useful about probability (with uncertainty attached)
+- 58% of ideal cut diamonds are in the bottom half of prices!
 
 <br>
 
-In short, our datasets are a representation of the wider world (the population)
+What stands out to me in this data is that there doesn't appear to be a positive relationship here
 
-- Only by analyzing where the data came from and pairing that with statistics can we say anything useful about the real world.
+- Arguably it may be a little negative!
+
+- Looking across the levels of cut I see fairly similar distributions of prices
+
+- This makes it look like diamond sellers can offer you each cut type at all price points!
 
 <br>
 
-**Any questions on this?**
+**Questions on making these tables or interpreting the results?**
+
+<br>
+
+**SLIDE**: Let's practice
+
 :::
 
 
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-**Categorical x Numeric**
+### **What explains why some diamonds are more expensive than others?**
 
 <br>
 
-```{r, echo=FALSE}
-set.seed(134)
+![](Images/07_2-diamond_colors.webp){style="display: block; margin: 0 auto"}
 
-mpg |>
-  slice_sample(n = 10) |>
-  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
-  column_spec(7:8, background = "pink") |>
-  kableExtra::kable_styling(font_size = 24)
+::: notes 
+
+Everybody build a cross-tab of diamond prices and color
+
+- Let's see if colorless diamonds consistently carry larger price tags
+
+- Go!
+
+<br>
+
+(**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Bivariate Analyses: Categorical x Categorical**
+
+```{r, echo=TRUE}
+# Cross-tabs
+table(diamonds$price2, diamonds$color)
 ```
+
+<br>
+
+```{r, echo=TRUE}
+# Cross-tabs (overall %s)
+proportions(table(diamonds$price2, diamonds$color), margin = 2)
+```
+
+::: notes
+
+**So, is color a better predictor of value? Why or why not?**
+
+<br>
+
+Nope!
+
+- Again, plenty of colorless (D-F) in the cheap diamonds and plenty of near colorless in the expensive ones!
+
+<br>
+
+It's starting to look like the four Cs are nonsense...
+
+<br>
+
+**Questions on making or interpreting the cross-tabs?**
+
+<br>
+
+**SLIDE**: Cat x Interval
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Bivariate Analyses: Numeric x Categorical**
+
+<br>
+
+aggregate(data, y ~ x, FUN)
+
+- "data" is the dataset
+
+- "y" is the interval outcome
+
+- "x" is a nominal or ordinal predictor
+
+- "FUN" is the descriptive statistic you want to calculate
 
 ::: notes
 
 Now let's shift to bivariate analysis of the relationship between a single categorical and a single numeric variable.
 
-<br>
-
-**Remind me, how do we summarize a categorical variable like drive train?**
-
-- (Count the levels with table)
-
-<br>
-
-**And how do we calculate the descriptive statistics for a single numeric variable like city fuel economy?**
-
-- (The summary function!)
-
-<br>
-
-Let's now learn to combine these two approaches
-
-- **SLIDE**: Using our `mpg` dataset we can ask, do cars with different drive trains have different levels of fuel efficiency?
-
-:::
-
-
-
-## Categorical x Numeric {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-:::: {.columns}
-::: {.column width="45%"}
-**Univariate Analyses**
-
-```{r, echo=TRUE}
-table(mpg$drv)
-```
-
-<br>
-
-```{r, echo=TRUE}
-summary(mpg$cty)
-```
-:::
-
-::: {.column width="10%"}
-
-:::
-
-::: {.column width="45%"}
-::: {.r-fit-text}
-**Bivariate Analyses**
-
-The Aggregate Function
-
-- aggregate(data, y ~ x, FUN)
-:::
-:::
-::::
-
-::: notes
-
-We'll use the aggregate function to calculate the bivariate version of descriptive statistics
+- For this we'll need a new function: aggregate()
 
 <br>
 
@@ -511,10 +538,13 @@ The aggregate function looks a little different from what we've done so far
 - The "data" argument you've seen before
 
 - The "y tilde x" argument is what R refers to as a formula
+
     - "y" is the NUMERIC outcome you are trying to summarize
+
     - "x" is the CATEGORICAL predictor
     
 - FUN is the argument where you specify a function to apply to the Y variable
+
     - e.g. summary, sd, mean, median, min, max, etc
     
 <br>    
@@ -527,256 +557,78 @@ The aggregate function looks a little different from what we've done so far
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Bivariate Analyses: Categorical x Numeric**
+**Bivariate Analyses: Numeric x Categorical**
 :::
+
+```{r, echo=TRUE}
+aggregate(data = diamonds, price ~ cut, FUN = mean)
+
+aggregate(data = diamonds, price ~ cut, FUN = median)
+```
+
+::: notes
+
+Let's recheck our analysis of the cut variable but now focusing on the real price variable
+
+- Here I am calculating the group means and the group medians
+
+- **Handy, right?**
+
+<br>
+
+**Does this confirm our findings from the cross-tabs?**
+
+- **Is the cut of a diamond a good predictor of its price?**
+
+<br>
+
+**SLIDE**: Maybe the mean and median are the wrong comparison!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**Bivariate Analyses: Numeric x Categorical**
+:::
+
+<br>
 
 ```{r}
-options(width = 80)
+options(width = 110)
 ```
 
 ```{r, echo=TRUE}
-aggregate(data = mpg, cty ~ drv, FUN = mean)
+aggregate(data = diamonds, price ~ cut, FUN = summary)
 ```
-
-```{r, echo=TRUE}
-aggregate(data = mpg, cty ~ drv, FUN = sd)
-```
-
-```{r, echo=TRUE}
-aggregate(data = mpg, cty ~ drv, FUN = summary)
-```
-
-::: notes
-
-**Handy, right?**
-
-- **Questions on this new function?**
-
-<br>
-
-Interpret these results for me
-
-- **What do we learn from comparing the drive trains by fuel economy?**
-
-<br>
-
-Let's practice
-
-- Everybody re-run this code for the highway fuel economy variable (`hwy`)
-
-- (**SLIDE**)
-
-:::
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Categorical x Numeric**
-
-<br>
-
-```{r, echo=TRUE}
-aggregate(data = mpg, cty ~ drv, FUN = summary)
-```
-
-<br>
-
-```{r, echo=TRUE}
-aggregate(data = mpg, hwy ~ drv, FUN = summary)
-```
-
-::: notes
-**What do we learn from this comparison?**
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Numeric x Numeric**
-
-<br>
-
-```{r, echo=FALSE}
-set.seed(134)
-
-mpg |>
-  slice_sample(n = 10) |>
-  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
-  column_spec(c(3, 8), background = "pink") |>
-  kableExtra::kable_styling(font_size = 22)
-```
-
-::: notes
-Now we shift to bivariate analysis of the relationship between two numeric variables.
-
-<br>
-
-For this challenge you will have two options to consider 
-
-- **SLIDE**: Let me introduce the first one as the solution to a puzzle
-
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Numeric x Numeric**
-
-<br>
-
-```{r, echo=TRUE}
-aggregate(data = mpg, cty ~ displ, FUN = summary)
-```
-
-::: notes
-
-What I'd like to know is how city fuel economy varies by the size of a car's engine.
-
-- **Is this a useful answer to my question? Why or why not?**
-
-<br>
-
-Do not calculate descriptive statistics using two numeric variables like this.
-
-<br>
-
-This table presents the ILLUSION of useful information!
-
-- Comparing these rows seems easy, but the meaning of these summaries vary A TON!
-
-- Each row is built using a different number of cars and the differences are huge
-
-- The 1.9 liter engine row includes ONLY three cars whereas the 2 liter engine row includes 21!
-
-- The meaning of an average of three observations is NOT the same as one on 21 observations
-
-<br>
-
-The key here to remember is that doing statistics without understanding what you are producing is SUPER dangerous!
-
-- R will give you the summary you ask for, but YOU have to know what you are asking for and when it is useful and when it isn't
-
-<br>
-
-Ok, let's say I do want to examine this relationship between fuel economy and engine size
-
-- **What could I do to the `displ` variable to ensure more equal sized groups of cars?**
-
-<br>
-
-Remember how we solved this problem when drawing a histogram by hand!
-
-- We created bins to each hold similar values in each bar
-
-- **SLIDE**: Let's try that approach here!
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Numeric x Numeric (Convert it into Categorical)**
-
-<br>
-
-cut(x, breaks, labels)
-
-- 'x' is the variable to transform
-
-- 'breaks' lists the cut-off points for the groups
-
-- 'labels' lists the names of the new groups
 
 ::: {.fragment}
-
-:::: {.r-fit-text}
-
 ```{r, echo=TRUE}
-summary(mpg$displ)
-```
-
-::::
-:::
-
-::: notes
-
-Our first option for examining the relationship between two numeric variables is to convert one of them into a categorical variable!
-
-<br>
-
-Everybody write down the elements of the cut function
-
-- *step through it*
-
-- This will make more sense when you start applying it
-
-<br>
-
-**REVEAL**: Here we see the summary stats for engine size alone.
-
-- To begin let's use the cut function to create a categorical version of of engine size
-
-- To begin we'll keep it simple and make a two level categorical variable
-
-- **SLIDE**: The code
-
-:::
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Numeric x Numeric (Convert it into Categorical)**
-
-<br>
-
-1. Create a new variable in `mpg`
-2. Convert `displ` into `displ2`
-3. Define the breaks (e.g. bins by width)
-4. Label the breaks
-
-::: {.r-fit-text}
-```{r, echo=TRUE}
-mpg$displ2 <- cut(x = mpg$displ, 
-                  breaks = c(0, 3.472, 8), 
-                  labels = c("Small", "Large"))
+aggregate(data = diamonds, price ~ color, FUN = summary)
 ```
 :::
 
 ::: notes
 
-Here's my example of adding a new engine size variable in the mpg data set.
+**What do we learn about the effect of improving the cut of a diamond on its price?**
 
-- The cut function works a lot like the factor function we've used in ggpplot to treat numbers as words
+- Min and max basically the same for all cuts!
 
-- *Step through the code*
-
-<br>
-
-Breaks is the one funky bit of this code
-
-- Here you tell R the cut points for the bins you are creating
-
-- The bins are the spaces between each number in the list
-
-- So I am grouping together all the cars with an engine size below the mean and all those above the mean
-
-- **Is everybody clear on why there are three numbers in 'breaks' but only two words in 'labels'?**
+- Middle values either go DOWN with better cuts or stay fairly stable
 
 <br>
 
-Everybody run this code to create the new variable in the mpg dataset
+Everybody check and see if our results about color are also confirmed this way?
 
-- **Any questions on how to convert a numeric variable into a categorical variable?**
+- (**REVEAL**)
+
+- Again, prices go UP as the color quality gets WORSE!
 
 <br>
 
-Ok, everybody now use aggregate on our new displacement variable!
-
-- Calculate the summary statistics for city fuel economy once for small engines and once for large engines
-
-- Go!
+**SLIDE**: One more thing to check
 
 :::
 
@@ -784,505 +636,162 @@ Ok, everybody now use aggregate on our new displacement variable!
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-**Numeric x Numeric (Convert it into Categorical)**
-:::
-
-<br>
-
-**Univariate Analysis**
-```{r, echo=TRUE}
-table(mpg$displ2)
-summary(mpg$cty)
-```
-
-**Bivariate Analysis**
-```{r, echo=TRUE}
-aggregate(data = mpg, cty ~ displ2, FUN = summary)
-```
-
-::: notes
-
-**What do we learn about the relationship between these two variables?**
-
-- (Small engines get WAY better fuel economy!)
-
-- 5-6 mpg improvement on average
-
-- Max increase from 16 to 35!
-
-<br>
-
-**SLIDE**: Let's practice!
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Numeric x Numeric (Convert it into Categorical)**
-
-<br>
-
-**Summarize city fuel economy across three groups by `displ`**
-
-- Small engines (< 2.1)
-
-- Medium engines (< 4.1)
-
-- Large engines (< 8)
-
-::: notes
-
-Practice time!
-
-- Go!
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Numeric x Numeric (Convert it into Categorical)**
-:::
-
-<br>
-
-::: {.r-fit-text}
-
-```{r, echo=TRUE}
-mpg$displ3 <- cut(x = mpg$displ, 
-                  breaks = c(0, 2.1, 4.1, 8), 
-                  labels = c("Small", "Medium", "Large"))
-```
-
-:::
-
-<br>
-
-```{r, echo=TRUE}
-table(mpg$displ3)
-
-aggregate(data = mpg, cty ~ displ3, FUN = summary)
-```
-
-::: notes
-
-**Everybody get these results?**
-
-<br>
-
-**Any questions on using cut to create a categorical version of a numeric variable?**
-
-<br>
-
-**If we know our goal is to create evenly sized groups for comparing summary statistics, what can we use instead of arbitrary size levels?**
-
-- (**SLIDE**: Percentiles!)
-
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Numeric x Numeric (Convert it into Categorical)**
-
-<br>
-
-**Summarize city fuel economy across the four quartiles of `displ` (e.g. 25th, 50th, 75th and 100th percentiles)**
-
-::: notes
-
-Last practice of this technique
-
-- Everybody redo this analysis but now let's transform engine size into a FOUR level categorical variable with one level per quartile
-
-- The quartiles assure us of four groups with approximately the same number of observations in each!
-
-- Go!
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, echo=TRUE}
-# Check the quantiles
-summary(mpg$displ)
-```
-
-<br>
-
-```{r, echo=TRUE}
-# Recode the variable
-mpg$displ4 <- cut(x = mpg$displ, 
-                  breaks = c(0, 2.4, 3.3, 4.6, 8), 
-                  labels = c("1st Q", "2nd Q", "3rd Q", "4th Q"))
-```
-
-<br>
-
-```{r, echo=TRUE}
-# Calculate the result
-aggregate(data = mpg, cty ~ displ4, FUN = summary)
-```
-
-::: notes
-
-**Did everybody get these results?**
-
-<br>
-
-**What does this tell us about the relationship between engine size and fuel economy?**
-
-<br>
-
-So, your first option for calculating descriptive statistics using two numeric variables is to convert one of them into a categorical variable
-
-- **Make sense?**
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-**Numeric x Numeric**
-
-```{r, echo=FALSE}
-set.seed(134)
-
-mpg |>
-  select(-displ2, -displ3, -displ4) |>
-  slice_sample(n = 10) |>
-  kbl(digits = 1, align = c('l', 'l', rep('c', 9))) |>
-  column_spec(c(3, 8), background = "pink") |>
-  kableExtra::kable_styling(font_size = 21)
-```
-
-::: notes
-
-Your second option is to calculate the correlation between the two numeric variables.
-
-- **Any questions on correlations from the Wheelan chapter?**
-
-<br>
-
-**Per Wheelan, what are the "fabulous" advantages of correlation?**
-
-1. Measure of linear association
-
-2. Always between -1 and 1
-
-3. No units attached
-:::
-
-
-
-## Correlation {background-image="Images/background-data_blue_v4.png" .center}
-
-**1) A Measure of Linear Association**
-
-<br>
-
-```{r, fig.align = 'center', fig.asp = .32, fig.width = 9}
-## Show correlations
-cor_examples <- function(sd) {
-    tibble(
-    x = rnorm(50, mean = 8, sd = 2),
-    y = x + rnorm(50, 0, sd),
-    Group = str_c("Correlation: ", round(cor(x, y), 2))
-    )
-}
-
-# Generate sims
-set.seed(54)
-rbind(cor_examples(1),
-      cor_examples(3),
-      cor_examples(18)) |>
-ggplot(aes(x = x, y = y)) +
-    geom_point() +
-    geom_smooth(method = "lm", se = FALSE) +
-    theme_bw() +
-  labs(x = "", y = "") +
-    facet_wrap(~Group, scales = "free")
-```
-
-::: notes
-The closer the value to '1', the closer the points are to the line
-
-- **Does the intuition here make sense?**
-
-<br>
-
-Importantly this means correlation is not a good measure when relationships are non-linear!
-
-- More on this in a sec!
-:::
-
-
-
-
-## Correlation {background-image="Images/background-data_blue_v4.png" .center}
-
-**2) Always between -1 and 1**
-
-<br>
-
-```{r, fig.align = 'center', fig.asp = .32, fig.width = 9}
-# Show inverse correlations
-inv_cor_examples <- function(sd) {
-    tibble(
-    x = rnorm(50, mean = 8, sd = 2),
-    y = -2 * x + rnorm(50, 0, sd),
-    Group = str_c("Correlation: ", round(cor(x, y), 2))
-    )
-}
-
-set.seed(54)
-rbind(inv_cor_examples(2),
-      inv_cor_examples(6),
-      inv_cor_examples(11)) |>
-ggplot(aes(x = x, y = y)) +
-    geom_point() +
-    geom_smooth(method = "lm", se = FALSE) +
-    theme_bw() +
-  labs(x = "", y = "") +
-    facet_wrap(~Group, scales = "free")
-```
-
-::: notes
-
-Correlations can be either positive or negative
-
-- Positive: Increases in X are associated with increases in Y
-
-- Negative: Increases in X are associated with decreases in Y
-
-<br>
-
-The key is that as the value approaches 1 or -1 the points get closer to a line
-
-<br>
-
-**Make sense?**
-:::
-
-
-
-## Correlation {background-image="Images/background-data_blue_v4.png" .center}
-
-**3) No Units Attached**
-
-<br>
+### **What explains why some diamonds are more expensive than others?**
 
 :::: {.columns}
-::: {.column width="50%"}
-```{r, echo = FALSE, fig.align = 'center'}
-knitr::include_graphics("Images/10_1-Engines-Types.gif")
-```
+::: {.column width="40%"}
+![](Images/11_1-Diamonds_carats.jpg)
 :::
 
-::: {.column width="50%"}
-```{r, echo = FALSE, fig.align = 'center'}
-knitr::include_graphics("Images/10_1-mpg1.png")
-```
+::: {.column width="60%"}
+
+<br>
+
+<br>
+
+1. Convert carat into an ordinal variable (quartiles)
+
+2. Check the effect on price using aggregate
 :::
 ::::
 
 ::: notes
 
-Correlation provides a numeric representation of a linear relationship REGARDLESS of the underlying units.
+So, it looks like three of the four C's don't actually matter consistently (cut, clarity and color)
+
+- That just leaves carats otherwise known as the size of the diamonds
+
+- Everybody convert carat into an ordinal variable (quartiles) and then use aggregate to check if it predicts prices!
 
 <br>
 
-Normally you have to put two things into the same scale to combine or compare them, right?
+(**SLIDE**)
 
-- e.g. the "apples-and-oranges" problem!
-
-<br>
-
-Correlation focuses on the variation not attached to the units.
-
-<br>
-
-### Make sense?
-
-<br>
-
-**SLIDE**: Let's test ourselves!
 :::
 
 
 
-## Which has the largest correlation? {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
-```{r, fig.align = 'center', fig.asp = .78, fig.width = 7}
-pair1 <- tibble(anscombe[, c("x1", "y1")]) |> rename(x = x1, y = y1) |> mutate(Group = "Example 1")
-pair2 <- tibble(anscombe[, c("x2", "y2")]) |> rename(x = x2, y = y2) |> mutate(Group = "Example 2")
-pair3 <- tibble(anscombe[, c("x3", "y3")]) |> rename(x = x3, y = y3) |> mutate(Group = "Example 3")
-pair4 <- tibble(anscombe[, c("x4", "y4")]) |> rename(x = x4, y = y4) |> mutate(Group = "Example 4")
+### **What explains why some diamonds are more expensive than others?**
 
-d <- rbind(pair1, pair2, pair3, pair4)
+<br>
 
-d |>
-    ggplot(aes(x = x, y = y)) +
-    geom_point() +
-    #geom_smooth(method = "lm", se = FALSE) +
-    theme_bw() +
-    facet_wrap(~ Group, ncol = 2) +
-  labs(x = "", y = "")
+```{r, echo=TRUE}
+# Set-up the variables
+summary(diamonds$carat)
+
+diamonds$carat_cat <- cut(diamonds$carat, 
+        breaks = c(0, .4, .7, 1.04, 6),
+        labels = c("25th", "50th", "75th", "100th"))
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Bivariate analysis
+aggregate(data = diamonds, price ~ carat_cat, FUN = summary)
 ```
 
 ::: notes
 
-**Which of the four relationships has the largest correlation?**
+**Conclusions?**
 
-- (**SLIDE**)
+<br>
+
+I think diamond sales might be a little scammy!
+
+- The size of the diamond determines the value and the other three Cs are for marketing purposes
+
+- BOOOOOOOOOOOO!
+
+- But also, yay data!
+
+<br>
+
+**SLIDE**: Assignment for next class
 
 :::
 
 
 
-
-## Anscombe’s Quartet (1973) {background-image="Images/background-data_blue_v4.png" .center}
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 <br>
+
+**Analyze our Additive Index of Americans' Political Engagement (ANES)**
 
 :::: {.columns}
+
 ::: {.column width="50%"}
-```{r, fig.align = 'center', fig.asp = .85, fig.width = 6}
-pair1 <- tibble(anscombe[, c("x1", "y1")]) |> rename(x = x1, y = y1) |> mutate(Group = "Example 1")
-pair2 <- tibble(anscombe[, c("x2", "y2")]) |> rename(x = x2, y = y2) |> mutate(Group = "Example 2")
-pair3 <- tibble(anscombe[, c("x3", "y3")]) |> rename(x = x3, y = y3) |> mutate(Group = "Example 3")
-pair4 <- tibble(anscombe[, c("x4", "y4")]) |> rename(x = x4, y = y4) |> mutate(Group = "Example 4")
+**Required Steps**
 
-d <- rbind(pair1, pair2, pair3, pair4)
+1. Choose a predictor
 
-d |>
-    ggplot(aes(x = x, y = y)) +
-    geom_point() +
-    geom_smooth(method = "lm", se = FALSE) +
-    theme_bw() +
-    facet_wrap(~ Group, ncol = 2) +
-  labs(x = "", y = "")
-```
+2. Propose a theory
+
+3. Test your hypothesis
+
+4. Explain your findings!
 :::
 
 ::: {.column width="50%"}
+**Predictor Options**
 
-<br>
-
-```{r, echo = FALSE}
-d |>
-    group_by(Group) |>
-    summarize(
-        MeanX = round(mean(x), 1),
-        MeanY = round(mean(y), 1),
-        Correlation = round(cor(x,y), 2)
-        ) |>
-  kbl(align = c("l", "c", "c", "c")) |>
-  kableExtra::kable_styling(font_size = 26)
-```
+- party identification
+- relig.how.often
+- social.class
+- trust.media
+- respondent's marital status
+- active.duty.mil
+- allow.refugees
+- divided.govt
 :::
+
 ::::
 
 ::: notes
 
-Lesson: **ALWAYS** visualize your data before interpreting ANY statistic!
+Everybody take a look at the assignment on Canvas
 
-- Examples 2 and 3 are REALLY strong indicators of association
-
-- Example 1 is weaker
-
-- Example 4 is non-existent
+- **Questions on the assignment?**
 
 <br>
 
-### Make sense?
+Let's divy out the options so we get good coverage across the class!
 
-- **SLIDE**: Alright, let's calculate some correlations in R
-:::
-
-
-## Correlations in R {background-image="Images/background-data_blue_v4.png" .center}
+- **Which ones do you want to do?**
 
 <br>
 
-```{r, echo=TRUE}
-# Calculate the correlation
-cor(mpg$cty, mpg$hwy)
-```
+Canvas ASSIGNMENT: Practicing Bivariate Descriptive Statistics
 
-<br>
+Last week we constructed and analyzed an additive index using ANES data that represents Americans' political engagement (political activities in the prio 12 months). I want you to perform a bivariate analysis that helps us understand the variation in this index across ONE of the predictors on the following list:
 
-```{r, echo=TRUE}
-# Test the significance of the correlation (Pearsons)
-cor.test(mpg$cty, mpg$hwy)
-```
+- party identification (partyid3)
+- self reported social class (social.class)
+- relig.how.often (5 point scale)
+- social.class (4 point scale)
+- trust.media (5 point scale)
+- respondent's marital status (marital) 6 point scale
+- active.duty.mil (3 point scale)
+- allow.refugees (7 point)
+- divided.govt (3 points)
 
-::: notes
+I want you to do the following steps IN ORDER:
 
-Two functions to calculate correlations.
+1. Propose a theory AND an associated hypothesis for how this predictor causes changes in our political engagement index as the outcome (e.g. increases or decreases). You must complete this step BEFORE analyzing the data
+2. Run the analysis to test the relationship using bivariate descriptive statistics and report the results as a polished table
+3. Explain what you have learned from this analysis. Is your theory supported by the data? Why or why not?
 
-- cor() is a simple tool for calculating the correlation coefficient
+Please bear in mind that finding your theory is unsupported is as GOOD an outcome as finding it is supported. Our aim is to to generate knowledge and evaluate our theories, NOT to confirm our intuitions are correct!
 
-- cor.test() does the same but includes confidence intervals and a significance test of the correlation.
-
-<br>
-
-**What do we learn about the relationship between city and highway fuel economy from these correlations?**
-:::
-
-
-## Practice using the `diamonds` dataset {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r}
-diamonds |>
-  select(price, cut, clarity, carat) |>
-  slice_sample(n = 12) |>
-  kbl(align = "c") |>
-  kableExtra::kable_styling(font_size = 25)
-```
-
-::: notes
-The diamonds dataset is in the tidyverse package
-
-- It includes details on approximately 54,000 diamonds
-
-- `price` is the dollar value of the diamond
-
-- `cut` is the quality of the cut
-    - e.g. Fair, Good, Very Good, Premium, Ideal
-
-- 'clarity' is a measurement of how clear the diamond is
-    - e.g. I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best)
-    
-- `carat` is the size of the diamond
 :::
 
 
 
-## Analyze the relationship between: {background-image="Images/background-data_blue_v4.png" .center}
 
-<br>
 
-1. `cut` and `clarity`
-
-2. `cut` and `price`
-
-3. `carat` and `price` (convert `carat` to a categorical variable)
-
-4. `carat` and `price` (correlation)
-
-**Source:** `diamonds` dataset in tidyverse
-
-::: notes
-Practice exercises for next class!
-:::
 
 
 

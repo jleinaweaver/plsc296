@@ -1,0 +1,1298 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+#library(modelsummary)
+library(crosstable)
+
+load("../../DATA/2026-Spring/ANES/ANES2020_Data_Extract.RData")
+
+## Notes on modelsummary
+# # Install the package ONE TIME
+# install.packages("modelsummary")
+# 
+# # Load the package EVERY time
+# library(modelsummary)
+# 
+# # Cross-tab with row %s
+# datasummary_crosstab(data = mpg, drv ~ class, 
+#                      statistic = ~ Percent("row"))
+# 
+# # Cross-tab with column %s
+# datasummary_crosstab(data = mpg, drv ~ class, 
+#                      statistic = ~ Percent("col"))
+# 
+# # Cross-tab with counts AND column %s
+# datasummary_crosstab(data = mpg, drv ~ class, 
+#                      statistic = ~ N + Percent("col"))
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Controlled Comparison Analysis**
+
+- Categorical x Categorical Relationships
+
+- New R file: Making_Controlled_Comparisons.R
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Review Canvas submissions
+
+<br>
+
+**SLIDE**: Let's refresh our work thus far on making causal arguments
+
+:::
+
+
+
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+"Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e. intervention) was the 'cause' of the effect (or outcome) that was observed" (Frey 2018). 
+
+<br>
+
+```{r, fig.align = 'center', fig.width = 8, fig.height=1.25}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Predictor", "Outcome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+
+Remember, the aim of any scientific discipline is to generate new knowledge that explains why things happen in the world
+
+- We refer to this as explanatory or causal analysis
+
+- In short, we want to demonstrate that changes in our chosen predictors CAUSE a change in the outcome variable
+
+<br>
+
+**And what is the fundamental problem with causal inference?**
+
+- **In other words, why is establishing causality so hard?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {.center background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**The Fundamental Problem of Causal Inference**
+:::
+
+<br>
+
+"To measure causal effects, we need to compare the factual outcome with the counter-factual outcome, but **we can never observe the counter-factual outcome**" (Llaudet and Imai 2023).
+
+::: notes
+
+Don't forget, this is a problem for ALL of science, not just the social sciences.
+
+- Whether its gravity, speed, biological reproduction or whatever else, we cannot observe actual counter-factuals
+
+- Even experimental methods do NOT actually solve this problem!
+
+<br>
+
+**And how do experimental methods, e.g. using a randomized controlled trial (RCT), address this problem?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+## Randomized Controlled Trials (RCTs) {.center background-image="Images/background-data_blue_v4.png"}
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
+## Manual DAG
+d2 <- tibble(
+  x = c(2.5, 2, 3, 2, 3),
+  y = c(3, 2, 2, 1, 1),
+  labels = c("Participants", "Treatment\nGroup", "Control\nGroup", "Outcome", "Outcome")
+)
+
+ggplot(data = d2, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  annotate("segment", x = 2.5, xend = 2.5, y = 2.85, yend = 2.7, arrow = arrow(length = unit(0.1, "inches"))) +
+  annotate("segment", x = 2.5, xend = 2.2, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2, xend = 2, y = 1.75, yend = 1.15, arrow = arrow()) +
+ annotate("segment", x = 3, xend = 3, y = 1.75, yend = 1.15, arrow = arrow()) +
+  annotate("text", x = 2.5, y = 2.6, label = "Random Allocation", color = "red", size = 10)
+```
+
+::: notes
+
+**How does an RCT help us address the fundamental problem?**
+
+1. Random assignment means that even though both groups are composed of different individuals, the two groups are comparable to each other **on average** in all respects.
+
+2. Random assignment means that the only thing that distinguishes the treatment group from the control group **BESIDES THE TREATMENT** is chance.
+
+<br>
+
+So, with random assignment we ASSUME the groups are identical on average which lets us pretend the outcome for group 1 represents the counterfactual for group 2
+
+- **Make sense?**
+
+<br>
+
+Last class we explored the conceptual tools you need for dealing with situations where you cannot run an RCT
+
+- **So, what do we do if we are analyzing observational data?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+## Making Controlled Comparisons {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=8}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Treatment", "Confounder", "Outcome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.5, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+
+::: notes
+
+We develop **identification strategies** that identify the **confounders** in our observational relationships.
+
+- This is what the textbook refers to as a "controlled comparison" (p160)
+
+- The hope is that by controlling for all of the confounders we get to a place where the treatment and control groups are identical on average
+
+<br>
+
+**Any questions on our work from last class on making controlled comparisons?**
+
+<br>
+
+**SLIDE**: Seems like a good time to review the assignment for today!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Pollock & Edwards Exercise 4: Types of Relationship**
+:::
+
+<br>
+
+Does frequent attendance at religious services reduce tolerance for allowing "radical" Muslim speech when controlling for education?
+
+```{r}
+tab1 <- tibble(
+  allow = c(121, 44, 226, 162),
+  not = c(197, 187, 140, 195)
+) |>
+  mutate(
+    total = allow + not,
+    allow2 = allow/total
+  )
+  
+tab1a <- tibble(
+  allow = c(121, 44, 226, 162),
+  not = c(197, 187, 140, 195)
+) |>
+  mutate(
+    total = allow + not,
+    allow2 = str_c(round(allow/total*100, 0), "%"),
+    not2 = str_c(round(not/total*100, 0), "%"),
+    allow = str_c("(", allow, ")"),
+    not = str_c("(", not, ")")
+  ) |>
+  select("Allow Speech" = allow2, allow, "Forbid Speech" = not2, not) |>
+  t() 
+
+row.names(tab1a) <- c("Allow Speech", "", "Forbid Speech", "")
+
+tab1a |>
+  kable(digits = 2, align = c("l", rep("c", 4)), col.names = c("", "Low Religion", "High Religion", "Low Religion", "High Religion")) |>
+  add_header_above(c("", "Education: Low" = 2, "Education: High" = 2)) |>
+  kable_styling(font_size = 25)
+```
+
+::: notes
+
+**Did everybody calculate these percentages?**
+
+- **DV on the rows, predictor levels on the columns?**
+
+<br>
+
+**So, does the data support this hypothesis?**
+
+- (Yes)
+
+- Higher religious attendance, less support for free speech of radical clerics even when controlling for education
+
+<br>
+
+Now tell me about the partial relationship here
+
+- **Is this a spurious, additive, or interaction relationship?**
+
+- (**SLIDE**: Line plot)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+Does frequent attendance at religious services reduce tolerance for allowing "radical" Muslim speech when controlling for education?
+
+```{r, fig.align='center', fig.asp=.75, fig.width=7}
+tab1 |>
+  mutate(
+    education = c("Low", "Low", "High", "High"),
+    religion = c(1, 2, 1, 2)
+  ) |>
+  ggplot(aes(x = religion, y = allow2, color = education)) +
+  geom_line(linewidth = 1.2) +
+  theme_bw() +
+  labs(x = "Frequency of Religious Attendance", y = "Support for 'Radical' Muslim Speech", color = "Education") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_x_continuous(limits = c(.9, 2.1), breaks = c(1,2), label = c("Low\nAttendance", "High\nAttendance")) +
+  theme(legend.position = "top")
+```
+
+::: notes
+
+**Was everybody able to translate the table into the line chart?**
+
+- Key for setting this up is the same as usual rules
+
+- Outcome on y-axis, predictor on x-axis
+
+- Control variable defines two different lines
+
+- **Make sense?**
+
+<br>
+
+The visualization is SO much easier to interpret, right?
+
+- The pattern is additive (e.g. lines fairly parallel)
+
+- The relationship between religious attendance and speech opinions remains consistent across both levels of education. 
+
+<br>
+            
+**SLIDE**: Exercise 5
+            
+:::
+
+
+
+## Pollock & Edwards Exercise 5 {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Do countries with proportional representation electoral systems have higher levels of voter turnout (controlling for level of development)?
+
+```{r}
+tab5 <- tibble(
+  cat1 = c("Not PR", "PR", "Overall"),
+  overall = c(63.1, 68.7, NA_integer_),
+  low_gdp = c(56.1, 69.8, 61.6),
+  high_gdp = c(66, 68.5, 67.4)
+)
+
+tab5 |>
+  kable(col.names = c("", "Overall", "Low GDP", "High GDP"), align = "c") |>
+  #add_header_above(c("", "Zero-Order", "Partial Effect" = 2)) |>
+  kable_styling(font_size = 30)
+```
+
+::: notes
+
+**Everybody make this table (or something like it)?**
+
+- NOTE: In the case of an interval outcome variable this isn't technically a cross-tab
+
+- This shows the control variable levels on the columns but there is no levels for the main predictor, just a mean value
+
+- **Make sense?**
+
+<br>
+
+**Does the data support this hypothesis?**
+
+- (Yes!)
+
+<br>
+
+This version I've made displays both the zero-order effect and the partial effect.
+
+- **What on this table represents the zero-order effect and what the partial effect?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+## Pollock & Edwards Exercise 5 {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Do countries with proportional representation electoral systems have higher levels of voter turnout (controlling for level of development)?
+
+```{r}
+tab5 <- tibble(
+  cat1 = c("Not PR", "PR", "Overall"),
+  overall = c(63.1, 68.7, NA_integer_),
+  low_gdp = c(56.1, 69.8, 61.6),
+  high_gdp = c(66, 68.5, 67.4)
+)
+
+tab5 |>
+  kable(col.names = c("", "Overall", "Low GDP", "High GDP"), align = "c") |>
+  add_header_above(c("", "Zero-Order", "Partial Effect" = 2)) |>
+  kable_styling(font_size = 30)
+```
+
+::: notes
+
+The zero-order effect is the results of a simple bivariate analysis
+
+- e.g. a description of the relationship between two variables
+
+<br>
+
+The partial effect is the result of a controlled comparison
+
+- e.g. a description of the relationship between two variables while controlling for a third variable
+
+<br>
+
+**Which of these should you present when testing a hypothesis?**
+
+- (Both!)
+
+- Generally speaking you want to be transparent in your methods
+
+<br>
+
+**So, is this a spuriousness, additive, or interactive relationship?**
+
+- (**SLIDE**: Line plot)
+
+:::
+
+
+
+## Pollock & Edwards Exercise 5 {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Do countries with proportional representation electoral systems have higher levels of voter turnout (controlling for level of development)?
+
+```{r, fig.align='center', fig.asp=.75, fig.width=7}
+tab5 |>
+  filter(cat1 != "Overall") |>
+  mutate(
+    x1 = c(1, 2)
+  ) |>
+  pivot_longer(cols = low_gdp:high_gdp, names_to = "gdp", values_to = "value") |>
+  ggplot(aes(x = x1, y = value, color = gdp)) +
+  geom_line(linewidth = 1.2) +
+  theme_bw() +
+  labs(x = "Electoral System", y = "Voter Turnout (mean %)", color = "") +
+  #scale_y_continuous(labels = scales::percent_format()) +
+  scale_x_continuous(limits = c(.9, 2.1), breaks = c(1,2), label = c("Not\nProportional\nRepresentation", "Proportional\nRepresentation")) +
+  theme(legend.position = "top") +
+  scale_color_discrete(labels = c("High GDP", "Low GDP"))
+```
+
+::: notes
+
+Again, we follow the usual rules of visualizing data
+
+- Outcome on the y-axis
+
+- Predictor on the x-axis
+
+- Control variables define different relationships each focused on a different subset of the data
+
+<br>
+
+The relationship between electoral systems (PR vs. non-PR) and turnout appears interactive. 
+
+- PR systems are associated with higher turnout across both low and high GDP countries, BUT
+
+- The magnitude of the effect is WAY stronger in poorer countries than in rich ones!
+
+<br>
+
+This also shows why the claim in Part D is so wrong!
+
+- Instituting PR in poorer countries may have substantially larger effects on voter turnout!
+
+<br>
+
+**Overall, how did we do with these exercises?**
+
+<br>
+
+**SLIDE**: Alright let's learn the code we need to perform controlled comparisons in R
+
+:::
+
+
+
+## Making Controlled Comparisons {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+Add to your notes:
+
+```{r, echo=TRUE}
+# Categorical x Categorical: Estimating partial effects
+
+# Step 1: Split your sample by levels of the control variable
+# New tool: subset()
+
+# Step 2: Generate cross-tabs for each subset
+
+# Step 3: Present the results in a polished table
+# New tool: crosstable()
+
+# Step 4: Present the results in a polished visualization
+# New tool: geom_line()
+
+# Access the built-in data
+library(tidyverse)
+```
+
+::: notes
+
+Everybody copy these notes into their new R file
+
+- From title slide: Making_Controlled_Comparisons-Cat_x_Cat.R
+
+<br>
+
+Today our focus will be on estimating partial effects for the relationship between two categorical variables
+
+- e.g. bivariate analysis of two categorical variables with a single control variable
+
+- In doing this we'll learn two new tools in R
+
+<br>
+
+**SLIDE**: As always, let's begin with a built-in data example to learn the code
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**Making Controlled Comparisons: Categorical x Categorical**
+
+<br>
+
+**How do car manufacturers change their fleets over time while controlling for factory limitations?**
+
+- Outcome: `class`
+
+- Predictor: `year` (treat as ordinal)
+
+- Control: `drv`
+
+::: notes
+
+*Read question*
+
+<br>
+
+I'm interested in how auto manufacturers adapt their fleets across time
+
+- How do they adapt to market demands, new tech, government regulations, etc.?
+
+- I hear cars keep getting bigger and bigger so let's see if that's evident in this data
+
+- I'm proposing we control for the drive train because I suspect each expensive factory that's already built is limited in the classes of cars it can build
+
+<br>
+
+**Big picture, everybody ok with this as a toy question to practice the code?**
+
+- In other words, I don't want you to agonize over the logic of this theory
+
+<br>
+
+Now, we always begin our analyses with the zero-order effects
+
+- **Remind me, what is a zero-order effect?**
+
+- (Bivariate analysis: Simple description of the relationship between two variables)
+
+<br>
+
+Let's first check the zero-order effects
+
+- Everybody make a proportionate cross-tabs focused on explaining `class` using `year`
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**How do car manufacturers change their fleets over time while controlling for factory limitations?**
+
+<br>
+
+```{r, echo=TRUE, eval=TRUE}
+proportions(table(mpg$class, mpg$year), margin = 2)
+```
+
+::: notes
+
+**Everybody get this?**
+
+<br>
+
+**So, how much change do we see in the car fleets across time?**
+
+- More pick-ups, more suvs, fewer compacts and subcompacts
+
+<br>
+
+**SLIDE**: Now let's answer the question using partial effects
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**Making Controlled Comparisons: Categorical x Categorical**
+
+<br>
+
+::: {.r-fit-text}
+**Step 1: Split the sample into subsets by levels of the control variable**
+:::
+
+```{r, echo=TRUE}
+# ID the levels
+table(mpg$drv)
+
+# Subset 1: Four wheel drive cars
+mpg_4w <- subset(mpg, drv == "4")
+
+# Subset 2: Front wheel drive cars
+mpg_fw <- subset(mpg, drv == "f")
+
+# Subset 3: Rear wheel drive cars
+mpg_rw <- subset(mpg, drv == "r")
+```
+
+::: notes
+
+In this case I am assuming that a factory designed to make front wheel drive cars cannot be cheaply or easily reconfigured to make four wheel drive cars
+
+- This means I expect less movement across categories and more movement within them
+
+- **Does that vaguely make sense?**
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+**Making Controlled Comparisons: Categorical x Categorical**
+
+**Step 2: Create a cross-tab for each subset**
+
+```{r, echo=TRUE}
+# Create a cross-tab for each subset
+proportions(table(mpg_4w$class, mpg_4w$year), margin = 2)
+proportions(table(mpg_fw$class, mpg_fw$year), margin = 2)
+proportions(table(mpg_rw$class, mpg_rw$year), margin = 2)
+```
+
+::: notes
+
+With the subsets created for each level of the categorical variable, now we remake our tables using each subset separately
+
+- These are the partial effects of year on the class of cars while controlling for the drive trains
+
+- **Do we see consistent differences across the tables?**
+
+<br>
+
+THIS is the process for making partial effects cross-tabs (e.g. with two categorical variables)
+
+- **Forget the car details, does the approach make sense?**
+
+<br>
+
+To include this table in a report you'd have to build the table by hand using these results
+
+- I'll admit, that is awful and shouldn't be necessary
+
+- And it isn't!
+
+<br>
+
+The key for me is that you understand the process you need for doing this in base R functions
+
+- table(), proportions() and subset() should always work
+
+- HOWEVER, there are MANY different ways to automate this process in R
+
+- **SLIDE**: I'm going to show you one of them now, BUT I make ZERO promises that this project will always exist
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+```{r, echo=TRUE, eval=FALSE}
+# Install the package ONE TIME
+install.packages("crosstable")
+
+# Load the package when you want to use it
+library(crosstable)
+```
+
+<br>
+
+crosstable(data, cols, by)
+
+- `data` is the dataset
+
+- `cols` is the row variable
+
+- `by` is the column variable
+
+as_flextable()
+
+- Polishes a crosstable object for printing
+
+::: notes
+
+Everybody install the crosstable package
+
+<br>
+
+This gives us two useful functions for our work making controlled comparisons
+
+- *Talk through the details*
+
+<br>
+
+**SLIDE**: Let's put this to work!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+```{r, echo=TRUE, eval=FALSE}
+# Univariate table
+crosstable(mpg, cols = class) |> 
+  as_flextable()
+```
+
+<br>
+
+```{r}
+crosstable(mpg, cols = class) |> 
+  as_flextable(fontsizes = list(body=21, header=21))
+```
+
+::: notes
+
+Three new R functions here
+
+1. crosstable makes the cross tabs
+
+2. as_flextable makes it look good for printing
+
+3. And the pipe (|>)
+
+<br>
+
+The pipe is an AWESOME piece of code that says take whatever is produced on one line and send it to the next function
+
+- Here we see crosstable creating a new object and then sending it to as_flextable to print it
+
+- **Make sense?**
+
+<br>
+
+Crosstable applied to one categorical variable gives you a univariate count AND the proportions
+
+- Here we start by visualizing the distribution of the outcome, class variable
+
+<br>
+
+**SLIDE**: The bivariate case - a cross-tab
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+```{r, echo=TRUE, eval=FALSE}
+# Bivariate table (row %)
+crosstable(mpg, cols = class, by = year) |> 
+  as_flextable()
+```
+
+<br>
+
+```{r}
+# Bivariate table (row %)
+crosstable(mpg, cols = class, by = year) |> 
+  as_flextable(fontsizes = list(body=15, header=15))
+```
+
+::: notes
+
+Here we add "year" as our predictor using the "by" argument
+
+<br>
+
+NOTE: By default crosstable calculates %s by row, NOT column
+
+- A problem for us if we follow the textbook rules that need column %s
+
+<br>
+
+**SLIDE**: The code to change this to column is annoying
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+```{r, echo=TRUE, eval=FALSE}
+# Bivariate table (column %)
+crosstable(mpg, cols = class, by = year, 
+           percent_pattern = "{p_col} ({n})") |> 
+  as_flextable()
+```
+
+<br>
+
+```{r}
+# Bivariate table (column %)
+crosstable(mpg, cols = class, by = year, percent_pattern = "{p_col} ({n})") |> 
+  as_flextable(fontsizes = list(body=15, header=15))
+```
+
+::: notes
+
+Here I am asking the code to give us two things per cell, BOTH the count and the % 
+
+<br>
+
+**SLIDE**: But this is too many places after the decimal!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+```{r, echo=TRUE, eval=FALSE}
+# Bivariate table (column %), change % decimals
+crosstable(mpg, cols = class, by = year, 
+           percent_pattern = "{p_col} ({n})",
+           percent_digits = 0) |> 
+  as_flextable()
+```
+
+<br>
+
+```{r}
+# Bivariate table (column %)
+crosstable(mpg, cols = class, by = year, 
+           percent_pattern = "{p_col} ({n})",
+           percent_digits = 0) |> 
+  as_flextable(fontsizes = list(body=15, header=15))
+```
+
+::: notes
+
+I appreciate how easy this code is and that it produces a table with BOTH the counts and %s per cell
+
+<br>
+
+Ok, this has brought us back to our zero-order effects
+
+- The real power of thiscrosstable tool is when adding a control variable to the analysis
+
+- **SLIDE**: Partial effects time!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**Step 3: Present a polished table of the partial effects**
+
+```{r, echo=TRUE, eval=FALSE}
+# Bivariate table, partial effects
+crosstable(mpg, cols = class, by = c(year, drv), 
+           percent_pattern = "{p_col} ({n})",
+           percent_digits = 0) |> 
+  as_flextable()
+```
+
+<br>
+
+```{r}
+# Bivariate table, partial effects
+crosstable(mpg, cols = class, by = c(year, drv), 
+           percent_pattern = "{p_col} ({n})",
+           percent_digits = 0) |> 
+  as_flextable(fontsizes = list(body=15, header=15))
+```
+
+::: notes
+
+Here we specify two variables as a list in the "by" argument
+
+- The second variable in this list is the control
+
+<br>
+
+**So, does our controlled comparison suggest that auto manufacturers are adapting their fleets over time?**
+
+- **In what ways?**
+
+<br>
+
+**Questions on the crosstable code?**
+
+<br>
+
+As I said, the base R subset approach should ALWAYS work
+
+- You simply make subsets and run table on each one
+
+<br>
+
+This crosstable works as long as the developer keeps maintaining the package
+
+- The bad news is that most add-on packages eventually die
+
+- The good news is there are MANY more packages out there for making fancy tables
+
+- Don't be afraid to explore
+
+<br>
+
+**SLIDE**: Let's practice!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Does party ID predict policy preferences on the rules for purchasing firearms?**
+
+<br>
+
+```{r, fig.align = 'center', fig.width = 9, fig.height=1.25}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Party ID", "Strict Gun\nPurchasing Rules")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 1.6, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+
+There are a lot of claims out there regarding the viewpoints of Americans on the rules around buying guns
+
+- I'd like to know if the divide across the parties is as sharp as the conventional wisdom indicates
+
+<br>
+
+**SLIDE**: BUT, I think there is a clear confounder in this relationship
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Does party ID predict policy preferences on the rules for purchasing firearms?**
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=8}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Party ID\n(partyid3)", "Gender\n(gender)", "Strict Gun\nPurchasing Rules\n(gun.buying)")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.5, xend = 2.25, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.25, arrow = arrow())
+```
+
+::: notes
+
+The research indicates a strong causal mechanism from gender to both party identification AND gun policy preferences
+
+<br>
+
+Alright research team, here is your task
+
+- Use the ANES (2020) data to answer my question
+
+- You should perform BOTH a zero-order test AND a partial effects test
+
+- **Questions?**
+
+- Go!
+
+<br>
+
+*While they work they may trip over what to do about missing data, let them finish their tables and then we'll address it*
+
+<br>
+
+**SLIDE**: Results
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**Does party ID predict policy preferences on the rules for purchasing firearms?**
+
+::: {.panel-tabset}
+
+### NAs
+
+<br>
+
+```{r, fig.align='center', fig.asp=.618}
+## Example 1: Does party ID predict policy preferences on the rules for purchasing firearms?
+#anes2 <- na.omit(select(anes, gun.buying, partyid3, gender))
+
+crosstable(anes, cols = gun.buying, by = partyid3, percent_digits = 0, percent_pattern = "{p_col} ({n})") |>
+  as_flextable(fontsizes = list(body = 14, header = 14))
+```
+
+
+### Cleaning
+
+```{r, echo=TRUE}
+# Remove the missing data
+
+# Step 1: Subset of the data with only the variables we need
+anes2 <- select(.data = anes, gun.buying, partyid3, gender)
+
+# Step 2: Remove responses with NAs
+anes3 <- na.omit(anes2)
+
+# Check missing data
+nrow(anes)
+
+nrow(anes3)
+```
+
+### Zero-Order Effects
+
+<br>
+
+```{r, fig.align='center', fig.asp=.618}
+## Example 1: Does party ID predict policy preferences on the rules for purchasing firearms?
+#anes2 <- na.omit(select(anes, gun.buying, partyid3, gender))
+
+crosstable(anes3, cols = gun.buying, by = partyid3, percent_digits = 0, percent_pattern = "{p_col} ({n})") |>
+  as_flextable(fontsizes = list(body = 14, header = 14))
+```
+
+### Partial Effects
+
+<br>
+
+```{r, fig.align='center', fig.asp=.618}
+crosstable(anes3, cols = gun.buying, by = c(partyid3, gender),
+           percent_digits = 0, percent_pattern = "{p_col} ({n})") |>
+  as_flextable(fontsizes = list(body = 12, header = 12))
+```
+
+:::
+
+::: notes
+
+*Step through missing data problem and cleaning option*
+
+<br>
+
+*Zero-order effects*
+
+**Is there a difference in preferences regarding gun purchasing rules across the parties?**
+
+<br>
+
+*Partial Effects*
+
+**Is there a difference in preferences regarding gun purchasing rules across the parties when controlling for gender?**
+
+<br>
+
+**Is this a spurious, an additive, or an interactive effect when controlling for gender?**
+
+- (**SLIDE**: Let's visualize it and check!)
+
+:::
+
+
+
+## Visualize Partial Effects {background-image="Images/background-data_blue_v4.png"}
+
+**Step 1: Copy the partial effects into a new object**
+
+<br>
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=TRUE}
+# Create a dataset: tribble()
+new1 <- tribble(
+  ~gender, ~x1, ~y1,
+  "Male", 1, .75,
+  "Male", 2, .46,
+  "Male", 3, .19,
+  "Female", 1, .82,
+  "Female", 2, .54,
+  "Female", 3, .28
+)
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=TRUE}
+new1
+```
+:::
+::::
+
+
+## Visualize Partial Effects {background-image="Images/background-data_blue_v4.png"}
+
+**Step 2: Make (and polish) a line plot**
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=6}
+ggplot(new1, aes(x = x1, y = y1, color = gender)) +
+  geom_line()
+```
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**Step 2: Make (and polish) a line plot**
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=6}
+ggplot(new1, aes(x = x1, y = y1, color = gender)) +
+  geom_line() +
+  theme_bw()
+```
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**Step 2: Make (and polish) a line plot**
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=6}
+ggplot(new1, aes(x = x1, y = y1, color = gender)) +
+  geom_line() +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent_format())
+```
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**Step 2: Make (and polish) a line plot**
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=6}
+ggplot(new1, aes(x = x1, y = y1, color = gender)) +
+  geom_line() +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_x_continuous(breaks = c(1, 2, 3), 
+      labels = c("Democrat", "Independent", "Republican")) 
+```
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**Step 2: Make (and polish) a line plot**
+
+```{r, echo=TRUE, fig.align='center', fig.asp=.618, fig.width=6}
+ggplot(new1, aes(x = x1, y = y1, color = gender)) +
+  geom_line() +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_x_continuous(breaks = c(1, 2, 3), 
+      labels = c("Democrat", "Independent", "Republican")) +
+  labs(x = "", y = "Buying a gun should be harder (%)", color = "")
+```
+
+::: notes
+
+With our polished visualization in hand, now you can answer the question.
+
+- **Is the partial effect here additive, interactive or spurious?**
+
+- (Additive)
+
+<br>
+
+**SLIDE**: Our work today
+
+:::
+
+
+
+## Making Controlled Comparisons {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+**If categorical x categorical**
+
+- Step 1: Split your sample by levels of the control variable
+
+- Step 2: Generate cross-tabs for each subset
+
+- Step 3: Polish tables with crosstable()
+
+- Step 4: Visualize partial effects with geom_line()
+
+::: notes
+
+**Does the subset approach to making controlled comparisons make sense?**
+
+<br>
+
+**SLIDE**: For next class we need some practice!
+
+:::
+
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+Does the strength of Americans' religious convictions (religion.imp) predict their support for the death penalty (death.penalty) when controlling for party identification (partyid3)?
+
+::: {.incremental}
+
+1. Table 1: Polished cross-tab of the zero-order effects
+
+2. Table 2: Polished cross-tab of the partial effects
+
+3. Figure 1: Make a line plot of the partial effects calculated in Step 2 above (% "Favor Strongly" across the levels of religion.imp)
+
+:::
+
+::: notes
+
+Canvas Assignment: Practice Making Controlled Comparisons (categorical x categorical)
+
+Use the ANES (2020) data to answer the following question: Does the strength of Americans' religious convictions (religion.imp) predict their support for the death penalty (death.penalty) when controlling for party identification (partyid3)?
+
+1. Table 1: Submit a polished cross-tab that evaluates if religious importance predicts support for the death penalty (zero-order effects)
+2. Table 2: Submit a polished cross-tab that evaluates if religious importance predicts support for the death penalty while controlling for party ID (partial effects)
+3. Figure 1: Visualize the results in Step 2 above with a line plot tracking those who "favor strongly" the death penalty across the levels of religious importance. You should have three lines, one for each party ID in the dataset. Be sure to categorize it as a spurious, additive or interactive effect. 
+
+:::
+
+
+

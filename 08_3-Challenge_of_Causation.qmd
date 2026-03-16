@@ -8,22 +8,48 @@ format: revealjs
 library(tidyverse)
 library(readxl)
 library(kableExtra)
-library(modelsummary)
-library(ggeffects)
 
-# Input merged project data
-d <- read_excel("../Data_in_Class/Data-2024-EPI_RSF-Merged.xlsx", na = "NA")
+load("../../DATA/2026-Spring/Miller_Saunders_Farhart2016/Miller_Saunders_Farhart2016_v2.RData")
+
+# Build the CT index
+d$ct_index <- as.numeric(d$CT_Obama) + as.numeric(d$CT_DeathPanels) + as.numeric(d$CT_Govt_911) + as.numeric(d$CT_Katrina_Levees) + as.numeric(d$CT_Climate_Hoax) + as.numeric(d$CT_Bush_WMDs) + as.numeric(d$CT_Hussein_911) + as.numeric(d$CT_2004_election)
+
+# Rescale the index to start at zero
+d$ct_index0 <- d$ct_index - 8
+
+# Convert to percentage out of 24
+d$ct_index_pct <- d$ct_index0 / 24
+
+# Build the knowledge index
+# Recode nominal variables into dummies
+d$Majority_House2 <- if_else(d$Majority_House == "Republican Party", 1, 0)
+d$More_Conservative2 <- if_else(d$More_Conservative == "Republican Party", 1, 0)
+d$JRoberts_Job2 <- if_else(d$JRoberts_Job == "Chief Justice of the Supreme Court", 1, 0)
+d$Pres_Russia2 <- if_else(d$Pres_Russia == "Vladimir Putin", 1, 0)
+d$Speaker2 <- if_else(d$Speaker == "John Boehner", 1, 0)
+d$JBiden_Job2 <- if_else(d$JBiden_Job == "Vice President of the United States", 1, 0)
+d$DCameron_Job2 <- if_else(d$DCameron_Job == "Prime Minister of the United Kingdom", 1, 0)
+d$Nominates_Judges2 <- if_else(d$Nominates_Judges == "The President", 1, 0)
+d$Senate_Term2 <- if_else(d$Senate_Term == "6 years", 1, 0)
+d$Reviews_Laws2 <- if_else(d$Reviews_Laws == "The Supreme Court", 1, 0)
+d$Veto_Override2 <- if_else(d$Veto_Override == "2/3", 1, 0)
+d$Sec_State2 <- if_else(d$Sec_State == "John Kerry", 1, 0)
+d$Sec_Treasury2 <- if_else(d$Sec_Treasury == "Jacob Lew", 1, 0)
+d$PM_Canada2 <- if_else(d$PM_Canada == "Stephen Harper", 1, 0)
+
+d$knowledge_index <- d$Majority_House2 + d$More_Conservative2 + d$JRoberts_Job2 + d$Pres_Russia2 + d$Speaker2 + d$JBiden_Job2 + d$DCameron_Job2 + d$Nominates_Judges2 + d$Senate_Term2 + d$Reviews_Laws2 + d$Veto_Override2 + d$Sec_State2 + d$Sec_Treasury2 + d$PM_Canada2
+
+# Rescale to proportion
+d$knowledge_index2 <- d$knowledge_index / 14
 ```
 
 <br>
 
 ::: {.r-fit-text}
 
-**Thinking Carefully About Causal Inference**
+**The Challenge in Establishing Causation**
 
-- Causal Diagrams
-
-- Directed Acyclic Graphs (DAGs)
+- Good research design is vital to all knowledge formation
 
 :::
 
@@ -36,16 +62,361 @@ Justin Leinaweaver (Spring 2026)
 ::: notes
 Prep for Class
 
-1. Review DGP submissions on Canvas
+1. Review Canvas submissions
+
+2. Markers x 3
 
 <br>
 
-Readings:
+Today we wrap up the first half of the semester with a huge and hugely important topic: establishing causality
 
-1. Huntington-Klein 2022 chapter 6 "Causal Diagrams" [LINK](https://theeffectbook.net/ch-CausalDiagrams.html)
+- The scientific method basically exists to help us tackle what is the fundamental problem facing all of us who want to understand the why's of the world
 
-2. Huntington-Klein 2022 chapter 7 "Drawing Causal Diagrams"[LINK](https://theeffectbook.net/ch-DrawingCausalDiagrams.html)
+- No matter what you do or how much money you throw at the problem you can never escape the fundamental problem of causal inference
+
+<br>
+
+But before we dive into that topic, let's review your Canvas assignment
+
+- **What visualization type did you make in order to test the first two hypotheses focused on the relationship between trust and belief in conspiracy theories?**
+
+- (**NEXT SLIDE**: Box plots, **AFTER THAT** x 2: Histogram with facets)
+
 :::
+
+
+
+##  {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**H1 & 2. Belief in CTs &#8593; as trust in government &#8595;**
+:::
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.618, fig.width=9}
+d |>
+  filter(!is.na(Trust_Govt)) |>
+  pivot_longer(cols = c(Lib_Conspiracy_Index, Cons_Conspiracy_Index), names_to = "index", values_to = "values") |>
+  ggplot(aes(x = index, y = values, fill = Trust_Govt)) +
+  geom_boxplot() +
+  labs(fill = "Trust in\nGovernment", x = "", y = "Belief in Conspiracies") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(legend.position = "top") +
+  scale_x_discrete(limits = c("Cons_Conspiracy_Index", "Lib_Conspiracy_Index"), label = c("Conservative Conspiracies", "Liberal Conspiracies")) +
+  scale_fill_brewer(type = "div", palette = 4, direction = -1)
+```
+
+::: notes
+
+**Does this visualization support the hypothesis or not?**
+
+<br>
+
+**What does this suggest is true about the relationship we're studying?**
+
+
+:::
+
+
+
+
+##  {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**H1 & 2. Belief in CTs &#8593; as trust in government &#8595;**
+:::
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.9, fig.width=10}
+# histogram and facet wraps
+d |>
+  filter(!is.na(Trust_Govt)) |>
+  pivot_longer(cols = c(Lib_Conspiracy_Index, Cons_Conspiracy_Index), names_to = "index", values_to = "values") |>
+  ggplot(aes(x = values)) +
+  geom_histogram(bins = 12, color = "white", fill = "orange3") +
+  facet_grid(Trust_Govt ~ index, scales = "free_y") +
+  labs(y = "Count", x = "Belief in Conspiracies") +
+  scale_x_continuous(labels = scales::percent_format()) +
+  theme_bw()
+```
+
+::: notes
+
+**Does this visualization support the hypothesis or not?**
+
+<br>
+
+**What does this suggest is true about the relationship we're studying?**
+
+<br>
+
+**What visualization type did you make in order to test the final two hypotheses focused on the relationship between partisanship and belief in conspiracy theories?**
+
+- (**NEXT SLIDE**: Box plots, **AFTER THAT** x 2: Histogram with facets)
+
+:::
+
+
+
+
+##  {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**H3 & 4. Belief in CTs &#8593; when CTs appeal to your partisanship**
+:::
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.618, fig.width=9}
+d |>
+  filter(!is.na(Party3)) |>
+  pivot_longer(cols = c(Lib_Conspiracy_Index, Cons_Conspiracy_Index), names_to = "index", values_to = "values") |>
+  ggplot(aes(x = index, y = values, fill = Party3)) +
+  geom_boxplot() +
+  labs(fill = "", x = "", y = "Belief in Conspiracies") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(legend.position = "top") +
+  scale_x_discrete(limits = c("Cons_Conspiracy_Index", "Lib_Conspiracy_Index"), label = c("Conservative Conspiracies", "Liberal Conspiracies")) +
+  scale_fill_manual(values = c("blue2", "grey", "red3"))
+```
+
+::: notes
+
+**Does this visualization support the hypothesis or not?**
+
+<br>
+
+**What does this suggest is true about the relationship we're studying?**
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**H3 & 4. Belief in CTs &#8593; when CTs appeal to your partisanship**
+:::
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.9, fig.width=10}
+# histogram and facet wraps
+d |>
+  filter(!is.na(Party3)) |>
+  pivot_longer(cols = c(Lib_Conspiracy_Index, Cons_Conspiracy_Index), names_to = "index", values_to = "values") |>
+  ggplot(aes(x = values)) +
+  geom_histogram(bins = 10, color = "white", fill = "orange3") +
+  facet_grid(index ~ Party3, scales = "free") +
+  labs(y = "Count", x = "Belief in Conspiracies") +
+  scale_x_continuous(labels = scales::percent_format()) +
+  theme_bw()
+```
+
+::: notes
+
+**Does this visualization support the hypothesis or not?**
+
+<br>
+
+**What does this suggest is true about the relationship we're studying?**
+
+<br>
+
+**SLIDE**: At this point...
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Miller, Saunders and Farhart (2016)**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.align='center', fig.asp=1, fig.width=7}
+d |>
+  filter(!is.na(Trust_Govt)) |>
+  pivot_longer(cols = c(Lib_Conspiracy_Index, Cons_Conspiracy_Index), names_to = "index", values_to = "values") |>
+  ggplot(aes(x = index, y = values, fill = Trust_Govt)) +
+  geom_boxplot() +
+  labs(fill = "Trust in\nGovernment", x = "", y = "Belief in Conspiracies") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(legend.position = "top") +
+  scale_x_discrete(limits = c("Cons_Conspiracy_Index", "Lib_Conspiracy_Index"), label = c("Conservative Conspiracies", "Liberal Conspiracies")) +
+  scale_fill_brewer(type = "div", palette = 4, direction = -1)
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.align='center', fig.asp=1, fig.width=7}
+d |>
+  filter(!is.na(Party3)) |>
+  pivot_longer(cols = c(Lib_Conspiracy_Index, Cons_Conspiracy_Index), names_to = "index", values_to = "values") |>
+  ggplot(aes(x = index, y = values, fill = Party3)) +
+  geom_boxplot() +
+  labs(fill = "", x = "", y = "Belief in Conspiracies") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(legend.position = "top") +
+  scale_x_discrete(limits = c("Cons_Conspiracy_Index", "Lib_Conspiracy_Index"), label = c("Conservative Conspiracies", "Liberal Conspiracies")) +
+  scale_fill_manual(values = c("blue2", "grey", "red3"))
+```
+:::
+::::
+
+::: notes
+
+**At this point, how comfortable are you concluding that trust and partisanship are useful predictors of believing in conspiracy theories? Why or why not?**
+
+<br>
+
+**SLIDE**: Time to check the political knowledge predictor!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Miller, Saunders and Farhart (2016)**
+:::
+
+<br>
+
+**H5. Do increases in political knowledge reduce the belief in conspiracy theories?**
+
+- Box plot: Overall CT index x Political knowledge index
+
+<br>
+
+::: {.fragment}
+```{r, echo=TRUE, eval=FALSE}
+# The "x" in a box plot MUST be categorical
+factor(political_knowledge_index)
+```
+:::
+
+::: notes
+
+One more thing to check, does increasing political knowledge reduce the likelihood of believing a conspiracy theory?
+
+<br>
+
+Everybody build this box plot to test this hypothesis
+
+- **REVEAL**: One code tweak you'll need!
+
+- geom_boxplot requires one of the variables to be a number and the other to be categorical
+
+- This means we can use the factor argument to tell R that the knowledge index is actually a series of levels and not numbers
+
+- Go!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+**H5. Do increases in political knowledge reduce the belief in conspiracy theories?**
+
+```{r, fig.align='center', fig.asp=.618, fig.width=9}
+# Overall Test
+color_range1 <- colorRampPalette(c("red", "white"), bias = 2)   
+my_colors <- color_range1(14)  
+
+d |>
+  filter(!is.na(knowledge_index)) |>
+  ggplot(aes(x = factor(knowledge_index), y = ct_index_pct)) +
+  #geom_boxplot(fill = my_colors) +
+  geom_boxplot(fill = c(rep("red", 5), rep("pink2", 5), rep("white", 4))) +
+  labs(x = "Political Knowledge Index", y = "Belief in Conspiracy Theories") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme_bw()
+```
+
+::: notes
+
+**Conclusions from this visualization?**
+
+- Effect not as strong as I might have hoped
+
+- Have to go from zero info to total info to cut the belief in CTs in half
+
+    - Not a great return on the investment!
+
+<br>
+
+**SLIDE**: Let's repeat this but focused on the two separate types of CTs
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Miller, Saunders and Farhart (2016)**
+:::
+
+<br>
+
+**H5. Do increases in political knowledge reduce the belief in conspiracy theories?**
+
+1. Box plot: Liberal CT index x Political knowledge index
+
+2. Box plot: Conservative CT index x Political knowledge index
+
+::: notes
+
+Everybody now build these two box plot diagrams to test this hypothesis
+
+- Go!
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+**H5. Do increases in political knowledge reduce the belief in conspiracy theories?**
+
+```{r, fig.align='center', fig.asp=.618, fig.width=9}
+# Partisanship Test
+d |>
+  filter(!is.na(knowledge_index)) |>
+  pivot_longer(cols = c(Lib_Conspiracy_Index, Cons_Conspiracy_Index), names_to = "index", values_to = "values") |>
+  ggplot(aes(x = index, y = values, fill = factor(knowledge_index))) +
+  geom_boxplot() +
+  #theme(legend.position = "top") +
+  labs(fill = "", x = "", y = "Belief in Conspiracies") +
+  scale_y_continuous(labels = scales::percent_format())  +
+  scale_x_discrete(limits = c("Cons_Conspiracy_Index", "Lib_Conspiracy_Index"), label = c("Conservative Conspiracies", "Liberal Conspiracies")) +
+  guides(fill = FALSE) +
+  scale_fill_manual(values = my_colors)
+
+```
+
+::: notes
+
+**Conclusions from this visualization?**
+
+- Knowledge lowers belief in CTs, BUT
+
+- Appears that knowledge has a stronger impact on the conseravtive CTs!
+
+- Liberal CTs more believed than conservative ones
+
+<br>
+
+**Everybody feeling comfortable with making and interpreting bivariate analyses of an interval variable across the levels of a categorical variable?**
+
+<br>
+
+**SLIDE**: Our work for today on causal inference
+
+:::
+
+
 
 
 
@@ -66,7 +437,7 @@ d1 <- tibble(
 )
 
 ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
   coord_cartesian(xlim = c(-4, 4)) +
   geom_label(aes(label = labels), size = 7) +
@@ -74,27 +445,36 @@ ggplot(data = d1, aes(x = x, y = y)) +
 ```
 
 ::: notes
-This week we are exploring the concepts and tools you will need to build an argument about causation using observational data.
 
-- e.g. making an argument with data about why the world works like it does.
+Ok, today we introduce some of the big concepts we will need moving forward in the scientific method
+
+- The aim of any scientific discipline is to generate new knowledge that explains why things happen in the world
+
+- We refer to this as explanatory or causal analysis
 
 <br>
 
-In other words, we need to make an argument that changes in our chosen predictors CAUSE a change in the outcome variable
+Much of this language comes from medicine where they focus on treatments and effects
+
+-   Think new medicines and curing a disease
+
+-   For our purposes, think of "treatment to effect" as synonymous with "predictor to outcome."
+
+- In other words, we want to demonstrate that changes in our chosen predictors CAUSE a change in the outcome variable
 
 <br>
 
-**Any questions on the material from Monday before we push forward?**
+**SLIDE**: Let's step through a toy example to think about how we build a causal argument.
 
-- **SLIDE**: Let's do a quick refresher 
 :::
 
 
-## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
+
+## Building a Causal Argument {.center background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
-:::: {.columns}
+:::: columns
 ::: {.column width="50%"}
 
 ![](Images/13_1-classroom.jpg)
@@ -108,16 +488,16 @@ In other words, we need to make an argument that changes in our chosen predictor
 :::
 ::::
 
-```{r, fig.retina = 3, fig.align = 'center', fig.width = 7, fig.height=1, out.width='80%'}
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 7, fig.height=1}
 ## Manual DAG
 d1 <- tibble(
   x = c(-3, 3),
   y = c(1, 1),
-  labels = c("Class\n Size", "Student\n Success")
+  labels = c("Class\nSize", "Student\nSuccess")
 )
 
 ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
   coord_cartesian(xlim = c(-4, 4)) +
   geom_label(aes(label = labels), size = 7) +
@@ -126,27 +506,298 @@ ggplot(data = d1, aes(x = x, y = y)) +
 
 ::: notes
 
-Last class we proposed a hypothetical research project.
-
-- Theory: Students in smaller classes receive more individualized attention and, therefore, experience more growth.
 
 <br>
 
-**Remind me, what is the "gold standard" approach to running this test?**
+Let's say we have a hypothesis that smaller class sizes will lead to better student success
 
-- (Randomized Controlled Trials, e.g. RCTs)
+-   The theory is that in smaller classes teachers can provide more individualized attention, and
 
-<br>
-
-**Why is this the "gold standard"?**
-
-- **What is the primary benefit of testing this theory using a RCT?**
+-   Students who receive more personalized attention grow faster than those who do not
 
 <br>
 
-- (**SLIDE**)
+Easy peasy, now let's use an experiment to show I am right!
+
+-   I am now going to walk you through a solid gold, infallible research design for PROVING causality
+:::
+
+
+
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/13_1-Student.png){.absolute bottom="100" left="0" width="45%"}
+
+![](Images/13_1-small_class.webp){.absolute bottom="130" right="0" width="50%"}
+
+::: notes
+Step 1:
+
+-   Take a specific student, say, Bob here who is a hypothetical 3rd grader.
+
+- Over the summer we give Bob a pre-test to establish his current academic ability
+
+-   This coming August place Bob in a small class and ensure he attends all year
+
+-   Next May we record his test scores
+
+<br>
+
+The difference of pre-test to post-test gives us a measure of Bob's growth for the year
+
+- **Everybody with me?**
+
+- **SLIDE**: the next step is the tricky one
+:::
+
+
+
+##  {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/13_1-delorean-time-travel.gif){.absolute top="0" left="250" width="60%"}
+
+![](Images/13_1-Student.png){.absolute bottom="0" left="0" width="35%"}
+
+![](Images/13_1-large_class_size.png){.absolute bottom="0" right="0" width="45%"}
+
+::: notes
+Step 2
+
+In May, AFTER RECORDING BOB's TEST SCORES, you use a time machine to return to August
+
+-   In the past August you place Bob in a large class and ensure he attends all year
+
+-   Then in past future May we record his test scores
+
+<br>
+
+**Did I lose anybody here?**
+:::
+
+
+
+##  {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/13_1-Student.png){.absolute top="0" left="340" width="35%"}
+
+![](Images/13_1-small_class.webp){.absolute bottom="0" left="0" width="45%"}
+
+![](Images/13_1-large_class_size.png){.absolute bottom="0" right="0" width="45%"}
+
+::: notes
+Step 3: Calculate the difference in test scores between past Bob and past revised Bob
+
+-   You have a firm estimate of the causal effect of class size on Bob's individual success.
+:::
+
+
+
+##  {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/12_1-students2.jpg){.absolute top="0" left="25" width="40%"}
+
+![](Images/13_1-delorean-time-travel.gif){.absolute top="50" right="0" width="45%"}
+
+![](Images/13_1-small_class.webp){.absolute bottom="0" left="0" width="45%"}
+
+![](Images/13_1-large_class_size.png){.absolute bottom="0" right="0" width="45%"}
+
+::: notes
+Now all you have to do is repeat this process for a few hundred randomly selected students and you will be able to conclusively demonstrate a causal effect of class size on student success.
+
+<br>
+
+**Questions?**
+:::
+
+
+
+## {.center background-image="Images/background-data_blue_v4.png"}
+
+::: r-fit-text
+The Fundamental Problem of Causal Inference
+:::
+
+<br>
+
+"To measure causal effects, we need to compare the factual outcome with the counter-factual outcome, but **we can never observe the counter-factual outcome**" (Llaudet and Imai 2023).
+
+::: notes
+This is what we call the fundamental problem of causal inference
+
+-   In the real world we observe only the actual outcome (Student X in small class) and never the counter-factual (Student X in large class)!
+
+<br>
+
+NOTE: This is a problem for ALL science, not just the social sciences.
+
+-   Whether its gravity, speed, biological reproduction or whatever else, we cannot observe actual counter-factuals
+
+<br>
+
+THIS is a big reason why we can never PROVE anything in science
+
+- The fundamental problem is serious and unavoidable
+
+<br>
+
+**SLIDE**: So, how do we solve this problem?
 
 :::
+
+
+
+## Randomized Controlled Trials (RCTs) {.center background-image="Images/background-data_blue_v4.png"}
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
+## Manual DAG
+d2 <- tibble(
+  x = c(2.5, 2, 3),
+  y = c(3, 2, 2),
+  labels = c("Participants", "Treatment\nGroup", "Control\nGroup")
+)
+
+ggplot(data = d2, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.5, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  annotate("segment", x = 2.5, xend = 2.5, y = 2.85, yend = 2.7, arrow = arrow(length = unit(0.1, "inches"))) +
+  annotate("segment", x = 2.5, xend = 2.2, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("text", x = 2.5, y = 2.6, label = "Random Allocation", color = "red", size = 10)
+```
+
+::: notes
+
+Where possible, the "gold" standard solution across the scientific fields is to run a Randomized Controlled Trial (RCTs)
+
+<br>
+
+The key to what makes an RCT powerful is that its design is based on randomly assigning the treatment and control groups
+
+- For example, take a random sample of third grade students in Springfield and assign them to either a small class (the treatment) or a large class (the control) using the flip of a coin.
+
+<br>
+
+Why randomize the assignment?
+
+- Random assignment means that every individual has an equal chance of being assigned to either group
+
+- So, each randomly created group should have a similar proportion of students by gender, race, background, ability, etc
+
+- The real power here is we don't have to know, a priori, which factors matter for our hypothesis, the random assignment takes care of it.
+
+<br>
+
+Bottom line:
+
+1. Random assignment means that even though both groups are composed of different individuals, the two groups are comparable to each other **on average** in all respects.
+
+2. Random assignment means that the only thing that distinguishes the treatment group from the control group **BESIDES THE TREATMENT** is chance.
+
+<br>
+
+**Does this make sense?**
+:::
+
+
+
+## Randomized Controlled Trials (RCTs) {.center background-image="Images/background-data_blue_v4.png"}
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=10}
+## Manual DAG
+d2 <- tibble(
+  x = c(2.5, 2, 3, 2, 3),
+  y = c(3, 2, 2, 1, 1),
+  labels = c("Participants", "Treatment\nGroup", "Control\nGroup", "Outcome", "Outcome")
+)
+
+ggplot(data = d2, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  annotate("segment", x = 2.5, xend = 2.5, y = 2.85, yend = 2.7, arrow = arrow(length = unit(0.1, "inches"))) +
+  annotate("segment", x = 2.5, xend = 2.2, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.5, yend = 2.2, arrow = arrow()) +
+  annotate("segment", x = 2, xend = 2, y = 1.75, yend = 1.15, arrow = arrow()) +
+ annotate("segment", x = 3, xend = 3, y = 1.75, yend = 1.15, arrow = arrow()) +
+  annotate("text", x = 2.5, y = 2.6, label = "Random Allocation", color = "red", size = 10)
+```
+
+::: notes
+
+Since the groups are "identical" on average we can use the factual outcome of each group as the counter-factual for the other group.
+
+- The average difference in outcomes between the two groups is called the "average treatment effect" and THAT is our measure of the effect
+
+<br>
+
+So, RCT is an approach in which we randomly assign the treatment in order to generate an estimate of the causal effect
+
+- This approach does NOT give us the actual counter-factual, BUT
+
+- If the size of our sample is large AND the quality of our random assignment is good then we can develop an estimate of the "average treatment effect" (ATE)
+
+<br>
+
+**Does this make sense in big picture terms?**
+
+- There is a growing movement in political science to use experiments to test our theories, BUT
+
+- **SLIDE**: Too many of the problems we work on don't lend themselves to an RCT experiment
+
+:::
+
+
+
+## The Challenge of Observational Data {.center background-image="Images/background-data_blue_v4.png"}
+
+![](Images/09_1-WarheadInventories_Map2025v2.png){style="display: block; margin: 0 auto"}
+
+::: notes
+
+Much of what we do in the social sciences is dependent on observational, NOT experimental, data
+
+- e.g. data from observing the world, not directly manipulating it as is done in an RCT.
+
+<br>
+
+We'd love to know the effect of nuclear weapons on the likelihood of war, BUT
+
+- Countries of the world aren't going to let us confiscate all the nukes and then randomly assign them to some countries and not others to see what happens
+
+<br>
+
+**SLIDE**: Example 2
+
+:::
+
+
+
+
+## The Challenge of Observational Data {.center background-image="Images/background-data_blue_v4.png"}
+
+![](Images/09_1--FH_Map.png){style="display: block; margin: 0 auto"}
+
+::: notes
+
+Which personal freedoms or civil liberties have the biggest impact on economic growth?
+
+<br>
+
+To run an RCT we just need to get rid of all civil rights in every country THEN reassign them at random
+
+- No problem, right?
+
+<br>
+
+**SLIDE**: So, what happens if your groups are NOT randomly assigned?
+
+:::
+
+
 
 
 ## Randomized Controlled Trials (RCTs) {background-image="Images/background-data_blue_v4.png" .center}
@@ -162,7 +813,7 @@ d2 <- tibble(
 )
 
 ggplot(data = d2, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
   coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
   geom_label(aes(label = labels), size = 10) +
@@ -176,7 +827,7 @@ ggplot(data = d2, aes(x = x, y = y)) +
 
 ::: notes
 
-The primary benefits of using random allocation are:
+Remember, the primary benefits of using random allocation are:
 
 1. EVEN though both groups have **different people**, they will be the same **on average** in all respects.
 
@@ -186,17 +837,13 @@ The primary benefits of using random allocation are:
 
 <br>
 
-**Everybody clear on why we refer to RCTs as a "gold standard" for doing science?**
+**SLIDE**: Now we shift to using observational data (e.g. non-RCT)
 
-<br>
-
-**What changes in this diagram when we shift from an experiment to observational data?**
-
-- (**SLIDE**)
 :::
 
 
-## Randomized Controlled Trials (RCTs) {background-image="Images/background-data_blue_v4.png" .center}
+
+## The Challenge of Observational Data {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -209,7 +856,7 @@ d3 <- tibble(
 )
 
 ggplot(data = d3, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
   coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
   geom_label(aes(label = labels), size = 10) +
@@ -220,214 +867,73 @@ ggplot(data = d3, aes(x = x, y = y)) +
 ```
 
 ::: notes
-**What is the effect on our research design of moving from random allocation to allocation by nature (e.g. natural law / models)?**
 
-- (Groups are no longer identical, on average!)
+IF nature assigns our groups then:
 
-- Therefore, we CANNOT simply compare the different outcomes!
+- FIRST, we can no longer assume that the groups are identical on average, AND
 
-    - The outcome of the treatment group is unlikely to be a good estimate of the counterfactual for the control group
+- SECOND, if the groups are not identical on average then we CANNOT assume the outcomes of group 1 are the counter-factual outcomes for group 2!
 
-    - And vice-versa
+- Put these together and that means we cannot interpret the differences between the groups as a causal effect, just an association
 
-<br>
-
-**How did we work to address this problem on Monday?**
-
-- (**SLIDE**)
-:::
-
-
-## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
+- Hence, analyses of observational data often runs into the "correlation is not causation" criticism
 
 <br>
 
-1. **Using theory, paint the most accurate picture possible of what the data generating process looks like**
+**SLIDE**: So, what do we do?
 
-2. Use that data generating process to figure out the reasons our data might look the way it does that don’t answer our research question
-
-3. Find ways to block out those alternate reasons and so dig out the variation we need
-
-::: notes
-
-The process proposed by HK (2022)
-
-<br>
-
-**SLIDE**: Our work on Monday focused on brainstorming the Data Generating Process for the variables in our proposed causal mechanism.
 :::
 
 
 
-## The Data Generating Process (DGP) {background-image="Images/background-data_blue_v4.png" .center}
+## An Identification Strategy {background-image="Images/background-data_blue_v4.png" .center}
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, fig.retina=3, fig.align='center', out.width='100%', fig.asp=.9, fig.width=8}
-## Manual DAG
-d2 <- tibble(
-  x = c(2.5, 2, 3),
-  y = c(3, 2, 2),
-  labels = c("Nature", "Small\nClasses", "Large\nClasses")
-)
+<br>
 
-ggplot(data = d2, aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.75, 3.25)) +
-  geom_label(aes(label = labels), size = 10) +
-  #annotate("text", x = 2.5, y = 2.6, label = "::: notes::: notes::: notes::: notes", color = "red", size = 10) +
-  #annotate("segment", x = 2.5, xend = 2.5, y = 2.9, yend = 2.7, arrow = arrow()) +
-  annotate("segment", x = 2.5, xend = 2.15, y = 2.9, yend = 2.2, arrow = arrow()) +
-  annotate("segment", x = 2.5, xend = 2.85, y = 2.9, yend = 2.2, arrow = arrow())
-```
-:::
-
-::: {.column width="50%"}
-```{r, fig.retina=3, fig.align='center', out.width='100%', fig.asp=.9, fig.width=8}
+```{r, fig.retina=3, fig.align='center', out.width='77%', fig.asp=.6, fig.width=10}
 ## Manual DAG
 d3 <- tibble(
-  x = c(2.5, 2, 3),
-  y = c(3, 2, 2),
-  labels = c("Nature", "Low\nScores", "High\nScores")
+  x = c(2.5, 2, 3, 2, 3),
+  y = c(3, 2, 2, 1, 1),
+  labels = c("CONFOUNDERS", "Treatment\n Group", "Control\n Group", "Outcome", "Outcome")
 )
 
 ggplot(data = d3, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
-  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(1.75, 3.25)) +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
   geom_label(aes(label = labels), size = 10) +
-  # annotate("text", x = 2.5, y = 2.6, label = "::: notes::: notes::: notes::: notes", color = "red", size = 10) +
-  # annotate("segment", x = 2.5, xend = 2.5, y = 2.9, yend = 2.7, arrow = arrow()) +
-  annotate("segment", x = 2.5, xend = 2.15, y = 2.9, yend = 2.2, arrow = arrow()) +
-  annotate("segment", x = 2.5, xend = 2.85, y = 2.9, yend = 2.2, arrow = arrow())
-```
-:::
-::::
-
-::: notes
-Let's recreate our lists from Monday!
-
-- e.g. two lists of mechanisms that could be used to explain why students might:
-
-    - Be in large vs small class sizes, and
-
-    - Get higher or lower scores on standardized tests.
-    
-<br>
-
-*ON BOARD: Two Columns*
-
-Class Size
-
-- Family wealth
-- Property taxes
-- Better teachers
-- Better schools
-- Rural / Urban schools
-- District zoning / size
-- Student needs
-- Proficiency levels vary
-
-Success
-
-- Family circumstances
-- Time for studying
-- Student Hunger / food insecurity
-- Wealth
-- Test anxiety
-- Teaching quality
-- Attention span
-- Disability
-- Willingness to work hard
-
-:::
-
-
-
-## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-1. Using theory, paint the most accurate picture possible of what the data generating process looks like
-
-2. **Use that data generating process to figure out the reasons our data might look the way it does that don’t answer our research question**
-
-3. Find ways to block out those alternate reasons and so dig out the variation we need
-
-::: notes
-
-With our DGP brainstorming done we can move to step 2 in HK's (2022) process.
-
-<br>
-
-I'll be honest here, this is NOT the clearest sentence I've ever read...
-
-- **SLIDE**: Let's try to clean this up.
-:::
-
-
-## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-1. Using theory, paint the most accurate picture possible of what the data generating process looks like
-
-2. **Refine the DGP to only keep variables that confound the key mechanism**
-
-3. Find ways to block out those alternate reasons and so dig out the variation we need
-
-::: notes
-
-I propose that we revise Step 2 to focus on finding confounders.
-
-### Has anybody ever heard of a confounder before?
-
-<br>
-
-### How about any statistical procedure that "controls" for something?
-:::
-
-
-## Directed Acyclic Graphs (DAGs) {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-```{r, fig.retina = 3, fig.align = 'center', fig.width = 6, fig.height=.85, out.width='85%'}
-## Manual DAG
-d1 <- tibble(
-  x = c(-3, 3),
-  y = c(1, 1),
-  labels = c("Treatment", "Outcome")
-)
-
-ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = -1.9, xend = 1.9, y = 1, yend = 1, arrow = arrow())
+  annotate("segment", x = 2.5, xend = 2.2, y = 2.85, yend = 2.25, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.85, yend = 2.25, arrow = arrow()) +
+  annotate("segment", x = 2, xend = 2, y = 1.75, yend = 1.15, arrow = arrow()) +
+ annotate("segment", x = 3, xend = 3, y = 1.75, yend = 1.15, arrow = arrow())
 ```
 
-+ 'Directed' = Paths indicate direction of effect
-
-+ 'Acyclic' = No immediate feedback loops
-
-+ 'Graphs' = Visualized
-
 ::: notes
-Before we talk confounders, let's refine our understanding of these wacky arrow graphs I keep using
 
-- e.g. Directed Acyclic Graphs (DAGs)
+We develop **identification strategies** that identify the **confounders** in our observational relationships.
+
+- Think of the confounders as a list of reasons why the groups are not identical on average
+
+- If you can identify all the confounders, and adjust your analysis for them, you can treat the groups as identical on average!
 
 <br>
 
-DAGs are incredibly useful tools for calrifying a causal argument.
+In research design terms, a confounder is a variable that represents WHY the groups we are comparing are not identical on average
+
+- So a big part of making a causal argument with observational data is identifying all the confounders in the key relationship
+
+- IFF you "control" for all the confounders THEN we can assume that the groups are identical on average
+
+- And just like before, if the groups are identical on average than any differences between them are the causal effect you are trying to measure!
 
 <br>
 
-Understanding confounding is much easier with this style of graphical representation for a causal argument.
+**SLIDE**: What is a confounder?
+
 :::
+
+
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
@@ -441,7 +947,7 @@ d1 <- tibble(
 )
 
 ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
   coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
   geom_label(aes(label = labels), size = 7) +
@@ -451,11 +957,10 @@ ggplot(data = d1, aes(x = x, y = y)) +
 ```
 
 ::: notes
-I want to give you a nontechnical definition and some examples of confounders before I show you the technical definition.
 
-<br>
+How do we know if a variable is a confounder in our relationship?
 
-In short, a confounder is a variable that explains some of the variation in both the treatment and the outcome variables.
+- In short, a confounder is a variable that explains some of the variation in both the treatment and the outcome variables.
 
 - In other words, the confounder causes at least some of the variation in the predictor, AND
 
@@ -477,11 +982,8 @@ Two arguments required to establish a confounder:
 
 <br>
 
-### Questions on this?
+**SLIDE**: Let me give you an example before asking if this makes sense
 
-<br>
-
-**SLIDE**: Example 1
 :::
 
 
@@ -510,7 +1012,7 @@ d1 <- tibble(
 )
 
 ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
   coord_cartesian(xlim = c(-4, 4)) +
   geom_label(aes(label = labels), size = 7) +
@@ -540,7 +1042,7 @@ d1 <- tibble(
 )
 
 ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
   coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
   geom_label(aes(label = labels), size = 7) +
@@ -569,7 +1071,7 @@ d1 <- tibble(
 )
 
 ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
   coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
   geom_label(aes(label = labels), size = 7) +
@@ -642,7 +1144,7 @@ d1 <- tibble(
 )
 
 ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
+  geom_point(size = 0, color = "white") +
   theme_void() +
   coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
   geom_label(aes(label = labels), size = 7) +
@@ -682,400 +1184,86 @@ Another way to think of this is as saying that a confounder is a variable that c
 <br>
 
 **Does this make sense?**
+
+<br>
+
+**SLIDE**: Back to the challenge
+
 :::
 
 
-## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
+
+## An Identification Strategy {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-1. Using theory, paint the most accurate picture possible of what the data generating process looks like
+```{r, fig.retina=3, fig.align='center', out.width='77%', fig.asp=.6, fig.width=10}
+## Manual DAG
+d3 <- tibble(
+  x = c(2.5, 2, 3, 2, 3),
+  y = c(3, 2, 2, 1, 1),
+  labels = c("CONFOUNDERS", "Treatment\n Group", "Control\n Group", "Outcome", "Outcome")
+)
 
-2. **Refine the DGP to only keep variables that confound the key mechanism**
-
-3. Find ways to block out those alternate reasons and so dig out the variation we need
+ggplot(data = d3, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(1.75, 3.25), ylim = c(0.75, 3.25)) +
+  geom_label(aes(label = labels), size = 10) +
+  annotate("segment", x = 2.5, xend = 2.2, y = 2.85, yend = 2.25, arrow = arrow()) +
+  annotate("segment", x = 2.5, xend = 2.85, y = 2.85, yend = 2.25, arrow = arrow()) +
+  annotate("segment", x = 2, xend = 2, y = 1.75, yend = 1.15, arrow = arrow()) +
+ annotate("segment", x = 3, xend = 3, y = 1.75, yend = 1.15, arrow = arrow())
+```
 
 ::: notes
-In short, the second step of our causal argument process is to refine the DGP to include only the confounders to the key mechanism
+
+**Any big picture questions on this introduction to causal arguments?**
 
 <br>
 
-THIS represents your identification strategy.
+**SLIDE**: Let's do some brainstorming to practice
 
-- Your list of confounders represents your argument that you have identified the causal mechanism
-
-<br>
-
-**SLIDE**: Before we practice finding confounders, let's highlight a few things that may LOOK like confounders but are NOT.
 :::
 
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-**Is 'experience' a confounder in this mechanism?**
-:::
+### What explains the variation in Americans' belief in conspiracy theories?
 
-```{r, fig.align='center', fig.asp=.75, fig.width=9}
-## Manual DAG
-tibble(
-  x = c(3, -3, 0),
-  y = c(1, 1, 2),
-  labels = c("Salary", "Education", "Experience")
-) |>
-  ggplot(aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
-  geom_label(aes(label = labels), size = 7) +
-  #annotate("segment", x = .4, xend = 2.5, y = 1.9, yend = 1.2, arrow = arrow()) +
-  #annotate("segment", x = -.4, xend = -2.5, y = 1.9, yend = 1.2, arrow = arrow()) +
-  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
-```
+- Model 1: Trust in Government
 
-::: notes
-Imagine we are developing a research project whose aim is to estimate the causal effect of 'education' on 'salary.'
+- Model 2: Partisanship
 
-- The question becomes, do we believe that 'experience' is a confounder of this mechanism?
-
-- **In other words, do you believe that experience causes education and salary to change or is it something else?**
-
-<br>
-
-Unlike the ice cream example, I suspect that randomly assigning education levels would have BIG effects on salary income!
-
-- **SLIDE**: This is an example of a mediator, NOT a confounder
-:::
-
-
-## Do Not Control for Mediators {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.align='center', fig.asp=.75, fig.width=9}
-## Manual DAG
-tibble(
-  x = c(3, -3, 0),
-  y = c(1, 1, 2),
-  labels = c("Salary", "Education", "Experience")
-) |>
-  ggplot(aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow(), linewidth = 1.2) +
-  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow(), linewidth = 1.2) +
-  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow(), linewidth = .3)
-```
-
-::: notes
-Mediators are variables that dilute the effect you are actually interested in.
-
-- This means education has a positive impact on salary AND
-
-- Education increases experience which then increases salary
-
-- In other words, people with more education are more likely to have more significant work experiences and higher pay
-
-<br>
-
-The problem is that our goal is to measure the TOTAL effect of education on salary
-
-- That should include the indirect effect that happens through experience
-
-- In other words, IF we include experience in the identification strategy SOME of the estimated effect will move to the experience variable
-
-- This will give us a too small estimate on education
-
-<br>
-
-If you control for a mediator you will shrink the estimated effect size of interest
-
-- **Does this make sense?**
-
-<br>
-
-**SLIDE**: Also do not control for colliders
-:::
-
-
-
-## Do Not Control for Colliders {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.align='center', fig.asp=.75, fig.width=9}
-## Manual DAG
-tibble(
-  x = c(3, -3, 0),
-  y = c(1, 1, 2),
-  labels = c("Outcome", "Predictor", "Collider")
-) |>
-  ggplot(aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = 2.5, xend = .4, y = 1.15, yend = 1.85, arrow = arrow()) +
-  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow()) +
-  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow(), color = "grey")
-```
-
-::: notes
-A second note of caution concerns the danger of what are called collider effects or collider bias
-
-- A collider is a variable that is caused by both your predictor and your outcome variable
-
-<br>
-
-If you adjust your analyses to include a collider it will tend to create the illusion of an effect between the predictor and the outcome where none actually exists
-
-- In essence, the fact that each variable causes the same thing will make it appear like they are correlated
-
-<br>
-
-**SLIDE**: For example...
-:::
-
-
-
-## Do Not Control for Colliders {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.align='center', fig.asp=.75, fig.width=9}
-## Manual DAG
-tibble(
-  x = c(3, -3),
-  y = c(1, 1),
-  labels = c("Respiratory\nDisease", "Locomotor\nDisease")
-) |>
-  ggplot(aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 1.5)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = -1.9, xend = 2.1, y = 1, yend = 1, arrow = arrow())
-```
-
-
-::: notes
-In 1979, a researcher named Sackett wanted to examine a hypothesis: 
-
-- Does locomotor disease (a loss of mobility) lead to respiratory disease
-
-- Theory: locomotor disease could lead to inactivity, which could cause respiratory disease.
-
-- Gathers data on 257 hospitalized individuals and finds a strong correlation between the two diseases
-
-<br>
-
-To be thorough he runs a second test 
-
-- This time he gathers data on a sample of 2,783 individuals from the general population
-
-- This test finds no association!
-
-<br>
-
-What happened?
-
-- **SLIDE**: A collider!
-:::
-
-
-
-## Do Not Control for Colliders {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.align='center', fig.asp=.75, fig.width=9}
-## Manual DAG
-tibble(
-  x = c(3, -3, 0),
-  y = c(1, 1, 2),
-  labels = c("Respiratory\nDisease", "Locomotor\nDisease", "Hospitalization")
-) |>
-  ggplot(aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = 2.5, xend = .4, y = 1.15, yend = 1.85, arrow = arrow()) +
-  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow())
-```
+- Model 3: Political knowledge
 
 ::: notes
 
-The first test was spoiled by collider bias
+*Split class into three groups*
 
-- Both diseases cause hospitalization
+- Go sit with your group and claim some space on the board
 
-- Since Sackett was only studying people ALREADY in the hospital it LOOKED like these two diseases were correlated
-
-- People in the hospital are sicker than people not in the hospital AND sicker people are more likely to have diseases that impact the lungs and their mobility
-
-- By only studying those in the hospital you CHOOSE to control for hospitalization AND THAT creates a correlation where it shouldn't be
+- *Assign one model per group*
 
 <br>
 
-**SLIDE**: The lesson for us since we typically work with observational data
+Groups, work directly on the board to construct a DAG of your assigned model
 
-:::
+- Each DAG should include AT LEAST ONE confounder in this relationship
 
+- **Questions?**
 
-
-## Colliders as Selection Bias {background-image="Images/background-data_blue_v4.png" .center}
-
-![](Images/12_2-worldclimateriskmap.avif){style="display: block; margin: 0 auto"}
-
-::: notes
-
-Our work in the social sciences primarily utilizes observational data and in that context collider bias is usually a selection bias problem
+- Go!
 
 <br>
 
-A quick google search gave me a ton of options but here's a Moody's report on the climate change risk to economies around the world.
-
-- Let's say we wanted to analyze the effect of regime type on robustness to climate change
-
-- In other words, we believe that democracies do a better job preparing for future risks than dictatorships
+*PRESENT and DISCUSS each*
 
 <br>
 
-**What is clearly wrong with using this data to test this hypothesis?**
+**SLIDE**: After Spring break
 
-- (Analyzing this data means pretending most of the poorest countries in the world do not exist)
-
-- That MEANS you are choosing to control for wealth in this analysis
-
-- If wealth is a collider in this relationship then your results will be completely untrustworthy
-
-<br>
-
-The lesson for us is that collider bias is often the result of selection bias!
-
-- Missing data might present as a collider variable!
-
-- Including a collider will make it look like you've found something that isn't actually there.
-
-<br>
-
-**Does this make sense?**
-
-<br>
-
-**SLIDE**: Let's practice our skills at developing an identification strategy using the "small class sizes leads to student success" hypothesis.
-:::
-
-
-## Classify our Options {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-**Make a list: Mediators, Colliders and Confounders**
-
-<br>
-
-```{r, fig.align = 'center', fig.asp=.3, fig.width=11}
-## Manual DAG
-d1 <- tibble(
-  x = c(1, 3),
-  y = c(1, 1),
-  labels = c("Class\n Size", "Student\n Success")
-)
-
-ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 8) +
-  theme_void() +
-  coord_cartesian(xlim = c(.5, 3.5), ylim = c(.75, 1.25)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = 1.35, xend = 2.5, y = 1, yend = 1, arrow = arrow())
-```
-
-::: notes
-Ok, let's see what we can take from our brainstormed lists that represent confounders, mediators and colliders.
-
-- Take a minute, talk to the people around you and let's get three lists up on the board
-
-<br>
-
-*REPORT BACK!*
-
-Mediators:
-
-- 
-
-Colliders:
-
-- 
-
-Confounders:
-
-- 
-
-<br>
-
-**SLIDE**: Now, keep in mind our goal here is to only keep the confounders!
-:::
-
-
-
-
-## Identification and the DGP {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-1. Using theory, paint the most accurate picture possible of what the data generating process looks like
-
-2. **Refine the DGP to only keep variables that confound the key mechanism**
-
-3. Find ways to block out those alternate reasons and so dig out the variation we need
-
-::: notes
-Bottom line, our identification strategy SHOULD identify any variable that confounds the relationship we are trying to measure
-
-- Confounding means that the variable, in essence, precedes and causes BOTH the predictor and outcome we are studying
-
-- Pearl's more formal definition asks you to imagine that you could test the relationship with an RCT
-
-- If you believe removing the third variable and randomly assigning the predictor would change the outcome, then the third variable is likely a confounder.
-
-<br>
-
-**Any questions on our work with DAGs and confounders today?**
-
-<br>
-
-Next week we'll learn techniques for doing step 3 here, e.g. adjusting our analysis to "control" for the confounders
-
-- **SLIDE**: But now we go back to our class project!
-:::
-
-
-
-## For Today {.center background-image="Images/background-data_blue_v4.png"}
-
-<br>
-
-Brainstorm the DGP for our project (e.g. **SUBMIT** three separate lists of reasons why states would vary in):
-
-- Global Press Freedom (Press_Global)
-
-- Environmental Quality (EPI.new)
-
-- Your chosen indicator from the EPI
-
-::: notes
-For class today you each submitted to Canvas DGPs for the main variables in our project.
-
-<br>
-
-I'd like you to share your lists with the people around you
-
-- What did you both come up with?
-
-- What did they come up with?
-
-- Don't jump to identifying confounders, colliders or mediators, focus just on whether or not you believe each item on the lists are a credible predictor for our variables
-
-<br>
-
-**IF TIME IS SHORT**: Go to the next slide!
 :::
 
 
@@ -1086,17 +1274,15 @@ I'd like you to share your lists with the people around you
 
 ::: {.r-fit-text}
 
-Submit a DAG for our research project
+Pollock & Edwards Chapter 7
 
-- Press Freedom &#8594; Environmental Quality
+- Making Controlled Comparisons
 
 :::
 
 ::: notes
 
-Submit your proposed DAG to Canvas before class
 
-- Give us a list of proposed confounders in this relationship
 
 <br>
 

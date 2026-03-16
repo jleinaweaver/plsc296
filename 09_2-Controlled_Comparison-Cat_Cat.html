@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/clipboard/clipboard.min.js"></script>
+<script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/quarto-html/tabby.min.js"></script>
+<script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/quarto-html/popper.min.js"></script>
+<script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="09_2-Controlled_Comparison-Cat_Cat_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="09_2-Controlled_Comparison-Cat_Cat_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="09_2-Controlled_Comparison-Cat_Cat_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.25">
+
+  <title>controlled_comparison-cat_cat</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link href="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/kePrint-0.0.1/kePrint.js"></script>
+  <link href="09_2-Controlled_Comparison-Cat_Cat_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+  <link href="09_2-Controlled_Comparison-Cat_Cat_files/libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/tabwid-1.1.3/tabwid.js"></script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+
+<section id="todays-agenda" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Today’s Agenda</h2>
+<p><br></p>
+<div class="r-fit-text">
+<p><strong>Controlled Comparison Analysis</strong></p>
+<ul>
+<li><p>Categorical x Categorical Relationships</p></li>
+<li><p>New R file: Making_Controlled_Comparisons.R</p></li>
+</ul>
+</div>
+<p><br></p>
+<div class="r-stack">
+<p>Justin Leinaweaver (Spring 2026)</p>
+</div>
+<aside class="notes">
+<p>Prep for Class</p>
+<ol type="1">
+<li>Review Canvas submissions</li>
+</ol>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s refresh our work thus far on making causal arguments</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="building-a-causal-argument" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Building a Causal Argument</h2>
+<p><br></p>
+<p>“Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e.&nbsp;intervention) was the ‘cause’ of the effect (or outcome) that was observed” (Frey 2018).</p>
+<p><br></p>
+
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>Remember, the aim of any scientific discipline is to generate new knowledge that explains why things happen in the world</p>
+<ul>
+<li><p>We refer to this as explanatory or causal analysis</p></li>
+<li><p>In short, we want to demonstrate that changes in our chosen predictors CAUSE a change in the outcome variable</p></li>
+</ul>
+<p><br></p>
+<p><strong>And what is the fundamental problem with causal inference?</strong></p>
+<ul>
+<li><p><strong>In other words, why is establishing causality so hard?</strong></p></li>
+<li><p>(<strong>SLIDE</strong>)</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>The Fundamental Problem of Causal Inference</strong></p>
+</div>
+<p><br></p>
+<p>“To measure causal effects, we need to compare the factual outcome with the counter-factual outcome, but <strong>we can never observe the counter-factual outcome</strong>” (Llaudet and Imai 2023).</p>
+<aside class="notes">
+<p>Don’t forget, this is a problem for ALL of science, not just the social sciences.</p>
+<ul>
+<li><p>Whether its gravity, speed, biological reproduction or whatever else, we cannot observe actual counter-factuals</p></li>
+<li><p>Even experimental methods do NOT actually solve this problem!</p></li>
+</ul>
+<p><br></p>
+<p><strong>And how do experimental methods, e.g.&nbsp;using a randomized controlled trial (RCT), address this problem?</strong></p>
+<ul>
+<li>(<strong>SLIDE</strong>)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="randomized-controlled-trials-rcts" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Randomized Controlled Trials (RCTs)</h2>
+
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><aside class="notes">
+<p><strong>How does an RCT help us address the fundamental problem?</strong></p>
+<ol type="1">
+<li><p>Random assignment means that even though both groups are composed of different individuals, the two groups are comparable to each other <strong>on average</strong> in all respects.</p></li>
+<li><p>Random assignment means that the only thing that distinguishes the treatment group from the control group <strong>BESIDES THE TREATMENT</strong> is chance.</p></li>
+</ol>
+<p><br></p>
+<p>So, with random assignment we ASSUME the groups are identical on average which lets us pretend the outcome for group 1 represents the counterfactual for group 2</p>
+<ul>
+<li><strong>Make sense?</strong></li>
+</ul>
+<p><br></p>
+<p>Last class we explored the conceptual tools you need for dealing with situations where you cannot run an RCT</p>
+<ul>
+<li><p><strong>So, what do we do if we are analyzing observational data?</strong></p></li>
+<li><p>(<strong>SLIDE</strong>)</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="making-controlled-comparisons" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Making Controlled Comparisons</h2>
+
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>We develop <strong>identification strategies</strong> that identify the <strong>confounders</strong> in our observational relationships.</p>
+<ul>
+<li><p>This is what the textbook refers to as a “controlled comparison” (p160)</p></li>
+<li><p>The hope is that by controlling for all of the confounders we get to a place where the treatment and control groups are identical on average</p></li>
+</ul>
+<p><br></p>
+<p><strong>Any questions on our work from last class on making controlled comparisons?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Seems like a good time to review the assignment for today!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Pollock &amp; Edwards Exercise 4: Types of Relationship</strong></p>
+</div>
+<p><br></p>
+<p>Does frequent attendance at religious services reduce tolerance for allowing “radical” Muslim speech when controlling for education?</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top" style="font-size: 25px; margin-left: auto; margin-right: auto;">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Education: Low
+</div></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Education: High
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Low Religion</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">High Religion</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Low Religion</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">High Religion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Allow Speech</td>
+<td style="text-align: left;">38%</td>
+<td style="text-align: center;">19%</td>
+<td style="text-align: center;">62%</td>
+<td style="text-align: center;">45%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">(121)</td>
+<td style="text-align: center;">(44)</td>
+<td style="text-align: center;">(226)</td>
+<td style="text-align: center;">(162)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Forbid Speech</td>
+<td style="text-align: left;">62%</td>
+<td style="text-align: center;">81%</td>
+<td style="text-align: center;">38%</td>
+<td style="text-align: center;">55%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">(197)</td>
+<td style="text-align: center;">(187)</td>
+<td style="text-align: center;">(140)</td>
+<td style="text-align: center;">(195)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<aside class="notes">
+<p><strong>Did everybody calculate these percentages?</strong></p>
+<ul>
+<li><strong>DV on the rows, predictor levels on the columns?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>So, does the data support this hypothesis?</strong></p>
+<ul>
+<li><p>(Yes)</p></li>
+<li><p>Higher religious attendance, less support for free speech of radical clerics even when controlling for education</p></li>
+</ul>
+<p><br></p>
+<p>Now tell me about the partial relationship here</p>
+<ul>
+<li><p><strong>Is this a spurious, additive, or interaction relationship?</strong></p></li>
+<li><p>(<strong>SLIDE</strong>: Line plot)</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p>Does frequent attendance at religious services reduce tolerance for allowing “radical” Muslim speech when controlling for education?</p>
+
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<p><strong>Was everybody able to translate the table into the line chart?</strong></p>
+<ul>
+<li><p>Key for setting this up is the same as usual rules</p></li>
+<li><p>Outcome on y-axis, predictor on x-axis</p></li>
+<li><p>Control variable defines two different lines</p></li>
+<li><p><strong>Make sense?</strong></p></li>
+</ul>
+<p><br></p>
+<p>The visualization is SO much easier to interpret, right?</p>
+<ul>
+<li><p>The pattern is additive (e.g.&nbsp;lines fairly parallel)</p></li>
+<li><p>The relationship between religious attendance and speech opinions remains consistent across both levels of education.</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Exercise 5</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="pollock-edwards-exercise-5" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Pollock &amp; Edwards Exercise 5</h2>
+<p><br></p>
+<p>Do countries with proportional representation electoral systems have higher levels of voter turnout (controlling for level of development)?</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top" style="font-size: 30px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Overall</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Low GDP</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">High GDP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Not PR</td>
+<td style="text-align: center;">63.1</td>
+<td style="text-align: center;">56.1</td>
+<td style="text-align: center;">66.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">PR</td>
+<td style="text-align: center;">68.7</td>
+<td style="text-align: center;">69.8</td>
+<td style="text-align: center;">68.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Overall</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">61.6</td>
+<td style="text-align: center;">67.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<aside class="notes">
+<p><strong>Everybody make this table (or something like it)?</strong></p>
+<ul>
+<li><p>NOTE: In the case of an interval outcome variable this isn’t technically a cross-tab</p></li>
+<li><p>This shows the control variable levels on the columns but there is no levels for the main predictor, just a mean value</p></li>
+<li><p><strong>Make sense?</strong></p></li>
+</ul>
+<p><br></p>
+<p><strong>Does the data support this hypothesis?</strong></p>
+<ul>
+<li>(Yes!)</li>
+</ul>
+<p><br></p>
+<p>This version I’ve made displays both the zero-order effect and the partial effect.</p>
+<ul>
+<li><p><strong>What on this table represents the zero-order effect and what the partial effect?</strong></p></li>
+<li><p>(<strong>SLIDE</strong>)</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="pollock-edwards-exercise-5-1" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Pollock &amp; Edwards Exercise 5</h2>
+<p><br></p>
+<p>Do countries with proportional representation electoral systems have higher levels of voter turnout (controlling for level of development)?</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top" style="font-size: 30px; margin-left: auto; margin-right: auto;">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: center; empty-cells: hide; border-bottom: hidden;"></th>
+<th data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Zero-Order
+</div></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Partial Effect
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: center;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Overall</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Low GDP</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">High GDP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Not PR</td>
+<td style="text-align: center;">63.1</td>
+<td style="text-align: center;">56.1</td>
+<td style="text-align: center;">66.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">PR</td>
+<td style="text-align: center;">68.7</td>
+<td style="text-align: center;">69.8</td>
+<td style="text-align: center;">68.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Overall</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">61.6</td>
+<td style="text-align: center;">67.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<aside class="notes">
+<p>The zero-order effect is the results of a simple bivariate analysis</p>
+<ul>
+<li>e.g.&nbsp;a description of the relationship between two variables</li>
+</ul>
+<p><br></p>
+<p>The partial effect is the result of a controlled comparison</p>
+<ul>
+<li>e.g.&nbsp;a description of the relationship between two variables while controlling for a third variable</li>
+</ul>
+<p><br></p>
+<p><strong>Which of these should you present when testing a hypothesis?</strong></p>
+<ul>
+<li><p>(Both!)</p></li>
+<li><p>Generally speaking you want to be transparent in your methods</p></li>
+</ul>
+<p><br></p>
+<p><strong>So, is this a spuriousness, additive, or interactive relationship?</strong></p>
+<ul>
+<li>(<strong>SLIDE</strong>: Line plot)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="pollock-edwards-exercise-5-2" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>Pollock &amp; Edwards Exercise 5</h2>
+<p><br></p>
+<p>Do countries with proportional representation electoral systems have higher levels of voter turnout (controlling for level of development)?</p>
+
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="672"><aside class="notes">
+<p>Again, we follow the usual rules of visualizing data</p>
+<ul>
+<li><p>Outcome on the y-axis</p></li>
+<li><p>Predictor on the x-axis</p></li>
+<li><p>Control variables define different relationships each focused on a different subset of the data</p></li>
+</ul>
+<p><br></p>
+<p>The relationship between electoral systems (PR vs.&nbsp;non-PR) and turnout appears interactive.</p>
+<ul>
+<li><p>PR systems are associated with higher turnout across both low and high GDP countries, BUT</p></li>
+<li><p>The magnitude of the effect is WAY stronger in poorer countries than in rich ones!</p></li>
+</ul>
+<p><br></p>
+<p>This also shows why the claim in Part D is so wrong!</p>
+<ul>
+<li>Instituting PR in poorer countries may have substantially larger effects on voter turnout!</li>
+</ul>
+<p><br></p>
+<p><strong>Overall, how did we do with these exercises?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Alright let’s learn the code we need to perform controlled comparisons in R</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="making-controlled-comparisons-1" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2>Making Controlled Comparisons</h2>
+<p><br></p>
+<p>Add to your notes:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Categorical x Categorical: Estimating partial effects</span></span>
+<span id="cb1-2"><a href=""></a></span>
+<span id="cb1-3"><a href=""></a><span class="co"># Step 1: Split your sample by levels of the control variable</span></span>
+<span id="cb1-4"><a href=""></a><span class="co"># New tool: subset()</span></span>
+<span id="cb1-5"><a href=""></a></span>
+<span id="cb1-6"><a href=""></a><span class="co"># Step 2: Generate cross-tabs for each subset</span></span>
+<span id="cb1-7"><a href=""></a></span>
+<span id="cb1-8"><a href=""></a><span class="co"># Step 3: Present the results in a polished table</span></span>
+<span id="cb1-9"><a href=""></a><span class="co"># New tool: crosstable()</span></span>
+<span id="cb1-10"><a href=""></a></span>
+<span id="cb1-11"><a href=""></a><span class="co"># Step 4: Present the results in a polished visualization</span></span>
+<span id="cb1-12"><a href=""></a><span class="co"># New tool: geom_line()</span></span>
+<span id="cb1-13"><a href=""></a></span>
+<span id="cb1-14"><a href=""></a><span class="co"># Access the built-in data</span></span>
+<span id="cb1-15"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<aside class="notes">
+<p>Everybody copy these notes into their new R file</p>
+<ul>
+<li>From title slide: Making_Controlled_Comparisons-Cat_x_Cat.R</li>
+</ul>
+<p><br></p>
+<p>Today our focus will be on estimating partial effects for the relationship between two categorical variables</p>
+<ul>
+<li><p>e.g.&nbsp;bivariate analysis of two categorical variables with a single control variable</p></li>
+<li><p>In doing this we’ll learn two new tools in R</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: As always, let’s begin with a built-in data example to learn the code</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-3" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Making Controlled Comparisons: Categorical x Categorical</strong></p>
+<p><br></p>
+<p><strong>How do car manufacturers change their fleets over time while controlling for factory limitations?</strong></p>
+<ul>
+<li><p>Outcome: <code>class</code></p></li>
+<li><p>Predictor: <code>year</code> (treat as ordinal)</p></li>
+<li><p>Control: <code>drv</code></p></li>
+</ul>
+<aside class="notes">
+<p><em>Read question</em></p>
+<p><br></p>
+<p>I’m interested in how auto manufacturers adapt their fleets across time</p>
+<ul>
+<li><p>How do they adapt to market demands, new tech, government regulations, etc.?</p></li>
+<li><p>I hear cars keep getting bigger and bigger so let’s see if that’s evident in this data</p></li>
+<li><p>I’m proposing we control for the drive train because I suspect each expensive factory that’s already built is limited in the classes of cars it can build</p></li>
+</ul>
+<p><br></p>
+<p><strong>Big picture, everybody ok with this as a toy question to practice the code?</strong></p>
+<ul>
+<li>In other words, I don’t want you to agonize over the logic of this theory</li>
+</ul>
+<p><br></p>
+<p>Now, we always begin our analyses with the zero-order effects</p>
+<ul>
+<li><p><strong>Remind me, what is a zero-order effect?</strong></p></li>
+<li><p>(Bivariate analysis: Simple description of the relationship between two variables)</p></li>
+</ul>
+<p><br></p>
+<p>Let’s first check the zero-order effects</p>
+<ul>
+<li>Everybody make a proportionate cross-tabs focused on explaining <code>class</code> using <code>year</code></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-4" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>How do car manufacturers change their fleets over time while controlling for factory limitations?</strong></p>
+<p><br></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">proportions</span>(<span class="fu">table</span>(mpg<span class="sc">$</span>class, mpg<span class="sc">$</span>year), <span class="at">margin =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            
+                   1999       2008
+  2seater    0.01709402 0.02564103
+  compact    0.21367521 0.18803419
+  midsize    0.17094017 0.17948718
+  minivan    0.05128205 0.04273504
+  pickup     0.13675214 0.14529915
+  subcompact 0.16239316 0.13675214
+  suv        0.24786325 0.28205128</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p><strong>Everybody get this?</strong></p>
+<p><br></p>
+<p><strong>So, how much change do we see in the car fleets across time?</strong></p>
+<ul>
+<li>More pick-ups, more suvs, fewer compacts and subcompacts</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Now let’s answer the question using partial effects</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-5" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Making Controlled Comparisons: Categorical x Categorical</strong></p>
+<p><br></p>
+<div class="r-fit-text">
+<p><strong>Step 1: Split the sample into subsets by levels of the control variable</strong></p>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="co"># ID the levels</span></span>
+<span id="cb4-2"><a href=""></a><span class="fu">table</span>(mpg<span class="sc">$</span>drv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  4   f   r 
+103 106  25 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="co"># Subset 1: Four wheel drive cars</span></span>
+<span id="cb6-2"><a href=""></a>mpg_4w <span class="ot">&lt;-</span> <span class="fu">subset</span>(mpg, drv <span class="sc">==</span> <span class="st">"4"</span>)</span>
+<span id="cb6-3"><a href=""></a></span>
+<span id="cb6-4"><a href=""></a><span class="co"># Subset 2: Front wheel drive cars</span></span>
+<span id="cb6-5"><a href=""></a>mpg_fw <span class="ot">&lt;-</span> <span class="fu">subset</span>(mpg, drv <span class="sc">==</span> <span class="st">"f"</span>)</span>
+<span id="cb6-6"><a href=""></a></span>
+<span id="cb6-7"><a href=""></a><span class="co"># Subset 3: Rear wheel drive cars</span></span>
+<span id="cb6-8"><a href=""></a>mpg_rw <span class="ot">&lt;-</span> <span class="fu">subset</span>(mpg, drv <span class="sc">==</span> <span class="st">"r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<aside class="notes">
+<p>In this case I am assuming that a factory designed to make front wheel drive cars cannot be cheaply or easily reconfigured to make four wheel drive cars</p>
+<ul>
+<li><p>This means I expect less movement across categories and more movement within them</p></li>
+<li><p><strong>Does that vaguely make sense?</strong></p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-6" class="slide level2 smaller" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Making Controlled Comparisons: Categorical x Categorical</strong></p>
+<p><strong>Step 2: Create a cross-tab for each subset</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="co"># Create a cross-tab for each subset</span></span>
+<span id="cb7-2"><a href=""></a><span class="fu">proportions</span>(<span class="fu">table</span>(mpg_4w<span class="sc">$</span>class, mpg_4w<span class="sc">$</span>year), <span class="at">margin =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            
+                   1999       2008
+  compact    0.08163265 0.14814815
+  midsize    0.02040816 0.03703704
+  pickup     0.32653061 0.31481481
+  subcompact 0.08163265 0.00000000
+  suv        0.48979592 0.50000000</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">proportions</span>(<span class="fu">table</span>(mpg_fw<span class="sc">$</span>class, mpg_fw<span class="sc">$</span>year), <span class="at">margin =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            
+                  1999      2008
+  compact    0.3684211 0.2857143
+  midsize    0.3333333 0.3877551
+  minivan    0.1052632 0.1020408
+  subcompact 0.1929825 0.2244898</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">proportions</span>(<span class="fu">table</span>(mpg_rw<span class="sc">$</span>class, mpg_rw<span class="sc">$</span>year), <span class="at">margin =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            
+                  1999      2008
+  2seater    0.1818182 0.2142857
+  subcompact 0.3636364 0.3571429
+  suv        0.4545455 0.4285714</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>With the subsets created for each level of the categorical variable, now we remake our tables using each subset separately</p>
+<ul>
+<li><p>These are the partial effects of year on the class of cars while controlling for the drive trains</p></li>
+<li><p><strong>Do we see consistent differences across the tables?</strong></p></li>
+</ul>
+<p><br></p>
+<p>THIS is the process for making partial effects cross-tabs (e.g.&nbsp;with two categorical variables)</p>
+<ul>
+<li><strong>Forget the car details, does the approach make sense?</strong></li>
+</ul>
+<p><br></p>
+<p>To include this table in a report you’d have to build the table by hand using these results</p>
+<ul>
+<li><p>I’ll admit, that is awful and shouldn’t be necessary</p></li>
+<li><p>And it isn’t!</p></li>
+</ul>
+<p><br></p>
+<p>The key for me is that you understand the process you need for doing this in base R functions</p>
+<ul>
+<li><p>table(), proportions() and subset() should always work</p></li>
+<li><p>HOWEVER, there are MANY different ways to automate this process in R</p></li>
+<li><p><strong>SLIDE</strong>: I’m going to show you one of them now, BUT I make ZERO promises that this project will always exist</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-7" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="co"># Install the package ONE TIME</span></span>
+<span id="cb13-2"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"crosstable"</span>)</span>
+<span id="cb13-3"><a href=""></a></span>
+<span id="cb13-4"><a href=""></a><span class="co"># Load the package when you want to use it</span></span>
+<span id="cb13-5"><a href=""></a><span class="fu">library</span>(crosstable)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+<p>crosstable(data, cols, by)</p>
+<ul>
+<li><p><code>data</code> is the dataset</p></li>
+<li><p><code>cols</code> is the row variable</p></li>
+<li><p><code>by</code> is the column variable</p></li>
+</ul>
+<p>as_flextable()</p>
+<ul>
+<li>Polishes a crosstable object for printing</li>
+</ul>
+<aside class="notes">
+<p>Everybody install the crosstable package</p>
+<p><br></p>
+<p>This gives us two useful functions for our work making controlled comparisons</p>
+<ul>
+<li><em>Talk through the details</em></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s put this to work!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-8" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="co"># Univariate table</span></span>
+<span id="cb14-2"><a href=""></a><span class="fu">crosstable</span>(mpg, <span class="at">cols =</span> class) <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a href=""></a>  <span class="fu">as_flextable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-894e827c{table-layout:auto;}.cl-8949e28a{font-family:'DejaVu Sans';font-size:21pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8949e294{font-family:'DejaVu Sans';font-size:21pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-894b747e{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-894b7488{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-894b8a86{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-894b8a87{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-894b8a90{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-894e827c"><thead><tr style="overflow-wrap:break-word;"><th class="cl-894b8a86"><p class="cl-894b747e"><span class="cl-8949e28a">label</span></p></th><th class="cl-894b8a86"><p class="cl-894b747e"><span class="cl-8949e28a">variable</span></p></th><th class="cl-894b8a86"><p class="cl-894b747e"><span class="cl-8949e28a">value</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="7" class="cl-894b8a87"><p class="cl-894b7488"><span class="cl-8949e294">class</span></p></td><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">2seater</span></p></td><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">5 (2.14%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">compact</span></p></td><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">47 (20.09%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">midsize</span></p></td><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">41 (17.52%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">minivan</span></p></td><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">11 (4.70%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">pickup</span></p></td><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">33 (14.10%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">subcompact</span></p></td><td class="cl-894b8a90"><p class="cl-894b7488"><span class="cl-8949e294">35 (14.96%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-894b8a87"><p class="cl-894b7488"><span class="cl-8949e294">suv</span></p></td><td class="cl-894b8a87"><p class="cl-894b7488"><span class="cl-8949e294">62 (26.50%)</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<aside class="notes">
+<p>Three new R functions here</p>
+<ol type="1">
+<li><p>crosstable makes the cross tabs</p></li>
+<li><p>as_flextable makes it look good for printing</p></li>
+<li><p>And the pipe (|&gt;)</p></li>
+</ol>
+<p><br></p>
+<p>The pipe is an AWESOME piece of code that says take whatever is produced on one line and send it to the next function</p>
+<ul>
+<li><p>Here we see crosstable creating a new object and then sending it to as_flextable to print it</p></li>
+<li><p><strong>Make sense?</strong></p></li>
+</ul>
+<p><br></p>
+<p>Crosstable applied to one categorical variable gives you a univariate count AND the proportions</p>
+<ul>
+<li>Here we start by visualizing the distribution of the outcome, class variable</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: The bivariate case - a cross-tab</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-9" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="co"># Bivariate table (row %)</span></span>
+<span id="cb15-2"><a href=""></a><span class="fu">crosstable</span>(mpg, <span class="at">cols =</span> class, <span class="at">by =</span> year) <span class="sc">|&gt;</span> </span>
+<span id="cb15-3"><a href=""></a>  <span class="fu">as_flextable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-8963321c{table-layout:auto;}.cl-895f2276{font-family:'DejaVu Sans';font-size:15pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-895f2280{font-family:'DejaVu Sans';font-size:15pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-89608e86{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-89608e90{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8960a60a{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8960a60b{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8960a614{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8960a615{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8960a61e{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-8963321c"><thead><tr style="overflow-wrap:break-word;"><th rowspan="2" class="cl-8960a60a"><p class="cl-89608e86"><span class="cl-895f2276">label</span></p></th><th rowspan="2" class="cl-8960a60a"><p class="cl-89608e86"><span class="cl-895f2276">variable</span></p></th><th colspan="2" class="cl-8960a60b"><p class="cl-89608e86"><span class="cl-895f2276">year</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-8960a614"><p class="cl-89608e86"><span class="cl-895f2276">1999</span></p></th><th class="cl-8960a614"><p class="cl-89608e86"><span class="cl-895f2276">2008</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="7" class="cl-8960a615"><p class="cl-89608e90"><span class="cl-895f2280">class</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">2seater</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">2 (40.00%)</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">3 (60.00%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">compact</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">25 (53.19%)</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">22 (46.81%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">midsize</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">20 (48.78%)</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">21 (51.22%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">minivan</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">6 (54.55%)</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">5 (45.45%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">pickup</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">16 (48.48%)</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">17 (51.52%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">subcompact</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">19 (54.29%)</span></p></td><td class="cl-8960a61e"><p class="cl-89608e90"><span class="cl-895f2280">16 (45.71%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8960a615"><p class="cl-89608e90"><span class="cl-895f2280">suv</span></p></td><td class="cl-8960a615"><p class="cl-89608e90"><span class="cl-895f2280">29 (46.77%)</span></p></td><td class="cl-8960a615"><p class="cl-89608e90"><span class="cl-895f2280">33 (53.23%)</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<aside class="notes">
+<p>Here we add “year” as our predictor using the “by” argument</p>
+<p><br></p>
+<p>NOTE: By default crosstable calculates %s by row, NOT column</p>
+<ul>
+<li>A problem for us if we follow the textbook rules that need column %s</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: The code to change this to column is annoying</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-10" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="co"># Bivariate table (column %)</span></span>
+<span id="cb16-2"><a href=""></a><span class="fu">crosstable</span>(mpg, <span class="at">cols =</span> class, <span class="at">by =</span> year, </span>
+<span id="cb16-3"><a href=""></a>           <span class="at">percent_pattern =</span> <span class="st">"{p_col} ({n})"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-4"><a href=""></a>  <span class="fu">as_flextable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-8973e706{table-layout:auto;}.cl-89701324{font-family:'DejaVu Sans';font-size:15pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8970132e{font-family:'DejaVu Sans';font-size:15pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-89717552{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8971755c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8971852e{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8971852f{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89718530{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89718538{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89718539{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-8973e706"><thead><tr style="overflow-wrap:break-word;"><th rowspan="2" class="cl-8971852e"><p class="cl-89717552"><span class="cl-89701324">label</span></p></th><th rowspan="2" class="cl-8971852e"><p class="cl-89717552"><span class="cl-89701324">variable</span></p></th><th colspan="2" class="cl-8971852f"><p class="cl-89717552"><span class="cl-89701324">year</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-89718530"><p class="cl-89717552"><span class="cl-89701324">1999</span></p></th><th class="cl-89718530"><p class="cl-89717552"><span class="cl-89701324">2008</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="7" class="cl-89718538"><p class="cl-8971755c"><span class="cl-8970132e">class</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">2seater</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">1.71% (2)</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">2.56% (3)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">compact</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">21.37% (25)</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">18.80% (22)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">midsize</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">17.09% (20)</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">17.95% (21)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">minivan</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">5.13% (6)</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">4.27% (5)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">pickup</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">13.68% (16)</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">14.53% (17)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">subcompact</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">16.24% (19)</span></p></td><td class="cl-89718539"><p class="cl-8971755c"><span class="cl-8970132e">13.68% (16)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89718538"><p class="cl-8971755c"><span class="cl-8970132e">suv</span></p></td><td class="cl-89718538"><p class="cl-8971755c"><span class="cl-8970132e">24.79% (29)</span></p></td><td class="cl-89718538"><p class="cl-8971755c"><span class="cl-8970132e">28.21% (33)</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<aside class="notes">
+<p>Here I am asking the code to give us two things per cell, BOTH the count and the %</p>
+<p><br></p>
+<p><strong>SLIDE</strong>: But this is too many places after the decimal!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-11" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="co"># Bivariate table (column %), change % decimals</span></span>
+<span id="cb17-2"><a href=""></a><span class="fu">crosstable</span>(mpg, <span class="at">cols =</span> class, <span class="at">by =</span> year, </span>
+<span id="cb17-3"><a href=""></a>           <span class="at">percent_pattern =</span> <span class="st">"{p_col} ({n})"</span>,</span>
+<span id="cb17-4"><a href=""></a>           <span class="at">percent_digits =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-5"><a href=""></a>  <span class="fu">as_flextable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-89849cf4{table-layout:auto;}.cl-8980cdb8{font-family:'DejaVu Sans';font-size:15pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8980cdc2{font-family:'DejaVu Sans';font-size:15pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-898228b6{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-898228c0{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-898238c4{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-898238c5{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-898238ce{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-898238cf{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-898238d0{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-89849cf4"><thead><tr style="overflow-wrap:break-word;"><th rowspan="2" class="cl-898238c4"><p class="cl-898228b6"><span class="cl-8980cdb8">label</span></p></th><th rowspan="2" class="cl-898238c4"><p class="cl-898228b6"><span class="cl-8980cdb8">variable</span></p></th><th colspan="2" class="cl-898238c5"><p class="cl-898228b6"><span class="cl-8980cdb8">year</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-898238ce"><p class="cl-898228b6"><span class="cl-8980cdb8">1999</span></p></th><th class="cl-898238ce"><p class="cl-898228b6"><span class="cl-8980cdb8">2008</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="7" class="cl-898238cf"><p class="cl-898228c0"><span class="cl-8980cdc2">class</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">2seater</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">2% (2)</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">3% (3)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">compact</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">21% (25)</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">19% (22)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">midsize</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">17% (20)</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">18% (21)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">minivan</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">5% (6)</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">4% (5)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">pickup</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">14% (16)</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">15% (17)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">subcompact</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">16% (19)</span></p></td><td class="cl-898238d0"><p class="cl-898228c0"><span class="cl-8980cdc2">14% (16)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-898238cf"><p class="cl-898228c0"><span class="cl-8980cdc2">suv</span></p></td><td class="cl-898238cf"><p class="cl-898228c0"><span class="cl-8980cdc2">25% (29)</span></p></td><td class="cl-898238cf"><p class="cl-898228c0"><span class="cl-8980cdc2">28% (33)</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<aside class="notes">
+<p>I appreciate how easy this code is and that it produces a table with BOTH the counts and %s per cell</p>
+<p><br></p>
+<p>Ok, this has brought us back to our zero-order effects</p>
+<ul>
+<li><p>The real power of thiscrosstable tool is when adding a control variable to the analysis</p></li>
+<li><p><strong>SLIDE</strong>: Partial effects time!</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-12" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Step 3: Present a polished table of the partial effects</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="co"># Bivariate table, partial effects</span></span>
+<span id="cb18-2"><a href=""></a><span class="fu">crosstable</span>(mpg, <span class="at">cols =</span> class, <span class="at">by =</span> <span class="fu">c</span>(year, drv), </span>
+<span id="cb18-3"><a href=""></a>           <span class="at">percent_pattern =</span> <span class="st">"{p_col} ({n})"</span>,</span>
+<span id="cb18-4"><a href=""></a>           <span class="at">percent_digits =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb18-5"><a href=""></a>  <span class="fu">as_flextable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-899ac5ba{table-layout:auto;}.cl-8996c046{font-family:'DejaVu Sans';font-size:15pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8996c050{font-family:'DejaVu Sans';font-size:15pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8998ca76{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8998ca80{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8998db2e{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db38{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db39{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db3a{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db42{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db43{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db44{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db4c{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db4d{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db56{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db57{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db58{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8998db59{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-899ac5ba"><thead><tr style="overflow-wrap:break-word;"><th colspan="2" class="cl-8998db2e"><p class="cl-8998ca76"><span class="cl-8996c046">drv</span></p></th><th colspan="2" class="cl-8998db2e"><p class="cl-8998ca76"><span class="cl-8996c046">4</span></p></th><th colspan="2" class="cl-8998db2e"><p class="cl-8998ca76"><span class="cl-8996c046">f</span></p></th><th colspan="2" class="cl-8998db39"><p class="cl-8998ca76"><span class="cl-8996c046">r</span></p></th></tr><tr style="overflow-wrap:break-word;"><th colspan="2" class="cl-8998db42"><p class="cl-8998ca76"><span class="cl-8996c046">year</span></p></th><th class="cl-8998db42"><p class="cl-8998ca76"><span class="cl-8996c046">1999</span></p></th><th class="cl-8998db43"><p class="cl-8998ca76"><span class="cl-8996c046">2008</span></p></th><th class="cl-8998db42"><p class="cl-8998ca76"><span class="cl-8996c046">1999</span></p></th><th class="cl-8998db43"><p class="cl-8998ca76"><span class="cl-8996c046">2008</span></p></th><th class="cl-8998db42"><p class="cl-8998ca76"><span class="cl-8996c046">1999</span></p></th><th class="cl-8998db44"><p class="cl-8998ca76"><span class="cl-8996c046">2008</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="7" class="cl-8998db4c"><p class="cl-8998ca80"><span class="cl-8996c050">class</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">2seater</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">18% (2)</span></p></td><td class="cl-8998db57"><p class="cl-8998ca80"><span class="cl-8996c050">21% (3)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">compact</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">8% (4)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">15% (8)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">37% (21)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">29% (14)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db57"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">midsize</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">2% (1)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">4% (2)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">33% (19)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">39% (19)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db57"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">minivan</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">11% (6)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">10% (5)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db57"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">pickup</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">33% (16)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">31% (17)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db57"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">subcompact</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">8% (4)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">19% (11)</span></p></td><td class="cl-8998db4d"><p class="cl-8998ca80"><span class="cl-8996c050">22% (11)</span></p></td><td class="cl-8998db56"><p class="cl-8998ca80"><span class="cl-8996c050">36% (4)</span></p></td><td class="cl-8998db57"><p class="cl-8998ca80"><span class="cl-8996c050">36% (5)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8998db58"><p class="cl-8998ca80"><span class="cl-8996c050">suv</span></p></td><td class="cl-8998db4c"><p class="cl-8998ca80"><span class="cl-8996c050">49% (24)</span></p></td><td class="cl-8998db58"><p class="cl-8998ca80"><span class="cl-8996c050">50% (27)</span></p></td><td class="cl-8998db4c"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db58"><p class="cl-8998ca80"><span class="cl-8996c050">0% (0)</span></p></td><td class="cl-8998db4c"><p class="cl-8998ca80"><span class="cl-8996c050">45% (5)</span></p></td><td class="cl-8998db59"><p class="cl-8998ca80"><span class="cl-8996c050">43% (6)</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+<aside class="notes">
+<p>Here we specify two variables as a list in the “by” argument</p>
+<ul>
+<li>The second variable in this list is the control</li>
+</ul>
+<p><br></p>
+<p><strong>So, does our controlled comparison suggest that auto manufacturers are adapting their fleets over time?</strong></p>
+<ul>
+<li><strong>In what ways?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>Questions on the crosstable code?</strong></p>
+<p><br></p>
+<p>As I said, the base R subset approach should ALWAYS work</p>
+<ul>
+<li>You simply make subsets and run table on each one</li>
+</ul>
+<p><br></p>
+<p>This crosstable works as long as the developer keeps maintaining the package</p>
+<ul>
+<li><p>The bad news is that most add-on packages eventually die</p></li>
+<li><p>The good news is there are MANY more packages out there for making fancy tables</p></li>
+<li><p>Don’t be afraid to explore</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s practice!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-13" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Does party ID predict policy preferences on the rules for purchasing firearms?</strong></p>
+<p><br></p>
+
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center r-stretch" width="864"><aside class="notes">
+<p>There are a lot of claims out there regarding the viewpoints of Americans on the rules around buying guns</p>
+<ul>
+<li>I’d like to know if the divide across the parties is as sharp as the conventional wisdom indicates</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: BUT, I think there is a clear confounder in this relationship</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-14" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Does party ID predict policy preferences on the rules for purchasing firearms?</strong></p>
+
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center r-stretch" width="768"><aside class="notes">
+<p>The research indicates a strong causal mechanism from gender to both party identification AND gun policy preferences</p>
+<p><br></p>
+<p>Alright research team, here is your task</p>
+<ul>
+<li><p>Use the ANES (2020) data to answer my question</p></li>
+<li><p>You should perform BOTH a zero-order test AND a partial effects test</p></li>
+<li><p><strong>Questions?</strong></p></li>
+<li><p>Go!</p></li>
+</ul>
+<p><br></p>
+<p><em>While they work they may trip over what to do about missing data, let them finish their tables and then we’ll address it</em></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Results</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-15" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Does party ID predict policy preferences on the rules for purchasing firearms?</strong></p>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">NAs</a></li><li><a href="#tabset-1-2">Cleaning</a></li><li><a href="#tabset-1-3">Zero-Order Effects</a></li><li><a href="#tabset-1-4">Partial Effects</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<p><br></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-89d7edaa{table-layout:auto;}.cl-89d2e954{font-family:'DejaVu Sans';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-89d2e95e{font-family:'DejaVu Sans';font-size:14pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-89d612fa{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-89d612fb{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-89d62362{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89d62363{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89d6236c{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89d6236d{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89d6236e{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-89d7edaa"><thead><tr style="overflow-wrap:break-word;"><th rowspan="2" class="cl-89d62362"><p class="cl-89d612fa"><span class="cl-89d2e954">label</span></p></th><th rowspan="2" class="cl-89d62362"><p class="cl-89d612fa"><span class="cl-89d2e954">variable</span></p></th><th colspan="4" class="cl-89d62363"><p class="cl-89d612fa"><span class="cl-89d2e954">PRE: Party ID, 3 categories</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-89d6236c"><p class="cl-89d612fa"><span class="cl-89d2e954">1. Democrat</span></p></th><th class="cl-89d6236c"><p class="cl-89d612fa"><span class="cl-89d2e954">2. Independent</span></p></th><th class="cl-89d6236c"><p class="cl-89d612fa"><span class="cl-89d2e954">3. Republican</span></p></th><th class="cl-89d6236c"><p class="cl-89d612fa"><span class="cl-89d2e954">NA</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="4" class="cl-89d6236d"><p class="cl-89d612fb"><span class="cl-89d2e95e">POST: Should federal government make it more difficult or easier to buy a gun</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">1. More difficult</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">79% (2036)</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">50% (1246)</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">23% (528)</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">13</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">2. Easier</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">2% (58)</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">8% (191)</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">10% (237)</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">3. Keep these rules about the same</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">18% (475)</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">43% (1067)</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">66% (1516)</span></p></td><td class="cl-89d6236e"><p class="cl-89d612fb"><span class="cl-89d2e95e">8</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89d6236d"><p class="cl-89d612fb"><span class="cl-89d2e95e">NA</span></p></td><td class="cl-89d6236d"><p class="cl-89d612fb"><span class="cl-89d2e95e">292</span></p></td><td class="cl-89d6236d"><p class="cl-89d612fb"><span class="cl-89d2e95e">318</span></p></td><td class="cl-89d6236d"><p class="cl-89d612fb"><span class="cl-89d2e95e">281</span></p></td><td class="cl-89d6236d"><p class="cl-89d612fb"><span class="cl-89d2e95e">14</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="co"># Remove the missing data</span></span>
+<span id="cb19-2"><a href=""></a></span>
+<span id="cb19-3"><a href=""></a><span class="co"># Step 1: Subset of the data with only the variables we need</span></span>
+<span id="cb19-4"><a href=""></a>anes2 <span class="ot">&lt;-</span> <span class="fu">select</span>(<span class="at">.data =</span> anes, gun.buying, partyid3, gender)</span>
+<span id="cb19-5"><a href=""></a></span>
+<span id="cb19-6"><a href=""></a><span class="co"># Step 2: Remove responses with NAs</span></span>
+<span id="cb19-7"><a href=""></a>anes3 <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(anes2)</span>
+<span id="cb19-8"><a href=""></a></span>
+<span id="cb19-9"><a href=""></a><span class="co"># Check missing data</span></span>
+<span id="cb19-10"><a href=""></a><span class="fu">nrow</span>(anes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8280</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">nrow</span>(anes3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7311</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-3">
+<p><br></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-89ea789e{table-layout:auto;}.cl-89e74188{font-family:'DejaVu Sans';font-size:14pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-89e74192{font-family:'DejaVu Sans';font-size:14pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-89e8b108{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-89e8b112{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-89e8c148{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89e8c149{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89e8c152{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89e8c153{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89e8c15c{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-89ea789e"><thead><tr style="overflow-wrap:break-word;"><th rowspan="2" class="cl-89e8c148"><p class="cl-89e8b108"><span class="cl-89e74188">label</span></p></th><th rowspan="2" class="cl-89e8c148"><p class="cl-89e8b108"><span class="cl-89e74188">variable</span></p></th><th colspan="3" class="cl-89e8c149"><p class="cl-89e8b108"><span class="cl-89e74188">partyid3</span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-89e8c152"><p class="cl-89e8b108"><span class="cl-89e74188">1. Democrat</span></p></th><th class="cl-89e8c152"><p class="cl-89e8b108"><span class="cl-89e74188">2. Independent</span></p></th><th class="cl-89e8c152"><p class="cl-89e8b108"><span class="cl-89e74188">3. Republican</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="3" class="cl-89e8c153"><p class="cl-89e8b112"><span class="cl-89e74192">gun.buying</span></p></td><td class="cl-89e8c15c"><p class="cl-89e8b112"><span class="cl-89e74192">1. More difficult</span></p></td><td class="cl-89e8c15c"><p class="cl-89e8b112"><span class="cl-89e74192">79% (2028)</span></p></td><td class="cl-89e8c15c"><p class="cl-89e8b112"><span class="cl-89e74192">50% (1234)</span></p></td><td class="cl-89e8c15c"><p class="cl-89e8b112"><span class="cl-89e74192">23% (528)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89e8c15c"><p class="cl-89e8b112"><span class="cl-89e74192">2. Easier</span></p></td><td class="cl-89e8c15c"><p class="cl-89e8b112"><span class="cl-89e74192">2% (57)</span></p></td><td class="cl-89e8c15c"><p class="cl-89e8b112"><span class="cl-89e74192">8% (190)</span></p></td><td class="cl-89e8c15c"><p class="cl-89e8b112"><span class="cl-89e74192">10% (233)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89e8c153"><p class="cl-89e8b112"><span class="cl-89e74192">3. Keep these rules about the same</span></p></td><td class="cl-89e8c153"><p class="cl-89e8b112"><span class="cl-89e74192">19% (475)</span></p></td><td class="cl-89e8c153"><p class="cl-89e8b112"><span class="cl-89e74192">43% (1055)</span></p></td><td class="cl-89e8c153"><p class="cl-89e8b112"><span class="cl-89e74192">67% (1511)</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</div>
+<div id="tabset-1-4">
+<p><br></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-8a006f32{table-layout:auto;}.cl-89fd1eae{font-family:'DejaVu Sans';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-89fd1eb8{font-family:'DejaVu Sans';font-size:12pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-89fe9252{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-89fe925c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-89fea3a0{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3aa{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3ab{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3ac{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1.5pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3b4{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3b5{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3b6{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3be{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3bf{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3c8{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 1pt solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3c9{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3ca{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-89fea3d2{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 1pt solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-8a006f32"><thead><tr style="overflow-wrap:break-word;"><th colspan="2" class="cl-89fea3a0"><p class="cl-89fe9252"><span class="cl-89fd1eae">gender</span></p></th><th colspan="3" class="cl-89fea3a0"><p class="cl-89fe9252"><span class="cl-89fd1eae">1. Male</span></p></th><th colspan="3" class="cl-89fea3ab"><p class="cl-89fe9252"><span class="cl-89fd1eae">2. Female</span></p></th></tr><tr style="overflow-wrap:break-word;"><th colspan="2" class="cl-89fea3b4"><p class="cl-89fe9252"><span class="cl-89fd1eae">partyid3</span></p></th><th class="cl-89fea3b4"><p class="cl-89fe9252"><span class="cl-89fd1eae">1. Democrat</span></p></th><th class="cl-89fea3b5"><p class="cl-89fe9252"><span class="cl-89fd1eae">2. Independent</span></p></th><th class="cl-89fea3b5"><p class="cl-89fe9252"><span class="cl-89fd1eae">3. Republican</span></p></th><th class="cl-89fea3b4"><p class="cl-89fe9252"><span class="cl-89fd1eae">1. Democrat</span></p></th><th class="cl-89fea3b5"><p class="cl-89fe9252"><span class="cl-89fd1eae">2. Independent</span></p></th><th class="cl-89fea3b6"><p class="cl-89fe9252"><span class="cl-89fd1eae">3. Republican</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="3" class="cl-89fea3be"><p class="cl-89fe925c"><span class="cl-89fd1eb8">gun.buying</span></p></td><td class="cl-89fea3bf"><p class="cl-89fe925c"><span class="cl-89fd1eb8">1. More difficult</span></p></td><td class="cl-89fea3c8"><p class="cl-89fe925c"><span class="cl-89fd1eb8">75% (726)</span></p></td><td class="cl-89fea3bf"><p class="cl-89fe925c"><span class="cl-89fd1eb8">46% (572)</span></p></td><td class="cl-89fea3bf"><p class="cl-89fe925c"><span class="cl-89fd1eb8">19% (211)</span></p></td><td class="cl-89fea3c8"><p class="cl-89fe925c"><span class="cl-89fd1eb8">82% (1302)</span></p></td><td class="cl-89fea3bf"><p class="cl-89fe925c"><span class="cl-89fd1eb8">54% (662)</span></p></td><td class="cl-89fea3c9"><p class="cl-89fe925c"><span class="cl-89fd1eb8">28% (317)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89fea3bf"><p class="cl-89fe925c"><span class="cl-89fd1eb8">2. Easier</span></p></td><td class="cl-89fea3c8"><p class="cl-89fe925c"><span class="cl-89fd1eb8">3% (27)</span></p></td><td class="cl-89fea3bf"><p class="cl-89fe925c"><span class="cl-89fd1eb8">9% (115)</span></p></td><td class="cl-89fea3bf"><p class="cl-89fe925c"><span class="cl-89fd1eb8">13% (143)</span></p></td><td class="cl-89fea3c8"><p class="cl-89fe925c"><span class="cl-89fd1eb8">2% (30)</span></p></td><td class="cl-89fea3bf"><p class="cl-89fe925c"><span class="cl-89fd1eb8">6% (75)</span></p></td><td class="cl-89fea3c9"><p class="cl-89fe925c"><span class="cl-89fd1eb8">8% (90)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-89fea3ca"><p class="cl-89fe925c"><span class="cl-89fd1eb8">3. Keep these rules about the same</span></p></td><td class="cl-89fea3be"><p class="cl-89fe925c"><span class="cl-89fd1eb8">22% (210)</span></p></td><td class="cl-89fea3ca"><p class="cl-89fe925c"><span class="cl-89fd1eb8">45% (568)</span></p></td><td class="cl-89fea3ca"><p class="cl-89fe925c"><span class="cl-89fd1eb8">68% (768)</span></p></td><td class="cl-89fea3be"><p class="cl-89fe925c"><span class="cl-89fd1eb8">17% (265)</span></p></td><td class="cl-89fea3ca"><p class="cl-89fe925c"><span class="cl-89fd1eb8">40% (487)</span></p></td><td class="cl-89fea3d2"><p class="cl-89fe925c"><span class="cl-89fd1eb8">65% (743)</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p><em>Step through missing data problem and cleaning option</em></p>
+<p><br></p>
+<p><em>Zero-order effects</em></p>
+<p><strong>Is there a difference in preferences regarding gun purchasing rules across the parties?</strong></p>
+<p><br></p>
+<p><em>Partial Effects</em></p>
+<p><strong>Is there a difference in preferences regarding gun purchasing rules across the parties when controlling for gender?</strong></p>
+<p><br></p>
+<p><strong>Is this a spurious, an additive, or an interactive effect when controlling for gender?</strong></p>
+<ul>
+<li>(<strong>SLIDE</strong>: Let’s visualize it and check!)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="visualize-partial-effects" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2>Visualize Partial Effects</h2>
+<p><strong>Step 1: Copy the partial effects into a new object</strong></p>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="co"># Create a dataset: tribble()</span></span>
+<span id="cb23-2"><a href=""></a>new1 <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb23-3"><a href=""></a>  <span class="sc">~</span>gender, <span class="sc">~</span>x1, <span class="sc">~</span>y1,</span>
+<span id="cb23-4"><a href=""></a>  <span class="st">"Male"</span>, <span class="dv">1</span>, .<span class="dv">75</span>,</span>
+<span id="cb23-5"><a href=""></a>  <span class="st">"Male"</span>, <span class="dv">2</span>, .<span class="dv">46</span>,</span>
+<span id="cb23-6"><a href=""></a>  <span class="st">"Male"</span>, <span class="dv">3</span>, .<span class="dv">19</span>,</span>
+<span id="cb23-7"><a href=""></a>  <span class="st">"Female"</span>, <span class="dv">1</span>, .<span class="dv">82</span>,</span>
+<span id="cb23-8"><a href=""></a>  <span class="st">"Female"</span>, <span class="dv">2</span>, .<span class="dv">54</span>,</span>
+<span id="cb23-9"><a href=""></a>  <span class="st">"Female"</span>, <span class="dv">3</span>, .<span class="dv">28</span></span>
+<span id="cb23-10"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a>new1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  gender    x1    y1
+  &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt;
+1 Male       1  0.75
+2 Male       2  0.46
+3 Male       3  0.19
+4 Female     1  0.82
+5 Female     2  0.54
+6 Female     3  0.28</code></pre>
+</div>
+</div>
+</div></div>
+</section>
+<section id="visualize-partial-effects-1" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2>Visualize Partial Effects</h2>
+<p><strong>Step 2: Make (and polish) a line plot</strong></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a><span class="fu">ggplot</span>(new1, <span class="fu">aes</span>(<span class="at">x =</span> x1, <span class="at">y =</span> y1, <span class="at">color =</span> gender)) <span class="sc">+</span></span>
+<span id="cb26-2"><a href=""></a>  <span class="fu">geom_line</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-33-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<section id="section-16" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Step 2: Make (and polish) a line plot</strong></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">ggplot</span>(new1, <span class="fu">aes</span>(<span class="at">x =</span> x1, <span class="at">y =</span> y1, <span class="at">color =</span> gender)) <span class="sc">+</span></span>
+<span id="cb27-2"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb27-3"><a href=""></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-34-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<section id="section-17" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Step 2: Make (and polish) a line plot</strong></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a><span class="fu">ggplot</span>(new1, <span class="fu">aes</span>(<span class="at">x =</span> x1, <span class="at">y =</span> y1, <span class="at">color =</span> gender)) <span class="sc">+</span></span>
+<span id="cb28-2"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb28-3"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb28-4"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-35-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<section id="section-18" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Step 2: Make (and polish) a line plot</strong></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a><span class="fu">ggplot</span>(new1, <span class="fu">aes</span>(<span class="at">x =</span> x1, <span class="at">y =</span> y1, <span class="at">color =</span> gender)) <span class="sc">+</span></span>
+<span id="cb29-2"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb29-3"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb29-4"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb29-5"><a href=""></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), </span>
+<span id="cb29-6"><a href=""></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Democrat"</span>, <span class="st">"Independent"</span>, <span class="st">"Republican"</span>)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-36-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
+<section id="section-19" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<p><strong>Step 2: Make (and polish) a line plot</strong></p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a><span class="fu">ggplot</span>(new1, <span class="fu">aes</span>(<span class="at">x =</span> x1, <span class="at">y =</span> y1, <span class="at">color =</span> gender)) <span class="sc">+</span></span>
+<span id="cb30-2"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb30-3"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb30-4"><a href=""></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb30-5"><a href=""></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), </span>
+<span id="cb30-6"><a href=""></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Democrat"</span>, <span class="st">"Independent"</span>, <span class="st">"Republican"</span>)) <span class="sc">+</span></span>
+<span id="cb30-7"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Buying a gun should be harder (%)"</span>, <span class="at">color =</span> <span class="st">""</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="09_2-Controlled_Comparison-Cat_Cat_files/figure-revealjs/unnamed-chunk-37-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><aside class="notes">
+<p>With our polished visualization in hand, now you can answer the question.</p>
+<ul>
+<li><p><strong>Is the partial effect here additive, interactive or spurious?</strong></p></li>
+<li><p>(Additive)</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Our work today</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="making-controlled-comparisons-2" class="slide level2" data-background-image="Images/background-data_blue_v4.png">
+<h2>Making Controlled Comparisons</h2>
+<p><br></p>
+<p><strong>If categorical x categorical</strong></p>
+<ul>
+<li><p>Step 1: Split your sample by levels of the control variable</p></li>
+<li><p>Step 2: Generate cross-tabs for each subset</p></li>
+<li><p>Step 3: Polish tables with crosstable()</p></li>
+<li><p>Step 4: Visualize partial effects with geom_line()</p></li>
+</ul>
+<aside class="notes">
+<p><strong>Does the subset approach to making controlled comparisons make sense?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: For next class we need some practice!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="for-next-class" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>For Next Class</h2>
+<p>Does the strength of Americans’ religious convictions (religion.imp) predict their support for the death penalty (death.penalty) when controlling for party identification (partyid3)?</p>
+<ol type="1">
+<li class="fragment"><p>Table 1: Polished cross-tab of the zero-order effects</p></li>
+<li class="fragment"><p>Table 2: Polished cross-tab of the partial effects</p></li>
+<li class="fragment"><p>Figure 1: Make a line plot of the partial effects calculated in Step 2 above (% “Favor Strongly” across the levels of religion.imp)</p></li>
+</ol>
+<aside class="notes">
+<p>Canvas Assignment: Practice Making Controlled Comparisons (categorical x categorical)</p>
+<p>Use the ANES (2020) data to answer the following question: Does the strength of Americans’ religious convictions (religion.imp) predict their support for the death penalty (death.penalty) when controlling for party identification (partyid3)?</p>
+<ol type="1">
+<li>Table 1: Submit a polished cross-tab that evaluates if religious importance predicts support for the death penalty (zero-order effects)</li>
+<li>Table 2: Submit a polished cross-tab that evaluates if religious importance predicts support for the death penalty while controlling for party ID (partial effects)</li>
+<li>Figure 1: Visualize the results in Step 2 above with a line plot tracking those who “favor strongly” the death penalty across the levels of religious importance. You should have three lines, one for each party ID in the dataset. Be sure to categorize it as a spurious, additive or interactive effect.</li>
+</ol>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="09_2-Controlled_Comparison-Cat_Cat_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

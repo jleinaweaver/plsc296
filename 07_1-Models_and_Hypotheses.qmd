@@ -17,11 +17,11 @@ load(file = "../../DATA/2026-Spring/Miller_Saunders_Farhart2016/Miller_Saunders_
 
 ::: {.r-fit-text}
 
-1. Introduce the first report
-
-2. Critically analyze the project's codebook
+**Introduction to Bivariate Analyses**
 
 :::
+
+- Proposing Explanations, Framing Hypotheses, and Making Comparisons
 
 <br>
 
@@ -34,41 +34,65 @@ Prep for Class
 
 1. Review Canvas submissions
 
-2. [Reporters Without Borders: World Press Freedom Index - Project Codebook](https://rsf.org/en/methodology-used-compiling-world-press-freedom-index-2024?year=2024&data_type=general)
-
-3. [Reporters Without Borders: World Press Freedom Index - Project Dataset](https://rsf.org/en/index)
-
-4. Open your notes on methodolgy: /home/justin/Dropbox/Political_Science/Teaching/Courses/296-Data_Analysis/2025-Spring/Data_in_Class/Reporters_Without_Borders/Methodology_Notes.txt
+2. Markers x 4
 
 <br>
 
-**AS STUDENTS COME IN MAKE THEM SIT IN NEW PLACES WITH NEW PEOPLE!**
-
-- New rule, you can't sit next to the same people you did in the last class
-
-- You HAVE to move around!
-
-<br>
-
-Quick aside before we get started today
-
-- We'll start with data analyses in class on Wednesday
-
-- If you're going to use one of the school laptops make sure to bring a USB flash drive for saving your work!
-
-- **Can you let me know who will need to check out a laptop from the cart?**
-
-<br>
-
-**SLIDE**: Let's start today with an overview of your first report
+**SLIDE**: Let's kick things off with our wrap-up from last week
 
 :::
 
 
 
-## Political Knowledge {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, fig.align='center', fig.asp=.75, fig.width=7}
+::: {.r-fit-text}
+**Americans' Political Knowledge (Miller, Saunders & Farhart 2016)**
+:::
+
+:::: {.columns}
+::: {.column width="50%"}
+- Senate term length
+- Conservative party
+- John Roberts job
+- President Russia
+- Speaker of House
+- Biden's job
+- Cameron's job
+:::
+
+::: {.column width="50%"}
+- House majority
+- Nominates judges
+- Reviews laws
+- Override veto
+- Secretary of State
+- Secretary of Treasury
+- PM of Canada
+:::
+::::
+
+::: notes
+
+Your first job for today was to construct an additive index of political knowledge using the Miller, Saunders and Farhart (2016) data and to present it as a proportion of the total possible correct.
+
+- **How did this go?**
+
+- (**SLIDE**: index results)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.panel-tabset}
+
+### Results
+
+**Americans' Political Knowledge (Miller, Saunders & Farhart 2016)**
+
+```{r, fig.align='center', fig.asp=.618, fig.width=7, out.width="70%"}
 # Recode nominal variables into dummies
 d$Majority_House2 <- if_else(d$Majority_House == "Republican Party", 1, 0)
 d$More_Conservative2 <- if_else(d$More_Conservative == "Republican Party", 1, 0)
@@ -87,108 +111,69 @@ d$PM_Canada2 <- if_else(d$PM_Canada == "Stephen Harper", 1, 0)
 
 d$knowledge_index <- d$Majority_House2 + d$More_Conservative2 + d$JRoberts_Job2 + d$Pres_Russia2 + d$Speaker2 + d$JBiden_Job2 + d$DCameron_Job2 + d$Nominates_Judges2 + d$Senate_Term2 + d$Reviews_Laws2 + d$Veto_Override2 + d$Sec_State2 + d$Sec_Treasury2 + d$PM_Canada2
 
-summary(d$knowledge_index)
+# Rescale to proportion
+d$knowledge_index2 <- d$knowledge_index / 14
 
-ggplot(data = d, aes(x = knowledge_index)) +
+summary(d$knowledge_index2) |>
+  as.matrix() |>
+  t() |>
+  kable(digits = 2) |>
+  kable_styling(font_size = 30)
+
+ggplot(d, aes(x = knowledge_index2)) +
   geom_bar() +
   theme_bw() +
-  labs(x = "Political Knowledge (0-14)", y = "Count") +
-  scale_x_continuous(breaks = 0:14)
-
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(x = "Political Knowledge Index", y = "Count")
 ```
 
+### Code
 
+```{r, echo=TRUE, eval=FALSE}
+# Recode nominal variables into dummies
+d$Majority_House2 <- if_else(d$Majority_House == "Republican Party", 1, 0)
+d$More_Conservative2 <- if_else(d$More_Conservative == "Republican Party", 1, 0)
+d$JRoberts_Job2 <- if_else(d$JRoberts_Job == "Chief Justice of the Supreme Court", 1, 0)
+d$Pres_Russia2 <- if_else(d$Pres_Russia == "Vladimir Putin", 1, 0)
+d$Speaker2 <- if_else(d$Speaker == "John Boehner", 1, 0)
+d$JBiden_Job2 <- if_else(d$JBiden_Job == "Vice President of the United States", 1, 0)
+d$DCameron_Job2 <- if_else(d$DCameron_Job == "Prime Minister of the United Kingdom", 1, 0)
+d$Nominates_Judges2 <- if_else(d$Nominates_Judges == "The President", 1, 0)
+d$Senate_Term2 <- if_else(d$Senate_Term == "6 years", 1, 0)
+d$Reviews_Laws2 <- if_else(d$Reviews_Laws == "The Supreme Court", 1, 0)
+d$Veto_Override2 <- if_else(d$Veto_Override == "2/3", 1, 0)
+d$Sec_State2 <- if_else(d$Sec_State == "John Kerry", 1, 0)
+d$Sec_Treasury2 <- if_else(d$Sec_Treasury == "Jacob Lew", 1, 0)
+d$PM_Canada2 <- if_else(d$PM_Canada == "Stephen Harper", 1, 0)
 
+d$knowledge_index <- d$Majority_House2 + d$More_Conservative2 + d$JRoberts_Job2 + d$Pres_Russia2 + d$Speaker2 + d$JBiden_Job2 + d$DCameron_Job2 + d$Nominates_Judges2 + d$Senate_Term2 + d$Reviews_Laws2 + d$Veto_Override2 + d$Sec_State2 + d$Sec_Treasury2 + d$PM_Canada2
 
+# Rescale to proportion
+d$knowledge_index2 <- d$knowledge_index / 14
 
+summary(d$knowledge_index2)
 
-
-
-
-
-
-
-
-
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Report 1**
-
-**Analyzing our First Data Project**
+ggplot(d, aes(x = knowledge_index2)) +
+  geom_bar() +
+  theme_bw() +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(x = "Political Knowledge Index", y = "Count")
+```
 :::
-
-1. COMPLETED draft due Feb 21st
-
-2. PDFs only
-
-3. Support ALL claims with evidence
-    - APA formatted in-text citations
-    - APA formatted bibliography
-
-4. Report should be concise and focused on your arguments
 
 ::: notes
 
-Per the syllabus, a COMPLETED draft of your first report is due to be submitted to Canvas on Feb 21st
+**Ok, assuming this is a representative sample of Americans, what do we learn about the political knowledge in our country?**
 
-- Completed means all required components included, written in essay form with citations
-
-- This draft submission IS your best effort to complete the paper
+- *DISCUSS*
 
 <br>
 
-You must submit the report as a pdf file to preserve formatting of figures and tables
-
-- Word allows you to export as pdf
+**Any questions on the variable transformations or variable creation techniques we worked on last week?**
 
 <br>
 
-You must support all claims with evidence which means:
-
-- in-text citations, 
-
-- a bibliography, and 
-
-- APA formatting
-
-<br>
-
-**Questions on those basic elements?**
-
-<br>
-
-**SLIDE**: And what goes in the report?
-:::
-
-
-
-## Report 1 {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
-
-<br>
-
-The reader of your report is a non-expert in data analysis and is not familiar with this particular project, but is very interested in the topic. 
-
-::: notes
-
-Now that we have your project chosen I can make the report prompt much more focused!
-
-- Focus on making an argument that answers THIS question for this type of reader
-
-<br>
-
-**Questions on the big picture aim here?**
-
-<br>
-
-**SLIDE**: The key elements
+**SLIDE**: Shifting to our work for this week...
 
 :::
 
@@ -196,228 +181,260 @@ Now that we have your project chosen I can make the report prompt much more focu
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
+**Univariate Analyses**
 
-1. The importance of the project in the real-world,
-2. The key contributors of uncertainty in the project's data,
-3. What we learn about the current world from analyzing the most recently available data, and
-4. What we learn about the trajectory of press freedom in the world from analyzing the data across time
-
-::: notes
-
-This first report focuses entirely on analyzing our first data project.
-
-- Measurement is the end-all, be-all for any quantitative analysis and so we need to spend time analyzing the outcome BEFORE we can explain it!
+- Evaluating measures of the empirical world AND using statistics to summarize or describe their distributions
 
 <br>
-
-Your report must have a clear macro structure and, I suggest, a meso structure that mirrors these four required elements. 
-
-- Each of the required elements should be fully explained, all claims should be supported by evidence, and your report should offer the reader your critical analysis of that element.
-
-<br>
-
-This week we focus on just the first two sections (importance and confidence)
-
-- Sections 3 and 4 won't happen until AFTER we learn the univariate analysis tools
-
-<br>
-
-**SLIDE**: Let's talk Premise 1
-
-:::
-
-
-
-## Report 1 {background-image="Images/background-data_blue_v4.png" .center}
-
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
-
-<br>
-
-**Premise 1: Why is this project important?**
 
 ::: {.fragment}
 
-- What problem are the researchers trying to solve?
+**Bivariate Analyses**
 
-- How does the problem impact the real world?
-
-- Why should we take these researchers seriously?
- 
-- How has the project impacted the world?
+- "...involves the analysis of two variables (often denoted as X, Y), for the purpose of determining the empirical relationship between them" (Babbie 2009).
 
 :::
 
 ::: notes
 
-In Premise 1 your job is to sell the importance of this project to an interested reader
-
-- Don't assume the reader is an expert in the subject area
-
-- Don't assume the reader is familiar with the project at all
-
-- This means you have to include enough background info on the project for them to understand your importance argument
+This week marks our shift from univariate analysis to bivariate analysis
 
 <br>
 
-For example, If I were trying to convince a reader that a data project was important, I would make sure to answer the following questions
+By univariate analysis we mean BOTH:
+
+1. Evaluating measures of the empirical world in terms of their validity and reliability, and
+
+2. Using statistics to summarize or describe the distributions of those measures
+
+3. (OFTEN ALSO) Can we draw inferences from this sample about the wider population?
+
+<br>
+
+To be clear, no one should EVER skip the univariate work.
+
+- It is this work that matters WAY more for your conclusions than anything that follows
+
+- I don't care how complicated your regression analysis is if your measures are too imprecise to mean anything
+
+<br>
+
+With the univariate work done you can then shift to the bivariate work
 
 - **REVEAL**
 
-<br>
+- In simple terms, bivariate just means two variable
 
-To be clear, I will be providing time in class to work on the other premises in this report 
-
-- This premise, which doesn't depend on data analyses, you'll be writing on your own outside of class
-
-- **Any questions on the Premise 1 argument?**
-
+- So we are shifting from using statistics to describe one variable to using statistics to describe the relationship between variables
 
 <br>
 
-**SLIDE**: On to Premise 2...
+Today we'll focus on the concepts and understandings we need for setting up a useful bivariate analysis AND NEXT CLASS we'll start using the tools to make bivariate analyses
+
+- **SLIDE**: Why do we need to spend a day setting up bivariate analysis instead of just doing them?
 
 :::
 
 
 
-## Report 1 {background-image="Images/background-data_blue_v4.png" .center}
+## Correlation Does Not Imply Causation {.center background-image="Images/background-data_blue_v4.png"}
 
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
+```{r, fig.align='center'}
+knitr::include_graphics("Images/12_1-dinosaur_correlation.webp")
+```
+
+::: notes
+
+Describing relationships is VERY tricky work
+
+- And being casual about this is what steers SO many people wrong in the world around us
+
+- Our brains are designed to find patterns in the world around us even when the patterns aren't really there!
 
 <br>
 
-**Premise 2: The key contributors of uncertainty?**
+You've probably all heard the phrase: "correlation does not imply causation."
 
-::: {.fragment}
+- This represents a good warning that prevent us from reaching conclusions with our data that we cannot support
 
-- **Source:** Where does the raw data come from?
+<br>
 
-- **Operationalization:** Defining the concepts
+**SLIDE**: HOWEVER, it's not that simple
 
-- **Instrumentation:** Designing the tool
+:::
 
-- **Measurement Process:** Using the tool
 
-- **Validation:** Checking the data
 
+
+## Correlation May Imply Causation {.center background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+::: columns
+::: {.column width="50%"}
+```{r, fig.align = 'center', fig.width = 6, fig.height=1.25}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("A", "B")
+)
+
+p1 <- ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(.5, 1.5)) +
+  geom_label(aes(label = labels), size = 7)
+
+p1 +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+```{r, fig.align = 'center', fig.width = 6, fig.height=2.5}
+p1 +
+  annotate("segment", x = -1.9, xend = 2.2, y = .85, yend = .85, arrow = arrow()) +
+  annotate("segment", x = 2.2, xend = -1.9, y = 1.15, yend = 1.15, arrow = arrow())
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align = 'center', fig.width = 6, fig.height=1.25}
+p1 +
+  annotate("segment", x = 2.2, xend = -1.9, y = 1, yend = 1, arrow = arrow())
+```
+
+```{r, fig.align = 'center', fig.width = 6, fig.height=2.5}
+p1 +
+  annotate("segment", x = .4, xend = 2.6, y = 1.32, yend = 1.05, arrow = arrow()) +
+  annotate("segment", x = -.4, xend = -2.6, y = 1.32, yend = 1.05, arrow = arrow()) +
+  annotate("text", x = 0, y = 1.4, label = "C", size = 8)
+```
+:::
 :::
 
 ::: notes
 
-After Section 1 sells the reader on the importance of the project, Section 2 is your chance to give the reader a crash course in the strengths and weaknesses of the project
-
-- Remember, the reader is unfamiliar with the project
-
-- Your job is to help them develop expertise so they can use it effectively to analyze the world
+Very often, when two things are correlated that tells us there is something important happening somewhere around the variables
 
 <br>
 
-I want your Section 2 argument to evaluate the strengths and weaknesses of the project across a series of categories
+Correlation can be evidence of a number of different plausible relationships
 
-- **REVEAL**
+-   A causes B
 
-- Everybody write these down!
+-   B causes A
 
-- Each of these categories should get at least a paragraph in this section and should include both strengths AND weaknesses
+-   A causes B and B causes A
 
-<br>
+-   A and B are both caused by C
 
-These elements can help you organize your critical analysis of any real-world data or measurement.
-
-- We learn a great deal about the uncertainty in any measurement by investigating its sources, definitions, tools, processes and validation procedures.
-
-- **Any questions on these categories?**
-
-- Remember, the Brians et al reading has details on each of these.
+-   etc.
 
 <br>
 
-**SLIDE**: Your assignment for today was meant to give you a jump-start on these analyses.
+Correlation doesn't tell us which of these is happening, BUT it does tell us something is likely going on in this relationship!
+
+<br>
+
+**SLIDE**: And so the takeaway for us is...
 
 :::
 
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**For Today: Analyzing the First Codebook**
-:::
+## Correlation and Causation {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-1. Analyzing the Data Project Overall
+![](Images/08_2-xkcd_correlation.png)
 
-    - What are the strengths and weaknesses of the overall data project? What variables should we consider using?
+::: notes
+
+*Read the XKCD cartoon*
+
+<br>
+
+Bivariate analysis is often the first step toward making a causal argument
+
+- BUT, doing that requires us to figure out if the patterns we see in the data mean what we think they mean
+
+- AND EQUALLY IMPORTANTLY, how do we make a convincing argument to other scientists that changes in our predictor variable CAUSE changes in our outcome variable?
+
+<br>
+
+**SLIDE**: This is a big job, so let's start with the baseline concepts and approaches we will need going forward
+
+:::
+
+
+
+## Directed Acyclic Graphs (DAGs) {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+```{r, fig.retina = 3, fig.align = 'center', fig.width = 6, fig.height=.85, out.width='85%'}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Treatment", "Outcome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 1.9, y = 1, yend = 1, arrow = arrow())
+```
+
++ 'Directed' = Paths indicate direction of effect
+
++ 'Acyclic' = No immediate feedback loops
+
++ 'Graphs' = Visualized
+
+::: notes
+
+The textbook chapter uses a lot of what it calls causal diagrams
+
+- Technically these are examples of Directed Acyclic Graphs (DAGs)
+
+- DAGs are incredibly useful tools for clarifying causal arguments and the distinction between theory and a model.
+
+<br>
+
+Let's use this slide to clarify any of the big concepts from the chapter that don't make sense
+
+1. **What is the dependent variable in this DAG? How do you know?**
+
+    - ("The observed effect is what we call the dependent variable because its magnitude depends upon some other causal variable")
+
+2. **What is the independent variable in this DAG? How do you know?**
+
+    - ("The causal variable")
     
-2. Analyzing the Selected Outcome 
+3. **Do DAGs always represent probabilistic or deterministic models?**
 
-    - What are the strengths and weaknesses of the variables we can choose as our key outcome to explain? 
+    - (Can be either!)
+    - (In the sciences this will almost always be probabilistic)
+    - (The book confusingly refers to physics as an area of deterministic relationships but I think that's a wildly overbroad claim. In very narrow and uninteresting problems it might be, but in all the cutting-edge stuff it is not, e.g. quantum mechanics, astrophysics, etc)
+    
+<br>
 
-::: notes
+SO, a DAG is a graphical representation of a model
 
-For today I asked each of you to read the codebook(s) and to reflect on how the researchers converted their ideas into measurements.
+- A model is a simplification of reality, and
 
-- My aim is that by the end of today you each have a list of strengths and weaknesses you can use to write Section 2 of the report.
+- A theory is the explanation of WHY the arrow is there and points in this direction
 
 <br>
 
-And remember our key lesson from the first weeks of class: **Don't stress about the math!**
-
-- Research design is WAY more important than the formulas!
+**Questions on these baseline concepts?**
 
 <br>
 
-Our focus today is on how the researchers define their ideas and convert them into numbers
-
-- Those choices have a **MUCH** bigger impact than their choice to use harmonic means in constructing an index!
-
-<br>
-
-**SLIDE**: Let's start with the first element of analyzing data
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Source: Where does the raw data come from?**
-:::
-
-![](Images/03_1-Source_of_Data.jpg){style="display: block; margin: 0 auto"}
-
-::: notes
-
-Let's begin with the sources of the data being analyzed in this project.
-
-- Small groups, get ready to report back on the source(s) of the data
-
-- Make two lists, what are the strengths and weaknesses of these data sources
-
-<br>
-
-### Questions?
-
-- Go!
-
-- (*ON BOARD*)
-
-<br>
-
-**Given these two lists, how precise can we be when interpreting these numbers?**
-
-- **In other words, how much uncertainty do these sources carry with them for our analyses?**
-
-<br>
-
-*RSF Notes from Methodology*
-
-- "Our data gathering RSF’s staff constantly gathers information throughout the world about abuses against journalists in connection with their work."
-
-- "The information about journalists who are held hostage, imprisoned, killed or missing is updated every day on RSF’s press freedom barometer."
+**SLIDE**: Generating Plausible Explanations
 
 :::
 
@@ -426,198 +443,438 @@ Let's begin with the sources of the data being analyzed in this project.
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Operationalization: Defining the concepts**
+**Generating Plausible Explanations**
+
+- Inductive reasoning
+
+- Deductive reasoning
 :::
 
-```{r, echo = FALSE, fig.align = 'center'}
-knitr::include_graphics("Images/03_1-Voltaire_Define_Terms.jpg")
+::: notes
+
+**Which approach to reasoning do we use most in the social sciences? Why?**
+
+<br>
+
+(Inductive!)
+
+- Inductive reasoning starts by proposing explanations for a specific case, often based on personal observation, and generalizes insights to broader categories or theories.
+
+- Deductive reasoning begins with general premises and derives specific, testable implications, using abstract reasoning to predict outcomes.
+
+<br>
+
+Let's see how you did this in the Canvas assignment for today
+
+- Exercise 2 asks you to explain why some voters prefer major party presidential candidates and others vote third-party
+
+- Let's hear what you came up with!
+
+- *ON BOARD*: **Give me independent variables you believe cause third party voting (and explain why!)**
+
+<br>
+
+**SLIDE**: And Exercise 4 asks us to think about what makes a "good" testable hypothesis
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Why are these "bad" hypotheses?**
+:::
+
+::: {.incremental}
+
+1. In a comparison of individuals, some people pay more attention to political campaigns than do other people.
+
+2. Democracies are not likely to wage war with each other.
+
+3. Age and party affiliation are related.
+
+4. Some people support increased federal funding for the arts.
+
+:::
+
+::: notes
+
+**REVEAL**
+
+- No comparison or IV/DV.
+- In a comparison of individuals, those with higher levels of education will pay more attention to political campaigns than those with lower levels of education.
+
+<br>
+
+**REVEAL**
+
+- No explicit comparison or tendency.
+- In a comparison of states, democratic states will be less likely to engage in war with each other than with non-democratic states.
+
+<br>
+
+**REVEAL**
+
+- No tendency described.
+- In a comparison of individuals, older people will be more likely to identify as Republicans than younger people.
+
+<br>
+
+**REVEAL**
+
+- No IV/DV or comparison.
+- In a comparison of individuals, those with higher education levels will be more likely to support increased federal funding for the arts than those with lower education levels.
+
+<br>
+
+**Questions on any of the concepts we've been discussing so far?**
+
+<br>
+
+Ok, our next job is to think about the types of connections possible in a causal diagram
+
+- There are more than the three in the chapter, but these offer a very good start!
+
+<br>
+
+**SLIDE**: Let's start with the "chain" type
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**What is the effect of increasing years of education on your salary earning potential?**
+
+<br>
+
+```{r, fig.align='center', fig.height=2.5, fig.width=9}
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Education", "Salary")
+)
+
+p1 <- ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(.5, 1.5)) +
+  geom_label(aes(label = labels), size = 7)
+
+p1 +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
 ```
 
 ::: notes
 
-As we did in Week 1 of the class, we now need to evaluate the operationalization of the concepts in this data project
+Imagine we are developing a research project whose aim is to estimate the causal effect of 'education' on 'salary.'
 
-- To refresh: Operationalization refers to ""...selecting observable phenomena to represent abstract concepts" (89).
+- Specifically, we'd like to develop a more precise estimate of how each additional year of education impacts your salary earning potential
 
-- In other words, an "operational definition" tells us "precisely and explicitly what to do in order to determine what quantitative value should be associated with a variable in any given case" (p92).
-
-<br>
-
-**So, what are the key concepts in this data project?**
-
-- (*Make list ON BOARD*)
+- This is a very simple DAG meant to represent a causal model
 
 <br>
 
-Groups, take a few minutes to identify the operational definitions for these concepts and get ready to report back your evaluation of them
+Let's use this as a baseline for considering alternative connection types
 
-- Think about the operational definitions in terms of their clarity and validity
+- **SLIDE**: Ok, brainstorming time!
 
-- Does the definition tell us "precisely and explicitly" what we are trying to measure?
-
-<br>
-
-**Questions?**
-
-- Go!
-
-<br>
-
-*REPORT BACK and DISCUSS*
 :::
 
 
 
-## {background-image="Images/03_1-tools.jpg"}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-<p style="color: white;">Instrumentation: Designing the tool</p>
-:::
+**What is the effect of increasing years of education on your salary earning potential?**
+
+<br>
+
+```{r, fig.align='center', fig.width=9, fig.height=5}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Salary", "Education", "???")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow())
+```
 
 ::: notes
 
-Again, as you did in Week 1, instrumentation refers to how you convert your operational definition into a series of steps you can use to measure the concept in question.
-
-- The clearer your operational definition, the easier it is to design your measurement tool
+A chain is a linear sequence where one variable affects another.
 
 <br>
 
-Groups, take a look at the tool used to produce the measures for our variable of interest
+**What is a variable we could add to this DAG that would introduce a chain connection between education and salary?**
 
-- Get ready to report back your evaluation of the tool
-
-- Is it clear and does it map onto the operational definition(s)?
-
-- In other words, does this tool accurately represent the underlying concept or not?
-
-<br>
-
-**Questions?**
-
-- Go!
-
-<br>
-
-*REPORT BACK and DISCUSS*
-
-<br>
-
-- Questionnaire likely produce valid and reliable data?
-
-- Does the calculation of the abuse score make sense? (next **SLIDE**)
+- (**SLIDE**: Experience!)
 
 :::
 
 
 
-## {background-image="Images/background-data_blue_v4.png"}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-![](Images/03_1-RSF-Abuses1.png){.absolute left=0}
 
-![](Images/03_1-RSF-Abuses2.png){.absolute right=0}
+**What is the effect of increasing years of education on your salary earning potential?**
+
+<br>
+
+```{r, fig.align='center', fig.width=9, fig.height=5}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Salary", "Education", "Experience")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow())
+```
+
+::: notes
+
+**Does the chain type make sense?**
+
+<br>
+
+One note we will come back to in a few weeks is this: Do NOT include chains in your causal arguments!
+
+- A chain variable will alter the results of your analyses in ways you do NOT want
+
+- Your job is to recognize a chain effect in order to EXCLUDE it from your analyses
+
+<br>
+
+**SLIDE**: Let's now do our current DAG but add a collider connection
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**What is the effect of increasing years of education on your salary earning potential?**
+
+<br>
+
+```{r, fig.align='center', fig.width=9, fig.height=5}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Salary", "Education", "???")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow()) +
+  #annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow()) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+
+In a collider, two IVs independently influence a single DV without being directly related.
+
+<br>
+
+**What is a variable we could add to this DAG that would cause salary BUT is NOT related to education?**
+
+- (**SLIDE**: What about height?)
+
+
+:::
 
 
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-**Measurement Process: Using the tool**
-:::
+**What is the effect of increasing years of education on your salary earning potential?**
 
-![](Images/03_1-how_to_hammer.jpg){style="display: block; margin: 0 auto"}
+<br>
+
+```{r, fig.align='center', fig.width=9, fig.height=5}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Salary", "Education", "Height")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow()) +
+  #annotate("segment", x = -2.5, xend = -.4, y = 1.15, yend = 1.85, arrow = arrow()) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
 
 ::: notes
 
-Next we talk process.
+Research shows us that both education and height predict higher incomes
 
-- This is how the researchers use the tool to generate the actual measurements
-
-- In other words, we give you a hammer (the tool) and then we give you instructions on how to use it (process) 
+- So, my vote for a collider connection is to include height
 
 <br>
 
-Groups, take a look at the process used to produce the measures for our variable of interest
-
-- Get ready to report back on how reliable you believe this process to be
+**Does the collider connection make sense?**
 
 <br>
 
-**Questions?**
+Just like identifying chains, we identify colliders to make sure we do NOT include them in our analyses!
 
-- Go!
+- If you include both height and education in your analysis your stats will likely show a connection between them!
+
+- In other words, your results will suggest that going to college makes people taller on average!
+
+- If someone proposes a collider, exclude it!
+
+- Again, we'll get more into this in a few weeks
 
 <br>
 
-*REPORT BACK and DISCUSS*
+**SLIDE**: Last one, and most importantly, let's talk about a fork connection
 
-- NEXT SLIDE HAS THE ABUSE SCORE DETAILS
 :::
 
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**What is the effect of increasing years of education on your salary earning potential?**
+
+<br>
+
+```{r, fig.align='center', fig.width=9, fig.height=5}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Salary", "Education", "???")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = -.4, xend = -2.5, y = 1.85, yend = 1.15, arrow = arrow()) #+
+  #annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+
+A fork occurs when "a shared cause influences two separate variables that are not directly connected."
+
+- For the sake of illustrating the fork let's pretend there is no conceivable connection between education and salary
+
+- **What is a variable that we are confident causes both education and salary?**"
+
+- (**SLIDE**: Gender!)
+
+:::
 
 
 
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-**Validation: Checking the data**
-:::
+**What is the effect of increasing years of education on your salary earning potential?**
 
-![](Images/03_1-Data_Validation.png)
+<br>
+
+```{r, fig.align='center', fig.width=9, fig.height=5}
+## Manual DAG
+tibble(
+  x = c(3, -3, 0),
+  y = c(1, 1, 2),
+  labels = c("Salary", "Education", "Gender")
+) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(0.5, 2.5)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = .4, xend = 2.5, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = -.4, xend = -2.5, y = 1.85, yend = 1.15, arrow = arrow()) #+
+  #annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
 
 ::: notes
 
-Last key piece for us to evaluate is validation.
+Prior research has pretty clearly established that:
+
+1. Gender absolutely impacts the success of individuals in education nationally and globally
+
+2. We also know there is a gender wage gap in our society (national and global)
 
 <br>
 
-As we have noted, measurement is REALLY difficult even when you try to do everything "right."
+It turns out that forks are going to be very important to our work moving forward into the world of causal arguments.
 
-- This means we find it valuable when a research project tries to validate its findings with other high quality work. 
-
-<br>
-
-Groups, take a look at the validation processes in this data project
-
-- Get ready to report back on how they do this and how effective you believe that will be
+- But that can wait for next week
 
 <br>
 
-**Questions?**
+**SLIDE**: Practice
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/07_1-PollockEdwards-Figure_04_08.jpg)
+
+::: {.fragment}
+- Data: Spring2026-WDI_Data_Class_Selections.xlsx
+
+- On the board illustrate each type of connection type using these variables (3 DAGs)
+:::
+::: notes
+
+**What questions do you have about these three types of connection in a causal diagram?**
+
+<br>
+
+Ok, let's practice these skills
+
+- *Split class into four groups (maximize board space)*
+
+- Go sit with your group!
+
+<br>
+
+**REVEAL**: Everybody open our WDI class data
+
+- This dataset gives you 16 variables to consider
+
+- Your job is to draw THREE DAGS on the board, one for each type
+
+- **Questions?**
 
 - Go!
 
 <br>
 
-*REPORT BACK and DISCUSS*
-:::
-
-
-
-## Report 1 {background-image="Images/background-data_blue_v4.png" .center}
-
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
-
-<br>
-
-**Premise 2: The key contributors of uncertainty?**
-
-- **Source:** Where does the raw data come from?
-
-- **Operationalization:** Defining the concepts
-
-- **Instrumentation:** Designing the tool
-
-- **Measurement Process:** Using the tool
-
-- **Validation:** Checking the data
-
-::: notes
-
-**Ok, how are we doing?**
-
-- **Does everybody have a good start to Section 2?**
+*PRESENT and DISCUSS each*
 
 <br>
 
@@ -626,33 +883,19 @@ Groups, take a look at the validation processes in this data project
 :::
 
 
-##  {background-image="Images/background-data_blue_v4.png" .center}
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
 
 ::: {.r-fit-text}
+1. Finish Pollock and Edwards Chapter 4
 
-**For Next Class**
-
-1. Huntington-Klein (2022) chapter 3
-
-2. Canvas Assignment
-
+2. Submit your answer to Exercise 6
 :::
 
 ::: notes
 
-For next class you have a reading and an assignment.
-
-- The reading is meant to help you complete the assignment.
-
-<br>
-
-For the assignment I'd like you to dig into the datasets using Excel
-
-- Find us **THREE interesting, puzzling or surprising** things in the data
-
-- Explain what you found AND explain the process you used to find them
-
-<br>
-
 **Questions on the assignment?**
+
 :::

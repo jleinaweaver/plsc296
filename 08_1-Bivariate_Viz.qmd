@@ -8,6 +8,17 @@ format: revealjs
 library(tidyverse)
 library(readxl)
 library(kableExtra)
+
+load("../../DATA/2026-Spring/Miller_Saunders_Farhart2016/Miller_Saunders_Farhart2016_v2.RData")
+
+# Build the index
+d$ct_index <- as.numeric(d$CT_Obama) + as.numeric(d$CT_DeathPanels) + as.numeric(d$CT_Govt_911) + as.numeric(d$CT_Katrina_Levees) + as.numeric(d$CT_Climate_Hoax) + as.numeric(d$CT_Bush_WMDs) + as.numeric(d$CT_Hussein_911) + as.numeric(d$CT_2004_election)
+
+# Rescale the index to start at zero
+d$ct_index0 <- d$ct_index - 8
+
+# Convert to percentage out of 24
+d$ct_index_pct <- d$ct_index0 / 24
 ```
 
 <br>
@@ -17,6 +28,8 @@ library(kableExtra)
 **Bivariate Analyses**
 
 - Visualizing the relationship between two variables
+
+- NEW R Script: Bivariate_Visualizations.R
 
 :::
 
@@ -30,796 +43,845 @@ Justin Leinaweaver (Spring 2026)
 Prep for Class
 
 1. Check Canvas submissions
-:::
-
-
-
-## Practice for Today {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-1. `cut` and `clarity`
+Last week we began performing bivariate analyses with cross-tabs and descriptive statistics by group
 
-2. `cut` and `price`
-
-3. `carat` and `price` (convert `carat` to a categorical variable)
-
-4. `carat` and `price` (correlation)
-
-**Source:** `diamonds` dataset in tidyverse
-
-::: notes
-**Did everybody complete all four of these exercises?**
-
-<br>
-
-**SLIDE:** Let's talk takeaways! (try to move through these quickly)
+- **SLIDE**: Let's start by reviewing your assignment results for today
 
 :::
 
 
 
-## {background-image="Images/background-data_blue_v4.png"}
+## Miller, Saunders & Farhart (2016) {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.panel-tabset}
-
-### Prompt
+**H1. Belief in liberal CTs increases as trust in government falls**
 
 <br>
 
-<br>
-
-#### **What are your takeaways from analyzing the relationship between the cut and clarity of diamonds?**
-
-
-### Polished
-
-```{r}
-proportions(table(diamonds$clarity, diamonds$cut), margin = 1) |>
-  round(digits = 2) |>
-  kbl(align = "c") |>
-  kable_styling(bootstrap_options = c("condensed"), font_size = 35) |>
-  column_spec(2, color = "white", background = c("#C6DBEF", rep("lightgrey", 7))) |>
-  column_spec(3, color = "white", background = c(rep("lightgrey", 8))) |>
-  column_spec(4, color = "white", background = c(rep("lightgrey", 8))) |>
-  column_spec(5, color = "white", background = c("lightgrey", "#BDD7E7", rep("lightgrey", 6))) |>
-  column_spec(6, color = "white", background = c(rep("lightgrey", 2), "#BDD7E7", rep("#6BAED6", 2), rep("#3182BD", 2), "#08519C")) |>
-  row_spec(0, background = "white") |>
-  column_spec(1, background = "white")
+```{r, echo=FALSE}
+d |>
+  group_by(Trust_Govt) |>
+  summarize(
+    Mean = mean(Lib_Conspiracy_Index, na.rm = T),
+    #StdDev = sd(Lib_Conspiracy_Index, na.rm = T),
+    "1st quartile" = quantile(Lib_Conspiracy_Index, probs = .25, na.rm = T),
+    Median = median(Lib_Conspiracy_Index, na.rm = T),
+    "3rd quartile" = quantile(Lib_Conspiracy_Index, probs = .75, na.rm = T)
+  ) |>
+  filter(!is.na(Trust_Govt)) |>
+  kable(digits = 2) |>
+  kable_styling(font_size = 30)
 ```
 
-### Code
+<br>
 
 ```{r, echo=TRUE, eval=FALSE}
-## Analyzing the relationship between a categorical variable (clarity) 
-# and a second categorical variable (cut)
-
-proportions(table(diamonds$clarity, diamonds$cut))
-
-proportions(table(diamonds$clarity, diamonds$cut), margin = 1)
-
-proportions(table(diamonds$clarity, diamonds$cut), margin = 2)
+# Interval x Ordinal - Descriptive Stats by Group
+aggregate(data = d, Lib_Conspiracy_Index ~ Trust_Govt, summary)
 ```
-
-:::
 
 ::: notes
 
-**Takeaways from analyzing this relationship?**
+The results using the indicies are WAY easier to read than the cross-tabs for individual ordinal questions, right?
 
 <br>
 
-POLISHED: Assuming jewelers can control cut, but not clarity I think this version of the table makes the most sense (e.g. row margins)
+Ideally, the more variation in your outcome variable the more tools at your disposal
 
-- Here I've highlighted the highest proportion in each row AND increased the heat of the color as the proportions increase
-
+- Never willingly throw away variation!
 
 <br>
 
-My takeaway:
+**So, does the data support the first hypothesis?**
 
-- I assume the clarity is more out of the jewelers control
+:::
 
-- When jewelers have an internally flawless diamond (IF) or close to it, they clearly try to give it their highest quality cut (maximize price)
 
-- At the opposite end, when you see a "fair" cut diamond it is safe to assume it is not very clear at all.
 
-::: 
+## Miller, Saunders & Farhart (2016) {background-image="Images/background-data_blue_v4.png" .center}
+
+**H2. Belief in conservative CTs increases as trust in government falls**
+
+<br>
+
+```{r, echo=FALSE}
+d |>
+  group_by(Trust_Govt) |>
+  summarize(
+    Mean = mean(Cons_Conspiracy_Index, na.rm = T),
+    "1st quartile" = quantile(Cons_Conspiracy_Index, probs = .25, na.rm = T),
+    Median = median(Cons_Conspiracy_Index, na.rm = T),
+    "3rd quartile" = quantile(Cons_Conspiracy_Index, probs = .75, na.rm = T)
+  ) |>
+  filter(!is.na(Trust_Govt)) |>
+  kable(digits = 2) |>
+  kable_styling(font_size = 30)
+```
+
+<br>
+
+```{r, echo=TRUE, eval=FALSE}
+# Interval x Ordinal - Descriptive Stats by Group
+aggregate(data = d, Cons_Conspiracy_Index ~ Trust_Govt, summary)
+```
+
+::: notes
+
+**Does the data support the second hypothesis?**
+
+- (Not really... Very slight U-shape here...
+
+:::
+
+
+
+## Miller, Saunders & Farhart (2016) {background-image="Images/background-data_blue_v4.png" .center}
+
+**H3. Democrats are more likely to believe liberal coded conspiracies**
+
+<br>
+
+```{r, echo=FALSE}
+d |>
+  group_by(Party3) |>
+  summarize(
+    Mean = mean(Lib_Conspiracy_Index, na.rm = T),
+    "1st quartile" = quantile(Lib_Conspiracy_Index, probs = .25, na.rm = T),
+    Median = median(Lib_Conspiracy_Index, na.rm = T),
+    "3rd quartile" = quantile(Lib_Conspiracy_Index, probs = .75, na.rm = T)
+  ) |>
+  filter(!is.na(Party3)) |>
+  kable(digits = 2) |>
+  kable_styling(font_size = 30)
+```
+
+<br>
+
+```{r, echo=TRUE, eval=FALSE}
+# Interval x Ordinal - Descriptive Stats by Group
+aggregate(data = d, Lib_Conspiracy_Index ~ Party3, summary)
+```
+
+::: notes
+
+**Does the data support the third hypothesis?**
+
+:::
+
+
+
+## Miller, Saunders & Farhart (2016) {background-image="Images/background-data_blue_v4.png" .center}
+
+**H4. Republicans are more likely to believe conservative coded conspiracies**
+
+<br>
+
+```{r, echo=FALSE}
+d |>
+  group_by(Party3) |>
+  summarize(
+    Mean = mean(Cons_Conspiracy_Index, na.rm = T),
+    "1st quartile" = quantile(Cons_Conspiracy_Index, probs = .25, na.rm = T),
+    Median = median(Cons_Conspiracy_Index, na.rm = T),
+    "3rd quartile" = quantile(Cons_Conspiracy_Index, probs = .75, na.rm = T)
+  ) |>
+  filter(!is.na(Party3)) |>
+  kable(digits = 2) |>
+  kable_styling(font_size = 30)
+```
+
+<br>
+
+```{r, echo=TRUE, eval=FALSE}
+# Interval x Ordinal - Descriptive Stats by Group
+aggregate(data = d, Cons_Conspiracy_Index ~ Party3, summary)
+```
+
+::: notes
+
+**Does the data support the final hypothesis?**
+
+<br>
+
+**Ok, how are we doing with bivariate analysis using cross-tabs and descriptive stats by group?**
+
+<br>
+
+This week we extend our bivariate analyses visualizations
+
+- **SLIDE**: In ALMOST all case, visualizations are preferred to tables and group means
+
+:::
 
 
 
 ## {background-image="Images/background-data_blue_v4.png"}
 
-::: {.panel-tabset}
-
-### Prompt
-
-<br>
-
-<br>
-
-#### **What are your takeaways from analyzing the relationship between the cut and the price of diamonds?**
-
-
-### Results
-
-<br>
-
-<br>
-
-```{r}
-options(width = 120)
-```
-
-:::: {.r-fit-text}
-```{r, echo=TRUE}
-## Analyzing the relationship between a numeric variable (price) and a categorical
-# variable (cut)
-
-aggregate(data = diamonds, price ~ cut, FUN = summary)
-```
-::::
-
+::: {.r-fit-text}
+**Bivariate Analyses: Visualization**
 :::
+
+<br>
+
+Add the following to your notes:
+
+```{r, echo=TRUE}
+# Bivariate Visualizations
+
+# Categorical x Categorical
+# Bar Plots: Side-by-side, Stacked bars, Proportions
+
+# Interval x Categorical
+# Facet wraps, Box plots
+
+# Interval x Interval
+# Scatter plots
+
+# Load the tidyverse for practice data
+library(tidyverse)
+```
 
 ::: notes
 
-Your next job was to analyze the relationship between the price and cut quality of the diamonds.
-
-**What did you find?**
+Add to your notes!
 
 <br>
 
-**Why the big differences between mean and medians?**
+**SLIDE**: Like last week we'll learn the tools using built-in data
 
-<br>
-
-**What specifically can we infer based on the fact that the ranges overlap so much?**
-
-- (More factors to diamond price! Especially the size of the diamond!)
 :::
 
 
 
-## {background-image="Images/background-data_blue_v4.png"}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.panel-tabset}
-
-### Prompt
-
-<br>
-
-<br>
-
-#### **What are your takeaways from analyzing the relationship between the size and the price of diamonds?**
-
-
-### Option: Conversion
-
-<br>
-
-:::: {.r-fit-text}
-```{r, echo=TRUE}
-# Option 1: Transform a numeric variable (carat) into a categorical variable
-diamonds$carat2 <- cut(diamonds$carat, 
-                       breaks = c(0, .4, .7, 1.04, 5.5), 
-                       labels = c("1st Q", "2nd Q", "3rd Q", "4th Q"))
-
-# Describe the new relationship
-aggregate(data = diamonds, price ~ carat2, FUN = summary)
-```
-::::
-
-
-### Option: Correlation
-
-```{r, echo=TRUE}
-# Correlation
-cor(diamonds$carat, diamonds$price)
-```
+### **What explains why some diamonds are more expensive than others?**
 
 <br>
 
 ```{r, echo=TRUE}
-# Statistical Test
-cor.test(diamonds$carat, diamonds$price)
-```
+# Create an ordinal version of prices by quartile
+diamonds$price2 <- cut(diamonds$price,
+    breaks = c(0, 950, 2401, 5324, 19000),
+    labels = c("25th", "50th", "75th", "100th"))
 
-:::
-
-::: notes
-Your next job was to analyze the relationship between the price and weight of the diamonds.
-
-- **What did you find?**
-
-- (Pretty clear that diamond size is a BIG determinant of price!)
-
-- (A STRONG linear relationship implied by this VERY high correlation score)
-
-<br>
-
-This is another approach that would REALLY benefit from visualization!
-
-<br>
-
-**Any questions on the practice exercises or the tools/concepts from last class?**
-:::
-
-
-
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-1. Descriptive Statistics by Group
-    - Counts, Proportions, Means, Medians, Standard Deviations, Percentiles, Ranges, Interquartile Ranges (IQR) and Correlations
-
-2. Visualizations
-    - Bar plots (stacked, side-by-side, proportions), facet wraps, density plots, box plots and scatter plots
-
-::: notes
-
-On Monday, we worked on the Descriptive Statistics by Group.
-
-- Essentially you can calculate all of these using the table, summary and aggregate functions
-
-<br>
-
-Today we dive into bivariate visualizations as a tool for analyzing a relationship.
-
-- The descriptive statistics help us discuss our analyses in text, but the pictures enable the reader to MUCH better understand what the world looks like.
-:::
-
-
-
-## 3. Variable type determines the tool {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.align='center', out.width='90%'}
-knitr::include_graphics("Images/01_2-levels_measurement.png")
+# Check the new variable
+table(diamonds$price2)
 ```
 
 ::: notes
-Just as we did previously, we will be guided in learning our new tools by this rule of data science!
 
-- If you know the variable types you are analyzing, choosing the right tool is done for you!
+To use the diamonds data to learn our bivariate tools we'll need a version of the outcome, price, in ordinal form
+
+- Same code as last week
 
 <br>
 
-**SLIDE**: Let's start with a univariate analysis of a single categorical variable
+**Everybody got this?**
+
+<br>
+
+**SLIDE**: Let's start our bivariate analyses with two ordinal variables
+
 :::
+
+
+
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=8, fig.asp=.618, cache=FALSE}
+ggplot(diamonds, aes(x = cut)) +
+  geom_bar()
+```
+
+::: notes
+
+We'll begin our bivariate analysis with a univariate step
+
+- Our interest is in seeing if the types of diamond cuts explain variations in diamond prices
+
+- For this we want to begin by putting the predictor, or independent variable, on the x-axis
+
+<br>
+
+I will now step you through THREE different types of bar plot for visualizing this relationship
+
+- **SLIDE**: The first type of bivariate bar plot is what we call a side-by-side plot
+
+:::
+
+
 
 
 
 
 ## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=FALSE}
-ggplot(mpg, aes(x = class)) +
-  geom_bar()
-```
-:::
-
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=FALSE}
-ggplot(mpg, aes(x = drv)) +
-  geom_bar()
-```
-:::
-::::
-
-::: notes
-
-Ah yes, our old friend the bar plot!
-
-- On the left is the distribution of cars by "class"
-
-- On the right is the distribution of drive trains
-
-<br>
-
-Previously we used stacked bar plots to examine changes in the trend of a categorical variable across time
-
-- What I want to show you now is that a stacked bar plot works for visualizing the relationship between any two categorical variables
-
-<br>
-
-**SLIDE**: The first type of bivariate bar plot is what we call a side-by-side plot
-
-:::
-
-
-## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=FALSE}
+```{r, echo=TRUE, fig.align='center', fig.width=8, fig.asp=.618, cache=FALSE}
 # Side-by-side bar plots
-ggplot(mpg, aes(x = class, fill = drv)) +
+ggplot(diamonds, aes(x = cut, fill = price2)) +
   geom_bar(position = "dodge")
 ```
 
 ::: notes
 
-*Make sure they can interpret these results*
+To get to the side-by-side bar plot we add two things to the code
 
-- For the bivariate case geom_bar needs an x and a fill argument inside the aes function.
+- We "fill" in the outcome variable which defines the legend, and
+
+- We add a position argument to tell ggplot what kind of bar plot to make
 
 <br>
 
-By default geom_bar adjusts the width of the bars so each x label takes up the same space.
+In terms of representing a relationship remember:
 
-- I really don't love this default choice.
+- The independent variables goes on the x axis
 
-- **SLIDE**: Let's fix it.
+- The dependent variable is the legend
+
+- This way we compare the price distribution across each level of the independent variable
+
+<br>
+
+Let's now clean this visualization up
+
+- **SLIDE**: First needed fix: the order of values in the legend
+
 :::
 
 
 
 ## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.6, cache=FALSE}
+```{r, echo=TRUE, fig.align='center', fig.width=8, fig.asp=.618, `code-line-numbers`="1,4"}
 # Side-by-side bar plots
-ggplot(mpg, aes(x = class, fill = drv)) +
-  geom_bar(position = position_dodge(preserve = "single"))
+ggplot(diamonds, aes(x = cut, fill = price2)) +
+  geom_bar(position = "dodge") +
+  scale_fill_discrete(limits = c("100th", "75th", "50th", "25th"))
 ```
 
 ::: notes
 
-**What do we learn from this? What does the relationship appear to be between class and drive train?**
+Call me crazy, but number in a plot should go in descending order
+
+- Our brains are not wired to think higher is lower
 
 <br>
 
-Practice for me
+Moving forward I am using code highlighting to draw you to the only thing that changed from the last run of the code
 
-- I want you to get a sense of what happens when you change which variable goes on the x axis and which is the fill.
+- SO, the code is identical to the last plot you made but now we've added one more function
 
-- Swap the 'x' and 'fill' variables in this code
+- You will need to add the "+" on line 3 to let ggplot know there is a new function to add
 
 <br>
 
-**SLIDE**: Result
+**Everybody got this?**
+
+<br>
+
+**SLIDE**: One more polish: Clean up the axis labels
+
 :::
 
 
-## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
-<br>
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
 
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.width=5, fig.asp=.9, cache=FALSE}
-ggplot(mpg, aes(x = class, fill = drv)) +
-  geom_bar(position = position_dodge(preserve = "single")) +
-  labs(title = "x = class, fill = drv") +
-  scale_fill_brewer(type = "qual", palette = 2)
+```{r, echo=TRUE, fig.align='center', fig.width=8, fig.asp=.618, `code-line-numbers`="1,5"}
+# Side-by-side bar plots
+ggplot(diamonds, aes(x = cut, fill = price2)) +
+  geom_bar(position = "dodge") +
+  scale_fill_discrete(limits = c("100th", "75th", "50th", "25th")) +
+  labs(x = "Diamond Cuts", y = "Count", fill = "Prices")
 ```
-:::
-
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.retina=3, fig.align='center', fig.width=5, fig.asp=.9, cache=FALSE}
-ggplot(mpg, aes(x = drv, fill = class)) +
-  geom_bar(position = position_dodge(preserve = "single")) +
-  labs(title = "x = drv, fill = class") +
-  scale_fill_brewer(type = "qual", palette = 2)
-```
-:::
-::::
 
 ::: notes
-**What question does this plot on the right help us answer? How is it different from the other one?**
 
-- (What types of car class are most associated with each type of drive train)
+NOTE: I've added a labs function to show you how to change the label on the legend
+
+- "fill" is the label on the legend
 
 <br>
 
-Same data, same tool, very different questions answered!
+Ok, this is a side-by-side bar plot
+
+- **What do we learn from this?**
+
+- **Is the cut of a diamond a good predictor of the price of that diamond?**
+
+- (1. Staggering differences in the numbers in each category; Ideal cut appears to be the modal value!)
+
+- (2. Premium cut is tilted to the highest prices and ideal cut the opposite!)
 
 <br>
 
 **Questions on making a side-by-side bar plot two categorical variables?**
+
+<br>
+
+**SLIDE**: It can be easier to interpret your bivariate bar plots if you stack the bars
+
 :::
 
 
 
 ## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=FALSE}
+```{r, echo=TRUE, fig.align='center', fig.width=8, fig.asp=.618, `code-line-numbers`="1,3"}
 # Stacked bar plots
-ggplot(mpg, aes(x = class, fill = drv)) +
-  geom_bar(position = "stack")
+ggplot(diamonds, aes(x = cut, fill = price2)) +
+  geom_bar(position = "stack") +
+  scale_fill_discrete(limits = c("100th", "75th", "50th", "25th")) +
+  labs(x = "Diamond Cuts", y = "Count", fill = "Prices")
 ```
 
 ::: notes
-Here we see the second style of bivariate bar plot: A Stacked Bar Plot
+
+Once again, just copy the exact code chunk you just wrote to a new space
+
+- Re-label it as we are now making a stacked bar plot
+
+- Then modify this one line of code
+
+- All you have to do is change the position argument from "dodge" to "stack"
+
+- **Everybody got this?**
 
 <br>
 
-**Why is the stacked bar plot better for analyzing this relationship?**
+**SLIDE**: Before we interpret it, let's fix the bars to match the order of the legend
 
-- (These plots are meant to tell us how each class of car uses the various drive trains and stacked bars help you see the proportions specific to each car)
-
-<br>
-
-**Make sense?**
 :::
+
 
 
 ## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, cache=FALSE}
-# Proportionate bar plot
-ggplot(mpg, aes(x = class, fill = drv)) +
-  geom_bar(position = "fill")
+```{r, echo=TRUE, fig.align='center', fig.width=8, fig.asp=.618, `code-line-numbers`="1,3"}
+# Stacked bar plots
+ggplot(diamonds, aes(x = cut, fill = price2)) +
+  geom_bar(position = position_stack(reverse = TRUE)) +
+  scale_fill_discrete(limits = c("100th", "75th", "50th", "25th")) +
+  labs(x = "Diamond Cuts", y = "Count", fill = "Prices")
 ```
 
 ::: notes
+
+Ok, one more tweak in the position argument to reverse the order of the levels in each bar
+
+- **Everybody get this?**
+
+<br>
+
+This is a stacked bar plot
+
+- It simply takes the side-by-side bars and puts them on top of each other
+
+<br>
+
+**Does everybody see how this helps us compare the distributions of prices across each color category?**
+
+- This makes it SO clear that most diamonds are ideal cut
+
+- And the counts go up with quality!
+
+- e.g. diamonds are a rigged market!
+
+<br>
+
+**SLIDE**: Given the uneven bars, let's consider one final approach to making a bivariate bar plot
+
+:::
+
+
+
+## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, `code-line-numbers`="1,3,6"}
+# Proportionate bar plot
+ggplot(diamonds, aes(x = cut, fill = price2)) +
+  geom_bar(position = "fill") +
+  scale_fill_discrete(limits = c("100th", "75th", "50th", "25th")) +
+  labs(x = "Diamond Cuts", y = "Count", fill = "Prices") +
+  scale_y_continuous(labels = scales::percent)
+```
+
+::: notes
+
 Last style of common bar plot is a proportional stacked bar plot.
 
-- Super cool approach transforms each bar to a proportion of 100% per x variable level.
+- This only requires a change to the position argument, BUT
+
+- You will definitely want to change the axis labels to %s so let's say it takes two changes to the code
+
+<br>
+
+Proportional stacked bar plots are a very cool approach
+
+- They transform each stacked bar to a proportion of 100% per x variable level.
 
 - So, the y-axis marks off the proportion of the total represented by each level of the fill variable.
 
 <br>
 
-Clearly makes comparisons and summary easier, BUT...
-
-<br>
-
-**Why are these super dangerous?**
-
-- Look on the left plot, very FEW 2seaters and minivans so the proportions are much less stable
-
-- Only takes adding one of this class with a different drive train to dramatically change the %'s
-
-<br>
-
-**Any questions on our three versions of the bar plot?**
-
-- Remember, need to specify both an 'x' and a 'fill' variable PLUS a 'position' argument in the geom_bar
-
-<br>
-
-**SLIDE**: Let's tweak the y-axis labels to match the proportions
+**SLIDE**: Annoyingly, we need one more piece of code to fix the order within each bar
 
 :::
+
 
 
 
 ## Categorical x Categorical {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, cache=FALSE}
-ggplot(mpg, aes(x = class, fill = drv)) +
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.618, `code-line-numbers`="1,2,4"}
+# Reverse the order of the levels
+diamonds$price3 <- fct_rev(diamonds$price2)
+
+ggplot(diamonds, aes(x = cut, fill = price3)) +
   geom_bar(position = "fill") +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(x = "", y = "")
+  scale_fill_discrete(limits = c("100th", "75th", "50th", "25th")) +
+  labs(x = "Diamond Cuts", y = "Count", fill = "Prices") +
+  scale_y_continuous(labels = scales::percent)
 ```
 
 ::: notes
-The y-axis is converted to proportions so we can tweak the labels along the tick marks
+
+R already sees our ordinal price variable as having levels, but the bar plot needs us to reverse them
+
+- Hence, we create a NEW version of the price variable but with the levels backwards
+
+- **Did everybody get this?**
 
 <br>
 
-**Make sense?**
+I want to be clear, stacked bar plots are useful and VERY frequently used
+
+- BUT they are VERY dangerous
+
+<br>
+
+In our data, there are over 21k ideal cut diamonds and 1k fair cut diamonds
+
+- Small changes in the value of fair cut diamonds will have a HUGE impact on the %s
+
+- e.g. In a room of 10 people, losing 2 is a 20% decrease
+
+- WHEREAS small changes in the values of ideal cut diamonds will have basically no effect on the %s
+
+- **Does this danger make sense?**
+
+<br>
+
+Bottom line, be VERY careful with comparing proportions across groups
+
+- If the group sizes are equal, go nuts
+
+- If not, beware
+
+- THIS is why we use quartiles so often, they create equal sized groups for comparisons!
+
+<br>
+
+Ok, that covers bivariate visualizations for the relationship between two categorical variables
+
+- **Any questions on our three versions of the bar plot?**
+
+<br>
+
+**SLIDE**: Next up!
+
 :::
 
 
 
+## Interval x Categorical {background-image="Images/background-data_blue_v4.png" .center}
 
-## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center .smaller}
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=.85, fig.align='center', cache=FALSE}
-ggplot(mpg, aes(x = cty)) +
-  geom_histogram(bins = 15, color = "white") +
-  theme_bw()
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75}
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(bins = 20, color = "white")
 ```
-:::
-
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.retina=3, fig.width=5, fig.asp=.85, fig.align='center', cache=FALSE}
-ggplot(mpg, aes(x = drv)) +
-  geom_bar(fill = "darkblue") +
-  theme_bw()
-```
-:::
-::::
 
 ::: notes
+
 Next visualization challenge!
 
-<br>
+- We have an outcome variable that is interval (diamond prices), and
 
-We have a numeric variable, city fuel economy, and a categorical variable, car drive trains.
-
-- Last class we calculated summary statistics of the numeric variable for each level of the categorical variable using the aggregate function
-
-- Today I'll show you three options for visualizing this relationship
+- We have a predictor variable that is ordinal (diamond cuts)
 
 <br>
 
-**SLIDE**: Our first option is simply to make separate histograms for each drive train
+Last class we calculated summary statistics of the interval variable for each level of the categorical variable using the aggregate function
+
+- Today I'll show you TWO options for visualizing this relationship
+
+<br>
+
+**SLIDE**: Our first option is simply to make separate histograms for each type of diamond cut
+
 :::
 
 
 
-## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center .smaller}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-**1. Facet Wrap**
-
-:::: {.columns}
-::: {.column width="60%"}
-```{r, echo=TRUE, fig.align='center', cache=FALSE}
-ggplot(mpg, aes(x = cty)) +
-  geom_histogram(bins = 15) +
-  theme_bw() +
-  facet_wrap(~ drv)
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, `code-line-numbers`="1,4"}
+# Interval x Categorical Option 1. Facet Wrap
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(bins = 20, color = "white") +
+  facet_wrap(~ cut)
 ```
-:::
-
-::: {.column width="40%"}
-```{r, echo=TRUE, fig.align='center', fig.asp=1.2, cache=FALSE}
-ggplot(mpg, aes(x = cty)) +
-  geom_histogram(bins = 15) +
-  theme_bw() +
-  facet_wrap(~ drv, ncol = 1)
-```
-:::
-::::
 
 ::: notes
-Option 1: facet_wrap
+
+Ok, your first option is to use the facet_wrap function to extend ANY univariate visualization into the levels of the categorical variable
 
 - Use a tilde and then the categorical variable
 
-- This produces separate histograms for each level of the categorical variable
+- **Did everybody get this code to run?**
 
 <br>
 
-On the right I used the "ncol" argument to specify you want a single column of plots
+**SLIDE**: When using a facet wrap you should choose a layout that makes comparisons easier for the viewer
 
-- Much easier to compare across the distributions this way
-
-<br>
-
-**What does this suggest about the relationship between fuel economy and car drive trains?**
-
-<br>
-
-**SLIDE**: Let's try a new approach, overlapping density plots
 :::
 
 
 
-## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center}
 
-:::: {.columns}
-::: {.column width="35%"}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-<br>
-
-<br>
-
-```{r, echo=FALSE, fig.align='center', fig.asp=0.75}
-ggplot(mpg, aes(x = cty)) +
-  geom_histogram(bins = 15) +
-  theme_bw() +
-  labs(x = "City Fuel Economy (mpg)", 
-       y = "Count")
-```
-:::
-
-::: {.column width="65%"}
-```{r, echo=TRUE, fig.align='center', fig.asp=0.618}
-# 2. Density Plots
-ggplot(mpg, aes(x = cty)) +
-  geom_density() +
-  theme_bw()  +
-  labs(x = "City Fuel Economy (mpg)", 
-       y = "Density")
-```
-:::
-::::
-
-::: notes
-Think of a density plot like a smoothed histogram
-
-- Histograms count observations in bins
-
-- Density plots represent the relative probability of values
-
-- The higher the point on the curve, the more likely the observations near that value of the variable
-
-<br>
-
-**Does everybody see how these two plots represent the same idea in different ways?**
-
-<br>
-
-**SLIDE**: Density plots make it much easier to overlay distributions
-:::
-
-
-
-## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, echo=TRUE, fig.align='center', fig.asp=0.618}
-# 2. Density Plots
-ggplot(mpg, aes(x = cty, fill = drv)) +
-  geom_density(alpha = .4) +
-  theme_bw()
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=1.5, `code-line-numbers`="1,4"}
+# Interval x Categorical Option 1. Facet Wrap
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(bins = 20, color = "white") +
+  facet_wrap(~ cut, ncol = 1)
 ```
 
 ::: notes
-Much clearer if only two levels of the categorical variable OR if the distributions are separated widely
 
-- However, a useful tool to add to your toolbox.
+It is simply easier to compare distributions of this shape when they are stacked on top of each other
 
-<br>
-
-**Questions on this second option for visualizing the relationship between a numeric and a categorical variable?**
+- Other types of plot will lead you to different layouts
 
 <br>
 
-**SLIDE**: Facet wraps and density plots can help you see the whole distribution-ish, but this is a problem box plots were designed to solve!
+**SLIDE**: One more important tweak when using facet wraps
+
 :::
 
 
 
-## Categorical x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-:::: {.columns}
-::: {.column width="60%"}
-```{r, echo=TRUE, eval=FALSE}
-# 3. Box Plot
-ggplot(mpg, aes(x = cty, y = drv)) +
+```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=1.5, `code-line-numbers`="1,4"}
+# Interval x Categorical Option 1. Facet Wrap
+ggplot(diamonds, aes(x = price)) +
+  geom_histogram(bins = 20, color = "white") +
+  facet_wrap(~ cut, ncol = 1, scale = "free_y")
+```
+
+::: notes
+
+Facet wrap forces all of the plots to be on the same x and y axis range
+
+- Clearly, this makes the "fair" distribution impossible to view
+
+<br>
+
+scale = "free_y" tells the facet wrap to let the y-axis ranges vary in each level of the categorical variable
+
+- This way we can view the distribution of "Fair" on its own terms
+
+- This helps us compare the distributions across the levels
+
+<br>
+
+**Any questions on the facet wrap approach?**
+
+<br>
+
+**SLIDE**: Our second option for interval x categorical is to go back to our box plots!
+
+:::
+
+
+
+## Interval x Categorical {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=8, fig.asp=.618}
+ggplot(diamonds, aes(y = price)) +
   geom_boxplot()
 ```
 
-```{r, echo=FALSE, fig.align='center', fig.width=6, fig.asp=.9, cache=FALSE}
-# Box Plot
-ggplot(mpg, aes(x = cty, y = drv)) +
-  geom_boxplot() +
-  scale_y_discrete(limits = c("r", "f", "4"))
-```
-:::
+::: notes
 
-::: {.column width="40%"}
+Alright, here's our old friend the box plot
+
+- You mocked it for being "terrible" (thanks Sara)
+
+- NOTE: We are putting the outcome variable on the y axis
+
+    - Outcomes (DVs) ALWAYS go on the y-axis!
 
 <br>
 
-```{r, echo=FALSE, fig.align='center', fig.width=5, fig.asp=1.2, cache=FALSE}
-ggplot(mpg, aes(x = cty)) +
-  geom_histogram(bins = 15, `code-line-numbers`="1,3") +
-  theme_bw() +
-  facet_wrap(~ drv, ncol = 1)
-```
+**SLIDE**: Now let's unlock the power!
+
 :::
-::::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, fig.align='center', fig.width=8, fig.asp=.618, `code-line-numbers`="1,2"}
+# Interval x Categorical Variable: 2. Box plots
+ggplot(diamonds, aes(x = cut, y = price)) +
+  geom_boxplot()
+```
 
 ::: notes
-Here is where we see the real utility of box plots.
 
-- For comparing the distribution of numeric variables across the levels of a categorical variable.
+This code is basically the same as what we've done before but with more than one variable in the aes function
 
-<br>
-
-**Remind me, what are the main components of a box plot?**
-
-- (Median is the black line)
-- (IQR is the box)
-- (Whiskers extend 1.5x the IQR)
-- (Outliers identified)
+- **Everybody got this code working?**
 
 <br>
 
-**Does everybody see how both of these visualizations represent the same data?**
+Box plots are an excellent way to compare IQRs across the levels of a categorical variable
+
+- Rather than comparing group means which can be skewed by outliers
+
+- Or medians which tell us nothing about the spread of the data
+
+- The boxes give us a wide version of the "middle" we can compare!
 
 <br>
 
-**When would you prefer to use the boxes and when the histograms?**
+**What do we learn about diamond prices from comparing the middles of each type of cut?**
 
-- **What are the benefits of each approach?**
+- The diamond market is a scam!!!
+
+<br>
+
+**Ok, any questions on the facet wraps or box plots for examining an interval variable across levels of a categorical variable?**
+
+<br>
+
+**SLIDE**: Last bivariate relationship
+
 :::
 
 
 
-## Numeric x Numeric Variable {background-image="Images/background-data_blue_v4.png" .center}
+## Interval x Interval {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r, echo=TRUE, fig.align='center', fig.width=6, fig.asp=.75, cache=FALSE}
 # Scatter Plot
-ggplot(mpg, aes(x = displ, y = cty)) +
+ggplot(diamonds, aes(x = carat, y = price)) +
   geom_point()
 ```
 
 ::: notes
+
 Our final new tool: Scatter Plots
 
-**Any questions on how to read this plot?**
+- For visualizing the relationship between two interval variables
+
+- Your outcome variable ALWAYS goes on the y-axis, predictor ALWAYS on the x-axis
+
+<br>
+
+We read the plot from left to right
+
+- As you increase the size of the diamonds what happens to their prices?
 
 <br>
 
 **What do we learn from this?**
 
-<br>
+- (The only one of the four "C's" that actually matters)
 
-**What statistic could we calculate to help us explain the relationship?**
-- (Correlation!)
-
-<br>
-
-Go for it!
-:::
-
-
-## Bivariate Categorical Variables {background-image="Images/background-data_blue_v4.png" .center}
-
-**Numeric x Numeric Variable**
-
-:::: {.columns}
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.align='center', fig.width=5, fig.asp=1, cache=FALSE}
-# Scatter Plot
-ggplot(mpg, aes(x = displ, y = cty)) +
-  geom_point()
-```
-:::
-
-::: {.column width="50%"}
+- Color, cut, clarity all matter on the margins, but diamond prices are driven by their size!
 
 <br>
 
-```{r, echo=TRUE}
-cor.test(mpg$displ, mpg$cty)
-```
+**SLIDE**: Wrapping up our new code
+
 :::
-::::
 
 
-## Bivariate Analyses {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.r-fit-text}
+**Bivariate Analyses: Visualization**
+:::
 
 <br>
 
 **Categorical x Categorical**
 
-- Tables, Proportions (with margins) and Bar plots (stacked, side-by-side, proportions)
+- Bar Plots: Side-by-side, Stacked bars, Proportions
 
-**Numeric x Categorical**
+**Interval x Categorical**
 
-- Descriptive statistics by group (aggregate across summary, mean, median, percentiles, standard deviations), facet wraps, overlapping density plots and box plots
+- Facet wraps, Box plots
 
-**Numeric x Numeric**
+**Interval x Interval**
 
-- Descriptive statistics by group (cut numeric into categorical), correlations and scatter plots
+- Scatter plots
 
 ::: notes
+
 **Any questions on the tools we learned today?**
+
+<br>
+
+**SLIDE**: Practice for next class
+
 :::
+
 
 
 ## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-### Submit your "best" visualization of the relationship between:
-
 ::: {.r-fit-text}
 
-1. The style (`cut`) and clarity (`clarity`) of the diamonds
+**Practicing Bivariate Visualizations Using ANES Data**
 
-2. The style (`cut`) and the cost (`price`) of the diamonds
+- Analyzing political engagement across levels of:
 
-3. The size (`carat`) and the cost (`price`) of the diamonds
+    1. Social class
+    
+    2. Party identification
 
 :::
-
 ::: notes
-Your job is to come up with the best version of each that you can.
 
-- By "best" I mean completely polished!
+Everybody take a look at the details on Canvas
 
 <br>
 
 **Any questions on the assignment?**
+
+<br>
+
+Canvas ASSIGNMENT: Practicing Bivariate Visualizations Using ANES Data
+
+For this assignment we will practice the bivariate visualizations tools while analyzing the political engagement of respondents to the 2020 ANES survey.
+
+1. Does self reported social class (social.class) predict the likelihood a respondent donates money to political candidates (polact.givecand)?
+    - Visualize this relationship with a side-by-side, a stacked and a proportionate bar plot. THEN submit all three AND make an argument that ONE of these is the "best" one to describe the relationship between these two variables.
+
+2. Does party identification (partyid3) predict the likelihood a respondent is highly engaged in American politics (engagement_index)? (Int x Cat)
+    - Use the nine point political engagement index we built and explored last week as your outcome variable
+    - Visualize this relationship with a box plot and a histogram with a facet wrap. THEN submit both AND make an argument that ONE of these is the "best" one to describe the relationship between these two variables.
+
 :::
 

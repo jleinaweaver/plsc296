@@ -1,0 +1,1072 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(crosstable)
+
+load("../../DATA/2026-Spring/ANES/ANES2020_Data_Extract.RData")
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Controlled Comparison Analysis**
+
+- Categorical x Categorical Relationships
+
+- New R file: Making_Controlled_Comparisons.R
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Review Canvas submissions
+
+<br>
+
+**SLIDE**: Our work this week
+
+:::
+
+
+
+## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+"Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e. intervention) was the 'cause' of the effect (or outcome) that was observed" (Frey 2018). 
+
+<br>
+
+```{r, fig.align = 'center', fig.width = 8, fig.height=1.25}
+## Manual DAG
+d1 <- tibble(
+  x = c(-3, 3),
+  y = c(1, 1),
+  labels = c("Predictor", "Outcome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(-4, 4)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
+```
+
+::: notes
+
+Remember, the aim of any scientific discipline is to generate new knowledge that explains why things happen in the world
+
+- We refer to this as explanatory or causal analysis
+
+- In short, we want to demonstrate that changes in our chosen predictors CAUSE a change in the outcome variable
+
+<br>
+
+**SLIDE**: And since we deal so frequently with observational data...
+
+:::
+
+
+
+## Making Controlled Comparisons {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=8}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Treatment", "Confounder", "Outcome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.5, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+
+::: notes
+
+We develop **identification strategies** that identify the **confounders** in our observational relationships.
+
+- This is what the textbook refers to as a "controlled comparison" (p160)
+
+- The hope is that by controlling for all of the confounders we get to a place where the treatment and control groups are identical on average
+
+<br>
+
+**Any questions on our conceptual on making causal arguments?**
+
+<br>
+
+**SLIDE**: Last class
+
+:::
+
+
+
+## Making Controlled Comparisons {background-image="Images/background-data_blue_v4.png"}
+
+<br>
+
+**If categorical x categorical**
+
+- Step 1: Split your sample by levels of the control variable
+
+- Step 2: Generate cross-tabs for each subset
+
+- Step 3: Polish tables with crosstable()
+
+- Step 4: Visualize partial effects with geom_line()
+
+::: notes
+
+**Any questions on our tools or approach from last class from making controlled comparisons with two categorical variables?**
+
+<br>
+
+**SLIDE**: Let's review the practice assignment for today
+
+:::
+
+
+
+## For Today {background-image="Images/background-data_blue_v4.png" .center}
+
+Does the strength of Americans' religious convictions (religion.imp) predict their support for the death penalty (death.penalty) when controlling for party identification (partyid3)?
+
+1. Table 1: Polished cross-tab of the zero-order effects
+
+2. Table 2: Polished cross-tab of the partial effects
+
+3. Figure 1: Make a line plot of the partial effects calculated in Step 2 above (% "Favor Strongly" across the levels of religion.imp)
+
+::: notes
+
+**How did this go?**
+
+<br>
+
+Nice that you didn't have to create any variables, right?!
+
+<br>
+
+Canvas Assignment: Practice Making Controlled Comparisons (categorical x categorical)
+
+Use the ANES (2020) data to answer the following question: Does the strength of Americans' religious convictions (religion.imp) predict their support for the death penalty (death.penalty) when controlling for party identification (partyid3)?
+
+1. Table 1: Submit a polished cross-tab that evaluates if religious importance predicts support for the death penalty (zero-order effects)
+2. Table 2: Submit a polished cross-tab that evaluates if religious importance predicts support for the death penalty while controlling for party ID (partial effects)
+3. Figure 1: Visualize the results in Step 2 above with a line plot tracking those who "favor strongly" the death penalty across the levels of religious importance. You should have three lines, one for each party ID in the dataset. Be sure to categorize it as a spurious, additive or interactive effect. 
+
+:::
+
+
+
+## Zero-Order Effects: Cross-Tabs {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.panel-tabset}
+
+### Table
+
+```{r}
+# Does the strength of Americans' religious convictions predict their support for the death penalty?
+anes2 <- select(anes, death.penalty, religion.imp, partyid3)
+anes3 <- na.omit(anes2)
+
+anes3 <- set_label(anes3, c("Death Penalty", "Religiosity", "Party ID"))
+
+crosstable(anes3, cols = death.penalty, by = religion.imp, 
+           percent_pattern = "{p_col} ({n})",
+           percent_digits = 0) |> 
+  as_flextable(fontsizes = list(body=15, header=15))
+```
+
+### Code
+
+```{r, echo=TRUE, eval=FALSE}
+# Remove NAs
+anes2 <- select(anes, death.penalty, religion.imp, partyid3)
+anes3 <- na.omit(anes2)
+
+# Polish the labels
+get_label(anes3)
+anes3 <- set_label(anes3, c("Death Penalty", "Religiosity", "Party ID"))
+
+# Make the table
+crosstable(anes3, cols = death.penalty, by = religion.imp, 
+           percent_pattern = "{p_col} ({n})",
+           percent_digits = 0) |> 
+  as_flextable()
+```
+
+:::
+
+
+
+## Partial Effects: Cross-Tab {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.panel-tabset}
+
+### Table
+
+```{r}
+crosstable(anes3, cols = death.penalty, by = c(religion.imp, partyid3),
+           percent_pattern = "{p_col} ({n})",
+           percent_digits = 0) |> 
+  as_flextable(fontsizes = list(body=12, header=12))
+```
+
+### Code
+
+<br>
+
+```{r, echo=TRUE, eval=FALSE}
+crosstable(anes3, cols = death.penalty, by = c(religion.imp, partyid3),
+           percent_pattern = "{p_col} ({n})",
+           percent_digits = 0) |> 
+  as_flextable()
+```
+
+:::
+
+::: notes
+
+**Did everybody successfully make the cross-tab of partial effects?**
+
+<br>
+
+**SLIDE**: Let's save the analysis for the line plot
+
+:::
+
+
+
+
+## Partial Effects: Visualization {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.align='center', fig.asp=.65, fig.width=8}
+# Reverse scale of religiosity!
+new1 <- tribble(
+  ~party, ~x1, ~y1,
+  "Democrat", 5, .3,
+  "Democrat", 4, .28,
+  "Democrat", 3, .31,
+  "Democrat", 2, .2,
+  "Democrat", 1, .17,
+  "Independent", 5, .39,
+  "Independent", 4, .38,
+  "Independent", 3, .39,
+  "Independent", 2, .33,
+  "Independent", 1, .32,
+  "Republican", 5, .59,
+  "Republican", 4, .62,
+  "Republican", 3, .67,
+  "Republican", 2, .64,
+  "Republican", 1, .65,
+)
+
+ggplot(new1, aes(x = x1, y = y1, color = party)) +
+  geom_line(linewidth = 1.3) +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "Religion is Important", y = "Strongly Favor the Death Penalty", color = "") +
+  scale_x_continuous(breaks = 1:5, 
+  labels = c("Not at all", "A little", "Moderately", "Very", "Extremely")) +
+  scale_color_manual(values = c("darkblue", "grey", "darkred")) +
+  theme(legend.position = "top")
+```
+
+::: notes
+
+Note that I reversed the scale of the x-axis
+
+- We read left to right and it is ALWAYS good to match the logic of a concept to that direction
+
+- If the label is "religion is important" than the right side should be for higher values than the left
+
+- **Make sense?**
+
+<br>
+
+**Ok, interpret this for me:  Does the strength of Americans' religious convictions (religion.imp) predict their support for the death penalty (death.penalty) when controlling for party identification (partyid3)?**
+
+<br>
+
+**Is the partial effect spurious, additive or interactive?**
+
+- (Definitely interactive!)
+
+- Independents and Democrats increase their strong approval of the death penalty as religiosity increases
+
+<br>
+
+**SLIDE**: The code
+
+:::
+
+
+
+
+## Visualization Code {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.panel-tabset}
+
+### New Data
+
+```{r, echo=TRUE, eval=FALSE}
+new1 <- tribble(
+  ~party, ~x1, ~y1,
+  "Democrat", 5, .3,
+  "Democrat", 4, .28,
+  "Democrat", 3, .31,
+  "Democrat", 2, .2,
+  "Democrat", 1, .17,
+  "Independent", 5, .39,
+  "Independent", 4, .38,
+  "Independent", 3, .39,
+  "Independent", 2, .33,
+  "Independent", 1, .32,
+  "Republican", 5, .59,
+  "Republican", 4, .62,
+  "Republican", 3, .67,
+  "Republican", 2, .64,
+  "Republican", 1, .65)
+```
+
+### Viz
+```{r, echo=TRUE, eval=FALSE}
+ggplot(new1, aes(x = x1, y = y1, color = party)) +
+  geom_line(linewidth = 1.3) +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "Religion is Important", 
+       y = "Strongly Favor the Death Penalty", color = "") +
+  scale_x_continuous(breaks = 1:5, 
+  labels = c("Not at all", "A little", "Moderately", "Very", "Extremely")) +
+  scale_color_manual(values = c("darkblue", "grey", "darkred")) +
+  theme(legend.position = "top")
+```
+:::
+
+::: notes
+
+**SLIDE**: Wrapping up this case
+
+:::
+
+
+
+
+## Making Controlled Comparisons {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+<br>
+
+**If categorical x categorical**
+
+- Step 1: Split your sample by levels of the control variable
+- Step 2: Generate cross-tabs for each subset
+- Step 3: Polish tables with crosstable()
+- Step 4: Visualize partial effects with geom_line()
+
+::: {.fragment}
+
+**If interval x categorical**
+
+- Step 1: Convert control variable to categorical variable (if needed)
+- Step 2: Calculate group statistics with aggregate()
+- Step 3: Polish table with pivot_wider(), kable() & kable_styling()
+- Step 4: Make a line plot
+
+:::
+
+::: notes
+
+**Ok, how are we doing with the approach of making controlled comparisons between categorical variables?**
+
+<br>
+
+Our work for today is to practice and extend your skills in making controlled comparisons
+
+- **REVEAL**: By extend, I mean to the case where the outcome is an interval variable 
+
+- *Read slide*
+
+<br>
+
+**SLIDE**: Let's learn the approach using built-in data
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Making Controlled Comparisons: Interval x Categorical**
+
+<br>
+
+**Are car manufacturer's producing more fuel efficient cars over time (as required by increasing CAFE standards)?**
+
+- Outcome: `cty`
+
+- Predictor: `year` (treat as ordinal)
+
+- Control: `drv`
+
+::: notes
+
+Let's go back to our analysis of the mpg car data, but now let's focus on an outcome measured as an interval
+
+- *Read question*
+
+- And specifically, is any estimated change in efficiency across time unevenly distributed across different types of drive train?
+
+<br>
+
+Let's first check the zero-order effects
+
+- Everybody calculate the mean and median change in city fuel economy across the two years in the dataset
+
+- **SLIDE**: Results
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Are car manufacturer's producing more fuel efficient cars over time (as required by increasing CAFE standards)?**
+
+<br>
+
+```{r, echo=TRUE, eval=TRUE}
+aggregate(mpg, cty ~ year, mean)
+```
+
+<br>
+
+```{r, echo=TRUE, eval=TRUE}
+aggregate(mpg, cty ~ year, median)
+```
+
+::: notes
+
+**Everybody get this?**
+
+<br>
+
+**So, how much change do we see in the efficiency of the car fleets across time?**
+
+- (Basically not at all, or slightly negative)
+
+- Be careful drawing inferences from this data as this is nowhere near a representative sample of cars for sale in these years
+
+<br>
+
+Now let's re-examine the question using partial effects
+
+- Maybe the overall fuel efficiency data is skewed across the different types of drive train
+
+<br>
+
+**SLIDE**: Step 1
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Making Controlled Comparisons: Interval x Categorical**
+
+<br>
+
+::: {.r-fit-text}
+**Step 1: Convert control variable to categorical variable (if needed)**
+:::
+
+<br>
+
+```{r, echo=TRUE}
+# ID the levels
+table(mpg$drv)
+```
+
+::: notes
+
+In this case, the drive train variable is already categorical
+
+- **Remind me, is this a nominal or an ordinal variable?**
+
+<br>
+
+**SLIDE**: Step 2
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Making Controlled Comparisons: Interval x Categorical**
+
+<br>
+
+**Step 2: Calculate group statistics with aggregate()**
+
+```{r, echo=TRUE}
+aggregate(mpg, cty ~ year + drv, summary)
+```
+
+::: notes
+
+The aggregate function makes adding control variables SUPER easy
+
+- Add a categorical variable (dummy, nominal or ordinal) to the right side of the formula (after the tilde) and aggregate makes the data subsets for you!
+
+- **Does this make sense?**
+
+<br>
+
+**Don't do it, but tell me, how would the resulting output change if we put in `class` instead of `drv`?**
+
+- (NOW try it!)
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+**Making Controlled Comparisons: Interval x Categorical**
+
+**Step 2: Calculate group statistics with aggregate()**
+
+```{r}
+options(width = 100)
+```
+
+```{r, echo=TRUE}
+aggregate(mpg, cty ~ year + drv, summary)
+
+aggregate(mpg, cty ~ year + class, summary)
+```
+
+::: notes
+
+So, adding in a control variable to aggregate asks R to split the sample by every possible combination of your chosen predictor and the control variable
+
+- THEN is runs the statistics for that subsample
+
+- e.g. focus on 2seaters in 1999 and run summary...
+
+<br>
+
+**Everybody with me?**
+
+<br>
+
+**SLIDE**: Polished table time
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+**Making Controlled Comparisons: Interval x Categorical**
+
+```{r, echo=TRUE, eval=FALSE}
+# Install the package ONE TIME
+install.packages("kableExtra")
+
+# Load the package when you want to use it
+library(kableExtra)
+```
+
+kable(x, digits, col.names)
+
+- `x` is the data frame
+
+- `digits` is the number of places after the decimal
+
+- `col.names` is the list of column names you want
+
+kable_styling()
+
+- Polishes a kable object for printing
+
+pivot_wider(names_from, values_from)
+
+- Converts rows into columns in your data
+
+::: notes
+
+Everybody install the kableExtra package
+
+<br>
+
+This gives us two useful functions for our work making controlled comparisons
+
+- For crosstabs we used crosstable and as_flextable
+
+- The crosstable function actually performs the calculations to make a cross tab for us
+
+<br>
+
+We use the kableExtra package when we just want to make our current data look better
+
+- kable() formats your data as a table, and
+
+- kable_styling() outputs it in a more polished form
+
+- no extra calculations involved
+
+<br>
+
+We will also be using one other new function to make all of this work
+
+- The pivot function will make more sense when you see it in action
+
+<br>
+
+**SLIDE**: Let's put this to work!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+**Step 3: Present a polished table of the partial effects**
+
+::: {.panel-tabset}
+
+### 1
+
+```{r, echo=TRUE}
+# Regular aggregate output 
+aggregate(mpg, cty ~ year + drv, mean)
+```
+
+### 2
+
+```{r, echo=TRUE}
+# Regular aggregate output 
+aggregate(mpg, cty ~ year + drv, mean)
+
+# Pivot drv rows to columns
+aggregate(mpg, cty ~ year + drv, mean) |>
+  pivot_wider(names_from = drv, values_from = cty)
+```
+
+### 3
+
+```{r, echo=TRUE}
+# Convert into table format with kable() and kable_styling()
+aggregate(mpg, cty ~ year + drv, mean) |>
+  pivot_wider(names_from = drv, values_from = cty) |>
+  kable() |>
+  kable_styling()
+```
+
+### 4
+
+```{r, echo=TRUE}
+# Reduce the number of digits after the decimal
+aggregate(mpg, cty ~ year + drv, mean) |>
+  pivot_wider(names_from = drv, values_from = cty) |>
+  kable(digits = 1) |>
+  kable_styling()
+```
+
+### 5
+
+```{r, echo=TRUE}
+# Clean up the column names
+aggregate(mpg, cty ~ year + drv, mean) |>
+  pivot_wider(names_from = drv, values_from = cty) |>
+  kable(digits = 1, 
+        col.names = c("Year", "4 Wheel", "Front Wheel", "Rear Wheel")) |>
+  kable_styling()
+```
+
+:::
+
+::: notes
+
+**1**: We'll start back at the original aggregate function output
+
+- This shows our data in a long form
+
+- e.g. Each combination of predictor and control gets a separate row
+
+- This form makes the line plot easy but a polished table hard
+
+<br>
+
+**2**: The pivot_wider function transforms these separate rows into columns
+
+- "names_from" asks what the new columns should be called and takes the new names directly from our control variable
+
+- "values_from" asks what numbers to put under each new column
+
+- SO, this function creates three columns from the drv variable and puts the value of city fuel efficiency under each one
+
+- **Does this transformation make sense?**
+
+<br>
+
+**3 - 5**: Now we just pipe everything into kable and kable_styling then tweak the output until we're happy
+
+<br>
+
+SO, when you need R to make a polished cross-tab, we use the crosstable package
+
+- That counts the cells and converts to proportions
+
+<br>
+
+WHEN you already have the calculations done we use kable() to make the completed calculations look polished
+
+<br>
+
+**Any questions on this code?**
+
+<br>
+
+**SLIDE**: Final step is now super easy
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Making Controlled Comparisons: Interval x Categorical**
+
+<br>
+
+**Step 4: Make a line plot of the partial effects**
+
+```{r, echo=TRUE}
+aggregate(mpg, cty ~ year + drv, mean)
+```
+
+::: notes
+
+In order to make a partial effects line plot we need three variables in our dataset
+
+1. Coordinates on the x-axis
+
+2. Coordinates on the y-axis and
+
+3. The levels of the control variable
+
+<br>
+
+**Which of those three variables do we already have?**
+
+- **Think about the dataset you made from scratch for your Canvas assignment today, which part is missing?**
+
+- The y coordinates are the cty column
+
+- The levels of the control variable are the drv column
+
+- BUT remember we are treating the year variable as a category and NOT a number! We're missing the x!
+
+<br>
+
+**SLIDE**: So, we need to add an x coordinate variable
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Making Controlled Comparisons: Interval x Categorical**
+
+<br>
+
+**Step 4: Make a line plot of the partial effects**
+
+```{r, echo=TRUE}
+# Save group means
+tab1 <- aggregate(mpg, cty ~ year + drv, mean)
+
+# Add a variable for the x coordinates
+tab1$x1 <- c(1, 2, 1, 2, 1, 2)
+
+# View the new data
+tab1
+```
+
+::: notes
+
+Now, everybody use this new data object and make us a line plot!
+
+- Go!
+
+<br>
+
+**SLIDE**: Results
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+**Making Controlled Comparisons: Interval x Categorical**
+
+::: {.panel-tabset}
+
+### Partial Effects Viz
+
+```{r, echo=FALSE, eval=TRUE, fig.align='center', fig.asp=.618, fig.width=6, out.width="85%"}
+# Step 4: Make a line plot of the partial effects
+ggplot(tab1, aes(x = x1, y = cty, color = drv)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "", y = "City Fuel Efficiency", color = "") +
+  scale_x_continuous(breaks = c(1, 2), labels = c("1999", "2008"),
+                     limits = c(0.5, 2.5)) +
+  scale_y_continuous(limits = c(0, 25)) +
+  theme(legend.position = "top")
+```
+
+### Code
+```{r, echo=TRUE, eval=FALSE, fig.align='center', fig.asp=.85, fig.width=5}
+# Step 4: Make a line plot of the partial effects
+ggplot(tab1, aes(x = x1, y = cty, color = drv)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = "", y = "City Fuel Efficiency", color = "") +
+  scale_x_continuous(breaks = c(1, 2), labels = c("1999", "2008"),
+                     limits = c(0.5, 2.5)) +
+  scale_y_continuous(limits = c(0, 25)) +
+  theme(legend.position = "top")
+```
+
+:::
+
+::: notes
+
+**Any questions on the code here?**
+
+<br>
+
+**So, is this a spurious, additive or interactive relationship? Why?**
+
+<br>
+
+**SLIDE**: The process
+
+:::
+
+
+
+## Making Controlled Comparisons {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+<br>
+
+**If categorical x categorical**
+
+- Step 1: Split your sample by levels of the control variable
+- Step 2: Generate cross-tabs for each subset
+- Step 3: Polish tables with crosstable()
+- Step 4: Visualize partial effects with geom_line()
+
+**If interval x categorical**
+
+- Step 1: Convert control variable to categorical variable (if needed)
+- Step 2: Calculate group statistics with aggregate()
+- Step 3: Polish table with pivot_wider(), kable() & kable_styling()
+- Step 4: Make a line plot
+
+::: notes
+
+**Alright, how are we doing with this new code and approach?**
+
+- **Does everybody see how closely this mirrors the approach focused on two categorical variables?**
+
+<br>
+
+**SLIDE**: Let's practice!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+Do higher levels of frustration with the current state of the economy (econ.current) predict presidential approval (ft.trump.pre) when controlling for party ID (partyid3)?
+
+1. Table 1: Group means of presidential approval by each respondents' view of the economy (zero-order)
+
+2. Table 2: Redo Table 1 BUT control for party ID (partial effects)
+
+3. Figure 1: Make a line plot of the partial effects calculated in Step 2 above
+
+::: notes
+
+**Questions on our practice task?**
+
+- Go!
+
+<br>
+
+**SLIDE**: Results
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.panel-tabset}
+
+### Table 1
+
+```{r, echo=TRUE}
+aggregate(anes, ft.trump.pre ~ econ.current, mean) |>
+  kable(digits = 1, 
+        col.names = c("View of the Economy", "Trump Approval")) |>
+  kable_styling()
+```
+
+### Table 2
+
+```{r, echo=TRUE, eval=FALSE}
+aggregate(anes, ft.trump.pre ~ econ.current + partyid3, mean) |>
+  pivot_wider(names_from = partyid3, values_from = ft.trump.pre) |>
+  kable(digits = 1, 
+    col.names = c("View of the Economy", "Democrats", 
+                "Independents", "Republicans")) |>
+  kable_styling()
+```
+
+```{r, echo=FALSE}
+aggregate(anes, ft.trump.pre ~ econ.current + partyid3, mean) |>
+ pivot_wider(names_from = partyid3, values_from = ft.trump.pre) |>
+ kable(digits = 1, 
+  col.names = c("View of the Economy", "Democrats", "Independents", "Republicans")) |>
+ kable_styling(font_size = 30)
+```
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.panel-tabset}
+
+### Figure 1 
+
+```{r, fig.align='center', fig.asp=.618, fig.width=8, out.width="85%"}
+tab1 <- aggregate(anes, ft.trump.pre ~ econ.current + partyid3, mean)
+
+tab1$x1 <- c(1:5, 1:5, 1:5)
+
+ggplot(tab1, aes(x = x1, y = ft.trump.pre, color = partyid3)) +
+  geom_line(linewidth = 1.3) +
+  theme_bw() +
+  labs(x = "Views on the Economy", y = "Trump Approval Thermometer", color = "") +
+  scale_y_continuous(limits = c(0, 100)) +
+  theme(legend.position = "top") +
+  scale_color_manual(values = c("darkblue", "darkgrey", "darkred")) +
+  scale_x_continuous(breaks = 1:5, labels = c("Very good", "Good", "Neither", "Bad", "Very bad"))
+
+```
+
+### Code
+
+```{r, echo=TRUE, eval=FALSE}
+tab1 <- aggregate(anes, ft.trump.pre ~ econ.current + partyid3, mean)
+
+tab1$x1 <- c(1:5, 1:5, 1:5)
+
+ggplot(tab1, aes(x = x1, y = ft.trump.pre, color = partyid3)) +
+  geom_line(linewidth = 1.3) +
+  theme_bw() +
+  labs(x = "Views on the Economy", 
+       y = "Trump Approval Thermometer", color = "") +
+  scale_y_continuous(limits = c(0, 100)) +
+  theme(legend.position = "top") +
+  scale_color_manual(values = c("darkblue", "darkgrey", "darkred")) +
+  scale_x_continuous(breaks = 1:5, 
+    labels = c("Very good", "Good", "Neither", "Bad", "Very bad"))
+```
+
+:::
+
+
+
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Pollock and Edwards Chapter 8
+
+- Foundations of Statistical Inference
+
+- Submit to Canvas your answers to selected exercises
+
+
+::: notes
+
+I want to STRONGLY emphasize that you read chapter 8 CAREFULLY
+
+- This chapter is going to lay the conceptual foundations for EVERYTHING we will do in the final third of the class
+
+- You don't have to memorize the formulas, but you do need to understand what they represent AND how to use them
+
+- Our class on Monday cannot be the first time you are hearing these ideas and applying these formulas
+
+<br>
+
+I think that these selected exercises do a nice job letting you practice some of the formulas
+
+- BUT, the concepts are crucial
+
+- **Questions on the assignment?**
+
+<br>
+
+Canvas Assignment: Chapter 8 Assessment (part 1)
+
+1. Submit your answers to Exercise 1 on p220
+2. Submit your answers to Exercise 2 on p220
+3. Submit your answers to Exercise 3 on p220
+4. Was there anything specific in the chapter that didn't make sense or that you'd like to make sure we discuss in class?
+
+:::
+
+

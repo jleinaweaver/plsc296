@@ -139,13 +139,15 @@ Your first task was to build and analyze an index of Americans engagement with t
 
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
-::: {.r-fit-text}
+::: {.panel-tabset}
+
+### Results
+
 **Americans' Political Engagement Index (ANES)**
-:::
 
-```{r, fig.align='center', fig.asp=.618}
+```{r, fig.align='center', fig.asp=.618, out.width="85%"}
 anes$engagement_index <- 
   if_else(anes$polact.givecand == "1. Yes", 1, 0) +
   if_else(anes$polact.giveparty == "1. Yes", 1, 0) +
@@ -165,9 +167,32 @@ ggplot(anes, aes(x = engagement_index)) +
   labs(x = "American's Political Engagement Index", y = "Count")
 
 summary(anes$engagement_index)
-  
 ```
 
+### Code
+```{r, echo=TRUE, eval=FALSE}
+anes$engagement_index <- 
+  if_else(anes$polact.givecand == "1. Yes", 1, 0) +
+  if_else(anes$polact.giveparty == "1. Yes", 1, 0) +
+  if_else(anes$polact.giveoth == "1. Yes", 1, 0) +
+  if_else(anes$polact.postsign == "1. Yes", 1, 0) +
+  if_else(anes$polact.meetings == "1. Yes", 1, 0) +
+  if_else(anes$polact.onlinemeet == "1. Yes", 1, 0) +
+  if_else(anes$polact.othwork == "1. Yes", 1, 0) +
+  if_else(anes$polact.talkvote == "1. Yes", 1, 0) +
+  if_else(anes$polact.talkpol == "1. Yes", 1, 0)
+
+# Simple bar plot
+ggplot(anes, aes(x = engagement_index)) +
+  geom_bar() +
+  theme_bw() +
+  scale_x_continuous(breaks = 0:9) +
+  labs(x = "American's Political Engagement Index", y = "Count")
+
+summary(anes$engagement_index)
+```
+
+:::
 ::: notes
 
 **What did you learn from analyzing this index?**
@@ -296,14 +321,15 @@ Your second task was to build and analyze an index of Americans' racial attitude
 
 
 
-
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-**Americans' Racial Bias (ANES)**
-:::
+::: {.panel-tabset}
 
-```{r, fig.align='center', fig.asp=.618}
+### Results
+
+**Americans' Racial Bias (ANES)**
+
+```{r, fig.align='center', fig.asp=.618, out.width="80%"}
 anes$racial_index <- as.numeric(anes$oth.race.concern) +
   as.numeric(anes$oth.race.feel) +
   as.numeric(anes$oth.race.persp) +
@@ -317,8 +343,26 @@ ggplot(anes, aes(x = racial_index)) +
   labs(x = "American's Racial Bias Index", y = "Count")
 
 summary(anes$racial_index)
-  
 ```
+
+### Code
+
+```{r, echo=TRUE, eval=FALSE}
+anes$racial_index <- as.numeric(anes$oth.race.concern) +
+  as.numeric(anes$oth.race.feel) +
+  as.numeric(anes$oth.race.persp) +
+  as.numeric(anes$oth.race.protect)
+
+# Simple bar plot
+ggplot(anes, aes(x = racial_index)) +
+  geom_bar() +
+  theme_bw() +
+  scale_x_continuous(breaks = 4:20) +
+  labs(x = "American's Racial Bias Index", y = "Count")
+
+summary(anes$racial_index)
+```
+:::
 
 ::: notes
 
@@ -336,7 +380,7 @@ To help me understand what is being visualized here I've renamed the index
 
 **What did you learn from analyzing this index?**
 
-- Low score is "good", high score is "bad"
+- Higher scores correspond to more negative attitudes to other races
 
 <br>
 
@@ -518,21 +562,33 @@ d |>
 
 Ok, we know where this is going!
 
-- Pairs / Small groups: Build an OVERALL index of CT belief that includes all eight questions, summarize the results and report back your findings
+- Pairs / Small groups: I want you to build us an OVERALL index of CT belief that includes all eight questions
 
-- Go!
+- **Which approach you practiced for today is the right method for combining these variables?**
+
+    - e.g. Is this an if_else situation like the ANES political engagement index OR an as.numeric situation like the racial attitudes index?**
+
+- (as.numeric!)
+
+<br>
+
+Ok, build that index and analyze the results!
+
+- (**SLIDE**)
 
 :::
 
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png"}
 
-::: {.r-fit-text}
+::: {.panel-tabset}
+
+### Results
+
 **Americans' Beliefs in Conspiracy Theories**
-:::
 
-```{r, fig.align='center', fig.asp=.75, fig.width=7}
+```{r, fig.align='center', fig.asp=.618, fig.width=7, out.width="70%"}
 d$ct_index <- as.numeric(d$CT_Obama) + as.numeric(d$CT_DeathPanels) + as.numeric(d$CT_Govt_911) + as.numeric(d$CT_Katrina_Levees) + as.numeric(d$CT_Climate_Hoax) + as.numeric(d$CT_Bush_WMDs) + as.numeric(d$CT_Hussein_911) + as.numeric(d$CT_2004_election) 
 
 summary(d$ct_index)
@@ -543,6 +599,28 @@ ggplot(d, aes(x = ct_index)) +
   scale_x_continuous(breaks = 8:32) +
   labs(x = "Conspiracy Theory Index (8-32)", y = "Count")
 ```
+
+### Code
+
+```{r, echo=TRUE, eval=FALSE}
+d$ct_index <- as.numeric(d$CT_Obama) + 
+  as.numeric(d$CT_DeathPanels) + 
+  as.numeric(d$CT_Govt_911) + 
+  as.numeric(d$CT_Katrina_Levees) + 
+  as.numeric(d$CT_Climate_Hoax) + 
+  as.numeric(d$CT_Bush_WMDs) + 
+  as.numeric(d$CT_Hussein_911) + 
+  as.numeric(d$CT_2004_election) 
+
+summary(d$ct_index)
+
+ggplot(d, aes(x = ct_index)) +
+  geom_bar() +
+  theme_bw() +
+  scale_x_continuous(breaks = 8:32) +
+  labs(x = "Conspiracy Theory Index (8-32)", y = "Count")
+```
+:::
 
 ::: notes
 
@@ -582,7 +660,7 @@ Everybody make a NEW index that is the current one minus 8 and redo the summary 
 **Americans' Beliefs in Conspiracy Theories**
 :::
 
-```{r, fig.align='center', fig.asp=.75, fig.width=7}
+```{r, fig.align='center', fig.asp=.618, fig.width=7, out.width="75%"}
 d$ct_index2 <- (d$ct_index - 8)
 
 summary(d$ct_index2)
@@ -592,6 +670,10 @@ ggplot(d, aes(x = ct_index2)) +
   theme_bw() +
   scale_x_continuous(breaks = 0:24) +
   labs(x = "Conspiracy Theory Index (0-24)", y = "Count")
+```
+
+```{r, echo=TRUE}
+d$ct_index2 <- d$ct_index - 8
 ```
 
 ::: notes
@@ -626,7 +708,7 @@ Everybody make a NEW index that is the current one minus 8, divide by 24 and red
 **Americans' Beliefs in Conspiracy Theories**
 :::
 
-```{r, fig.align='center', fig.asp=.75, fig.width=7}
+```{r, fig.align='center', fig.asp=.618, fig.width=7, out.width="75%"}
 d$ct_index3 <- (d$ct_index - 8) / 24
 
 summary(d$ct_index3)
@@ -638,6 +720,10 @@ ggplot(d, aes(x = ct_index3)) +
   labs(x = "Conspiracy Theory Index", y = "Count")
 ```
 
+```{r, echo=TRUE}
+d$ct_index3 <- (d$ct_index - 8) / 24
+```
+
 ::: notes
 
 **Better?**
@@ -646,7 +732,13 @@ ggplot(d, aes(x = ct_index3)) +
 
 <br>
 
-**SLIDE**: Let's now shift our focus to the political knowledge questions
+We'll work on analyzing this index over the next few weeks!
+
+- We'll want to see what predictors explain greater belief in conspiracy theories
+
+<br>
+
+**SLIDE**: Last job for today, let's shift our focus to the political knowledge questions
 
 :::
 
@@ -702,62 +794,6 @@ Ok, let's once again review the questions separately with univariate analyses
 
 - **My question is, which of the knowledge questions in the dataset were easiest and which the hardest?**
 
-- **How can we accomplish this in R? Ideas?**
-
-<br>
-
-My advice:
-
-- You'll need to convert each of these variables into a numeric dummy with a "1" if the respondent gave the correct answer and a "0" otherwise
-
-- Save these new variables and the index will be much simpler to make later!
-
-<br>
-
-(**SLIDE**)
-
-:::
-
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.align='center', fig.asp=.75, fig.width=7}
-# Recode nominal variables into dummies
-d$Majority_House2 <- if_else(d$Majority_House == "Republican Party", 1, 0)
-d$More_Conservative2 <- if_else(d$More_Conservative == "Republican Party", 1, 0)
-d$JRoberts_Job2 <- if_else(d$JRoberts_Job == "Chief Justice of the Supreme Court", 1, 0)
-d$Pres_Russia2 <- if_else(d$Pres_Russia == "Vladimir Putin", 1, 0)
-d$Speaker2 <- if_else(d$Speaker == "John Boehner", 1, 0)
-d$JBiden_Job2 <- if_else(d$JBiden_Job == "Vice President of the United States", 1, 0)
-d$DCameron_Job2 <- if_else(d$DCameron_Job == "Prime Minister of the United Kingdom", 1, 0)
-d$Nominates_Judges2 <- if_else(d$Nominates_Judges == "The President", 1, 0)
-d$Senate_Term2 <- if_else(d$Senate_Term == "6 years", 1, 0)
-d$Reviews_Laws2 <- if_else(d$Reviews_Laws == "The Supreme Court", 1, 0)
-d$Veto_Override2 <- if_else(d$Veto_Override == "2/3", 1, 0)
-d$Sec_State2 <- if_else(d$Sec_State == "John Kerry", 1, 0)
-d$Sec_Treasury2 <- if_else(d$Sec_Treasury == "Jacob Lew", 1, 0)
-d$PM_Canada2 <- if_else(d$PM_Canada == "Stephen Harper", 1, 0)
-
-d |>
-  select(Majority_House2:PM_Canada2) |>
-  pivot_longer(cols = Majority_House2:PM_Canada2, names_to = "question", values_to = "values") |>
-  group_by(question) |>
-  summarize(
-    N = n(),
-    Yes = sum(values, na.rm=T),
-    Proportion = Yes / N
-  ) |>
-  arrange(desc(Proportion)) |>
-  kable(digits = 2) |>
-  kable_styling(font_size = 27)
-```
-
-::: notes
-
-**Any surprises here?**
-
 <br>
 
 **SLIDE**: For next class
@@ -768,29 +804,65 @@ d |>
 
 ## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
 
-<br>
+1. Read p81-98 in Chapter 4
 
-::: {.r-fit-text}
+2. Complete Exercises 2 and 4
 
-1. Build and evaluate the political knowledge index,
+3. Build & evaluate the political knowledge index
 
-2. Read p81-98 in Chapter 4
+::: {.fragment}
 
-3. Complete Exercises 2 and 4
+```{r, echo=TRUE, eval=FALSE}
+# 1) Recode nominal variables into dummies
+d$Majority_House2 <- 
+  if_else(d$Majority_House == "Republican Party", 1, 0)
+d$More_Conservative2 <- 
+  if_else(d$More_Conservative == "Republican Party", 1, 0)
+d$JRoberts_Job2 <- 
+  if_else(d$JRoberts_Job == "Chief Justice of the Supreme Court", 1, 0)
+
+# 2) Sum them to make the index
+d$knowledge <- d$Majority_House2 + d$More_Conservative2 +
+  d$JRoberts_Job2
+```
 
 :::
 
 ::: notes
 
-Everybody take a look at the assignment for next class and let me know if you have any questions!
+Next week we move our focus to bivariate analyses
+
+- So you have a reading in the textbook about the key concepts,
+
+- Two exercises to ensure those concepts make sense, and
+
+- One more chance to build and analyze an index!
+
+<br>
+
+**Which coding approach will you need for this political knowledge index? if_else or as.numeric?**
+
+- (Back to if_else!)
+
+- (**SLIDE**: Jump-start on the code)
+
+<br>
+
+**Any questions?**
 
 <br>
 
 Canvas Assignment: Chapter 4 Assessment (part 1)
 
-1. Construct an additive index of political knowledge using the Miller, Saunders and Farhart (2016) data. Submit a polished visualization of your constructed index AND your analysis of the results.
+1. Construct an additive index of political knowledge using the Miller, Saunders and Farhart (2016) data AND transform the index into a proportion so that each value represents that respondent's percentage correct across all of the questions. Submit a polished visualization of your constructed index AND your analysis of the results.
 2. Submit your answers to Exercise 2 on p103
 3. Submit your answers to Exercise 4 on p104
 4. Was there anything specific in the excerpt that didn't make sense or that you'd like to make sure we discuss in class?
 
 :::
+
+
+
+
+
+

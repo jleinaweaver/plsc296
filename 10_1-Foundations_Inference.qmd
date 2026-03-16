@@ -8,16 +8,20 @@ format: revealjs
 library(tidyverse)
 library(readxl)
 library(kableExtra)
-library(modelsummary)
+library(crosstable)
+
+load("../../DATA/2026-Spring/ANES/ANES2020_Data_Extract.RData")
 ```
 
 <br>
 
 ::: {.r-fit-text}
 
-1. Introduce the first report
+**Foundations of Statistical Inference**
 
-2. Critically analyze the project's codebook
+- Samples and populations
+
+- Standard errors and confidence intervals
 
 :::
 
@@ -32,33 +36,51 @@ Prep for Class
 
 1. Review Canvas submissions
 
-2. [Reporters Without Borders: World Press Freedom Index - Project Codebook](https://rsf.org/en/methodology-used-compiling-world-press-freedom-index-2024?year=2024&data_type=general)
-
-3. [Reporters Without Borders: World Press Freedom Index - Project Dataset](https://rsf.org/en/index)
-
-4. Open your notes on methodolgy: /home/justin/Dropbox/Political_Science/Teaching/Courses/296-Data_Analysis/2025-Spring/Data_in_Class/Reporters_Without_Borders/Methodology_Notes.txt
+2. NOTE: Remember, they covered ALL of this material in the reading. You are reinforcing these ideas NOT introducing them!
 
 <br>
 
-**AS STUDENTS COME IN MAKE THEM SIT IN NEW PLACES WITH NEW PEOPLE!**
+Today we lay the foundations you will need to make inferences using statistics
 
-- New rule, you can't sit next to the same people you did in the last class
+- **SLIDE**: Let's build to these ideas by connecting the dots of our semester so far
 
-- You HAVE to move around!
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+### Our **goal** as political scientists is to **generate knowledge** about the social world using the **scientific method**
+
+::: notes
+
+*Read slide*
 
 <br>
 
-Quick aside before we get started today
-
-- We'll start with data analyses in class on Wednesday
-
-- If you're going to use one of the school laptops make sure to bring a USB flash drive for saving your work!
-
-- **Can you let me know who will need to check out a laptop from the cart?**
+All your work so far this semester has been designed around deepening your skills as a quantitative political scientist
 
 <br>
 
-**SLIDE**: Let's start today with an overview of your first report
+Because of this aim we started our semester focused on measurement 
+
+- We learned to ask key questions about our data, such as:
+
+- Where does the data come from?
+
+- How was it constructed? 
+
+- Who designed the measures and for what purposes?
+
+- How have they validated their measures?
+
+<br>
+
+**Our first big takeaway was that only when we understand the validity and reliability of our data should we do anything with it**
+
+<br>
+
+**SLIDE**: That took us to level one of doing "statistics"
 
 :::
 
@@ -67,79 +89,96 @@ Quick aside before we get started today
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-**Report 1**
+**Defining Statistics: Level 1**
 
-**Analyzing our First Data Project**
+Statistics offers tools we can use to summarize data
 :::
 
-1. COMPLETED draft due Feb 21st
+<br>
 
-2. PDFs only
+:::: {.columns}
+::: {.column width="33%"}
+```{r, fig.asp=1, fig.width=4.5}
+ggplot(mpg, aes(x = cty)) +
+  geom_histogram(bins = 10, color = "white") +
+  labs(x = "", y = "",
+       title = "Univariate Analysis") +
+  theme_bw()
+```
+:::
 
-3. Support ALL claims with evidence
-    - APA formatted in-text citations
-    - APA formatted bibliography
+::: {.column width="33%"}
+```{r, fig.asp=1, fig.width=4.5}
+ggplot(mpg, aes(x = drv, y = cty)) +
+  geom_boxplot() +
+  labs(x = "", y = "",
+       title = "Bivariate Analysis") +
+  theme_bw() +
+  scale_x_discrete(labels = c("", "", ""))
+```
+:::
 
-4. Report should be concise and focused on your arguments
+::: {.column width="33%"}
+```{r, fig.asp=1, fig.width=4.5}
+new1 <- tribble(
+  ~party, ~x1, ~y1,
+  "Democrat", 5, .3,
+  "Democrat", 4, .28,
+  "Democrat", 3, .31,
+  "Democrat", 2, .2,
+  "Democrat", 1, .17,
+  "Independent", 5, .39,
+  "Independent", 4, .38,
+  "Independent", 3, .39,
+  "Independent", 2, .33,
+  "Independent", 1, .32,
+  "Republican", 5, .59,
+  "Republican", 4, .62,
+  "Republican", 3, .67,
+  "Republican", 2, .64,
+  "Republican", 1, .65,
+)
+
+ggplot(new1, aes(x = x1, y = y1, color = party)) +
+  geom_line(linewidth = 1.3) +
+  theme_bw() +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(x = "", y = "", color = "",
+       title = "Making Controlled Comparisons") +
+  scale_x_continuous(breaks = 1:5, 
+  labels = c("Not at all", "A little", "Moderately", "Very", "Extremely")) +
+  scale_color_manual(values = c("darkblue", "grey", "darkred"))  +
+  guides(color = "none")
+```
+:::
+
+::::
 
 ::: notes
 
-Per the syllabus, a COMPLETED draft of your first report is due to be submitted to Canvas on Feb 21st
+At its most basic level, statistics is about summary
 
-- Completed means all required components included, written in essay form with citations
+- By summary we mean simplifying a complex world
 
-- This draft submission IS your best effort to complete the paper
-
-<br>
-
-You must submit the report as a pdf file to preserve formatting of figures and tables
-
-- Word allows you to export as pdf
+- Giving "a brief statement of the main points of (something)" (Oxford Dictionary).
 
 <br>
 
-You must support all claims with evidence which means:
+Don't underestimate the usefulness of statistical summaries!
 
-- in-text citations, 
+- We used univariate analyses to identify WHERE the variation is in the world and to describe that variation
 
-- a bibliography, and 
+- We used bivariate analyses to describe the relationship between two variables, and
 
-- APA formatting
-
-<br>
-
-**Questions on those basic elements?**
+- We used controlled comparisons to develop causal arguments about causes and effects
 
 <br>
 
-**SLIDE**: And what goes in the report?
-:::
-
-
-
-## Report 1 {background-image="Images/background-data_blue_v4.png" .center}
+That's an impressive amount of value for simply summarizing data!
 
 <br>
 
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
-
-<br>
-
-The reader of your report is a non-expert in data analysis and is not familiar with this particular project, but is very interested in the topic. 
-
-::: notes
-
-Now that we have your project chosen I can make the report prompt much more focused!
-
-- Focus on making an argument that answers THIS question for this type of reader
-
-<br>
-
-**Questions on the big picture aim here?**
-
-<br>
-
-**SLIDE**: The key elements
+**SLIDE**: Our work today takes us to the next level of statistics and serves as the foundation for everything to come the rest of the semester
 
 :::
 
@@ -147,315 +186,458 @@ Now that we have your project chosen I can make the report prompt much more focu
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
+::: {.r-fit-text}
+**Defining Statistics: Level 2**
 
-1. The importance of the project in the real-world,
-2. The key contributors of uncertainty in the project's data,
-3. What we learn about the current world from analyzing the most recently available data, and
-4. What we learn about the trajectory of press freedom in the world from analyzing the data across time
+Statistics helps us draw inferences from sample to population
+:::
+
+<br>
+
+![](Images/04_2-Inference.png){style="display: block; margin: 0 auto"}
 
 ::: notes
 
-This first report focuses entirely on analyzing our first data project.
+Statistics is also a collection of tools meant to help us with the process of inference
 
-- Measurement is the end-all, be-all for any quantitative analysis and so we need to spend time analyzing the outcome BEFORE we can explain it!
-
-<br>
-
-Your report must have a clear macro structure and, I suggest, a meso structure that mirrors these four required elements. 
-
-- Each of the required elements should be fully explained, all claims should be supported by evidence, and your report should offer the reader your critical analysis of that element.
+- Inference is a process by which we study something specific in order to learn something generalizable
 
 <br>
 
-This week we focus on just the first two sections (importance and confidence)
+Examples:
 
-- Sections 3 and 4 won't happen until AFTER we learn the univariate analysis tools
+- In survey terms that means asking 1,000 Americans a question while intending to use that to represent the opinion of all Americans
+
+- In cross-national analyses, that's like analyzing 25 civil wars in order to identify the general causes of rebellion
+
+- In biology it's Prof Jansen catching and measuring frogs to make inferences about the levels of pollution in our local waterways 
 
 <br>
 
-**SLIDE**: Let's talk Premise 1
+The next big step in your training as a scientist is to learn how to move from a sample estimate to a population parameter
+
+- And THAT is what chapter 8 in the textbook is all about
+
+- I hope you gave yourself time to read and reflect on the chapter before class
+
+- There's simply no shortcut to understanding, you have to put in the work
+
+<br>
+
+**SLIDE**: Let's highlight the two big intuitions we'll need moving forward
 
 :::
 
 
 
-## Report 1 {background-image="Images/background-data_blue_v4.png" .center}
-
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
+## Statistical Inference: The Intuitions {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 <br>
-
-**Premise 1: Why is this project important?**
 
 ::: {.fragment}
 
-- What problem are the researchers trying to solve?
-
-- How does the problem impact the real world?
-
-- Why should we take these researchers seriously?
- 
-- How has the project impacted the world?
+$$ \text{Sample Statistic} = \text{Pop. Parameter} \pm \text{Random Sampling Error} $$
 
 :::
 
 ::: notes
 
-In Premise 1 your job is to sell the importance of this project to an interested reader
+The textbook exercises for today were to make sure you can use the formulas to calculate the measures you will need going forward
 
-- Don't assume the reader is an expert in the subject area
+- e.g. standard errors, margins of error, confidence intervals, etc
 
-- Don't assume the reader is familiar with the project at all
-
-- This means you have to include enough background info on the project for them to understand your importance argument
+- BUT, before we review those, let's make sure you have a good grasp of the intuitions underpinning them
 
 <br>
 
-For example, If I were trying to convince a reader that a data project was important, I would make sure to answer the following questions
+**REVEAL**
 
-- **REVEAL**
+Intuition 1: All sample statistics may be thought of as a combination of the true population value plus error
 
-<br>
+- So, you run a survey of 1,000 Americans and calculate their average presidential approval
 
-To be clear, I will be providing time in class to work on the other premises in this report 
-
-- This premise, which doesn't depend on data analyses, you'll be writing on your own outside of class
-
-- **Any questions on the Premise 1 argument?**
-
+- This sample average represents the actual approval in the population plus (or minus) error
 
 <br>
 
-**SLIDE**: On to Premise 2...
+Quick aside, all our work moving forward will be in dealing with this random sampling error
+
+- This is NOT the same thing as error caused by having unreliable or invalid data
+
+- Data quality problems are systematic errors and no amount of fancy statistics will fix that
+
+<br>
+
+**SLIDE**: intuition 2
 
 :::
 
 
 
-## Report 1 {background-image="Images/background-data_blue_v4.png" .center}
-
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
+## Statistical Inference: The Intuitions {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 <br>
 
-**Premise 2: The key contributors of uncertainty?**
+$$ \text{Sample Statistic} = \text{Pop. Parameter} \pm \text{Random Sampling Error} $$
+
+<br>
+
+$$ \text{Random Sampling Error} = \frac{\text{Variation component}}{\text{Sample size component}} $$
+
+::: notes
+
+Intuition 2: Random sampling error is actually a function of two things that can offset each other!
+
+- The variation component in the numerator refers to how spread out the values are in a measure (e.g. the standard deviation).
+
+- The sample size component in the denominator refers to how many subjects are in your sample
+
+<br>
+
+Let's use computer simulations to visualize EACH of these intuitions
+
+- **SLIDE**: We'll start with the variation component
+
+:::
+
+
+## Running a Simulation in R {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+sample(x, size, replace)
+
+- "x" lists the options to pick from
+
+- "size" is how many to choose
+
+- "replace" is whether or not to allow duplicate picks
 
 ::: {.fragment}
-
-- **Source:** Where does the raw data come from?
-
-- **Operationalization:** Defining the concepts
-
-- **Instrumentation:** Designing the tool
-
-- **Measurement Process:** Using the tool
-
-- **Validation:** Checking the data
-
+```{r, echo=TRUE}
+# One coin flip
+sample(x = c("heads", "tails"), size = 1, replace = TRUE)
+```
 :::
 
 ::: notes
 
-After Section 1 sells the reader on the importance of the project, Section 2 is your chance to give the reader a crash course in the strengths and weaknesses of the project
+R has a base function called sample that makes it easy to generate fake data
 
-- Remember, the reader is unfamiliar with the project
-
-- Your job is to help them develop expertise so they can use it effectively to analyze the world
+- *Talk through the slide*
 
 <br>
 
-I want your Section 2 argument to evaluate the strengths and weaknesses of the project across a series of categories
+Let's use this function to simulate flipping a fair coin
 
-- **REVEAL**
+- **REVEAL**: *Talk through code and result*
 
-- Everybody write these down!
-
-- Each of these categories should get at least a paragraph in this section and should include both strengths AND weaknesses
+- **Everybody run this line of code 10 times and report back how many heads you get**
 
 <br>
 
-These elements can help you organize your critical analysis of any real-world data or measurement.
-
-- We learn a great deal about the uncertainty in any measurement by investigating its sources, definitions, tools, processes and validation procedures.
-
-- **Any questions on these categories?**
-
-- Remember, the Brians et al reading has details on each of these.
-
-<br>
-
-**SLIDE**: Your assignment for today was meant to give you a jump-start on these analyses.
+**SLIDE**: The sample function can do this too!
 
 :::
 
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**For Today: Analyzing the First Codebook**
-:::
+## Running a Simulation in R {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
-1. Analyzing the Data Project Overall
+sample(x, size, replace)
 
-    - What are the strengths and weaknesses of the overall data project? What variables should we consider using?
-    
-2. Analyzing the Selected Outcome 
+- "x" lists the options to pick from
 
-    - What are the strengths and weaknesses of the variables we can choose as our key outcome to explain? 
+- "size" is how many to choose
 
-::: notes
+- "replace" is whether or not to allow duplicate picks
 
-For today I asked each of you to read the codebook(s) and to reflect on how the researchers converted their ideas into measurements.
-
-- My aim is that by the end of today you each have a list of strengths and weaknesses you can use to write Section 2 of the report.
-
-<br>
-
-And remember our key lesson from the first weeks of class: **Don't stress about the math!**
-
-- Research design is WAY more important than the formulas!
-
-<br>
-
-Our focus today is on how the researchers define their ideas and convert them into numbers
-
-- Those choices have a **MUCH** bigger impact than their choice to use harmonic means in constructing an index!
-
-<br>
-
-**SLIDE**: Let's start with the first element of analyzing data
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Source: Where does the raw data come from?**
-:::
-
-![](Images/03_1-Source_of_Data.jpg){style="display: block; margin: 0 auto"}
-
-::: notes
-
-Let's begin with the sources of the data being analyzed in this project.
-
-- Small groups, get ready to report back on the source(s) of the data
-
-- Make two lists, what are the strengths and weaknesses of these data sources
-
-<br>
-
-### Questions?
-
-- Go!
-
-- (*ON BOARD*)
-
-<br>
-
-**Given these two lists, how precise can we be when interpreting these numbers?**
-
-- **In other words, how much uncertainty do these sources carry with them for our analyses?**
-
-<br>
-
-*RSF Notes from Methodology*
-
-- "Our data gathering RSF’s staff constantly gathers information throughout the world about abuses against journalists in connection with their work."
-
-- "The information about journalists who are held hostage, imprisoned, killed or missing is updated every day on RSF’s press freedom barometer."
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .center}
-
-::: {.r-fit-text}
-**Operationalization: Defining the concepts**
-:::
-
-```{r, echo = FALSE, fig.align = 'center'}
-knitr::include_graphics("Images/03_1-Voltaire_Define_Terms.jpg")
+```{r, echo=TRUE}
+# Ten coin flips
+sample(x = c("heads", "tails"), size = 10, replace = TRUE)
 ```
 
 ::: notes
 
-As we did in Week 1 of the class, we now need to evaluate the operationalization of the concepts in this data project
+Simply increase the "size" argument (and make sure replace = TRUE)
 
-- To refresh: Operationalization refers to ""...selecting observable phenomena to represent abstract concepts" (89).
-
-- In other words, an "operational definition" tells us "precisely and explicitly what to do in order to determine what quantitative value should be associated with a variable in any given case" (p92).
+- Each time you run this code you should get different results (e.g. simulated randomness)
 
 <br>
 
-**So, what are the key concepts in this data project?**
-
-- (*Make list ON BOARD*)
+**Everybody with me on this?**
 
 <br>
 
-Groups, take a few minutes to identify the operational definitions for these concepts and get ready to report back your evaluation of them
+Ok, let's use this to talk about the first source of random sampling error
 
-- Think about the operational definitions in terms of their clarity and validity
+- **SLIDE**: Different kinds of measures carry different levels of variation
 
-- Does the definition tell us "precisely and explicitly" what we are trying to measure?
-
-<br>
-
-**Questions?**
-
-- Go!
-
-<br>
-
-*REPORT BACK and DISCUSS*
 :::
 
 
 
-## {background-image="Images/03_1-tools.jpg"}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-<p style="color: white;">Instrumentation: Designing the tool</p>
+**Random Sampling Error: The Variation Component**
 :::
+
+```{r, echo=TRUE}
+# Flipping a fair coin
+sample(x = c(1, 0), size = 20, replace = TRUE)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Survey question (5 point scale)
+sample(x = c(1:5), size = 20, replace = TRUE)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Country GDP per capita (from $154 to $288k)
+sample(x = 154:288000, size = 20, replace = TRUE) 
+```
 
 ::: notes
 
-Again, as you did in Week 1, instrumentation refers to how you convert your operational definition into a series of steps you can use to measure the concept in question.
+Here are three different simulations each meant to produce a different kind of data
 
-- The clearer your operational definition, the easier it is to design your measurement tool
+- You DON'T have to copy these down!
 
-<br>
-
-Groups, take a look at the tool used to produce the measures for our variable of interest
-
-- Get ready to report back your evaluation of the tool
-
-- Is it clear and does it map onto the operational definition(s)?
-
-- In other words, does this tool accurately represent the underlying concept or not?
+- Just make sure you understand what each one is doing
 
 <br>
 
-**Questions?**
+For our first measure, we'll stick with flipping a fair coin
 
-- Go!
-
-<br>
-
-*REPORT BACK and DISCUSS*
+- Here I'm using "1" for heads and "0" for tails
 
 <br>
 
-- Questionnaire likely produce valid and reliable data?
+The second measure simulates asking 20 people a survey question with five ordinal options
 
-- Does the calculation of the abuse score make sense? (next **SLIDE**)
+- Think of a Likert scale running from "Not at all satisfied" to "Completely satisfied"
+
+<br>
+
+The final measure simulates the GDP per capita of 20 different countries
+
+- Running from the low end, Burundi at only \$154, to the high end where Monaco is at approximately \$288k
+
+<br>
+
+**Does everybody see how each of these measures has been generated?**
+
+<br>
+
+**Which one of these three measures do you think is the hardest to accurately measure?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Random Sampling Error: The Variation Component**
+:::
+
+```{r, echo=TRUE}
+# Flipping a fair coin
+sample(x = c(1, 0), size = 20, replace = TRUE) |>
+  sd()
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Survey question (5 point scale)
+sample(x = c(1:5), size = 20, replace = TRUE) |>
+  sd()
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Country GDP per capita (from $154 to $288k)
+sample(x = 154:288000, size = 20, replace = TRUE)  |>
+  sd()
+```
+
+::: notes
+
+Here I'm piping our simulated results into the function for calculating the standard deviation
+
+<br>
+
+**What does this teach us about the first source of error in our measures?**
+
+- (The larger the variation in your sample, the larger the error in your sample statistic)
+
+- A sample drawn from only two options is simply more likely to cover the options
+
+- A sample drawn from a range in the hundreds of thousands is always going to carry greater chances of error
+
+<br>
+
+**SLIDE**: Back to the formulas
+
+:::
+
+
+
+## Statistical Inference: The Intuitions {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+<br>
+
+$$ \text{Sample Statistic} = \text{Pop. Parameter} \pm \text{Random Sampling Error} $$
+
+<br>
+
+$$ \text{Random Sampling Error} = \frac{\text{Variation component}}{\text{Sample size component}} $$
+
+::: notes
+
+So, the variation component of our random error depends on how much your sample can vary
+
+- This is why all the statistics you had to calculate today include some version of the standard deviation 
+
+- Key takeaway: A larger SD means a larger variation component and more random error in your sample
+
+<br>
+
+**SLIDE**: Now let's talk sample size
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Random Sampling Error: Sample Size**
+:::
+
+<br>
+
+Hypothetical "Fact"
+
+- 80% of college students use social media everyday
+
+::: notes
+
+In order to examine the effect of increasing sample size on random sampling error, we start with a "fact" and assume it is true.
+
+<br>
+
+Here's a made-up fact!
+
+- REMEMBER, our interest here is NOT in testing if the 80% is right
+
+- Instead, we want to know how good our stats are at discovering the 80% as right
+
+- **Does that distinction make sense?**
+
+<br>
+
+So, let's also assume that we have designed a valid and reliable survey to measure social media use in college students
+
+- Question: "Did you use social media in the last 24 hours? Yes or No"
+
+<br>
+
+**SLIDE**: Now we can use our sample function to run this survey one time
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Random Sampling Error: Sample Size**
+:::
+
+<br>
+
+Population Parameter: 80% of college students use social media everyday
+
+<br>
+
+```{r, echo=TRUE}
+# Simulate a survey of ten students
+sample(x = c(1, 0), size = 10, replace = TRUE, prob = c(.8,.2))
+```
+
+::: notes
+
+To represent the population parameter we add the "prob" argument to the sample function
+
+- This lets you specify the probability of each possible answer
+
+- Here I am giving "1", which represents "yes", an 80% chance of being selected
+
+<br>
+
+Everytime we run this line of code we'll get slightly different results
+
+- e.g. random selection!
+
+- Everybody try it! **How many "yes" answers did you get?**
+
+<br>
+
+**SLIDE**: To make the results easier to interpret let's sum the "yes" answers
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Random Sampling Error: Sample Size**
+:::
+
+Population Parameter: 80% of college students use social media everyday
+
+```{r, echo=TRUE}
+# Repeat the simulation
+sum(sample(x = c(1, 0), size = 10, replace = TRUE, prob = c(.8,.2)))
+
+sum(sample(x = c(1, 0), size = 10, replace = TRUE, prob = c(.8,.2)))
+
+sum(sample(x = c(1, 0), size = 10, replace = TRUE, prob = c(.8,.2)))
+
+sum(sample(x = c(1, 0), size = 10, replace = TRUE, prob = c(.8,.2)))
+```
+
+::: notes
+
+**Does everybody understand what we're doing here in this code?**
+
+<br>
+
+Now remember, we set this up so that 80% is the true population value
+
+- **Based on these simulation results, what is our best estimate of the proportion of college students who use social media everyday?**
+
+- (Different results each time, but somewhere between 70% and 100%?)
+
+<br>
+
+Let's extend this logic even further!
+
+- **SLIDE**: Let's simulate running this survey 100 times
 
 :::
 
@@ -463,147 +645,693 @@ Groups, take a look at the tool used to produce the measures for our variable of
 
 ## {background-image="Images/background-data_blue_v4.png"}
 
-![](Images/03_1-RSF-Abuses1.png){.absolute left=0}
+::: {.r-fit-text}
+**Random Sampling Error: Sample Size**
+:::
 
-![](Images/03_1-RSF-Abuses2.png){.absolute right=0}
+```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
+# Run the simulation 10 times
+res1 <- tibble(x1 = rep(NA_integer_, 100))
+
+for (i in 1:100) {
+  
+  res1$x1[i] <- sum(sample(x = c(1, 0), size = 10, 
+                           replace = TRUE, prob = c(.8,.2)))
+  
+}
+
+# Visualize the results
+hist(res1$x1, main = "100 Surveys of 10 Students Each")
+```
+
+::: notes
+
+Don't worry about the code for this
+
+- In short, I'm using a for loop to run the sample line of code we all have made 100 times
+
+- SO, this histogram shows the results of running our ten student survey 100 times!
+
+<br>
+
+**Based on these simulation results, what is our best estimate of the proportion of college students who use social media everyday?**
+
+- Some of our surveys estimated the "yes" percentage as low as 50% and others as high as 100%
+
+- If the random sample was kind to us then the results will approximate a normal curve with a peak around 8 which is the population proportion! (e.g. the actual fact!)
+
+<br>
+
+Bottom line is that any single survey of ten people is likely to carry a lot of random error
+
+- **What do we need to do to shrink this error?**
+
+- (**SLIDE**: Ask more students!)
+
+:::
 
 
 
-
-## {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png"}
 
 ::: {.r-fit-text}
-**Measurement Process: Using the tool**
+**Random Sampling Error: Sample Size**
 :::
 
-![](Images/03_1-how_to_hammer.jpg){style="display: block; margin: 0 auto"}
+```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
+# Run the simulation 10 times
+res1 <- tibble(x1 = rep(NA_integer_, 100))
+
+for (i in 1:100) {
+  
+  res1$x1[i] <- sum(sample(x = c(1, 0), size = 100, 
+                           replace = TRUE, prob = c(.8,.2)))
+  
+}
+
+# Visualize the results
+hist(res1$x1, main = "100 Surveys of 100 Students Each")
+```
 
 ::: notes
 
-Next we talk process.
+Now we're asking 100 students in each survey instead of just 10
 
-- This is how the researchers use the tool to generate the actual measurements
+- **What has changed in our results here?**
 
-- In other words, we give you a hammer (the tool) and then we give you instructions on how to use it (process) 
+- (Ten student survey gave us a wide range from 50% to 100%)
 
-<br>
-
-Groups, take a look at the process used to produce the measures for our variable of interest
-
-- Get ready to report back on how reliable you believe this process to be
+- (100 students has shrunk that down to 70-90%)
 
 <br>
 
-**Questions?**
-
-- Go!
+**Everybody understand how I'm getting the proportion here?**
 
 <br>
 
-*REPORT BACK and DISCUSS*
+**SLIDE**: Let's ask 1,000 students
 
-- NEXT SLIDE HAS THE ABUSE SCORE DETAILS
 :::
 
 
 
 
-
-## {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png"}
 
 ::: {.r-fit-text}
-**Validation: Checking the data**
+**Random Sampling Error: Sample Size**
 :::
 
-![](Images/03_1-Data_Validation.png)
+```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
+# Run the simulation 10 times
+res1 <- tibble(x1 = rep(NA_integer_, 100))
+
+for (i in 1:100) {
+  
+  res1$x1[i] <- sum(sample(x = c(1, 0), size = 1000, 
+                           replace = TRUE, prob = c(.8,.2)))
+  
+}
+
+# Visualize the results
+hist(res1$x1, main = "100 Surveys of 1,000 Students Each")
+```
 
 ::: notes
 
-Last key piece for us to evaluate is validation.
+**What is the range of values across these hundred surveys of 1,000 students each?**
+
+- (Ten student survey gave us a wide range from 50% to 100%)
+
+- (100 students has shrunk that down to 70-90%)
+
+- (1k students, 76-84%!)
 
 <br>
 
-As we have noted, measurement is REALLY difficult even when you try to do everything "right."
+We're getting closer!
 
-- This means we find it valuable when a research project tries to validate its findings with other high quality work. 
+- **SLIDE**: Let's ask 10,000 students
 
-<br>
-
-Groups, take a look at the validation processes in this data project
-
-- Get ready to report back on how they do this and how effective you believe that will be
-
-<br>
-
-**Questions?**
-
-- Go!
-
-<br>
-
-*REPORT BACK and DISCUSS*
 :::
 
 
 
-## Report 1 {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png"}
 
-**What do we learn about the world from analyzing the Press Freedom Index produced by Reporters Without Borders?**
+::: {.r-fit-text}
+**Random Sampling Error: Sample Size**
+:::
 
-<br>
+```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
+# Run the simulation 10 times
+res1 <- tibble(x1 = rep(NA_integer_, 100))
 
-**Premise 2: The key contributors of uncertainty?**
+for (i in 1:100) {
+  
+  res1$x1[i] <- sum(sample(x = c(1, 0), size = 10000, 
+                           replace = TRUE, prob = c(.8,.2)))
+  
+}
 
-- **Source:** Where does the raw data come from?
-
-- **Operationalization:** Defining the concepts
-
-- **Instrumentation:** Designing the tool
-
-- **Measurement Process:** Using the tool
-
-- **Validation:** Checking the data
+# Visualize the results
+hist(res1$x1, main = "100 Surveys of 10,000 Students Each")
+```
 
 ::: notes
 
-**Ok, how are we doing?**
-
-- **Does everybody have a good start to Section 2?**
+(.79 to .81!)
 
 <br>
 
-**SLIDE**: For next class
+**Ok, what is the lesson here?**
+
+- **How does sample size contribute to random error?**
+
+<br>
+
+1. The bigger the sample, the smaller the error
+
+    - Makes sense that as you ask more and more of the total population you come closer to the population's result!
+    
+    - Big sample, more confidence your sample statistic is close to the population parameter
+    
+2. The more samples you take (e.g. surveys you run), the more the sample statistic comes to approximate a normal distribution
+
+	- Technically, as the number of samples approaches the limit the curve of the estimated means approaches normal.
+	
+	- And THAT is the logic of the central limit theorem
+	
+<br>
+
+**Questions on these two takeaways?**
+
+<br>
+
+**SLIDE**: The intuitions again
 
 :::
 
 
-##  {background-image="Images/background-data_blue_v4.png" .center}
+
+## Statistical Inference: The Intuitions {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+<br>
+
+$$ \text{Sample Statistic} = \text{Pop. Parameter} \pm \text{Random Sampling Error} $$
+
+<br>
+
+$$ \text{Random Sampling Error} = \frac{\text{Variation component}}{\text{Sample size component}} $$
+
+::: notes
+
+**What questions do you have about the two sources of random sampling error?**
+
+<br>
+
+**Is everybody clear on how they impact error differently?**
+
+- Increasing variation increases error
+
+- Increase sample size decreases error
+
+<br>
+
+**SLIDE**: The formulas you learned in the chapter take these intuitions into our data analyses
+
+:::
+
+
+
+## Connecting the Intuitions to the Data {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+$$ \text{Random Sampling Error} = \frac{\text{Variation component}}{\text{Sample size component}} $$
+
+<br>
+
+$$ \text{SE of the mean} (\bar{x}) = \frac{\sigma_x}{\sqrt{n}} $$
+
+::: {.fragment}
+
+$$ \text{SE of a proportion} = \frac{\sqrt{p \times (1-p)}}{\sqrt{n}} $$
+
+:::
+::: notes
+
+What I want you to see is how these two measures of the error come directly from the intuition
+
+<br>
+
+When calculating the error around a mean value we need two measures
+
+1. The POPULATION standard deviation for the variable in question, and
+
+2. The square root of the sample size
+
+<br>
+
+Note that you almost never know the population standard deviation so we typically substitute the sample SD in its place
+
+- With large enough samples this won't cause a problem but you should be aware you are making this assumption
+
+<br>
+
+**Does everybody see how increasing the size of the SD increases the random sampling error in our measure?**
+
+- (Bigger numbers in the numerator make for larger values)
+
+<br>
+
+**And how increasing sample size shrinks the error?**
+
+- (Bigger numbers in the denominator shrink the value!)
+
+<br>
+
+**REVEAL**: In the case of a proportion, the variation component is a little different
+
+- Remember, the sd describes the spread of values around the mean
+
+- In a proportion the mean is not a real value, answers are either yes or no (1s and 0s)
+
+- This formula says the variation is the product of the proportion and (1 minus the proportion)
+
+- **Did the reading do a good job explaining that?**
+
+<br>
+
+**To Test: What proportion in a measure (e.g. 25%, 35%, etc) contributes the most error?**
+
+- (50% x 50%! = .25)
+
+- If the outcome in your survey is evenly split then the variation in your population is at its max
+
+- If 90% agree on something then there is basically no variation to worry about
+
+- **Questions on this?**
+
+<br>
+
+**And according to the textbook, what do we do with these SEs?**
+
+- (**SLIDE**: Calculate confidence intervals!)
+
+:::
+
+
+
+## Connecting the Intuitions to the Data {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+<br>
+
+$$ \text{Sample Statistic} = \text{Pop. Parameter} \pm \text{Random Sampling Error} $$
+
+<br>
+
+$$ \text{95% CI} = \text{Sample Statistic} \pm (1.96 \times \text{Standard Error}) $$
+
+::: notes
+
+Our SE formulas made the second intuition more concrete
+
+- Our CI formula takes us back to the big idea we started with
+
+- If you have at least 30 cases in your sample (rule of thumb), then you can calculate a 95% CI with this formula!
+
+<br>
+
+The starting intuition tells us that our sample statistic has error around it, and the CI is our attempt to quantify how much error there is
+
+<br>
+
+The complexity comes from properly interpreting the CI
+
+- Too often people assume the 95% CI tells us the range of values that contain the true population parameter
+
+- ACTUALLY, the 95% CI tells us the range of values that contain the true population parameter in 95% of repeated samples
+
+- In other words, the CI is describing the results you would get if you re-ran your entire experiment over and over again
+
+- Run the experiment 100 times, calculate the CI 100 times and 95 of them would contain the true population parameter
+
+<br>
+
+In slightly simpler terms, your estimated 95% CI has 95% chance of including the true population parameter.
+
+- **Questions on that? :)**
+
+<br>
+
+NOTES for you: Chapter does way more, but this feels like a good selection of points to hit
+
+<br>
+
+**SLIDE**: Let's review your assignments for today
+
+:::
+
+
+## Pollock & Edwards (2026) Ch 8 {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+<br>
+
+$$ \text{SE of a proportion} = \frac{\sqrt{p \times (1-p)}}{\sqrt{n}} $$
+
+$$ \text{95% CI} = \text{Sample Statistic} \pm (1.96 \times \text{Standard Error}) $$
+
+**Exercise 1**
+
+A. 
+    - SE = 0.036
+    - CI = [0.13, 0.27]
+
+B. 
+    - SE = 0.050
+    - CI = [0.37, 0.57]
+
+C. 
+    - SE = 0.016
+    - CI = [0.36, 0.44]
+
+::: notes
+
+**Did everybody get these results?**
+
+<br>
+
+**SLIDE**: Code to get these results
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+$$ \text{SE of a proportion} = \frac{\sqrt{p \times (1-p)}}{\sqrt{n}} $$
+
+$$ \text{95% CI} = \text{Sample Statistic} \pm (1.96 \times \text{Standard Error}) $$
+
+```{r, echo=TRUE}
+# A
+se <- sqrt(.2 * .8) / sqrt(121)
+.2 - 2 * se
+.2 + 2 * se
+
+# B
+se <- sqrt(0.47 * 0.53) / sqrt(100)
+.47 - 2 * se
+.47 + 2 * se
+
+# C 
+se <- sqrt(0.4 * 0.6) / sqrt(225)
+.4 - 2 * se
+.4 + 2 * se
+```
+
+::: notes
+
+Note that this exercise asks us to use the +-2 shortcut for CIs instead of the 1.96 value
+
+- **Did everybody get these approximate results (depending on your rounding)?**
+
+<br>
+
+This +-2 shortcut is fine in many cases, but this gives us a good chance 
+to talk about the 1.96 in the CI formula
+
+- **Why does the 95% CI formula use 1.96?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+![](Images/10_1-PollockEdwards-Figure_08_05.jpg){.absolute width="65%" left=150 top=0}
+
+![](Images/10_1-PollockEdwards-Table_08_02.jpg){.absolute width="65%" left=150 bottom=0}
+
+::: notes
+
+This normal curve is labelled using z-scores
+
+- BUT as you saw in the chapter a z-score is simply a value that has been centered and scaled by the standard deviation
+
+- The zero here is the average for some statistics and each estimate can be plotted by how far from the average it is
+
+- These distances are scaled as SDs so a "1" is 1 SD above the average
+
+- **Make sense?**
+
+<br>
+
+Shifting to our CI math just means replacing SD with SE
+
+- The zero here now represents your sample statistic (e.g. the group mean)
+
+- And the z-scores are how many SEs the true parameter could be
+
+- When you give someone a 95% CI you're saying the true parameter value could be anywhere in the range of about two SEs above and below your sample statistic
+
+<br>
+
+A 90% CI replaces the 1.96 with 1.64
+
+- So you give a range of 1.64 x SE above and below your estimate
+
+<br>
+
+This means you can give someone any size CI you want
+
+- A 99% CI is +- 2.58 SEs
+
+- A 99.9% CI is +- 3.29 SEs
+
+<br>
+
+SO, to be clear, a CI gives a range of plausible values around your estimate
+
+- The size of that range depends on the % CI you want to generate
+
+<br>
+
+**Does that make sense?**
+
+<br>
+
+**SLIDE**: Ok, Exercise 2
+
+:::
+
+
+
+## Pollock & Edwards (2026) Ch 8 {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+$$ \text{Sample Std Dev} (s_x) = \sqrt{\frac{\Sigma (x_i - \bar{x})^2}{n-1}} $$
+
+$$ \text{SE of the mean} (\bar{x}) = \frac{\sigma_x}{\sqrt{n}} $$
+
+$$ \text{95% CI} = \text{Sample Statistic} \pm (1.96 \times \text{Standard Error}) $$
+
+**Exercise 2**
+
+A. SE = 0.40
+
+B. CI = [1.14, 2.73]
+
+::: notes
+
+**Did everybody get these results?**
+
+<br>
+
+**SLIDE**: Code to get these results
+
+:::
+
+
+
+## Pollock & Edwards (2026) Ch 8 {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+$$ \text{SE of the mean} (\bar{x}) = \frac{\sigma_x}{\sqrt{n}} $$
+
+$$ \text{95% CI} = \text{Sample Statistic} \pm (1.96 \times \text{Standard Error}) $$
+
+**Exercise 2**
+
+```{r, echo=TRUE}
+# The Data
+x1 <- c(0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 2, 3, 4, 4, 5)
+
+# The SE
+se <- sd(x1) / sqrt(15)
+se
+
+# The 95% CI (ballpark)
+mean(x1) - 2 * se
+
+mean(x1) + 2 * se
+```
+
+::: notes
+
+**How are we doing?**
+
+<br>
+
+**SLIDE**: Question 3
+
+:::
+
+
+
+## Pollock & Edwards (2026) Ch 8 {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+$$ \text{SE of the mean} (\bar{x}) = \frac{\sigma_x}{\sqrt{n}} $$
+
+$$ \text{95% CI} = \text{Sample Statistic} \pm (1.96 \times \text{Standard Error}) $$
+
+**Exercise 3**
+
+A. SE = 0.07
+
+B. CI = [1.67, 1.95]
+
+::: notes
+
+**Did everybody get these results?**
+
+<br>
+
+**SLIDE**: Code to get these results
+
+:::
+
+
+
+## Pollock & Edwards (2026) Ch 8 {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+$$ \text{SE of the mean} (\bar{x}) = \frac{\sigma_x}{\sqrt{n}} $$
+
+$$ \text{95% CI} = \text{Sample Statistic} \pm (1.96 \times \text{Standard Error}) $$
+
+**Exercise 3**
+
+```{r, echo=TRUE}
+# The SE
+se <- 1.98 / sqrt(816)
+se
+
+# The 95% CI (ballpark)
+1.81 - 2 * se
+
+1.81 + 2 * se
+```
+
+::: notes
+
+*Read slide*
+
+<br>
+
+**How's everybody doing?**
+
+<br>
+
+**SLIDE**: Practice using ANES
+
+:::
+
+
+
+
+## ANES (2020) Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+1. What proportion of Americans get at least some of their campaign news using the newspaper (campaign.news.papers)? Calculate the proportion who "1. Mentioned" newspapers in their survey and provide a 95% CI around that statistic.
+
+2. What is the mean level of support for President Trump in the 2020 ANES survey (ft.trump.post)? Calculate the mean and provide a 95% CI around that statistic.
+
+::: notes
+
+**SLIDE**: Results
+
+:::
+
+
+
+## ANES (2020) Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE}
+# Campaign News in Newspapers
+
+# Proportions per category
+proportions(table(anes$campaign.news.papers))
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Calculate SE of a proportion
+se <- sqrt(0.59 * 0.41) / sqrt(8152)
+
+# Calculate CI 
+.41 - 1.96 * se
+.41 + 1.96 * se
+```
+
+
+
+## ANES (2020) Practice Exercises {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE}
+# Feeling Thermometer: Trump
+
+# Mean value
+mean(anes$ft.trump.post, na.rm = TRUE)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Calculate SE of a mean
+se <- sd(anes$ft.trump.post, na.rm = TRUE) / sqrt(7375)
+
+# Calculate CI 
+mean(anes$ft.trump.post, na.rm = TRUE) - 1.96 * se
+mean(anes$ft.trump.post, na.rm = TRUE) + 1.96 * se
+```
+
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
 
 ::: {.r-fit-text}
 
-**For Next Class**
+Pollock and Edwards (2026): Chapter 9
 
-1. Huntington-Klein (2022) chapter 3
+- Read p223-229
 
-2. Canvas Assignment
+- Submit selected exercises to Canvas
 
 :::
-
 ::: notes
 
-For next class you have a reading and an assignment.
+Canvas Assignment: Chapter 8 and 9 Assessment
 
-- The reading is meant to help you complete the assignment.
+1. Submit your answers to Exercise 6 on p220-221
+2. Submit your answers to Exercise 7 on p221
+3. Submit your answers to Ch9, Exercise 1 on p245
+4. Was there anything specific in the excerpt that didn't make sense or that you'd like to make sure we discuss in class?
 
-<br>
-
-For the assignment I'd like you to dig into the datasets using Excel
-
-- Find us **THREE interesting, puzzling or surprising** things in the data
-
-- Explain what you found AND explain the process you used to find them
-
-<br>
-
-**Questions on the assignment?**
 :::
+
