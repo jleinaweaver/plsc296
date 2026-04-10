@@ -11,6 +11,8 @@ library(kableExtra)
 library(modelsummary)
 library(modelr)
 library(ggeffects)
+
+wdi <- read_excel("../../DATA/2026-Spring/WDI/Lectures/World_Development_Indicators-2023_data-WORKING.xlsx", na = "NA")
 ```
 
 <br>
@@ -35,6 +37,8 @@ Prep for Class
 1. Check Canvas submissions AND plug in guesses into code below
 
 2. Update presidential results (if needed)
+
+3. NEXT TIME UPDATE THE FOLLOWING WITH THE NEW DATA IN THE ASSIGNMENT
 
 <br>
 
@@ -71,22 +75,21 @@ d_test <- tibble(
 guesses <- tribble(
   ~Student, ~Alpha, ~Beta,
   #"OLS", 1.4, .5,
-  "Rylie", 1, .5,
-  "Chloe E", 1, .5,
-  "Caylee", 1, .5,
-  "Jack", 0, .75,
-  "Gracie", 1.25, .5,
-  "Jackson", 1.25, .5,
-  "Chloe H", 1.25, .5,
-  "Isa", 1.4, .5,
-  "Sadie", 1.4, .5,
-  "Shaeley", 1.5, .5,
-  "Austin M", .5, .75,
-  "Catherine", 1.5, .5,
-  "Madeline", 1.25, .5,
-  "Saige", 1.25, .5,
-  "Austin W", 1.4, .5,
-  "Liam", 1.75, .5
+  "Brooklyn", 2, .5,
+  "Elton", 1.4, .5,
+  "Graham", 1.5, .5,
+  # "Antonio", 0, .01,
+  "Hallee", 1.5, .5,
+  "Sara", 1.4, .5,
+  "Tahrea", 1.5, .5,
+  # "Alena", 0, .01,
+  # "Audrey", 0, .01,
+  # "Meyer", 0, .01,
+  "Emma", .5, .5,
+  "Lux", 1.4, .5,
+  # "Abby", 0, .01,
+  "Mckenzie", .5, 1.5,
+  "Yevheniia", 1.4, .5
 )
 
 guesses2 <- guesses |>
@@ -309,11 +312,11 @@ diamonds |>
 
 ::: notes
 
-As you well know, the diamonds dataset includes details on 53k+ diamonds in terms of their characteristics and estimated prices
+As you well know, the diamonds dataset includes details on 54k+ diamonds in terms of their characteristics and estimated prices
 
 <br>
 
-From our bivariate analyses last week we discovered that:
+From our bivariate analyses we discovered that:
 
 - Bigger diamonds are typically more expensive, and
 
@@ -381,8 +384,8 @@ Now that we have access to real diamond prices for 53k examples, it MUST be poss
 
 ```{r, echo=TRUE}
 # Make subsets
-diamonds1_5 <- filter(diamonds, carat == 1.5)
-diamonds2_5 <- filter(diamonds, carat == 2.5)
+diamonds1_5 <- subset(diamonds, carat == 1.5)
+diamonds2_5 <- subset(diamonds, carat == 2.5)
 ```
 
 <br>
@@ -527,7 +530,7 @@ Here I am scaling the width of the boxes by the size of each group
 
 - The 1.5 carat group is only 793 diamonds out of 53k (e.g. 1% of the sample)
 
-- The 2.5 carat group is only 17 dimaonds!!!
+- The 2.5 carat group is only 17 diamonds!!!
 
 - We probably shouldn't be confident drawing conclusions about the relationship between diamond weight and value using 1% of the sample!
 
@@ -1516,11 +1519,16 @@ Statistical significance aka does the coefficient have a '*'?
 
 - Here we see that in this model the beta coefficient on diamond size clearly meets the test of statistical significance.
 
-- Ok, but what does that actually mean?
+<br>
+
+The good news, you guys now have a firm understanding of the significance star
+
+- It is simply null hypothesis testing!
 
 <br>
 
-**SLIDE**: Let's take a brief detour to talk more deeply about statistical significance.
+**SLIDE**: Let's talk about using regression for null hypothesis testing
+
 :::
 
 
@@ -1540,60 +1548,12 @@ knitr::include_graphics("Images/11_1-Diamonds_2.jpg")
 H<sub>0</sub> = Diamond size has no impact on price
 
 ::: notes
-Conventional statistical significance testing is based on the idea of a null hypothesis.
 
-<br>
+We've explored the diamonds dataset many times this semester
 
-In essence, we can frame our model as a competition between two hypotheses.
+- So, let's translate these hypotheses to the scatterplot
 
-- The alternative hypothesis is what we suspect is true, that larger diamonds are associated with higher prices.
-
-<br>
-
-For every alternative hypothesis we can also describe the null hypothesis as the absence of that effect.
-
-- e.g. Diamond size is not associated with price.
-
-<br>
-
-**SLIDE**: We can do this with any hypothesis.
-:::
-
-
-
-## What is Statistical Significance? {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-H<sub>A</sub> = Greater levels of education lead to high voter turnout
-
-```{r, echo = FALSE, fig.align = 'center'}
-knitr::include_graphics("Images/10_2-voters_v2.png")
-```
-
-<br>
-
-H<sub>0</sub> = Education has no impact on voter turnout
-
-
-::: notes
-Some research has proposed that increasing levels of education may increase the likelihood of voting.
-
-- AND, conventional hypothesis testing requires us to specify a null hypothesis
-
-<br>
-
-Let's be honest, this is probably the biggest weakness of testing hypotheses for "statistical significance"
-
-- The assumption of ZERO relationship between two amorphous social dynamics is almost certainly not likely
-
-<br>
-
-**Does everybody understand this first step, specifying the null hypothesis?**
-
-<br>
-
-**SLIDE**: Let's go back to the diamonds regression
+- **SLIDE**
 :::
 
 
@@ -1641,14 +1601,14 @@ diamonds |>
 
 Here you can see I've visualized the two hypotheses for us.
 
-### Why is the null hypothesis a horizontal line? What does that mean?
-- (For any level of diamond size, the model makes the same price prediction)
-    - In this case, the sample average of prices.
-    
 <br>
 
-### Is everybody clear on how we draw these two different lines?
+**Remind me, why is the null hypothesis a horizontal line? What does that mean?**
 
+- (For any level of diamond size, the model makes the same price prediction)
+
+- In this case, the sample average of prices.
+    
 <br>
 
 We can also see from these plots the staggering difference in the errors attached to each line
@@ -1837,9 +1797,69 @@ Remember in our work on Monday we noted that one of the problems with our "best 
 
 <br>
 
-**SLIDE**: And that brings us to the R^2 value
+Let's take a segue into the other part of your assignment for today
+
+- **SLIDE**: Calculating the $R^2$ value by hand
 
 :::
+
+
+
+
+## Textbook Exercise 3 {background-image="Images/background-data_blue_v4.png" .center}
+
+$$ r = \frac{\Sigma z_x z_y}{n-1} = \frac{\Sigma (\frac{(x_i - \bar{x})}{s_x}) (\frac{(y_i - \bar{y})}{s_y})}{n-1} = -0.94$$
+
+$$ R^2 = r^2 = 0.88 $$
+$$ \text{Adjusted-}R^2 = 1 - (1-R^2) (\frac{n-1}{n-k-1}) = 0.84 $$
+
+::: notes
+
+**Did everybody succeed in calculating the $R^2$ and Adjusted $R^2$ values from the textbook Exercise 3?**
+
+- Note: n is sample size, k is number of independent variables
+
+<br>
+
+Well, good, you have a firm intuition on R2 so now we can talk about regressions!
+
+<br>
+
+**SLIDE**: *Code if needed*
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE, eval=FALSE}
+# Create a dataset with filled in table values
+d1 <- tribble(
+  ~x1, ~y1,
+  1, 18,
+  2, 13,
+  3, 14,
+  4, 7,
+  5, 6
+)
+
+
+# Create new variables
+d1$z_x = (d1$x1 - 3) / 1.6
+d1$z_y = (d1$y1 - 11.6) / 5
+d1$z_prod = d1$z_x * d1$z_y
+
+# Calculate Pearson's r
+pearsons_r <- sum(d1$z_prod) / (5 - 1)
+
+# Calculate the R^2
+pearsons_r^2
+
+# Calculate the Adjusted R2
+1 - (1 - pearsons_r^2) * (5 - 1)/(5 - 1 - 1)
+
+```
 
 
 
@@ -2105,236 +2125,15 @@ Your last evaluation step is to evaluate the residuals in your regression line
 
 <br>
 
-**SLIDE**: R will produce for you what is called a residuals plot so you can check this very easily
+We'll dig into the residuals much more using Chapter 13 in the textbook
+
+<br>
+
+**SLIDE**: Summing up
 
 :::
 
 
-
-## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
-
-**4. Is there a problem in the residuals?**
-
-<br>
-
-:::: {.columns}
-
-::: {.column width="50%"}
-```{r, fig.align = 'center', fig.asp = 0.9, fig.width = 6, cache=TRUE}
-# Create fake data
-set.seed(111)
-x1 <- rnorm(n = 250, mean = 5, sd = 7)
-
-set.seed(6)
-y1 <- x1 + 8 + rnorm(n = 250, mean = 2, sd = 7)
-
-d1 <- tibble(
-  x1, 
-  y1
-  )
-
-model4 <- lm(data = d1, y1 ~ x1)
-
-d1 |>
-  ggplot(aes(x = x1, y = y1)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = F) +
-  theme_bw() +
-  labs(x = "X Variable", y = "Y Variable",
-       title = "The actual data and the OLS regression line")
-
-```
-:::
-
-::: {.column width="50%"}
-```{r, fig.align = 'center', fig.asp = 0.9, fig.width = 6, cache=TRUE}
-#plot(model4, which = 1)
-
-plot(model4, which = 1, main = "The residuals plot")
-
-# d1 |>
-#   add_predictions(model4) |>
-#   add_residuals(model4) |>
-#   ggplot(aes(x = pred, y = resid)) +
-#   geom_point() +
-#   geom_hline(yintercept = 0, color = "red") +
-#   theme_bw() +
-#   labs(x = "Predictions made by the linear regression", y = "Residuals",
-#        title = "The residuals plot")
-```
-:::
-
-::::
-
-::: notes
-
-On the left is some fake data in a scatter plot
-
-- This is showing you a strong, positive relationship between X and Y 
-
-<br>
-
-On the right is the residuals plot version of this same data
-
-- Essentially the plot on the left is rotated so that the regression line is horizontal and placed on the zero line
-
-- Distance on the y-axis represents the size of each residual (e.g. the difference between the observations and your regression line)
-
-- The x-axis represents the the predictions of the regression line
-
-<br>
-
-R adds a red line to approximate the balance of the residuals across the predictions of the model
-
-- If the line pulls well above or below zero then the balance is off
-
-- Here we see a red line that indicates a more or less even spread of errors above and below the line.
-
-<br>
-
-This is what we would describe as a good result, e.g. homoscedastic errors
-
-- From the Greek: Homo meaning "same" and skedastic meaning “able to be scattered”
-
-- If your residuals plot looks like someone threw dots at a wall you're probably in good shape
-
-<br>
-
-**SLIDE**: What does a bad residual plot look like?
-
-:::
-
-
-## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
-
-**4. Is there a problem in the residuals?**
-
-<br>
-
-```{r, fig.align = 'center', fig.asp = 0.75, fig.width=8}
-# Create fake data with heteroskedastic errors
-n <- rep(1:100,2)
-a <- 0
-b <- 1
-sigma2 <- n^1.3
-
-set.seed(128)
-eps <- rnorm(n, mean=0, sd=sqrt(sigma2))
-y <- a + b * n + eps
-
-d2 <- tibble(
-  x1 = n, 
-  y1 = y
-  )
-
-model5 <- lm(data = d2, y1 ~ x1)
-
-d2 |>
-  modelr::add_residuals(model5) |>
-  modelr::add_predictions(model5) |>
-  ggplot(aes(x = pred, y = resid)) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "darkgrey") +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Regression Fitted Values", y = "Residuals",
-       title = "Heteroskedastic Errors are Bad!") +
-  geom_abline(slope = .6, intercept = 4, linetype = "dashed", color = "red") +
-  geom_abline(slope = -.2, intercept = -16, linetype = "dashed", color = "red") 
-```
-
-
-::: notes
-
-Heteroskedastic Errors are Bad
-
-- Heteroskedasticity means that the variance of the errors is not constant across observations.
-
-- In other words, when the scatter of the errors is different, varying depending on the value of one or more of the independent variables, the error terms are heteroskedastic.
-
-<br>
-
-In this hypothetical case our model makes much more accurate predictions at the low end than at the high end
-
-- This is a bad sign
-
-- It means our regression hasn't found a representative path through the conditional means
-:::
-
-
-
-## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
-
-**4. Is there a problem in the residuals?**
-
-<br>
-
-```{r, echo = FALSE, fig.align = 'center'}
-knitr::include_graphics("Images/09_1-nonlinear_errors.png")
-```
-
-::: notes
-
-Non-Linear Errors are Bad
-
-- OLS assumes the residuals have constant variance (homoskedasticity) AND that there is no pattern in them 
-
-<br>
-
-Remember our talk about correlation missing important relationships if they were non-linear?
-
-- Same thing here!
-
-<br>
-
-The good news is that you can alter your regression to solve these kinds of problems!
-:::
-
-
-## Evaluating an OLS Regression {background-image="Images/background-data_blue_v4.png" .center}
-
-**4. Is there a problem in the residuals?**
-
-<br>
-
-```{r, echo=FALSE, fig.align = 'center', fig.asp = 0.618, fig.width = 10, cache=TRUE}
-# Fit the OLS
-model3 <- lm(data = diamonds, price ~ carat)
-
-# Plot the OLS object with the "which" option
-plot(model3, which = 1, main = "Explaining the price of diamonds by their size")
-```
-
-::: notes
-
-Here is the residuals plot for the diamonds data we've been exploring.
-
-- **Any concerns with the patterns in these residuals?**
-
-- (Yes, both kinds!)
-
-<br>
-
-FIRST, there is clearly some heteroskedasticity
-
-- Model is super accurate for cheap diamonds and then varying accuracy for the rest
-
-- Slight funneling effect from left to right (bigger on left than right)
-
-<br>
-
-SECOND, there is a clear non-linear trend
-
-- Low values diamonds have mostly positive errors (under-predicts actual prices)
-
-- High value diamonds have mostly negative errors (over-estimates actual prices)
-    
-<br>
-
-**Questions?**
-
-- Fixing this requires some more advanced tools for a future class!
-
-:::
 
 
 
@@ -2355,6 +2154,9 @@ SECOND, there is a clear non-linear trend
 4. Is there a problem in the residuals?
 
 ::: notes
+
+<br>
+
 **Any questions on these four steps?**
 
 <br>
@@ -2427,11 +2229,13 @@ But what is the specific relationship?
 
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
+::: {.r-fit-text}
+**How strong is the relationship between presidential approval and the popular vote?**
+:::
+
 :::: {.columns}
 
-::: {.column width="50%"}
-
-<br>
+::: {.column width="60%"}
 
 ```{r, fig.retina=3, fig.asp=1, fig.align='center', fig.width=7}
 ## Scatter plot
@@ -2448,7 +2252,12 @@ d |>
 ```
 :::
 
-::: {.column width="50%"}
+::: {.column width="40%"}
+
+<br>
+
+<br>
+
 ```{r}
 # Regression Table
 res1 <- lm(data = d, vote_share ~ approval_june)
@@ -2470,7 +2279,7 @@ modelsummary(res1, output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|
 #   labs(x = "Fitted Values of Vote Share", y = "Residuals",
 #        title = "Residuals Plot")
 
-plot(res1, which = 1)
+#plot(res1, which = 1)
 ```
 :::
 
@@ -2509,15 +2318,172 @@ Ok, working in pairs I want you to analyze this regression line and make sure yo
 - (No missing data)
 - (Coefficients are significant)
 - (R2 is pretty darn high, 71%)
-- (Residuals unbalanced, maybe u-shaped error)
+- (Residuals unbalanced with more obs above the line than below, maybe u-shaped error?)
 
 <br>
 
-**Questions on our work today?**
-
-<br>
-
-For next class I have a practice exercise for you on Canvas!
+**SLIDE**: Let's practice one more time!
 
 :::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/06_3-Miller_Saunders_Farhart_Title.png)
+
+::: notes
+
+This term we've been exploring the data analyzed in Miller, Saunders and Farhart (2016)
+
+<br>
+
+We've replicated their indexes of political knowledge and conspiracy theories
+
+<br>
+
+We've used univariate analyses to examine the variation in those indexes, AND
+
+<br>
+
+We've used bivariate analyses to examine the relationships between trust, knowledge, ideology and belief in conspiracy theories
+
+<br>
+
+**SLIDE**: To that we now add their regression analyses!
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+![](Images/12_2-Miller_Saunders_Farhart-Table2a_v2.png){style="display: block; margin: 0 auto"}
+
+::: notes
+
+I know we won't do multiple regression until next week (e.g. regressions with more than one predictor variable)
+
+- HOWEVER, we can still use what we've learned this week to begin to unpack this table
+
+- Let me set this up for you first
+
+<br>
+
+FIRST, the authors are running regressions on the conservative and liberal conspiracies separately 
+
+- Models 1 and 2 are explaining belief in conservative CTs
+
+- Models 3 and 4 are explaining belief in liberal CTs
+
+<br>
+
+SECOND, the authors run each test on two sources of data as a robustness check on their findings
+
+- Models 1 and 3 focus on the mTurk data which is what we were exploring in class
+
+- Models 2 and 4 recheck the results using ANES data
+
+<br>
+
+THIRD, let me clarify the variables in the regression itself
+
+- The dependent variable of each model is each respondent's average belief in the relevant conspiracy theories (4 questions per ideology, 4 levels per question)
+
+- "Conservative" is a dummy variable that identifies any respondent who self-identifies as conservative (any flavor: "slightly", "conservative" and "extremely")
+    
+- "Knowledge" is the average score of correct answers to the 14 question political knowledge index
+    
+- "Trust" is the average score from four separate measures of trust in institutions (government, law enforcement, the media and the people)
+
+<br>
+
+Ok, PAIRS, get ready to report back: what do we learn from these regression results?
+
+- Go!
+
+<br>
+
+1. (On average, conservatives are more likely to believe conservative CTs and less likely to believe liberal CTs and the effect is significant across all four models, e.g. reject the null!)
+
+2. (On average, as you increase political knowledge you reduce belief in both kinds of conspiracy theories and the effect is significant in all four models)
+
+3. (On average, increasing trust reduces CT belief but the magnitudes are mostly very small and only significant in 3/4 models)
+
+4. Don't know how many observations removed for missingness, but the N's are quite large
+
+5. R2: Appears the model explains far more of the belief in conservative CTs than liberal CTs
+
+<br>
+
+Why go to all this trouble to create a list of effects that looks a lot like what we did with group means and box plots?
+
+- **SLIDE**
+
+:::
+
+
+
+
+## Miller, Saunders and Farhart (2016) {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Table 2 Notes
+
+- Table entries are unstandardized regression coefficients. 
+
+- Standard errors appear in parentheses.
+
+- *p < 0.05
+
+- Models control for personality (Big Five), authoritarianism, external efficacy, need for cognition (MTurk models only), need to evaluate, ideological extremity, attitudes about the federal government, religiosity, level of education, income, gender, age, race (White) and ethnicity (Latino)
+
+::: notes
+
+Per the note underneath Table 2
+
+- This regression estimates all of these effects WHILE CONTROLLING for ALL of these suspected confounders!
+
+- In other words, the authors are making the argument that these are CAUSAL effects and not just associations!
+
+- **Make sense?**
+
+<br>
+
+**Ok, any big picture questions on interpreting regressions?**
+
+<br>
+
+**SLIDE**: For next class
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**For Next Class**
+
+<br>
+
+1. Finish the textbook Chapter 11
+
+2. Submit your answers to Exercises 5, 6 and 7
+:::
+
+::: notes
+
+Canvas Assignment: Chapter 11 Assessment (part 2)
+
+1. Submit your answers to Exercise 5 on p307
+2. Submit your answers to Exercise 6 on p307
+3. Submit your answers to Exercise 7 on p307
+
+:::
+
 

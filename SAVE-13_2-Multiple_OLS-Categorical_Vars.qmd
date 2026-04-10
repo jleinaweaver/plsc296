@@ -1,0 +1,1143 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+library(modelr)
+library(ggeffects)
+library(crosstable)
+
+# Load US States Data
+d <- read_excel("../../DATA/2026-Spring/Pollock_Edwards_Textbook/Pollock_Edwards-US_States.xlsx", na = "NA")
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Ordinary Least Squares (OLS) Regression**
+
+- Introduction to multiple regression
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Check Canvas submissions
+
+2. Don't go super slow through this. There's nothing wrong with assuming they can do basic analyses at this point.
+
+<br>
+
+Last class we got in a ton of practice fitting, interpreting and evaluating OLS regressions
+
+- Today we segue into multiple regression
+
+- **SLIDE**: We'll do that by focusing on answering a research question with data
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+
+**Do voter ID laws reduce voter turnout?**
+
+<br>
+
+1. Load the Pollock_Edwards-US_States.xlsx
+
+2. Univariate analyses
+
+    - Outcome: `vep20.turnout`
+    
+    - Predictor: `voter.id.law`
+
+:::
+
+::: notes
+
+Our research question: Do voter ID laws reduce voter turnout?
+
+<br>
+
+As with all projects we begin with univariate analyses
+
+- Load the data and then summarize the variation in the two key measures we will be analyzing
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.panel-tabset}
+
+### VEP
+
+```{r, echo=TRUE}
+summary(d$vep20.turnout)
+```
+
+```{r, fig.align='center', fig.asp=.618, out.width="65%", fig.width=6}
+d |>
+  ggplot(aes(x = vep20.turnout)) +
+  geom_histogram(color = "white", bins = 10) +
+  labs(x = "Voting Eligible Population (% in 2020)", y = "Count") +
+  scale_x_continuous(breaks = seq(50,80,5), labels = scales::percent_format(scale = 1))
+```
+
+
+### Voter ID
+
+```{r, echo=FALSE}
+crosstable(data = d, cols = voter.id.law) |>
+  as_flextable()
+```
+
+```{r, fig.align='center', fig.asp=.618, out.width="55%", fig.width=6}
+d |>
+  ggplot(aes(x = voter.id.law)) +
+  geom_bar() +
+  labs(x = "", y = "Count") +
+  theme_bw()
+```
+
+:::
+
+::: notes
+
+**Takeaways from your univariate analysis of the VEP in 2020?**
+
+- **How much variation is there in voter turnout across the 50 US states?**
+
+<br>
+
+**Takeaways from your univariate analysis of the voter ID regimes in 2020?**
+
+- **How much variation is there in voter ID policies across the 50 US states?**
+
+<br>
+
+Alright, let's explore the research question
+
+- **What statistical tool should I use to examine the relationship between an interval variable and a categorical variable?**
+
+- (difference of means)
+
+- Everybody do it!
+
+<br>
+
+**SLIDE**: Result
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+```{r, echo=TRUE}
+# Calculate group means
+aggregate(data = d, vep20.turnout ~ voter.id.law, mean)
+```
+
+<br>
+
+::: {.fragment}
+
+```{r, echo=TRUE}
+# Null hypothesis test using ANOVA
+aov(data = d, vep20.turnout ~ voter.id.law) |> 
+  summary()
+```
+
+:::
+
+::: notes
+
+**What do you see in these group means?**
+
+- **Are voter ID policies associated with lower voter turnout?**
+
+<br>
+
+Next step, we need a test to determine if these groups are different from what the null would predict
+
+- **What function do we need to run a null hypothesis test for a difference of means with more than two levels?**
+
+- (ANOVA)
+
+- Ok, do that!
+
+<br>
+
+**REVEAL: So, what do we learn from these ANOVA results?**
+
+- (We cannot reject the NULL hypothesis of no difference between the groups)
+
+<br>
+
+Remember, the F statistic is a ratio of between-group error divided by within-group error
+
+- This high p-value is almost certainly because so many of the group means are so similar
+
+- HOWEVER, there is definitely something going on when comparing the no id group to all the different flavors of ID group
+
+- **SLIDE**: So, let's attack this differently
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+<br>
+
+```{r, echo=TRUE}
+# Create a dummy variable
+d$no_voter_id <- 
+  if_else(d$voter.id.law == "No document required", 1, 0)
+```
+
+<br>
+
+```{r, echo=TRUE}
+# Check the new variable
+table(d$no_voter_id)
+```
+
+::: notes
+
+Everybody create this dummy variable so we can split our sample by whether or not a state has any kind of voter ID policy in place
+
+<br>
+
+Once you create this variable I want you to replicate our analyses
+
+- **Remind me, what is the appropriate null hypothesis test for using this new variable?**
+
+- (A t-test! Only two levels in the categorical variable so prefer a t-test for its simplicity and ease of interpretation)
+
+<br>
+
+Ok, go!
+
+- Calculate the group means and then run a null hypothesis test on the results
+
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+```{r, echo=TRUE}
+# Null hypothesis test using a t-test
+t.test(data = d, vep20.turnout ~ no_voter_id)
+```
+
+::: notes
+
+**What do you see in these group means?**
+
+- **Are voter ID policies associated with lower voter turnout?**
+
+- (Seems clear from this that states without voter ID laws see 3% higher turnout on average)
+
+<br>
+
+**So, what do we learn from these t-test results?**
+
+- **Can we reject the null?**
+
+- (Narrowly insignificant at p-value of .08)
+
+- **SLIDE**: Let's look at it
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+```{r, echo=TRUE}
+# Null hypothesis test using a t-test
+t.test(data = d, vep20.turnout ~ no_voter_id)
+```
+
+```{r, fig.align='center', fig.asp=.618, out.width="50%", fig.width=6}
+x1 <- rnorm(n = 1000000, mean = 0, sd = 1)
+
+sim1 <- tibble(
+  x = density(x1)$x,
+  y = density(x1)$y
+)
+
+sim2 <- sim1 |>
+  filter(x <= 1.96 & x >= -1.96)
+
+# sim2 <- sim1 |>
+#   filter(x <= -1.96 | x >= 1.96)
+
+ggplot(sim1, aes(x = x, y = y)) +
+  geom_line() +
+  geom_area(data = sim2, aes(x = x, y = y), fill = "lightblue") +
+  theme_bw() +
+  labs(x = "Null Hypothesis", title = "Not all p-values are created equal") +
+  scale_x_continuous(limits = c(-3.5,3.5), breaks = -3:3) +
+  geom_vline(xintercept = 1.78, color = "red") # t value from t.test
+```
+
+::: notes
+
+Key to remember, statistical significance is not the end-all, be-all test of usefulness
+
+- It is just one piece of how we evaluate our statistical analyses
+
+<br>
+
+Long story short, I'm not willing to ignore this finding due just to this p-value
+
+- Given the small sample size, a p-value of .08 is relatively good
+
+- Let's call it strongly suggestive rather than conclusive support
+
+<br>
+
+Ok, set aside the statistical significance debate for a moment
+
+- **What is missing from our work so far if the aim is to make a causal argument about this linkage?**
+
+- (**SLIDE**: Confounders!)
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+```{r, fig.retina=3, fig.align='center', out.width="90%", fig.width=7}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Voter ID", "Confounders", "Voter\nTurnout")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 5) +
+  annotate("segment", x = 1.5, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+
+::: notes
+
+With observational data we can be confident that our comparison groups are not identical on average
+
+- Specifically, the characteristics of states that have voter ID laws are likely quite different from those that don't have voter ID laws
+
+- Also, it stands to reason that the characteristics of states with very high voter turnout are likely different from those with low turnout
+
+- Our job is to identify the confounders that, when we control for them, will allow us to isolate the effect of voter ID laws on turnout
+
+<br>
+
+**Help me brainstorm, what possible confounders are in this relationship?**
+
+- **Everybody take a look at the codebook for variables in our dataset we can consider!**
+
+- (*ON BOARD*)
+
+- (Factors that predict swing states AND Republican pressure for voter ID
+    - foreign.born
+    - hispanic.percent
+    - gini2016 (inequality)
+    - ba.or.more
+    - term.limits
+    - trump16
+
+<br>
+
+We'll come back to this list at the end, but for now let's focus on one story
+
+- **SLIDE**: Battleground states
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+```{r, fig.align='center'}
+library(usmap)
+
+test1 <- tibble(
+  state = c("AZ", "FL", "GA", "IA", "MI", "MN", "NV", "NH", "NC", "OH", "PA", "TX", "WI"),
+  values = rep("Battleground", 13)
+)
+
+plot_usmap(data = test1) +
+  labs(title = "Battleground States (Cook Political Report 2020)") +
+  scale_fill_manual(values = "#AA4499", na.value = "#DDCC77") + 
+  theme(legend.position = "none")
+
+# plot_usmap(regions = "states", include = c("AZ", "FL", "GA", "IA", "MI", "MN", "NV", "NH", "NC", "OH", "PA", "TX", "WI"), fill = "purple2") +
+#   labs(title = "Battleground States (Cook Political Report 2020)")
+```
+
+::: notes
+
+By "battleground state" I am adopting the Cook Political Report's definition
+
+- Includes states that have shifted between Democratic and Republican victories in recent presidential election cycles, AND
+
+- States rated as highly competitive, often too close to call until the final days of an election.
+
+<br>
+
+In the dataset this includes 13 states:
+
+- AZ, FL, GA, IA, MI, MN, NV, NH, NC, OH, PA, TX, WI
+
+<br>
+
+My argument here is that:
+
+1. Being a battleground state increases the pressure on Republicans in the legislature to enact voter ID
+
+2. Having a close election in your state increases the incentive for individual voters to vote (better chance your vote will matter!)
+
+<br>
+
+Let's test it
+
+- Everybody calculate the group means but now include both our voter ID dummy AND the battleground state dummy
+
+- Go!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, echo=TRUE}
+# Difference of means
+aggregate(data = d, 
+          vep20.turnout ~ no_voter_id + battleground2020, mean)
+```
+
+<br>
+
+::: {.fragment}
+
+```{r, echo=TRUE}
+# Two-factor ANOVA
+aov(data = d, vep20.turnout ~ no_voter_id + battleground2020) |> 
+  summary()
+```
+
+:::
+
+::: notes
+
+**Remind me, are these zero-order or partial effects?**
+
+- (Partial!)
+
+<br>
+
+**What do you see in these group means?**
+
+- **Are voter ID policies associated with lower voter turnout?**
+
+- (Seems clear that states without voter ID laws see higher turnout in BOTH battleground and non-battleground states on average)
+
+<br>
+
+BUT, is this a significant difference?
+
+- **What function do we need to run a null hypothesis test of these group means?**
+
+- (two-factor ANOVA)
+
+<br>
+
+**REVEAL: So, what do we learn from these ANOVA results?**
+
+- (Battleground state effect is significant so we can reject the null that says no difference in turnout between battleground and non-battleground states)
+
+- (Voter ID effect has come down to .07, but is still not quite at the .05 threshold)
+
+- **BUT** this doesn't tell us the size or direction of either effect!
+
+<br>
+
+**SLIDE**: Summing up in order to move forward
+
+:::
+
+
+
+## Null Hypothesis Testing {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**Two Groups**
+
+- Difference of means and a t-test
+
+- Difference of proportions and a proportions test
+
+**More Groups**
+
+- Difference of means and an ANOVA (aov)
+
+- Cross-tab and a $\chi^2$ test
+
+::: notes
+
+In sum, these methods have allowed us to accomplish a great deal in terms of inferential statistics
+
+- e.g. describing a sample in order to learn about a population
+
+<br>
+
+Moving forward, we need to embrace regression in order to push our tools further
+
+- OLS will let us add more confounders to each test
+
+- OLS will let us include interval variables as controls much more easily
+
+- OLS will let us address nonlinear relationships in our data
+
+- And more!
+
+<br>
+
+So, let's take a few steps back and shift to OLS in order to move ourselves forward in answering our research question!
+
+- **SLIDE**: We'll start by focusing on the relationship WITHOUT a confounder
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="45%"}
+**Difference of Means and T-Test**
+
+```{r, echo=TRUE}
+t.test(data = d, 
+       vep20.turnout ~ no_voter_id)
+```
+:::
+
+::: {.column width="55%"}
+**Simple OLS Regression**
+
+```{r, echo=TRUE}
+lm(data = d, vep20.turnout ~ no_voter_id) |> 
+  summary()
+```
+:::
+
+::::
+
+::: notes
+
+On the left is the difference of means and t-test, on the right is the OLS
+
+- Compare and contrast these results for me
+
+- **What do you see?**
+
+<br>
+
+Let's use the simple OLS regression to make predictions
+
+- **What is the predicted voter turnout in states with no voter ID policies in place?**
+
+    - (The intercept: 66.85%)
+
+- **What is the predicted voter turnout in states with voter ID policies in place?**
+
+    - (66.85 + 3.05 = 69.9%)
+
+- **Does that look or sound like anything on the screen?**
+
+    - (The group means!)
+
+<br>
+
+In the case of a binary predictor the OLS generates the group means!
+
+<br>
+
+**OK, how else are these two approaches the same?**
+
+- Both offer null hypothesis testing in p-values (and the p-values are VERY similar)
+
+- Both offer null hypothesis testing in CIs
+
+    - OLS needs an extra function, but the SE is right there for us
+
+<br>
+
+**How are these approaches different?**
+
+- BIG difference in terms of the null hypothesis testing!
+
+- Difference of means t-test is asks IF the groups are actually different from the null
+
+    - Doesn't tell you direction or magnitude
+
+- OLS significance test asks if your SPECIFIC, measured difference is a better fit to the data than the null
+
+    - This estimates both direction and magnitude!
+
+- PLUS OLS gives us other useful ways to think about the fit (SEs, R2, Adjusted R2, shape and size of the residuals, etc)
+
+<br>
+
+**SLIDE**: In order to add our confounder in we need to change our formula for a line
+
+:::
+
+
+
+## Making Controlled Comparisons {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**Simple OLS Regression**
+
+$$ y = \alpha + \beta(x) + \epsilon $$
+
+**Multiple OLS Regression**
+
+$$ y = \alpha + \beta_1(x_1) + \beta_2(x_2) + ... + \beta_k(x_k) + \epsilon $$
+
+::: notes
+
+A simple OLS regression is a bivariate test
+
+- One predictor used to model one outcome
+
+- We then interpret the beta coefficient (e.g. the slope of the line) as the effect on the outcome of increasing X by one
+
+<br>
+
+Multiple OLS regression is a multivariate test
+
+- We can now include as many predictor variables as we want in order to model an outcome
+
+- e.g. all the confounders we need to establish a causal argument!
+
+<br>
+
+**Per the textbook, how is multiple regression like the controlled comparisons we have been doing so far?**
+
+- **In other words, how do we interpret the partial regression coefficients in the multiple regression?**
+
+- (You CANNOT interpret ANY single coefficient without reference to the others!)
+
+    - e.g. these are partial effects, not zero-order effects
+    
+- To be clear, BOTH of these formulas describe a SINGLE line
+
+- In the multiple regression version the slope of the line is determined by ALL of these partial regression coefficients
+
+- That means the meaning of any one partial regression coefficient depends on holding all other predictor variables constant
+
+- This is the ceteris paribus condition
+
+<br>
+
+**Questions on this intuition from the textbook?**
+
+<br>
+
+Ok, textbook Exercise 5 asks why you shouldn't select variables to maximize the adjusted R2.
+
+- **Why is this a terrible idea?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+## Making Causal Arguments {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=8}
+## Manual DAG
+d1 <- tibble(
+  x = c(1, 2, 3),
+  y = c(1, 2, 1),
+  labels = c("Treatment", "Confounder", "Outcome")
+)
+
+ggplot(data = d1, aes(x = x, y = y)) +
+  geom_point(size = 0, color = "white") +
+  theme_void() +
+  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
+  geom_label(aes(label = labels), size = 7) +
+  annotate("segment", x = 1.5, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
+  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
+  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
+```
+
+$$ y = \alpha + \beta_1(x_1) + \beta_2(x_2) + ... + \beta_k(x_k) + \epsilon $$
+
+::: notes
+
+Because we're making causal arguments and not garbage can models
+
+- We're not economists!
+
+<br>
+
+Maximizing adjusted R-square leads to overfitting your data
+
+- e.g. describing a line that so perfectly mirrors your sample it stops representing the population we are interested in!
+
+- Remember, the goal of inferential statistics is to learn about the population NOT perfectly describe the sample
+
+<br>
+
+Bottom line, if it isn't your primary mechanism or a confounder then leave it out!
+
+<br>
+
+**SLIDE**: Ok, let's take this back to our RQ for today
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+<br>
+
+```{r, echo=TRUE}
+# Fit the multiple regression
+lm(data = d, vep20.turnout ~ no_voter_id + battleground2020) |>
+  summary()
+```
+
+::: notes
+
+Everybody make sure the code runs
+
+- **Does everybody see that all we've done is added a second variable to the right side of the formula in the lm function?**
+
+<br>
+
+**SLIDE**: Let's evaluate the fit of this model
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+```{r}
+lm(data = d, vep20.turnout ~ no_voter_id + battleground2020) |> 
+  modelsummary(out = "gt",
+             fmt = 2,
+             stars = c("*" = .05),
+             gof_omit = "IC|F|Log") |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::: notes
+
+Ok, talk me through the fit of this model to the data using our four evaluation steps
+
+<br>
+
+**Any concerns with missing data?**
+
+- (Nope. Includes all 50 states!)
+
+<br>
+
+**Is the model statistically significant?**
+
+- (Battleground state: yes)
+
+- (No voter ID is close: .08)
+
+<br>
+
+**What do we learn from the Adjusted R2?**
+
+- (Only explains 10% of the variation in voter turnout)
+
+- BUT, the magnitude of each effect is quite substantial; 3-4% easily moves most elections!
+
+<br>
+
+Step 4 is to evaluate the residuals but we'll hit those next week
+
+<br>
+
+**SLIDE**: Let's reinforce our intuitions on this approach by connecting it back to what we've done previously
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="63%"}
+**Difference of Means and ANOVA**
+
+```{r, echo=TRUE}
+aggregate(data = d, 
+          vep20.turnout ~ no_voter_id + battleground2020, 
+          mean)
+
+aov(data = d, 
+    vep20.turnout ~ no_voter_id + battleground2020) |> 
+  summary()
+```
+:::
+
+::: {.column width="37%"}
+**Multiple OLS Regression**
+
+```{r}
+lm(data = d, vep20.turnout ~ no_voter_id + battleground2020) |> 
+  modelsummary(out = "gt",
+             fmt = 2,
+             stars = c("*" = .05),
+             gof_omit = "IC|F|Log") |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "medium")
+  ), locations = gt::cells_body())
+```
+:::
+
+::::
+
+::: notes
+
+On the left is our difference of means test with two-factor ANOVA
+
+<br>
+
+On the right is the polished multiple regression using the modelsummary function
+
+<br>
+
+**SLIDE**: To connect these dots I want you to translate this multiple regression into the formula for a line
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="63%"}
+**Difference of Means and ANOVA**
+
+```{r, echo=TRUE}
+aggregate(data = d, 
+          vep20.turnout ~ no_voter_id + battleground2020, 
+          mean)
+
+aov(data = d, 
+    vep20.turnout ~ no_voter_id + battleground2020) |> 
+  summary()
+```
+:::
+
+::: {.column width="37%"}
+**Multiple OLS Regression**
+
+```{r}
+lm(data = d, vep20.turnout ~ no_voter_id + battleground2020) |> 
+  modelsummary(out = "gt",
+             fmt = 2,
+             stars = c("*" = .05),
+             gof_omit = "IC|F|Log") |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "medium")
+  ), locations = gt::cells_body())
+```
+:::
+::::
+
+<br>
+
+$$ y = \alpha + \beta_1(x_1) + \beta_2(x_2) + ... + \beta_k(x_k) + \epsilon $$
+
+::: notes
+
+Ok, everybody write down the formula for a line but replace the variable letters with the actual results from the table
+
+- Go!
+
+<br>
+
+(**SLIDE**)
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+:::: {.columns}
+::: {.column width="60%"}
+**Difference of Means and ANOVA**
+
+```{r, echo=TRUE}
+aggregate(data = d, 
+          vep20.turnout ~ no_voter_id + battleground2020, 
+          mean)
+
+aov(data = d, 
+    vep20.turnout ~ no_voter_id + battleground2020) |> 
+  summary()
+```
+:::
+
+::: {.column width="40%"}
+**Multiple OLS Regression**
+
+```{r}
+lm(data = d, vep20.turnout ~ no_voter_id + battleground2020) |> 
+  modelsummary(out = "gt",
+             fmt = 2,
+             stars = c("*" = .05),
+             gof_omit = "IC|F|Log") |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "medium")
+  ), locations = gt::cells_body())
+```
+:::
+::::
+
+$$ y = \alpha + \beta_1(x_1) + \beta_2(x_2) + ... + \beta_k(x_k) + \epsilon $$
+
+$$ \text{Voter Turnout} = 65.93 + 2.95(\text{No ID}) + 3.69(\text{Battleground})$$
+
+::: notes
+
+**Everybody get this?**
+
+<br>
+
+Now I want you to use the formula for a line to make the same four predictions as the group means on the left
+
+<br>
+
+**What is the model's prediction for voter turnout if...**
+
+1. Your state requires ID and is not a battleground?
+
+    - (65.93)
+    
+2. Your state does not require ID and is not a battleground?
+
+    - (65.93 + 2.95 = 68.88)
+
+3. Your state requires ID and is a battleground?
+
+    - (65.93 + 3.69 = 69.62)
+    
+4. Your state does not require ID and is a battleground?
+
+    - (65.93 + 2.95 + 3.69 = 72.57)
+
+<br>
+
+**Any idea why our estimates from the multiple OLS no longer match the group means?**
+
+- (Because they answer fundamentally different questions)
+
+1. Regression adjusts for all predictors
+
+    - The group mean is the average ignoring all other factors
+    - Regression produces partial effects where each value is adjusted for the others!
+
+2. If the group sizes are different, regression tries to treat each group more equally (up-weighting the small groups, down-weighting the large ones)
+
+    - Our voter ID variable is 18 vs 32 so the regression will adjust to treat them as comparable
+
+3. Regression allows us to consider what if different types of voter ID impact turnout differently? 
+
+    - In that case, the means get adjusted
+    
+<br>
+
+**Questions on what we've done so far?**
+
+- **e.g. the intuitions of multiple OLS from the textbook?**
+
+<br>
+
+**SLIDE**: Practice time
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**RQ: Do voter ID laws reduce voter turnout?**
+:::
+
+<br>
+
+Use a multiple OLS regression to estimate the CAUSAL effect of voter ID laws (`vep20.turnout`) on voter turnout (`no_voter_id`)
+
+- Confounders: Battleground state (`battleground2020`), proportion of the state with a college degree (`ba.or.more`) and the proportion of the state identifying as hispanic (`hispanic.percent`)
+
+::: notes
+
+Which of the following THREE models do you ARGUE is the closest to a causal argument about the effect of voter ID on voter turnout?
+
+
+```{r}
+# Test other confounders?
+# foreign.born
+# hispanic.percent
+# gini2016 (inequality)
+# ba.or.more
+# term.limits
+# trump16
+
+lm(data = d, vep20.turnout ~ no_voter_id + battleground2020) |> summary()
+
+lm(data = d, vep20.turnout ~ no_voter_id + battleground2020 + ba.or.more) |> summary()
+
+lm(data = d, vep20.turnout ~ no_voter_id + battleground2020 + hispanic.percent) |> summary()
+
+lm(data = d, vep20.turnout ~ no_voter_id + battleground2020 + ba.or.more + hispanic.percent) |> summary()
+
+
+
+
+
+```
+
+:::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

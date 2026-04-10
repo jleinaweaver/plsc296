@@ -12,7 +12,24 @@ library(modelsummary)
 library(ggeffects)
 
 # Input practice WDI data
-wdi <- read_excel("../Data_in_Class/Class11-1-Simple_OLS-WDI_LifeExpectancy/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+wdi <- read_excel("../../DATA/2026-Spring/WDI/Lectures/World_Development_Indicators-2023-Life_Expectancy.xlsx", na = "NA")
+
+# Input class selections from WDI
+d <- read_excel("../../DATA/2026-Spring/WDI/Week03-Class_Selections/Spring2026-WDI_Data_Class_Selections-SHORT_LABELS.xlsx", na = "NA")
+
+d_long <- read_excel("../../DATA/2026-Spring/WDI/Week03-Class_Selections/Spring2026-WDI_Data_Class_Selections.xlsx", na = "NA")
+
+# # Increasing modelsummary color and size
+# "xx-small", "x-small", "small", "medium", "large", "x-large", or "xx-large"
+# modelsummary(models,
+#              out = "gt",
+#              fmt = 2, 
+#              stars = c("*" = .05), 
+#              gof_omit = "IC|F|Log") |>
+#   gt::tab_style(style = list(
+#                   gt::cell_fill(color = 'white'),
+#                   gt::cell_text(size = "large")
+#   ), locations = gt::cells_body())
 ```
 
 <br>
@@ -38,13 +55,10 @@ Prep for Class
 
 <br>
 
-Kick us off with a big question!
-
-- **Tell me, why do we use regressions?**
-
-- (**SLIDE**)
+**SLIDE**: Let's refresh our memories on regression
 
 :::
+
 
 
 
@@ -72,665 +86,574 @@ Kick us off with a big question!
 
 <br>
 
-**SLIDE**: Let's review your assignments
+**SLIDE**: For today I asked you to use regressions to answer a big question
 
 :::
 
 
 
-## Assignment For Today {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-What is the effect of college completion on poverty rates in midwest cities?
-
-1. Fit the regression
-
-2. Submit a polished regression table, residuals plot and predictions plot
-
-3. Answer the question
-
-4. Evaluate the regression
-
-::: notes
-
-**How did this go? Toughest part?**
-
-<br>
-
-*Save your conclusions/results for the next slide*
-
-<br>
-
-**What is the effect of college completion on poverty rates in midwest cities?**
-
-<br>
-
-**In real-world terms, is this a small or large effect? Did you expect something different?**
-
-<br>
-
-**How confident are you in this regression as a summary of the relationship?**
-
-<br>
-
-**SLIDE**: Results
-
-```{r}
-res1 <- lm(data = midwest, percbelowpoverty ~ percollege)
-
-modelsummary(list("Poverty (%)" = res1), 
-             output = "gt", fmt = 2, 
-             stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_rename = c("percollege"= "College Degree (%)")) |>
-  gt::tab_style(style = list(
-                  gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "x-large")
-  ), locations = gt::cells_body())
-
-# # A few students reversed the predictor and outcome. Check their results with this:
-# res2 <- lm(data = midwest, percollege ~ percbelowpoverty)
-# 
-# summary(res2)
-```
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .smaller}
-
-::::: {.columns}
-
-:::: {.column width="35%"}
-
-<br>
-
-```{r, echo=FALSE}
-res1 <- lm(data = midwest, percbelowpoverty ~ percollege)
-
-modelsummary(list("Poverty (%)" = res1), 
-             output = "gt", fmt = 2, 
-             stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_rename = c("percollege"= "College Degree (%)")) |>
-  gt::tab_style(style = list(
-                  gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "x-large")
-  ), locations = gt::cells_body())
-```
-
-::::
-
-:::: {.column width="65%"}
-
-::: {.panel-tabset}
-
-### Scatter
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=6}
-ggplot(midwest, aes(x = percollege, y = percbelowpoverty)) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "College Degree (%)", y = "Population Below the Poverty Line (%)") +
-  geom_smooth(method = "lm", se = FALSE)
-
-```
-
-### Residuals
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=6}
-plot(res1, which = 1)
-```
-
-### Predictions
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=6}
-plot(ggpredict(res1, terms = "percollege")) +
-  labs(x = "College Degree (%)", y = "Population Below the Poverty Line (%)",
-       title = "Investments in college access and affordability may directly\nreduce poverty rates")
-```
-
-### Predictions 2
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=6}
-plot(ggpredict(res1, terms = "percollege")) +
-  labs(x = "College Degree (%)", y = "Population Below the Poverty Line (%)",
-       title = "Investments in college access and affordability may directly\nreduce poverty rates") +
-  ylim(0,50)
-```
-
-:::
-
-::::
-
-:::::
-
-::: notes
-
-**Did everybody get these results?**
-
-<br>
-
-**Scatter: Does everybody see why this summary has such a low R2 value?**
-
-- (The line doesn't cover the actual full range of outcome values)
-
-- (HOWEVER, this might still be a USEFUL estimate of this relationship)
-
-- Don't forget, our goal is a best estimate of the slope, NOT the highest R2 possible
-
-<br>
-
-**Any missing data problems?**
-
-- (No)
-
-```{r, echo=TRUE}
-nrow(midwest)
-```
-
-<br>
-
-**Residuals: Any concerns with patterns or heteroscedasticity in the residuals?**
-
-- (A hint of non-linearity but not a deal-breaker)
-
-<br>
-
-**Predictions: Are these moves in poverty a big deal or not?**
-
-- Be careful interpreting the predictions plot
-
-- This is designed to make the slow fill the entire space, YOU have to recognize how little range is visualized on the y-axis
-
-- *Show Predictions 2 with full range of the data*
-
-<br>
-
-**Predictions 2: How does this change our sense of the relationship?**
-
-<br>
-
-**Assuming we want this small effect, how hard would it be to increase college completion rates in meaningful ways?**
-
-<br>
-
-**SLIDE**: Our plan for today is to keep practicing all of these skills!
-
-:::
-
-
-
-
-## Global Life Expectancy {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.align='center', fig.asp=.618, fig.width=9}
-wdi |>
-  ggplot(aes(x = life_expectancy_total)) +
-  geom_histogram(color = "white") +
-  theme_bw() +
-  labs(x = "Life Expectancy (Years)", y = "Count of Observations", caption = "Source: WDI 2020 data") +
-  annotate("text", x = 82.3, y = .5, label = "Ireland", color = "white", srt = 90, hjust = 0) +
-  annotate("text", x = 75.6, y = .5, label = "United States", color = "white", srt = 90, hjust = 0) +
-  annotate("text", x = 71, y = .5, label = "Russia", color = "white", srt = 90, hjust = 0) +
-  annotate("text", x = 62, y = .5, label = "Afghanistan", color = "white", srt = 90, hjust = 0) +
-  scale_x_continuous(breaks = seq(50,90,5))
-
-#View(d |> select(`Country Name`, life_expectancy_total))
-```
-
-::: notes
-
-I've uploaded World Bank data to our Canvas modules for today
-
-- Everybody grab that data!
-
-<br>
-
-Countries around the world vary dramatically in terms of their life expectancies
-
-- Ireland: 82
-- USA: 76
-- Russia: 71
-- Afghanistan: 62
-- Nigeria: 53
-
-<br>
-
-Our job today is to use regressions to identify and evaluate possible answers to the question of why people in some countries tend to live longer than those in others
-
-:::
-
-
-
-## Regress life expectancy on... {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-::::: {.columns}
-:::: {.column width="50%"}
-```{r, fig.align='left', fig.asp=.8, fig.width=6}
-wdi |>
-  ggplot(aes(x = life_expectancy_total)) +
-  geom_histogram(color = "white") +
-  theme_bw() +
-  labs(x = "Life Expectancy (Years)", y = "Count of Observations", caption = "Source: WDI 2020 data") +
-  scale_x_continuous(breaks = seq(50,90,5))
-```
-::::
-
-:::: {.column width="50%"}
-
-<br>
+## {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-1. fertility_rate_per_woman
-
-2. compulsory_education_yrs
-
-3. unemployment_pct
+**Outcome to Explain: Average Life Expectancy**
 :::
 
-<br>
+```{r, fig.align='center', fig.asp=0.618, fig.width=8}
+# wdi |> select(country, life_expectancy) |> View()
 
-Task: Fit, interpret and evaluate each model
-
-::::
-:::::
-
-::: notes
-Work with the people around you to fit and evaluate three regressions of life expectancy
-
-- Model 1 regresses life expectancy on the fertility rate per woman
-
-- Model 2 regresses life expectancy on the number of years of education you are required to complete
-
-- Model 3 regresses life expectancy on the proportion of adults who are unemployed
-
-<br>
-
-Your job:
-
-1. Fit each model,
-
-2. Interpret the coefficient, 
-
-3. Make predictions using the model, and then 
-
-4. Evaluate each model with our four steps
-
-<br>
-
-**Questions?**
-
-- Get to it!
-
-<br>
-
-**SLIDE**: Fertility rate models
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .smaller}
-
-::::: {.columns}
-
-:::: {.column width="40%"}
-
-<br>
-
-```{r, echo=FALSE}
-res1 <- lm(data = wdi, life_expectancy_total ~ fertility_rate_per_woman)
-
-modelsummary(list("Life Expectancy" = res1),
-             out = "gt",
-             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
-             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "tobacco_use_pct" = "Tobacco Use (%)", "compulsory_education_yrs" = "Compulsory Education (years)")) |>
-  gt::tab_style(style = list(
-                  gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "x-large")
-  ), locations = gt::cells_body())
+wdi |>
+  ggplot(aes(x = life_expectancy)) +
+  geom_histogram(color = "white", bins = 15) +
+  theme_bw() +
+  labs(x = "Global Average Life Expectancy", y = "Count") +
+  annotate("text", x = 61.25, y = .5, label = "Liberia", color = "white", srt = 90, hjust = 0, size = 6) +
+  annotate("text", x = 65.75, y = .5, label = "S. Africa", color = "white", srt = 90, hjust = 0, size = 6) +
+  annotate("text", x = 70.4, y = .5, label = "Indonesia", color = "white", srt = 90, hjust = 0, size = 6) +
+  annotate("text", x = 75, y = .5, label = "Mexico", color = "white", srt = 90, hjust = 0, size = 6) +
+  annotate("text", x = 79.5, y = .5, label = "Germany", color = "white", srt = 90, hjust = 0, size = 6) +
+  annotate("text", x = 84, y = .5, label = "Japan", color = "white", srt = 90, hjust = 0, size = 6) +
+  scale_x_continuous(breaks = seq(50,90,5))
 ```
 
-::::
+::: notes
 
-:::: {.column width="60%"}
+What explains the variation in average global life expectancy?
+
+<br>
+
+Here I'm showing you a histogram of our key outcome variable
+
+- THIS is the variation I want to try and explain
+
+- Why do the people in some countries live longer than 80 years and some well below 70?
+
+<br>
+
+**Where is the US is in this distribution?**
+
+- (A score of 78 years which puts us at 62nd globally or the 70th percentile)
+
+- (R code below)
+
+<br>
+
+**SLIDE**: The regression results
+
+<br>
+
+```{r, echo=TRUE}
+wdi |> 
+  select(country, life_expectancy) |>
+  arrange(desc(life_expectancy)) |>
+  mutate( rank = 1:222 ) |>
+  filter(country == "United States")
+
+quantile(wdi$life_expectancy, na.rm = TRUE, probs = .70)
+```
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**OLS Models of Global Life Expectancy**
+:::
 
 ::: {.panel-tabset}
 
-### Scatter
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-ggplot(wdi, aes(x = fertility_rate_per_woman, y = life_expectancy_total)) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Fertility (births per woman)", y = "Life Expectancy (years)") +
-  geom_smooth(method = "lm", se = FALSE)
-```
-
-### Predictions
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-plot(ggpredict(res1, terms = "fertility_rate_per_woman")) +
-  labs(x = "Fertility (births per woman)",
-       y = "Life Expectancy (years)")
-```
-
-### Residuals
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-plot(res1, which = 1)
-```
-
-:::
-
-::::
-
-:::::
-
-::: notes
-
-**Did everybody get these results for the fertility rate regression?**
-
-<br>
-
-**Interpret the coefficient for me**
-
-- As average births per woman increases by one, life expectancy decreases by almost 5 years!
-
-<br>
-
-**What is obvious from this set of predictions?**
-
-- The effect is DRAMATICALLY larger
-
-- ONE additional child is a 5 year decrease in life expectancy (on average)!
-
-- The effect of fertility rate on life expectancy is staggeringly large!
-
-<br>
-
-**So, how well does the regression line fit the data?**
-
-- **e.g. missing data, significance, R2, residuals**
-
-<br>
-
-Once again, let's reinforce what the R2 is meant to tell us
-
-- Here we see a high R2 value, e.g. almost 70% of the outcome is explained by this one predictor
-
-- The blue line covers the complete range of the outcomes!
-
-<br>
-
-**Any concerns with heteroskedasticity in the fertility rate regression?**
-
-- Slight non-linearity here but the effect is rather minor
-
-- Does appear that we have fewer cases at the low end of the scale (e.g. very high fertility rates) and so the model fits this extreme less well
-
-<br>
-
-**SLIDE**: Let's talk education
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .smaller}
-
-::::: {.columns}
-
-:::: {.column width="40%"}
-
-<br>
-
-```{r, echo=FALSE}
-res2 <- lm(data = wdi, life_expectancy_total ~ compulsory_education_yrs)
-
-modelsummary(list("Life Expectancy" = res2),
-             out = "gt",
-             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
-             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "tobacco_use_pct" = "Tobacco Use (%)", "compulsory_education_yrs" = "Compulsory Education (years)")) |>
-  gt::tab_style(style = list(
-                  gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "x-large")
-  ), locations = gt::cells_body())
-```
-
-::::
-
-:::: {.column width="60%"}
-
-::: {.panel-tabset}
-
-### Scatter
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-ggplot(wdi, aes(x = compulsory_education_yrs, y = life_expectancy_total)) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Compulsory Education (years)", y = "Life Expectancy (years)") +
-  geom_smooth(method = "lm", se = FALSE)
-```
-
-
-### Predictions
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-plot(ggpredict(res2, terms = "compulsory_education_yrs")) +
-  labs(x = "Compulsory Education (years)",
-       y = "Life Expectancy (years)")
-```
-
-### Residuals
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-plot(res2, which = 1)
-```
-
-:::
-
-::::
-
-:::::
-
-::: notes
-
-**Did everybody get these results for the education regression?**
-
-<br>
-
-**Interpret the coefficient for me**
-
-- Add one year of compulsory education and see an average increase of life expectancies by almost one year
-
-<br>
-
-**What is obvious from this set of predictions?**
-
-- A country with ZERO required school that implements a primary education requirement will see, on average, an improvement of 4 years of life expectancy
-    - 0 to 6 yrs education = 69.64-65.31 = 4.33
-    
-- A country moving from a primary only requirement to a secondary ed requirement will see, on average, an improvement of 4 years of life expectancy
-
-- Do both and add 8 years!
-
-<br>
-
-**So, how well does the regression line fit the data?**
-
-- **e.g. missing data, significance, R2, residuals**
-
-<br>
-
-Once again, let's reinforce what the R2 is meant to tell us
-
-- Here we see a VERY low R2 value, e.g. almost 7% of the outcome is explained by this one predictor
-
-- The blue line covers only a small subset of the outcomes
-
-- BUT our interest is in the effect, not perfectly predicting the outcome
-
-<br>
-
-**Any concerns with heteroskedasticity in the education regression?**
-
-- This residual plot shows the flaw in just relying on the red line because it's tracking changes across the levels that are probably just scattered randomly
-
-- Some evidence of heteroskedasticity: At the low end error is high, at the high end it's the opposite
-
-- Probably not a deal breaker but not a clear case of homoscedasticity
-
-<br>
-
-**So, if you ran a development agency would you get more bang from your buck focusing on women's rights and healthcare or increasing compulsory education?**
-
-<br>
-
-**SLIDE**: Let's talk unemployment
-
-:::
-
-
-
-## {background-image="Images/background-data_blue_v4.png" .smaller}
-
-::::: {.columns}
-
-:::: {.column width="40%"}
-
-<br>
-
-```{r, echo=FALSE}
-res3 <- lm(data = wdi, life_expectancy_total ~ unemployment_pct)
-
-modelsummary(list("Life Expectancy" = res3),
-             out = "gt",
-             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
-             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "unemployment_pct" = "Unemployment Rate (%)", "compulsory_education_yrs" = "Compulsory Education (years)")) |>
-  gt::tab_style(style = list(
-                  gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "x-large")
-  ), locations = gt::cells_body())
-```
-
-::::
-
-:::: {.column width="60%"}
-
-::: {.panel-tabset}
-
-### Scatter
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-ggplot(wdi, aes(x = unemployment_pct, y = life_expectancy_total)) +
-  geom_point() +
-  theme_bw() +
-  labs(x = "Unemployment Rate (%)", y = "Life Expectancy (years)") +
-  geom_smooth(method = "lm", se = FALSE)
-```
-
-
-### Predictions
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-plot(ggpredict(res3, terms = "unemployment_pct")) +
-  labs(x = "Unemployment Rate (%)",
-       y = "Life Expectancy (years)")
-```
-
-### Residuals
-
-```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
-plot(res3, which = 1)
-```
-
-:::
-
-::::
-
-:::::
-
-::: notes
-
-**Did everybody get these results for the unemployment regression?**
-
-<br>
-
-**Interpret the coefficient for me**
-
-- As the unemployment rate increases by 1%, average life expectancy decreases .12 years
-    
-    - So, add 8% unemployment and shave one year off of average life expectancies!
-
-<br>
-
-**What is obvious from this set of predictions?**
-
-- Negative but the effect magnitude is TINY
-
-<br>
-
-**So, how well does the regression line fit the data?**
-
-- **e.g. missing data, significance, R2, residuals**
-
-<br>
-
-- Some missing data, insignificant coefficient, some problems in the residuals plot
-
-<br>
-
-Once again, let's reinforce what the R2 is meant to tell us
-
-- Here we see a VERY, VERY, VERY low R2 value, e.g. not even 1% of the outcome is explained by this one predictor
-
-- The blue line covers basically none of the outcomes
-
-- BUT our interest is in the effect, not perfectly predicting the outcome
-
-<br>
-
-**SLIDE**: Put them all together!
-
-:::
-
-
-
-## Models of Global Life Expectancy {background-image="Images/background-data_blue_v4.png" .center .smaller}
+### Results
 
 ```{r}
-modelsummary(models = list(res1, res2, res3),
-             out = "gt",
-             fmt = 2, stars = c("*" = .05), gof_omit = "IC|F|Log",
-             coef_rename = c("fertility_rate_per_woman" = "Fertility (births per woman)", "unemployment_pct" = "Unemployment Rate (%)", "compulsory_education_yrs" = "Compulsory Education (years)")) |>
-  gt::tab_style(style = list(
-                  gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "large")
-  ), locations = gt::cells_body())
+#names(wdi)
+res1 <- lm(data = wdi, life_expectancy ~ measles_immune_pct)
+res2 <- lm(data = wdi, life_expectancy ~ secondary_education_pct)
+res3 <- lm(data = wdi, life_expectancy ~ fertility_rate)
 
+modelsummary(models = list(res1, res2, res3), 
+             output = "gt", 
+             fmt = 2, 
+             stars = c('*' = .05), 
+             gof_omit = "IC|Log|F",
+             coef_map = c("measles_immune_pct"= "Measles Immunizations (%)",
+                          "secondary_education_pct" = "Secondary Education (%)",
+                          "fertility_rate" = "Fertility Rate",
+                          "(Intercept)" = "Constant"))
 ```
+
+### Code
+```{r, echo=TRUE, eval=FALSE}
+# Fit the models
+res1 <- lm(data = wdi, life_expectancy ~ measles_immune_pct)
+res2 <- lm(data = wdi, life_expectancy ~ secondary_education_pct)
+res3 <- lm(data = wdi, life_expectancy ~ fertility_rate)
+
+# Output the table
+modelsummary(models = list(res1, res2, res3), 
+             fmt = 2, 
+             stars = c('*' = .05), 
+             gof_omit = "IC|Log|F",
+             coef_map = 
+               c("measles_immune_pct"= "Measles Immunizations (%)",
+                 "secondary_education_pct" = "Secondary Education (%)",
+                 "fertility_rate" = "Fertility Rate",
+                 "(Intercept)" = "Constant"))
+```
+
+:::
 
 ::: notes
 
-**Ok, where does this leave us?**
-
-- **Is one model more useful than the others? Why?**
+**Did everybody make this table (e.g. three models together with these results)?**
 
 <br>
 
-Canvas assignment for next class
+Let's step through your analyses of this work starting with the statistical significance of the models
 
-- What is the effect of tobacco use on average life expectancies around the world?
+- In other words, how well does each model fit the data (e.g. missing data, significance and R2)?
 
-- Details on Canvas
+<br>
+
+**Is the measles model a good fit for the data or not? Why?**
+
+<br>
+
+**Is the education model a good fit for the data or not? Why?**
+
+<br>
+
+**Is the fertility rate model a good fit for the data or not? Why?**
+
+<br>
+
+**SLIDE**: Alright, let's shift to the substantive significance of each model
 
 :::
 
 
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.panel-tabset}
+
+### Model 1
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.618, fig.width=7, out.width="87%"}
+plot(ggpredict(res1, "measles_immune_pct")) +
+  labs(x = "Measles Immunity (%)", 
+       y = "Average Life Expectancy (years)",
+       title = "Predicted Values of Life Expectancy") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+
+### Code
+
+```{r, echo=TRUE, eval=FALSE}
+plot(ggpredict(res1, "measles_immune_pct")) +
+  labs(x = "Measles Immunity (%)", 
+       y = "Average Life Expectancy (years)") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+
+:::
+
+::: notes
+
+**How substantial is the impact of measles immunizations on average life expectancy?**
+
+<br>
+
+**Is focusing on this a "good" policy recommendation for improving life expectancy? Why or why not?**
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.align='center', fig.asp=.618, fig.width=6}
+plot(ggpredict(res2, "secondary_education_pct")) +
+  labs(x = "Secondary Education (%)", y = "Average Life Expectancy (years)", title = "Predicted Values of Life Expectancy") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+
+::: notes
+
+**How substantial is the impact of secondary education on average life expectancy?**
+
+<br>
+
+**Is focusing on this a "good" policy recommendation for improving life expectancy? Why or why not?**
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.align='center', fig.asp=.618, fig.width=6}
+plot(ggpredict(res3, "fertility_rate")) +
+  labs(x = "Fertility Rate", y = "Average Life Expectancy (years)", title = "Predicted Values of Life Expectancy") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+
+::: notes
+
+**How substantial is the impact of fertility rates on average life expectancy?**
+
+<br>
+
+**Is focusing on this a "good" policy recommendation for improving life expectancy? Why or why not?**
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r, fig.align='center', fig.asp=.618, fig.width=6, out.width="45%"}
+plot(ggpredict(res1, "measles_immune_pct")) +
+  labs(x = "Measles Immunity (%)", y = "Average Life Expectancy (years)", title = "Predicted Values (Model 1)") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.618, fig.width=6}
+plot(ggpredict(res2, "secondary_education_pct")) +
+  labs(x = "Secondary Education (%)", y = "Average Life Expectancy (years)", title = "Predicted Values (Model 2)") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+:::
+
+::: {.column width="50%"}
+```{r, fig.align='center', fig.asp=.618, fig.width=6}
+plot(ggpredict(res3, "fertility_rate")) +
+  labs(x = "Fertility Rate", y = "Average Life Expectancy (years)", title = "Predicted Values (Model 3)") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+:::
+::::
+
+::: notes
+
+**So, which of these three models has the largest substantive significance?**
+
+<br>
+
+**SLIDE**: Bottom line time
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+modelsummary(models = list(res1, res2, res3), 
+             output = "gt", 
+             fmt = 2, 
+             stars = c('*' = .05), 
+             gof_omit = "IC|Log|F",
+             coef_map = c("measles_immune_pct"= "Measles Immunizations (%)",
+                          "secondary_education_pct" = "Secondary Education (%)",
+                          "fertility_rate" = "Fertility Rate",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-small")
+  ), locations = gt::cells_body())
+
+```
+
+:::: {.columns}
+::: {.column width="33%"}
+```{r, fig.align='center', fig.asp=.85, fig.width=6}
+plot(ggpredict(res1, "measles_immune_pct")) +
+  labs(x = "Measles Immunity (%)", y = "Average Life Expectancy (years)", title = "Predicted Values (Model 1)") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+:::
+
+::: {.column width="33%"}
+```{r, fig.align='center', fig.asp=.85, fig.width=6}
+plot(ggpredict(res2, "secondary_education_pct")) +
+  labs(x = "Secondary Education (%)", y = "Average Life Expectancy (years)", title = "Predicted Values (Model 2)") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+:::
+
+::: {.column width="33%"}
+```{r, fig.align='center', fig.asp=.85, fig.width=6}
+plot(ggpredict(res3, "fertility_rate")) +
+  labs(x = "Fertility Rate", y = "Average Life Expectancy (years)", title = "Predicted Values (Model 3)") +
+  scale_y_continuous(limits = c(45,88), breaks = seq(45,85,5))
+```
+:::
+::::
+
+::: notes
+
+**Ok, bottom line, which model is the most useful for explaining the variation in global life expectancy? Why?**
+
+<br>
+
+Today I'd like us to keep practicing the exercise of fitting, evaluating and interpreting OLS regressions
+
+- **SLIDE**: Let's go back to the WDI data you selected and evaluated back in Week 3
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.r-fit-text}
+**What explains the variation in maternal mortality ratios around the world?**
+:::
+
+- Data: Spring2026-WDI_Data_Class_Selections-SHORT_LABELS.xlsx
+
+::: {.fragment}
+
+```{r, fig.align='center', fig.asp=.618, out.width="80%", fig.width=7}
+d |>
+  ggplot(aes(x = maternal_mortality_ratio)) +
+  geom_histogram(color = "white", bins = 15) +
+  theme_bw() +
+  labs(x = "Maternal Mortality Ratio (per 100,000 births", y = "Count") +
+  scale_x_continuous(breaks = seq(0, 1000, 200))
+```
+
+:::
+
+::: notes
+
+*Read slide*
+
+<br>
+
+The World Health Organization (WHO) defines the maternal mortality ratio as "the number of maternal deaths during a given time period per 100,000 live births during the same time period."
+
+- It essentially captures the risk of death from a maternal cause in a single pregnancy (proxied by a single live birth).
+
+<br>
+
+We'll assume for the present purposes that this data is valid and reliable
+
+- Let's begin with univariate analysis
+
+- Everybody make a histogram and get ready to describe the variation in our measure
+
+- (**REVEAL and DISCUSS**)
+
+<br>
+
+**Where is the US on this scale?**
+
+- (Around 20 which is 59th in the world)
+
+<br>
+
+**What countries do this best?**
+
+- (Belarus, Poland, UAE, Czechia, Israel, Norway)
+
+<br>
+
+**What countries are at the bad end of this distribution?**
+
+- (Nigeria, Central African Republic, Chad, South Sudan, Liberia)
+
+<br>
+
+**SLIDE**: Ok, let's build some models to explain this variation
+
+<br>
+
+```{r, echo=TRUE}
+d |> 
+  select(country, maternal_mortality_ratio) |>
+  arrange(maternal_mortality_ratio) |>
+  mutate( rank = 1:217 ) |>
+  filter(country == "United States")
+
+d |> 
+  select(country, maternal_mortality_ratio) |>
+  arrange(maternal_mortality_ratio) |>
+  slice_head(n = 7)
+
+d |> 
+  select(country, maternal_mortality_ratio) |>
+  arrange(maternal_mortality_ratio) |>
+  filter(!is.na(maternal_mortality_ratio)) |>
+  slice_tail(n = 7)
+```
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Predictors to Explain Maternal Mortality Ratios**
+:::
+
+```{r}
+d_long |>
+  select(-country, -ccode, -year) |>
+  names()
+```
+
+::: notes
+
+Ok, here's the list of variables you selected with their full informative labels
+
+- The dataset on Canvas for today has shortened the labels for ease of analysis
+
+<br>
+
+Let's brainstorm some relationships to test with OLS regressions!
+
+- *Track proposed models on the board*
+
+- We won't stress causality too much but let's come up with AT LEAST THREE models to test. Hit me!
+
+<br>
+
+Now we have our work, let's get to it!
+
+1. Fit the regressions
+
+2. Evaluate the fit of each one
+
+3. Evaluate the substantive significance of each one
+
+- Go!
+
+<br>
+
+**SLIDE**: Some stuff I found...
+
+```{r, eval=FALSE}
+names(d_long)
+names(d)
+#summary(d)
+# model1 <- lm(data = d, ~)
+# summary(model1)
+# plot(ggpredict(model1, ""))
+
+# run correlations to find associations
+d |>
+  select(-country, -ccode, -year) |>
+  cor(use = "pairwise")
+```
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+model1a <- lm(data = d, maternal_mortality_ratio ~ electricity_pct_pop)
+model1b <- lm(data = d, maternal_mortality_ratio ~ basic_drinking_water)
+model1c <- lm(data = d, maternal_mortality_ratio ~ urban_population)
+model1d <- lm(data = d, maternal_mortality_ratio ~ fertility_rate)
+model1e <- lm(data = d, maternal_mortality_ratio ~ women_in_parliaments)
+
+modelsummary(models = list(model1a, model1b, model1c, model1d, model1e), 
+             stars = c("*" = .05),
+             output = "gt", 
+             fmt = 2, 
+             gof_omit = "IC|Log|F",
+             coef_map = c("electricity_pct_pop"= "Electricty (% of pop)",
+                          "basic_drinking_water" = "Drinking Water (% of pop)",
+                          "urban_population" = "Urban Population (%)",
+                          "fertility_rate" = "Fertility Rate",
+                          "women_in_parliaments" = "Women in Parliament",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "medium")
+  ), locations = gt::cells_body())
+```
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
+
+::: {.panel-tabset}
+
+### Electricity
+
+```{r, fig.asp=.618, fig.align='center', out.width="80%", fig.width=7}
+plot(ggpredict(model1a, "electricity_pct_pop")) +
+  labs(x = "Electricity (% of population)", y = "Maternal Mortality Ratio") +
+  scale_y_continuous(limits = c(-100,1200))
+```
+
+### Water
+
+```{r, fig.asp=.618, fig.align='center', out.width="80%", fig.width=7}
+plot(ggpredict(model1b, "basic_drinking_water")) +
+  labs(x = "Basic Drinking Water (% of population)", y = "Maternal Mortality Ratio") +
+  scale_y_continuous(limits = c(-100,1200))
+```
+
+### Urban
+
+```{r, fig.asp=.618, fig.align='center', out.width="80%", fig.width=7}
+plot(ggpredict(model1c, "urban_population")) +
+  labs(x = "Urban Population (%)", y = "Maternal Mortality Ratio") +
+  scale_y_continuous(limits = c(-100,1200))
+```
+
+### Fertility
+
+```{r, fig.asp=.618, fig.align='center', out.width="80%", fig.width=7}
+plot(ggpredict(model1d, "fertility_rate")) +
+  labs(x = "Fertility Rate", y = "Maternal Mortality Ratio") +
+  scale_y_continuous(limits = c(-100,1200))
+```
+
+### Women in Parliament
+
+```{r, fig.asp=.618, fig.align='center', out.width="80%", fig.width=7}
+plot(ggpredict(model1e, "women_in_parliaments")) +
+  labs(x = "Electricty (% of population)", y = "Maternal Mortality Ratio") +
+  scale_y_continuous(limits = c(-100,1200))
+```
+
+:::
+
+::: notes
+
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**For Next Class: Multiple OLS Regression**
+
+<br>
+
+1. Read Chapter 12
+
+2. Submit Exercises 1, 3 (skip part F) and 5
+
+:::
 
 
 

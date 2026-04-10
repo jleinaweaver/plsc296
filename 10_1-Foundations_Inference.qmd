@@ -436,7 +436,7 @@ The final measure simulates the GDP per capita of 20 different countries
 
 <br>
 
-**Which one of these three measures do you think is the hardest to accurately measure?**
+**Which one of these three measures do you think is the hardest to accurately SAMPLE? e.g. design a measure that will capture all of the variation in the world of the question?**
 
 - (**SLIDE**)
 
@@ -651,17 +651,17 @@ Let's extend this logic even further!
 
 ```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
 # Run the simulation 10 times
-res1 <- tibble(x1 = rep(NA_integer_, 100))
+res10 <- tibble(x1 = rep(NA_integer_, 100))
 
 for (i in 1:100) {
   
-  res1$x1[i] <- sum(sample(x = c(1, 0), size = 10, 
+  res10$x1[i] <- sum(sample(x = c(1, 0), size = 10, 
                            replace = TRUE, prob = c(.8,.2)))
   
 }
 
 # Visualize the results
-hist(res1$x1, main = "100 Surveys of 10 Students Each")
+hist(res10$x1, main = "100 Surveys of 10 Students Each")
 ```
 
 ::: notes
@@ -676,7 +676,10 @@ Don't worry about the code for this
 
 **Based on these simulation results, what is our best estimate of the proportion of college students who use social media everyday?**
 
-- Some of our surveys estimated the "yes" percentage as low as 50% and others as high as 100%
+- (Ten student survey gives us a wide range)
+
+    - Min: `r str_c(min(res10$x1/10)*100, "%")`
+    - Max: `r str_c(max(res10$x1/10)*100, "%")`
 
 - If the random sample was kind to us then the results will approximate a normal curve with a peak around 8 which is the population proportion! (e.g. the actual fact!)
 
@@ -700,17 +703,17 @@ Bottom line is that any single survey of ten people is likely to carry a lot of 
 
 ```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
 # Run the simulation 10 times
-res1 <- tibble(x1 = rep(NA_integer_, 100))
+res100 <- tibble(x1 = rep(NA_integer_, 100))
 
 for (i in 1:100) {
   
-  res1$x1[i] <- sum(sample(x = c(1, 0), size = 100, 
+  res100$x1[i] <- sum(sample(x = c(1, 0), size = 100, 
                            replace = TRUE, prob = c(.8,.2)))
   
 }
 
 # Visualize the results
-hist(res1$x1, main = "100 Surveys of 100 Students Each")
+hist(res100$x1, main = "100 Surveys of 100 Students Each")
 ```
 
 ::: notes
@@ -719,9 +722,15 @@ Now we're asking 100 students in each survey instead of just 10
 
 - **What has changed in our results here?**
 
-- (Ten student survey gave us a wide range from 50% to 100%)
+- (Ten student survey gave us a wide range)
 
-- (100 students has shrunk that down to 70-90%)
+    - Min: `r str_c(min(res10$x1/10)*100, "%")`
+    - Max: `r str_c(max(res10$x1/10)*100, "%")`
+
+- (100 students has shrunk that down a bit)
+
+    - Min: `r str_c(min(res100$x1/100)*100, "%")`
+    - Max: `r str_c(max(res100$x1/100)*100, "%")`
 
 <br>
 
@@ -744,28 +753,37 @@ Now we're asking 100 students in each survey instead of just 10
 
 ```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
 # Run the simulation 10 times
-res1 <- tibble(x1 = rep(NA_integer_, 100))
+res1000 <- tibble(x1 = rep(NA_integer_, 100))
 
 for (i in 1:100) {
   
-  res1$x1[i] <- sum(sample(x = c(1, 0), size = 1000, 
+  res1000$x1[i] <- sum(sample(x = c(1, 0), size = 1000, 
                            replace = TRUE, prob = c(.8,.2)))
   
 }
 
 # Visualize the results
-hist(res1$x1, main = "100 Surveys of 1,000 Students Each")
+hist(res1000$x1, main = "100 Surveys of 1,000 Students Each")
 ```
 
 ::: notes
 
 **What is the range of values across these hundred surveys of 1,000 students each?**
 
-- (Ten student survey gave us a wide range from 50% to 100%)
+- (Ten student survey gave us a wide range)
 
-- (100 students has shrunk that down to 70-90%)
+    - Min: `r str_c(min(res10$x1/10)*100, "%")`
+    - Max: `r str_c(max(res10$x1/10)*100, "%")`
 
-- (1k students, 76-84%!)
+- (100 students has shrunk that down a bit)
+
+    - Min: `r str_c(min(res100$x1/100)*100, "%")`
+    - Max: `r str_c(max(res100$x1/100)*100, "%")`
+    
+- (1k students, even tighter!)
+
+    - Min: `r str_c(min(res1000$x1/1000)*100, "%")`
+    - Max: `r str_c(max(res1000$x1/1000)*100, "%")`
 
 <br>
 
@@ -785,22 +803,40 @@ We're getting closer!
 
 ```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
 # Run the simulation 10 times
-res1 <- tibble(x1 = rep(NA_integer_, 100))
+res10000 <- tibble(x1 = rep(NA_integer_, 100))
 
 for (i in 1:100) {
   
-  res1$x1[i] <- sum(sample(x = c(1, 0), size = 10000, 
+  res10000$x1[i] <- sum(sample(x = c(1, 0), size = 10000, 
                            replace = TRUE, prob = c(.8,.2)))
   
 }
 
 # Visualize the results
-hist(res1$x1, main = "100 Surveys of 10,000 Students Each")
+hist(res10000$x1, main = "100 Surveys of 10,000 Students Each")
 ```
 
 ::: notes
 
-(.79 to .81!)
+- (Ten student survey gave us a wide range)
+
+    - Min: `r str_c(min(res10$x1/10)*100, "%")`
+    - Max: `r str_c(max(res10$x1/10)*100, "%")`
+
+- (100 students has shrunk that down a bit)
+
+    - Min: `r str_c(min(res100$x1/100)*100, "%")`
+    - Max: `r str_c(max(res100$x1/100)*100, "%")`
+    
+- (1k students, even tighter!)
+
+    - Min: `r str_c(min(res1000$x1/1000)*100, "%")`
+    - Max: `r str_c(max(res1000$x1/1000)*100, "%")`
+    
+- (100k gets really close to actual population parameter!)
+
+- Min: `r str_c(min(res10000$x1/10000)*100, "%")`
+- Max: `r str_c(max(res10000$x1/10000)*100, "%")`
 
 <br>
 
@@ -965,31 +1001,112 @@ Our SE formulas made the second intuition more concrete
 
 The starting intuition tells us that our sample statistic has error around it, and the CI is our attempt to quantify how much error there is
 
+- The SE formula is a shortcut that means you don't actually have to run 10k simulations to measure the error in your estimates
+
 <br>
 
-The complexity comes from properly interpreting the CI
+**SLIDE**: But since we did run those simulations, let's keep connecting these dots!
 
-- Too often people assume the 95% CI tells us the range of values that contain the true population parameter
+:::
 
-- ACTUALLY, the 95% CI tells us the range of values that contain the true population parameter in 95% of repeated samples
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
+# Visualize the results
+hist(res10$x1, main = "100 Surveys of 10 Students Each")
+```
+
+::: notes
+
+Here was our simulated results from running 100 surveys of 10 students each
+
+- Remember, the goal was to identify the actual true population parameter
+
+- e.g. what proportion of college students use social media everyday
+
+<br>
+
+And how did we do?
+
+- The mean sample proportion we estimated in this simulation is `r str_c(mean(res10$x1)/10*100, "%")` which isn't bad!
+
+- BUT the middle 95% of values in this distribution runs from `r str_c(quantile(res10$x1, probs = .025)/10*100, "%")` to `r str_c(quantile(res10$x1, probs = .975)/10*100, "%")`
+
+- So, we say to the experts that the mean is our best bet, BUT that given the uncertainty in our approach, the true population parameter could lie anywhere along this wide interval
+
+<br>
+
+THIS is how you communicate to an expert audience how close you think you actually are to the population parameter
+
+- The mean value is a snapshot in the "middle", but the CI tells us about your confidence in that estimate
+
+<br>
+
+**SLIDE**: Now we move to the much larger sample and...
+
+:::
+
+
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+```{r, echo=FALSE, fig.align='center', fig.asp=.75, fig.width=7, out.width="65%"}
+# Visualize the results
+hist(res10000$x1, main = "100 Surveys of 10,000 Students Each")
+```
+
+::: notes
+
+And how did our confidence change?
+
+- The mean sample proportion we estimated in this simulation is `r str_c(mean(res10000$x1)/10000*100, "%")` 
+
+- And the middle 95% of values in this distribution runs from `r str_c(quantile(res10000$x1, probs = .025)/10000*100, "%")` to `r str_c(quantile(res10000$x1, probs = .975)/10000*100, "%")`
+
+- NOW we say to the audience that our best estimate is 80% and we are 95% confident that with repeated experiments the true value will run very close to it!
+
+<br>
+
+**Everybody with me on why the CI helps us communicate our findings?**
+
+<br>
+
+Forgive me for this, but I have to give you the following warning
+
+- The 95% CI DOES NOT TELL YOU the range of values that contain the true population parameter 95% of the time
+
+- The 95% CI tells you the range of values that contain the true population parameter in 95% of repeated samples
 
 - In other words, the CI is describing the results you would get if you re-ran your entire experiment over and over again
 
 - Run the experiment 100 times, calculate the CI 100 times and 95 of them would contain the true population parameter
 
-<br>
-
-In slightly simpler terms, your estimated 95% CI has 95% chance of including the true population parameter.
-
-- **Questions on that? :)**
+- Just let this sink in for a sec and then don't stress it yet.
 
 <br>
 
-NOTES for you: Chapter does way more, but this feels like a good selection of points to hit
+The formulas you learned and practiced for today enable you to generate CIs WITHOUT having to simulate multiple experiments
+
+- The SE gives you a measure of uncertainty in your work
+
+- The CI uses the SE to describe a confidence interval
+
+- A wide CI means we should not be very confident in the precision of our estimate, a narrow CI means more confidence
 
 <br>
 
-**SLIDE**: Let's review your assignments for today
+Don't worry if this doesn't make a ton of sense yet, we'll keep hitting these ideas over and over
+
+- *NOTES for you: Chapter does way more, but this feels like a good selection of points to hit*
+
+<br>
+
+**SLIDE**: Let's review your assignments for today to make sure you can use the formulas
 
 :::
 
@@ -1013,8 +1130,8 @@ B.
     - CI = [0.37, 0.57]
 
 C. 
-    - SE = 0.016
-    - CI = [0.36, 0.44]
+    - SE = 0.033
+    - CI = [0.33, 0.47]
 
 ::: notes
 
@@ -1095,15 +1212,17 @@ Shifting to our CI math just means replacing SD with SE
 
 - The zero here now represents your sample statistic (e.g. the group mean)
 
-- And the z-scores are how many SEs the true parameter could be
+- And the z-scores are how many SEs the true parameter could be away from your best estimate
 
 - When you give someone a 95% CI you're saying the true parameter value could be anywhere in the range of about two SEs above and below your sample statistic
 
 <br>
 
-A 90% CI replaces the 1.96 with 1.64
+Assuming your sample size is large enough, then:
 
-- So you give a range of 1.64 x SE above and below your estimate
+- A value of 1.96 covers 95% of the area under the curve
+
+- A value of 1.64 covers 90% of the area under the curve
 
 <br>
 

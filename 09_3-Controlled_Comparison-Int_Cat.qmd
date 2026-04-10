@@ -21,7 +21,7 @@ load("../../DATA/2026-Spring/ANES/ANES2020_Data_Extract.RData")
 
 - Categorical x Categorical Relationships
 
-- New R file: Making_Controlled_Comparisons.R
+- R file: Making_Controlled_Comparisons.R
 
 :::
 
@@ -38,87 +38,13 @@ Prep for Class
 
 <br>
 
-**SLIDE**: Our work this week
+Our work this week has been to develop the tools you will need to make causal arguments
 
-:::
-
-
-
-## Building a Causal Argument {background-image="Images/background-data_blue_v4.png" .center}
+- e.g. Describing the relationship between two variables while controlling for a confounder
 
 <br>
 
-"Causal inference refers to the process of drawing a conclusion that a specific treatment (i.e. intervention) was the 'cause' of the effect (or outcome) that was observed" (Frey 2018). 
-
-<br>
-
-```{r, fig.align = 'center', fig.width = 8, fig.height=1.25}
-## Manual DAG
-d1 <- tibble(
-  x = c(-3, 3),
-  y = c(1, 1),
-  labels = c("Predictor", "Outcome")
-)
-
-ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 0, color = "white") +
-  theme_void() +
-  coord_cartesian(xlim = c(-4, 4)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = -1.9, xend = 2.2, y = 1, yend = 1, arrow = arrow())
-```
-
-::: notes
-
-Remember, the aim of any scientific discipline is to generate new knowledge that explains why things happen in the world
-
-- We refer to this as explanatory or causal analysis
-
-- In short, we want to demonstrate that changes in our chosen predictors CAUSE a change in the outcome variable
-
-<br>
-
-**SLIDE**: And since we deal so frequently with observational data...
-
-:::
-
-
-
-## Making Controlled Comparisons {background-image="Images/background-data_blue_v4.png" .center}
-
-```{r, fig.retina=3, fig.align='center', fig.asp=.6, fig.width=8}
-## Manual DAG
-d1 <- tibble(
-  x = c(1, 2, 3),
-  y = c(1, 2, 1),
-  labels = c("Treatment", "Confounder", "Outcome")
-)
-
-ggplot(data = d1, aes(x = x, y = y)) +
-  geom_point(size = 0, color = "white") +
-  theme_void() +
-  coord_cartesian(xlim = c(0, 4), ylim = c(.75, 2.25)) +
-  geom_label(aes(label = labels), size = 7) +
-  annotate("segment", x = 1.5, xend = 2.5, y = 1, yend = 1, arrow = arrow()) +
-  annotate("segment", x = 1.7, xend = 1, y = 1.85, yend = 1.15, arrow = arrow()) +
-  annotate("segment", x = 2.3, xend = 3, y = 1.85, yend = 1.15, arrow = arrow())
-```
-
-::: notes
-
-We develop **identification strategies** that identify the **confounders** in our observational relationships.
-
-- This is what the textbook refers to as a "controlled comparison" (p160)
-
-- The hope is that by controlling for all of the confounders we get to a place where the treatment and control groups are identical on average
-
-<br>
-
-**Any questions on our conceptual on making causal arguments?**
-
-<br>
-
-**SLIDE**: Last class
+**SLIDE**: Last class we focused on the case where you are describing the relationship between two categorical variables
 
 :::
 
@@ -196,7 +122,7 @@ anes3 <- na.omit(anes2)
 anes3 <- set_label(anes3, c("Death Penalty", "Religiosity", "Party ID"))
 
 crosstable(anes3, cols = death.penalty, by = religion.imp, 
-           percent_pattern = "{p_col} ({n})",
+           percent_pattern = "{p_col} \n ({n})",
            percent_digits = 0) |> 
   as_flextable(fontsizes = list(body=15, header=15))
 ```
@@ -214,7 +140,7 @@ anes3 <- set_label(anes3, c("Death Penalty", "Religiosity", "Party ID"))
 
 # Make the table
 crosstable(anes3, cols = death.penalty, by = religion.imp, 
-           percent_pattern = "{p_col} ({n})",
+           percent_pattern = "{p_col} \n ({n})",
            percent_digits = 0) |> 
   as_flextable()
 ```
@@ -231,7 +157,7 @@ crosstable(anes3, cols = death.penalty, by = religion.imp,
 
 ```{r}
 crosstable(anes3, cols = death.penalty, by = c(religion.imp, partyid3),
-           percent_pattern = "{p_col} ({n})",
+           percent_pattern = "{p_col} \n ({n})",
            percent_digits = 0) |> 
   as_flextable(fontsizes = list(body=12, header=12))
 ```
@@ -242,7 +168,7 @@ crosstable(anes3, cols = death.penalty, by = c(religion.imp, partyid3),
 
 ```{r, echo=TRUE, eval=FALSE}
 crosstable(anes3, cols = death.penalty, by = c(religion.imp, partyid3),
-           percent_pattern = "{p_col} ({n})",
+           percent_pattern = "{p_col} \n ({n})",
            percent_digits = 0) |> 
   as_flextable()
 ```
@@ -264,7 +190,7 @@ crosstable(anes3, cols = death.penalty, by = c(religion.imp, partyid3),
 
 ## Partial Effects: Visualization {background-image="Images/background-data_blue_v4.png" .center}
 
-```{r, fig.align='center', fig.asp=.65, fig.width=8}
+```{r, fig.align='center', fig.asp=.95, fig.width=7}
 # Reverse scale of religiosity!
 new1 <- tribble(
   ~party, ~x1, ~y1,
@@ -982,13 +908,13 @@ aggregate(anes, ft.trump.pre ~ econ.current + partyid3, mean) |>
 
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
+## {background-image="Images/background-data_blue_v4.png"}
 
 ::: {.panel-tabset}
 
 ### Figure 1 
 
-```{r, fig.align='center', fig.asp=.618, fig.width=8, out.width="85%"}
+```{r, fig.align='center', fig.asp=.85, fig.width=7, out.width="60%"}
 tab1 <- aggregate(anes, ft.trump.pre ~ econ.current + partyid3, mean)
 
 tab1$x1 <- c(1:5, 1:5, 1:5)

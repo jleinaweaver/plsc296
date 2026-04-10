@@ -11,8 +11,6 @@ library(kableExtra)
 library(modelsummary)
 library(modelr)
 library(ggeffects)
-
-d <- read_excel("../Data_in_Class/Class10-3-SimpleOLS_Analyses_to_Interpret/WDI-LifeExp_Agriculture/WDI-2021-Data-2024-12-12.xlsx", na = "NA")
 ```
 
 <br>
@@ -22,6 +20,8 @@ d <- read_excel("../Data_in_Class/Class10-3-SimpleOLS_Analyses_to_Interpret/WDI-
 **Ordinary Least Squares (OLS) Regression**
 
 - Using R to fit and evaluate a regression
+
+- New Notes: Regression_Analysis.R
 
 :::
 
@@ -42,155 +42,172 @@ Today we learn to fit OLS regressions in R
 
 <br>
 
-**SLIDE**: But first, let's review your assignment for today
+**SLIDE**: But first, let's use the assignment for today to refresh the basics of simple OLS regressions
 
 :::
 
 
-## {background-image="Images/background-data_blue_v4.png" .smaller}
 
-::::: {.columns}
-
-:::: {.column width="30%"}
+## Textbook Exercise 5 {background-image="Images/background-data_blue_v4.png"}
 
 <br>
 
-<br>
+Do the results of bivariate regression analysis address statistical significance, substantive significance, or both?
 
-```{r}
-# Regression Table
-res1 <- lm(data = d, life_expectancy ~ employment_agriculture)
-
-modelsummary(res1, output = "gt", fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_map = c("employment_agriculture"= "Agriculture Employment (%)", "(Intercept)" = "Constant"))
-```
-
-::::
-
-:::: {.column width="70%"}
-
-::: {.panel-tabset}
-
-### Scatterplot
-
-```{r, fig.retina=3, fig.asp=1, fig.align='center', fig.width=7, out.width="80%"}
-## Scatter plot
-d |>
-  ggplot(aes(x = employment_agriculture, y = life_expectancy)) +
-  geom_point() +
-  geom_smooth(method = "lm", se=F) +
-  theme_bw() +
-  labs(x = "Employment in Agriculture (%)", y = "Life Expectancy (Total Years)",
-       caption = "Source: World Bank WDI data for 2021")
-```
-
-### Residuals
-
-```{r, fig.retina=3, fig.asp=.95, fig.align='center', fig.width=7, out.width="80%"}
-## Residuals plot
-plot(res1, which = 1)
-```
-
-### Missing
-
-<br>
-
-:::::: {.r-fit-text}
-
-```{r, echo=TRUE, eval=FALSE}
-# New object with only key variables
-d2 <- select(d, country, life_expectancy, employment_agriculture)
-
-# Keep any observation with NA in one of the variables
-filter(d2, is.na(life_expectancy) | is.na(employment_agriculture))
-```
-
-::::::
-
-<br>
-
-```{r}
-d |>
-  select(country, life_expectancy, employment_agriculture) |>
-  mutate(
-    missing = if_else(is.na(life_expectancy) | is.na(employment_agriculture), 1, 0)
-  ) |>
-  filter(missing == 1) |>
-  select(country) |>
-  as.vector()
-```
-
+::: {.fragment}
+![](Images/12_3-blood_pressure_table.jpg){.absolute width="750" bottom=0 left=160}
 :::
-
-::::
-
-:::::
 
 ::: notes
 
-**How did this go?**
+*Get answers from the class*
 
 <br>
 
-Questions from Canvas:
+Bivariate regression does both!
+
+- Statistical significance, a small p-value, helps us make an argument that our estimated coefficient fits the data better than the null hypothesis
+
+- Substantive significance focuses on the real-world impact of the effect size
 
 <br>
 
-**Q1: Describe the relationship between life expectancy and the proportion of a country's population employed in agricultural work according to this OLS line (e.g. interpret the main coefficient)**
+Here's the deal, we are only interested in results that do both
 
-- (On average, increases of 1% in population employed in agricultural work is associated with a decrease in life expectancy of .27 years)
-    
-- (So, a 4% increase in agriculture, reduces average life expectancy by 1 year!)
+- Statistical significance is almost always an artifact of having a large sample size
 
-<br>
-
-**Q2: Use the formula for a line to make a prediction: What is the predicted life expectancy in a country if 10% of the population works in agriculture?**
-
-- (77.6959 + -0.2725 * 10 = 74.9709)
+- The aim is for a finding that actually helps us understand something significant in the world
 
 <br>
 
-**Q3: Use the formula for a line to make a prediction: What is the predicted life expectancy in a country if 50% of the population works in agriculture?**
+**REVEAL**
 
-- (77.6959 + -0.2725 * 50 = 64.0709)
+- Imagine Pfizer releases a new drug meant to lower blood pressure from the dangerous range down to the normal range
+
+- The good news is that regression testing shows the drug lowers does lower blood pressure and the effect is statistically significant!
+
+- Unfortunately, it only lowers blood pressure by 2 points
+
+- So, a person at 175 gets down to 173
+
+- We know the drug works but not in any way that matters
+
+- **Make sense?**
 
 <br>
 
-**Q4: Evaluate the fit of the model using the four criteria we discussed in class. How confident are you in that the results of this OLS regression usefully summarize the relationship between life expectancy and agricultural employment?**
+As ever, remember that null hypothesis testing helps us make an argument that we have found something useful
 
-- (Dataset has 217 observations so 30 countries missing)
+- It does NOT settle the question
 
-    - **How does this list of missing observations impact your evaluation of the regression?**
-    
-- (Coefficients are significant)
-    
-- (R2 is pretty darn high given the effort to explain all of life expectancy, 55%)
-    
-- (Not terrible, but residuals unbalanced)
+- **Make sense?**
 
-    - u-shaped error, above the line at the low and high end, below the line for middle countries
-    
 <br>
 
-**SLIDE**: Let's use today's class to learn how to do all of this in R
+**SLIDE**: Exercise 6
+
 :::
 
 
 
 
-## {background-image="Images/background-data_blue_v4.png" .center}
+## Textbook Exercise 6 {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+Do gun owners give the Republican Party higher ratings than do people who do not own guns?
+
+$$y = 40.2 + 11.5 (\text{gun owner}) $$
+
+$$ \text{SE of } \beta = 0.76 $$
+
+$$ \text{Adjusted } R^2 = 0.04 $$
+
+::: notes
+
+Part A: “People who do not own guns rated the Republicans at 40.2, on average. However, among gun owners, the Republicans averaged only 11.5 on the scale. Therefore, people who do not own guns are more pro-Republican than are people who own guns.”
+
+- **Is Part A making a correct inference? Why or why not?**
+
+- (Nope!)
+
+- (y = 40.2 + 11.5(1) = 51.7)
+
+<br>
+
+Part B: “The independent variable has a statistically significant effect on the dependent variable.” 
+
+- **Is this inference correct? Why or why not?**
+
+- (Yes)
+
+- t = 11.5 / 0.76 ≈ 15.13
+
+- Big value on the t-distribution will have a small p-value
+
+- Remember the rule of thumb, if estimated coefficient is more than 2 of the SE it is probably significant
+
+<br>
+
+Part C: “The independent variable explains very little of the variation in the dependent variable.”
+
+- **Is this inference correct? Why or why not?**
+
+- (Yes)
+
+- Adjusted R2 = 0.04 indicates that the model explains only 4% of the variation in Republican ratings.
+
+:::
+
+
+
+
+## Textbook Exercise 7 {background-image="Images/background-data_blue_v4.png" .center}
+
+$$ \text{Adjusted-}R^2 = 1 - (1-R^2) (\frac{n-1}{n-k-1}) $$
+
+<br>
+
+```{r}
+tibble(
+  R2 = c(.348, .489, .631, .355),
+  n = c(50, 186, 393, 1527),
+  k = c(1, 3, 2, 6),
+  AdjR2 = 1 - (1 - R2) * ((n - 1)/(n - k - 1))
+) |>
+  kable(digits = 3, align = "c") |>
+  kable_styling()
+
+```
+
+::: notes
+
+**Did everybody get these results?**
+
+<br>
+
+**Any questions on our material from last class?**
+
+<br>
+
+**SLIDE**: Today we learn to execute OLS in R
+
+:::
+
+
+
+
+## OLS Regression in R {background-image="Images/background-data_blue_v4.png" .center}
 
 ::: {.r-fit-text}
-
-**How do we perform regression analysis in R?**
 
 1. Fitting a Regression: lm()
 
 2. Making a Regression Table: modelsummary()
 
-3. Visualizing the Residuals: plot()
+3. Making (and Visualizing) Predictions: ggpredict()
 
-4. Making Predictions: ggpredict()
+<br>
 
 ```{r, echo=TRUE, eval=FALSE}
 # Install these one time
@@ -240,32 +257,43 @@ While the help file shows you can do a ton of stuff with the lm() function, we'l
 
 
 
-## 1. Fitting OLS Regressions in R {background-image="Images/background-data_blue_v4.png" .center .smaller}
+## {background-image="Images/background-data_blue_v4.png" .center}
 
-::: {.r-fit-text}
-
-```{r, echo = TRUE, eval = FALSE}
-# Regress `price` on `carat` in the `diamonds` dataset
+```{r, echo = TRUE}
+# Fit the OLS regression (and save the results)
 model1 <- lm(data = diamonds, price ~ carat)
-
-# Check the Results
-summary(model1)
 ```
 
-:::
+<br>
 
-```{r}
-model1 <- lm(data = diamonds, price ~ carat)
+```{r, echo = TRUE}
+# Summarize the results
 summary(model1)
 ```
 
 ::: notes
 
-**Everybody get these results?**
+We don't have to save the output of the lm function as a new object
+
+- HOWEVER, saving your regressions as objects will make it MUCH easier to build tables and make visualizations with your results
 
 <br>
 
-**Questions on this code?**
+The summary function approach will let you rapidly fit regressions
+
+- *Briefly talk through the components from the table*
+
+- *Find the coefficient, SE, p-value, R2 and Adj R2*
+
+<br>
+
+**Everybody get these results?**
+
+- **Questions on this code?**
+
+<br>
+
+**SLIDE**: Let's polish the table
 
 :::
 
@@ -276,6 +304,10 @@ summary(model1)
 <br>
 
 ![](Images/10_3-modelsummary.png)
+
+modelsummary(models, ...)
+
+- "models" is the list of regressions you want in the table
 
 ::: notes
 
@@ -295,7 +327,7 @@ Using this requires installing the modelsummary package
 
 
 
-## 2. Formatting Regression Tables in R {background-image="Images/background-data_blue_v4.png" .center .smaller}
+## {background-image="Images/background-data_blue_v4.png" .center .smaller}
 
 :::: {.columns}
 
@@ -328,6 +360,8 @@ modelsummary(model1)
 ::: notes
 
 This is the default output you get if you run the function with no extra arguments
+
+- This is WAY more detail than we actually want but this is because it is much easier to remove lines from this table than it is to add them
 
 <br>
 
@@ -399,7 +433,7 @@ This is the minimum customization I want you to use
 
 ```{r, echo=TRUE, eval=FALSE}
 # Polishing a Table - The Goal
-modelsummary(list("Diamond Price" = model1),
+modelsummary(model1,
              fmt = 2, 
              stars = c('*' = .05), 
              gof_omit = "AIC|BIC|Log|F",
@@ -407,7 +441,7 @@ modelsummary(list("Diamond Price" = model1),
 ```
 
 ```{r}
-modelsummary(list("Diamond Price" = model1), output = "gt",
+modelsummary(model1, output = "gt",
              fmt = 2, stars = c('*' = .05), gof_omit = "IC|Log|F",
              coef_rename = c("carat" = "Diamond Size (carats)")) |>
   gt::tab_style(style = list(
@@ -418,9 +452,7 @@ modelsummary(list("Diamond Price" = model1), output = "gt",
 
 ::: notes
 
-1. Add the outcome variable as the column header using a named list
-
-2. Rename the coefficient to make it plain english instead of just the variable name
+Rename the variable labels into plain english
 
 <br>
 
@@ -434,56 +466,13 @@ These extra steps are crucial if the aim is to share your regression table with 
 
 <br>
 
-**SLIDE**: Next tool is the residuals plot
+**SLIDE**: Finally we can visualize the model results
 
 :::
 
 
 
-## 3. Visualizing the Residuals in R {background-image="Images/background-data_blue_v4.png" .center}
-
-<br>
-
-::::: {.r-fit-text}
-```{r, echo=TRUE, eval=FALSE}
-# Making a residual plot using base R
-plot(x = model1, which = 1)
-```
-:::::
-
-```{r, fig.retina=3, fig.align='center', cache=TRUE, fig.asp=.75, fig.width=6}
-plot(x = model1, which = 1)
-```
-
-::: notes
-
-The easiest way to make the residuals plot is to use the built-in plot function in R
-
-<br>
-
-Two things to keep in mind:
-
-- "x" is the name of the regression object
-
-- "which" is where you specify which diagnostic plot you want
-
-    - Plot type 1 is the residuals plot
-    
-<br>
-
-**Did everybody get this code to run?**
-
-<br>
-
-**SLIDE**: Last bit of new code, making regression predictions in R
-
-:::
-
-
-
-
-
-## 4. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
+## 3. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
 
 ![](Images/10_3-ggeffects.png)
 
@@ -515,7 +504,7 @@ Make sure you have the ggeffects package installed and loaded before you can use
 
 
 
-## 4. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
+## 3. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
 
 <br>
 
@@ -563,7 +552,7 @@ The table shows the predicted value of a diamond at these six possible weights a
 
 
 
-## 4. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
+## 3. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
 
 ::::: {.r-fit-text}
 ```{r, echo=TRUE, eval=FALSE}
@@ -593,7 +582,7 @@ Just add the plot function around your ggpredict and get a nice visualization
 
 
 
-## 4. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
+## 3. Making Predictions in R {background-image="Images/background-data_blue_v4.png" .center}
 
 ::::: {.r-fit-text}
 ```{r, echo=TRUE, eval=FALSE}
@@ -635,52 +624,75 @@ Here I'm just making some simple ggplot tweaks
 
 ### Practice 1
 
-Regress presidential vote share (`vote_share`) on presidential approval rating (`approval_june`) using the datatset on Canvas
+Data: `mpg` dataset in the tidyverse
+
+<br>
+
+Regress city fuel economy (`cty`) on engine displacement (`displ`) in the `mpg` datatset
 
 - Fit the regression
 
 - Format the table
 
-- Make the residuals plot
-
 - Make a predictions plot
 
-```{r}
-d <- read_excel("../Data_in_Class/Class10-3-SimpleOLS_Analyses_to_Interpret/SP25-Incumbent_Performance_US_Elections.xlsx", na = "NA")
+### Results
+
+:::: {.columns}
+::: {.column width="65%"}
+```{r, fig.asp=.85, fig.align='center', fig.width=6}
+practice1 <- lm(data = mpg, cty ~ displ)
+
+plot(ggpredict(practice1, terms = "displ")) +
+  labs(x = "Engine Size (displacement)",
+       y = "Fuel Economy (City)")
 ```
+:::
 
-### Table
-
-```{r, echo=TRUE}
-res1 <- lm(data = d, vote_share ~ approval_june)
-
-modelsummary(list("Vote Share" = res1), 
+::: {.column width="35%"}
+```{r}
+modelsummary(practice1, 
              output = "gt", fmt = 2, 
              stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_rename = c("approval_june"= "Approval in June (%)"))
+             coef_rename = c("displ"= "Engine Size"))
 ```
+:::
+::::
 
+### Code
 
-### Residuals
+```{r, echo=TRUE, eval=FALSE}
+# Fit the model
+practice1 <- lm(data = mpg, cty ~ displ)
 
-```{r, echo=TRUE, fig.retina=3, fig.asp=.7, fig.align='center', fig.width=6}
-res1 <- lm(data = d, vote_share ~ approval_june)
+# Polish the table
+modelsummary(practice1, 
+             fmt = 2, 
+             stars = c('*' = .05), 
+             gof_omit = "IC|Log|F",
+             coef_rename = c("displ"= "Engine Size"))
 
-plot(res1, which = 1)
-```
-
-### Predictions
-
-```{r, echo=TRUE, fig.retina=3, fig.asp=.7, fig.align='center', fig.width=6}
-res1 <- lm(data = d, vote_share ~ approval_june)
-
-plot(ggpredict(res1, terms = "approval_june")) +
-  labs(x = "Presidential Approval in June (%)",
-       y = "Presidential Vote Share (%)")
+# Visualize model predictions
+plot(ggpredict(practice1, terms = "displ")) +
+  labs(x = "Engine Size (displacement)",
+       y = "Fuel Economy (City)")
 ```
 
 :::
 
+::: notes
+
+*Confirm they got the right results*
+
+<br>
+
+*Make the class step you through interpreting the fit of the model*
+
+<br>
+
+**SLIDE**: Let's do one more with this dataset
+
+:::
 
 
 
@@ -690,45 +702,151 @@ plot(ggpredict(res1, terms = "approval_june")) +
 
 ### Practice 2
 
-Regress city fuel economy (`cty`) on engine displacement (`displ`) in the `mpg` datatset
+Data: `mpg` dataset in the tidyverse
+
+<br>
+
+Regress highway fuel economy (`hwy`) on engine displacement (`displ`) in the `mpg` datatset
 
 - Fit the regression
 
 - Format the table
 
-- Make the residuals plot
-
 - Make a predictions plot
 
-### Table
+### Results
 
-```{r, echo=TRUE}
-res2 <- lm(data = mpg, cty ~ displ)
+:::: {.columns}
+::: {.column width="65%"}
+```{r, fig.asp=.85, fig.align='center', fig.width=6}
+practice2 <- lm(data = mpg, hwy ~ displ)
 
-modelsummary(list("Fuel Economy (City)" = res2), 
+plot(ggpredict(practice2, terms = "displ")) +
+  labs(x = "Engine Size (displacement)",
+       y = "Fuel Economy (Highway)")
+```
+:::
+
+::: {.column width="35%"}
+```{r}
+modelsummary(models = list(practice1, practice2), 
              output = "gt", fmt = 2, 
              stars = c('*' = .05), gof_omit = "IC|Log|F",
              coef_rename = c("displ"= "Engine Size"))
 ```
+:::
+::::
 
+### Code
 
-### Residuals
+```{r, echo=TRUE, eval=FALSE}
+# Fit the model
+practice2 <- lm(data = mpg, hwy ~ displ)
 
-```{r, echo=TRUE, fig.retina=3, fig.asp=.7, fig.align='center', fig.width=6}
-res2 <- lm(data = mpg, cty ~ displ)
+# Polish the table
+modelsummary(models = list(practice1, practice2), 
+             fmt = 2, 
+             stars = c('*' = .05), 
+             gof_omit = "IC|Log|F",
+             coef_rename = c("displ"= "Engine Size"))
 
-plot(res2, which = 1)
-```
-
-### Predictions
-
-```{r, echo=TRUE, fig.retina=3, fig.asp=.7, fig.align='center', fig.width=6}
-res2 <- lm(data = mpg, cty ~ displ)
-
-plot(ggpredict(res2, terms = "displ")) +
+# Visualize model predictions
+plot(ggpredict(practice2, terms = "displ")) +
   labs(x = "Engine Size (displacement)",
-       y = "Fuel Economy (City)")
+       y = "Fuel Economy (Highway)")
 ```
+
+:::
+
+::: notes
+
+*Confirm they got the right results*
+
+<br>
+
+*Make the class step you through comparing the fit of the two models*
+
+<br>
+
+**SLIDE**: Let's try some new data
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png"}
+
+::: {.panel-tabset}
+
+### Practice 3
+
+Data: Incumbent_Performance_US_Elections.xlsx
+
+<br>
+
+Regress presidential vote share (`vote_share`) on presidential approval rating (`approval_june`) using the datatset on Canvas
+
+- Fit the regression
+
+- Format the table
+
+- Make a predictions plot
+
+```{r}
+d <- read_excel("../../DATA/2026-Spring/Incumbent_Performance_US_Elections.xlsx", na = "NA")
+```
+
+### Results
+
+:::: {.columns}
+::: {.column width="65%"}
+```{r, fig.asp=.85, fig.align='center', fig.width=6}
+practice3 <- lm(data = d, vote_share ~ approval_june)
+
+plot(ggpredict(practice3, terms = "approval_june")) +
+  labs(x = "Presidential Approval in June (%)",
+       y = "Presidential Vote Share (%)")
+```
+:::
+
+::: {.column width="35%"}
+```{r}
+modelsummary(practice3, 
+             output = "gt", fmt = 2, 
+             stars = c('*' = .05), gof_omit = "IC|Log|F",
+             coef_rename = c("approval_june"= "Approval in June (%)"))
+```
+:::
+::::
+
+### Code
+
+```{r, echo=TRUE, eval=FALSE}
+# Fit the model
+practice3 <- lm(data = d, vote_share ~ approval_june)
+
+# Polish the table
+modelsummary(practice3, 
+             fmt = 2, 
+             stars = c('*' = .05), 
+             gof_omit = "IC|Log|F",
+             coef_rename = c("approval_june"= "Approval in June (%)"))
+
+# Visualize model predictions
+plot(ggpredict(practice3, terms = "approval_june")) +
+  labs(x = "Presidential Approval in June (%)",
+       y = "Presidential Vote Share (%)")
+```
+
+:::
+
+::: notes
+
+*Confirm they got the right results*
+
+<br>
+
+*Make the class step you through interpreting the fit of the model*
 
 :::
 
@@ -738,20 +856,38 @@ plot(ggpredict(res2, terms = "displ")) +
 
 <br>
 
-### What is the effect of college completion on poverty rates in midwest cities?
+**What explains the variation in global life expectancy?**
 
-1. Fit the regression
-2. Submit a polished regression table, residuals plot and predictions plot
-3. Answer the question
-4. Evaluate the regression
+1. Secondary education?
+
+2. Measles immunity?
+
+3. The fertility rate?
 
 ::: notes
 
 Canvas assignment for next class will let us practice all these skills!
 
-- The assignment prompt has more details for each of these.
+- In short, I am asking you to fit and evaluate three models that each aim to answer this question
 
-- Take a look and let me know if you have any questions
+- For the assignment you will submit your findings and evaluate each model
+
+<br>
+
+**Questions on the assignment?**
+
+<br>
+
+Canvas Assignment: Practice fitting and interpreting bivariate OLS regressions
+
+Data: World_Development_Indicators-2023-Life_Expectancy.xlsx
+
+What explains the variation in global life expectancy? Fit three bivariate OLS regressions to separately test different models based on: 1) the proportion of the population with a secondary education (`secondary_education_pct`), 2) the proportion of the population with measles immunity (`measles_immune_pct`), and 3) the fertility rate per woman (`fertility_rate_per_woman`). 
+
+1. Submit a polished table for each model (or one table with all three models)
+2. Evaluate the fit of each model using the criteria we discussed in class (e.g. missing data, significance and R2): Is each model a good fit of the data or not?
+3. Evaluate the substantive significance of each model: How large, in real-world terms, is the effect of each mechanism on life expectancy? Is this a useful mechanism for countries trying to improve life expectancy or not?
+4. Based on your work above, make an argument for which model is the most useful for explaining the variation in global life expectancy?
 
 :::
 
