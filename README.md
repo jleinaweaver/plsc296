@@ -77,12 +77,8 @@ Data, slides and errata for my class at Drury University (PLSC 296: Data Analysi
 
 13_3-Multiple_OLS-Interactions.html
 
-14_1-Residuals_and_Nonlinearity1.html
+14_1-Analyzing_Residuals.html
 
-14_2-Residuals_and_Nonlinearity1.html
+14_2-Extending_OLS_Nonlinearity.html
 
-15_1-Final_Exam1.html
-
-15_2-Final_Exam2.html
-
-15_3-Final_Exam3.html
+15_1-Final_Assessment_LOs.html

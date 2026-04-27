@@ -1,0 +1,1306 @@
+---
+format: revealjs
+---
+
+## Today's Agenda {background-image="Images/background-data_blue_v4.png" .center}
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(modelsummary)
+library(modelr)
+library(ggeffects)
+
+# Input practice WDI data
+wdi <- read_excel("../../2026-Spring/DATA/Lectures/World_Development_Indicators-2023-Life_Expectancy.xlsx", na = "NA")
+
+# # Input practice WDI data
+# wdi <- read_excel("../../Course_History/2025-Spring/Data_in_Class/Class11-1-Simple_OLS-WDI_LifeExpectancy/WDI-Practice_Simple_OLS-2024-04-04.xlsx", na = "NA")
+```
+
+<br>
+
+::: {.r-fit-text}
+
+**Ordinary Least Squares (OLS) Regression**
+
+- Improving the fit of your models
+
+- Notes: Regression_Analysis.R
+
+:::
+
+<br>
+
+::: r-stack
+Justin Leinaweaver (Spring 2026)
+:::
+
+::: notes
+Prep for Class
+
+1. Check Canvas submissions
+
+2. TRY TO SAVE TIME AT END OF CLASS so they can work on the assignment
+
+3. ARGH, YOU FORGOT THE ASSIGNMENT ON CANVAS SO JUST HAD THEM DO IT IN CLASS
+
+<br>
+
+**SLIDE**: Let's refresh our memories on evaluating the fit of an OLS regression model
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Evaluating the Fit of an OLS Regression**
+:::
+
+<br>
+
+1. Is there a problem with missing data?
+
+2. Are the coefficients significant?
+
+3. How much of the outcome is explained by the model?
+
+4. Is there a problem in the residuals?
+
+::: notes
+
+**What is the concern with missing data in your regression?**
+
+- (Missing at random vs missing not at random, aka selection bias)
+
+<br>
+
+**What do significant coefficients tell me about your regression model?**
+
+- (Can we reject the null hypothesis?)
+
+<br>
+
+**How do I evaluate if my $R^2$ value is "good" or not?**
+
+- (It depends on what you are trying to do)
+
+- (If the goal is predicting outcomes, e.g. who wins an election, higher $R^2$ is better)
+
+- (If the goal is developing a precise estimate of a causal effect, $R^2$ kind of doesn't matter)
+
+<br>
+
+**And finally, what am I checking in the residuals?**
+
+- **What should they look like?**
+
+- (**SLIDE**)
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Assumptions about OLS Residuals**
+
+1. Zero mean
+
+2. Constant variance (homoscedasticity)
+
+3. No autocorrelation
+
+4. Normally distributed
+
+:::
+
+::: notes
+
+IFF your model fits the data well, then your residuals should have these four qualities
+
+<br>
+
+**What does it mean to say your residuals should have zero mean?**
+
+- (Model line should go through the middle of the data and the positive and negative residuals should offset)
+
+<br>
+
+**What does it mean to say our errors should be homoscedastic?**
+
+- (The spread of the error should be the same across all levels of the model)
+
+<br>
+
+**What does it mean to say that there should be no autocorrelation in our errors?**
+
+- (No patterns in the residuals; no correlation between them)
+
+<br>
+
+**And finally, why should our residuals be normally distributed?**
+
+- (Basically, if you check the other three boxes your residuals are random noise and adding together random noise should look like a normal curve)
+
+<br>
+
+**Any questions on our four steps for evaluating a regression?**
+
+<br>
+
+What we didn't get to last class was what do we do if our residuals indicate a serious problem in the fit of our model
+
+- Today we learn two approaches dependent on the problem revealed by the residuals
+
+<br>
+
+Approaches:
+
+1. If the effect you are studying is nonlinear you can add squared and cubed terms to the regression (or more!)
+
+2. If your outcome variable has a strong right skew you can transform it using the log
+
+<br>
+
+**SLIDE**: Let's use your first Canvas assignment to introduce these approaches
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+**Do countries with more highly educated populations tend to have longer average life expectancies?**
+  
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+  
+```{r, echo=FALSE}
+model1 <- lm(data = wdi, life_expectancy ~ secondary_education_pct)
+
+modelsummary(models = model1, 
+             output = "gt",
+             fmt = 2,
+             stars = c('*' = .05),
+             gof_omit = "IC|F|Log",
+             coef_map = c("secondary_education_pct" = "Secondary Education (%)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+  
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(model1, terms = "secondary_education_pct")) +
+  labs(x = "Secondary Education (%)",
+       y = "Average Life Expectancy (years)")
+```
+
+### Residuals 1
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model1, which = 2)
+```
+
+### Residuals 2
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model1, which = 1)
+```
+
+:::
+  
+::::
+:::::
+
+::: notes
+
+**What is your answer to our first homework question?**
+
+<br>
+
+- **In substantive terms, how big is the effect?**
+
+- **How useful is this as policy guidance?**
+
+<br>
+
+**But does the model fit the data well? Evaluate the statistical significance for me**
+
+- (Residuals 1: No serious concerns in the QQ plot)
+
+- (Residuals 2: Clear heteroskedasticity AND autocorrelation)
+
+    - (A definite non-linear pattern to the residuals)
+
+<br>
+
+I cannot emphasize enough the dangers of assuming a regression is a "good" summary of a relationship UNLESS you evaluate the fit of the line
+
+- Here the significance star is especially dangerous
+
+- Too many people see the star and think they've succeeded in finding truth!
+
+- Regression is a tool and ALL tools are imperfect
+
+<br>
+
+**Does anybody remember how to curve the formula for a line in algebra?**
+  
+- (**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+  
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+  
+::: {.panel-tabset}
+
+### Exponential Growth Data
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 <- tibble(
+  x1 = 1:50,
+  x2 = (1:50)^2,
+  y1 = x1 + x2 + rnorm(n = 50, mean = 10, sd = 2)
+)
+
+res10 <- lm(data = d3, y1 ~ x1)
+res11 <- lm(data = d3, y1 ~ x1 + I(x1^2))
+
+d4 <- d3 |>
+  add_predictions(res10, var = "lm") |>
+  add_predictions(res11, var = "squared")
+
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome")
+```
+
+
+### Version 1
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 15, y = 2000, size = 8, color = "red",
+           label = expression("Y = " ~ alpha + beta[1] ~ "x"))
+```
+
+### Version 2
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  geom_line(data = d4, aes(x = x1, y = squared), color = "blue") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 2, y = 2000, size = 8, color = "red", hjust = 0,
+           label = expression("Y = " ~ alpha + beta[1] ~ "x")) +
+  annotate("text", x = 2, y = 1500, size = 8, color = "blue", hjust = 0, label = expression("Y = " ~ alpha + beta[1] ~ "x" + beta[2] ~ "x"^2))
+```
+
+:::
+  
+::: notes
+
+Example 1: Exponential growth
+
+- Here I have plotted some toy data that follows an exponential growth curve
+
+- e.g. increases begin slowly but speed up as we move across the levels of the predictor
+
+<br>
+  
+**Version 1**: We can definitely fit a simple regression to this data
+
+- Heck, it even comes pretty close to the trend!
+  
+- However, you can see here the pattern in the residuals without even needing to check the residuals plot
+
+<br>
+  
+**Version 2**: In this form we allow X to have TWO effects on the line
+
+- X impacts Y both in its regular form (e.g. 1, 2, 3, 4) AND also as a square (e.g. 1, 4, 9, 16)
+
+- Early on the squared term has a small impact on the line and that impact gets bigger and bigger
+
+<br>
+  
+Note that this formula for a line also allows the effect of each version of X to differ from each other!
+  
+- Each X has a SEPARATE beta term in the regression
+
+- This makes this form VERY adaptable
+
+<br>
+  
+For example, you could have a strong, positive slope on regular X but a tiny slope on X^2
+
+- That would be a mostly straight line that skews upward very slowly
+
+<br>
+  
+Alternatively, you could have a small slope coefficient on X and a huge slope on the squared term
+
+- This is a trend that launches upward like a rocket
+
+<br>
+  
+**Do these intuitions make sense?**
+  
+<br>
+  
+**SLIDE**: We can also do this in the other direction
+
+:::
+  
+  
+  
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+  
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+  
+::: {.panel-tabset}
+
+### Exponential Decline Data
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 <- tibble(
+  x1 = 1:50,
+  x2 = (1:50)^2,
+  y1 = x1 - x2 + rnorm(n = 50, mean = 10, sd = 2)
+)
+
+res10 <- lm(data = d3, y1 ~ x1)
+res11 <- lm(data = d3, y1 ~ x1 + I(x1^2))
+
+d4 <- d3 |>
+  add_predictions(res10, var = "lm") |>
+  add_predictions(res11, var = "squared")
+
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome")
+```
+
+
+### Version 1
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 2, y = -1500, size = 8, color = "red", hjust = 0, label = expression("Y = " ~ alpha + beta[1] ~ "x"))
+```
+
+### Version 2
+
+```{r, fig.retina=3, fig.asp=.618, out.width="80%", fig.align='center'}
+d3 |>
+  ggplot(aes(x = x1, y = y1)) +
+  geom_point() +
+  geom_line(data = d4, aes(x = x1, y = lm), color = "red") +
+  geom_line(data = d4, aes(x = x1, y = squared), color = "blue") +
+  theme_bw() +
+  labs(x = "Predictor", y = "Outcome") +
+  annotate("text", x = 2, y = -1500, size = 8, color = "red", hjust = 0,
+           label = expression("Y = " ~ alpha + beta[1] ~ "x")) +
+  annotate("text", x = 2, y = -2000, size = 8, color = "blue", hjust = 0, label = expression("Y = " ~ alpha + beta[1] ~ "x" - beta[2] ~ "x"^2))
+```
+
+:::
+  
+::: notes
+
+Example 2: Exponential decline
+
+- Decreases begin slowly but speed up as we move across the levels of the predictor
+
+- Here we see fake data in an exponential decline curve
+
+<br>
+  
+**Version 1**: If we fit a linear model we see a vague approximation but with a definite pattern to the error
+
+<br>
+  
+**Version 2**: In this form we allow X to have TWO effects on the line
+
+- X impacts Y both in its regular form (e.g. 1, 2, 3, 4) AND THEN by subtracting its squared term (e.g. 1, 4, 9, 16)
+
+- Early on the squared term has a small impact on the line and that impact gets bigger and bigger
+
+<br>
+  
+**Make sense?**
+  
+<br>
+  
+**SLIDE**: Let's apply this to the secondary education regression
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+  
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+  
+<br>
+  
+The I() Function$^*$
+
+- Let's you modify a variable inside the lm() formula
+
+- Combine with "^2" to square the predictor variable
+
+<br>
+
+::: {.r-fit-text}
+
+```{r, echo=TRUE, eval=FALSE}
+lm(data = wdi, 
+   life_expectancy ~ secondary_education_pct + I(secondary_education_pct^2))
+```
+
+*That's a capital "i" in the function name
+
+:::
+
+::: notes
+
+Here's the code you need to add a squared term to the education predictor variable inside the lm() function
+
+- **Does everybody understand the code on the slide?**
+  
+<br>
+  
+Ok, fit this new model, make the predictions and check the residuals!
+  
+- (**SLIDE**)
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+::: {.r-fit-text}
+**Adapting OLS regressions to fit non-linear relationships**
+:::
+  
+::::: {.columns}
+:::: {.column width="50%"}
+```{r, fig.asp=.85, fig.align='center', fig.width=6}
+model1 <- lm(data = wdi, life_expectancy ~ secondary_education_pct)
+model1b <- lm(data = wdi, life_expectancy ~ secondary_education_pct + I(secondary_education_pct^2))
+
+plot(model1, which = 1)
+```
+::::
+
+:::: {.column width="50%"}
+```{r, fig.asp=.85, fig.align='center', fig.width=6}
+plot(model1b, which = 1)
+```
+::::
+:::::
+
+::: notes
+
+On the left is our original model and on the right is our new model with the squared term
+
+<br>
+
+**Has this addressed our problems of non-constant variance and autocorrelation?**
+
+- (Yes to the autocorrelation)
+
+- (Some of the non-constant variance has been reduced)
+
+<br>
+
+Good, we have a better model fit!
+
+- **SLIDE**: Now let's interpret the substantive results
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+  
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+  
+```{r, echo=FALSE}
+modelsummary(list(model1, model1b),
+             out = "gt",
+             fmt = 2, 
+             stars = c("*" = .05), 
+             gof_omit = "IC|F|Log",
+             coef_rename = c("secondary_education_pct" = "Secondary Education (%)", "I(secondary_education_pct^2)" = "Secondary Education^2", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+    gt::cell_fill(color = 'white'),
+    gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+  
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(model1b, terms = "secondary_education_pct")) +
+  labs(x = "Secondary Education (%)",
+       y = "Average Life Expectancy (years)")
+```
+
+### Residuals 1
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model1b, which = 2)
+```
+
+### Residuals 2
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model1b, which = 1)
+```
+
+:::
+  
+::::
+:::::
+  
+::: notes
+
+**Have we now improved the fit of the line to the data?**
+  
+- **In other words, is this a better summary of the relationship?**
+  
+- Added a significant coefficient, increased the R2 by a lot, reduced the error, fixed the nonlinear residuals!
+  
+<br>
+  
+**Ok, what is the story of this line?**
+  
+- **How does secondary education relate to life expectancy in our global sample?**
+  
+<br>
+  
+- At low levels of secondary education the effect is strong and positive
+
+    - e.g. Spreading secondary ed is associated with longer lives
+
+- HOWEVER, once you get beyond the 60-ish% the effect flattens out
+
+- So, the effect of adding more education beyond that point no longer translates into higher life expectancies!
+
+<br>
+  
+**Anybody want to take a stab at explaining why we might see this relationship in the real world?**
+
+- (Life expectancies are caused by many, many factors and education is just one of them!)
+
+- It matters, but can't replace the others!
+  
+<br>
+  
+**Questions on adding a squared predictor to curve the line?**
+
+- Checking the residuals led us to a REALLY cool finding that we would have completely missed if we only checked missing data, significance and $R^2$
+  
+<br>
+  
+**SLIDE**: Let's keep practicing
+
+:::
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::: {.r-fit-text}
+**Do wealthier countries tend to have longer average life expectancies?**
+:::
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+  
+```{r, echo=FALSE}
+wdi$gdp_pc_k <- wdi$gdp_pc_current_usd/1000
+
+model2 <- lm(data = wdi, life_expectancy ~ gdp_pc_k)
+
+modelsummary(models = model2, 
+             output = "gt",
+             fmt = 2,
+             stars = c('*' = .05),
+             gof_omit = "IC|F|Log",
+             coef_map = c("gdp_pc_k" = "GDP per capita (k, USD)", "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+  
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(model2, terms = "gdp_pc_k")) +
+  labs(x = "GDP per capita (k, USD)",
+       y = "Average Life Expectancy (years)")
+```
+
+### Residuals 1
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2, which = 2)
+```
+
+### Residuals 2
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2, which = 1)
+```
+
+:::
+  
+::::
+:::::
+
+::: notes
+
+**Did everybody rescale GDP pc into thousands?**
+
+<br>
+
+**What is your answer to our second homework question?**
+
+<br>
+
+- **In substantive terms, how big is the effect?**
+
+- **How useful is this as policy guidance?**
+
+<br>
+
+**But does the model fit the data well? Evaluate the statistical significance for me**
+
+- (Residuals 1: Serious deviations in both tails of the QQ plot)
+
+- (Residuals 2: That is a CLEAR nonlinear effect!)
+
+<br>
+
+Ok, you know where this is going!
+
+- Everybody refit this model but add a squared version of GDP and get ready to report back on the new model
+
+:::
+
+
+
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::: {.r-fit-text}
+**Do wealthier countries tend to have longer average life expectancies?**
+:::
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+  
+```{r, echo=FALSE}
+wdi$gdp_pc_k <- wdi$gdp_pc_current_usd/1000
+
+model2 <- lm(data = wdi, life_expectancy ~ gdp_pc_k)
+model2b <- lm(data = wdi, life_expectancy ~ gdp_pc_k + I(gdp_pc_k^2))
+
+
+modelsummary(models = list(model2, model2b), 
+             output = "gt",
+             fmt = 3,
+             stars = c('*' = .05),
+             gof_omit = "IC|F|Log",
+             coef_map = c("gdp_pc_k" = "GDP per capita (k, USD)", 
+                          "I(gdp_pc_k^2)" = "GDP pc^2",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
+```
+
+::::
+  
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(model2b, terms = "gdp_pc_k")) +
+  labs(x = "GDP per capita (k, USD)",
+       y = "Average Life Expectancy (years)")
+```
+
+### Residuals 1
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2b, which = 2)
+```
+
+### Residuals 2
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2b, which = 1)
+```
+
+:::
+  
+::::
+:::::
+
+::: notes
+
+I'm using three digits after the decimal place because the effect of the squared term is tiny
+
+<br>
+
+**Ok, what have you learned from this new model?**
+
+- (As wealth increases life expectancy increases up to a certain level and then more money doesn't immediately translate to life expectancy)
+
+<br>
+
+**Changes in the substantive story?**
+
+- **Why is the squared terms so small?**
+
+    - (GDP pc values get BIG and squaring those values produces HUGE numbers)
+
+<br>
+
+**Have we fixed the residuals problem?**
+
+- (Much better, but not yet...)
+
+<br>
+
+Ok, everybody do this again but now ADD a cubed term to the model
+
+- e.g. gdp, gdp squared and gdp cubed
+
+- Go!
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::: {.r-fit-text}
+**Do wealthier countries tend to have longer average life expectancies?**
+:::
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+  
+```{r, echo=FALSE}
+model2c <- lm(data = wdi, life_expectancy ~ gdp_pc_k + I(gdp_pc_k^2) + I(gdp_pc_k^3))
+
+
+modelsummary(models = list(model2, model2b, model2c), 
+             output = "gt",
+             fmt = 3,
+             stars = c('*' = .05),
+             gof_omit = "IC|F|Log",
+             coef_map = c("gdp_pc_k" = "GDP per capita (k, USD)", 
+                          "I(gdp_pc_k^2)" = "GDP pc^2",
+                          "I(gdp_pc_k^3)" = "GDP pc^3",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "large")
+  ), locations = gt::cells_body())
+```
+
+::::
+  
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(model2c, terms = "gdp_pc_k")) +
+  labs(x = "GDP per capita (k, USD)",
+       y = "Average Life Expectancy (years)")
+```
+
+### Residuals 1
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2c, which = 2)
+```
+
+### Residuals 2
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2c, which = 1)
+```
+
+:::
+  
+::::
+:::::
+
+::: notes
+
+**Ok, what have you learned from this new model?**
+
+<br>
+
+**Changes in the substantive story?**
+
+<br>
+
+**Have we fixed the residuals problem?**
+
+- (Not yet...)
+
+<br>
+
+**SLIDE**: I won't ask you to keep going with this one, but I will show the next version
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::: {.r-fit-text}
+**Do wealthier countries tend to have longer average life expectancies?**
+:::
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+  
+```{r, echo=FALSE}
+model2d <- lm(data = wdi, life_expectancy ~ gdp_pc_k + I(gdp_pc_k^2) + I(gdp_pc_k^3) + I(gdp_pc_k^4))
+
+modelsummary(models = list(model2, model2b, model2c, model2d), 
+             output = "gt",
+             fmt = 3,
+             stars = c('*' = .05),
+             gof_omit = "IC|F|Log",
+             coef_map = c("gdp_pc_k" = "GDP per capita (k, USD)", 
+                          "I(gdp_pc_k^2)" = "GDP pc^2",
+                          "I(gdp_pc_k^3)" = "GDP pc^3",
+                          "I(gdp_pc_k^4)" = "GDP pc^4",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "medium")
+  ), locations = gt::cells_body())
+```
+
+::::
+  
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(model2d, terms = "gdp_pc_k")) +
+  labs(x = "GDP per capita (k, USD)",
+       y = "Average Life Expectancy (years)")
+```
+
+### Residuals 1
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2d, which = 2)
+```
+
+### Residuals 2
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2d, which = 1)
+```
+
+:::
+  
+::::
+:::::
+
+::: notes
+
+You can continuously add additional multiples of your predictors to the regression model and it will let you tune your model to essentially any number of turns of direction
+
+- The danger here is that we are overfitting the sample data
+
+- REMEMBER, the aim of inferential statistics is to learn about the population from the sample
+
+- I don't want a perfect model for this sample, I want my best estimate for how wealth impacts life expectancy
+
+<br>
+
+SINCE the residuals vs fitted values plot suggests we still haven't addressed the non-linearity I have to consider other options!
+
+- **What do we know about the distribution of GDP pc? Is it normally distributed?**
+
+- (GDP pc has a huge right skew and that might be preventing OLS from getting into the middle!)
+
+<br>
+
+SO, let's try our second approach to adjusting an OLS regression for non-linear residuals
+
+<br>
+
+**SLIDE**: Log transformations
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .center}
+
+:::: {.columns}
+::: {.column width="50%"}
+**Original Scale**
+
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.8, fig.width=5}
+#summary(wdi$gdp_pc_current_usd)
+
+wdi |>
+  ggplot(aes(x = gdp_pc_current_usd)) +
+  geom_histogram(color = "white", bins = 20) +
+  theme_bw() +
+  labs(x = "GDP per capita (USD)", y = "Count")
+```
+:::
+
+::: {.column width="50%"}
+**Log Scale**
+
+```{r, echo=FALSE, fig.align='center', fig.retina=3, fig.asp=.8, fig.width=5}
+wdi$gdppc_log <- log(wdi$gdp_pc_current_usd)
+
+#summary(log(wdi$gdppc_log))
+
+wdi |>
+  ggplot(aes(x = gdppc_log)) +
+  geom_histogram(color = "white", bins = 20) +
+  theme_bw() +
+  labs(x = "GDP per capita (logged, USD)", y = "Count")
+```
+:::
+::::
+
+::: {.fragment}
+```{r, echo=TRUE}
+model2_log <- lm(data = wdi, life_expectancy ~ I(log(gdp_pc_current_usd)))
+```
+:::
+
+::: notes
+
+Back in Week 6 we explored how we could use a log transformation to help us analyze right skewed data
+
+<br>
+
+GDP per capita is clearly right skewed
+
+- Most countries in the world are on the poorer end of the spectrum with a few massive outliers
+
+<br>
+
+Think of this from the perspective of OLS
+
+- How do you draw a straight line through the original distribution that keeps the same amount of error on both sides?
+
+- But so much easier with the logged version!
+
+<br>
+
+**REVEAL**: Everybody run this model and get ready to report back on its substantive and statistical significance
+
+- Now, remember, you have to take the log of the ORIGINAL variable, NOT the thousands version
+
+- The log of 1 is different from the log of 1,000
+
+<br>
+
+(**SLIDE**)
+
+:::
+
+
+
+## {background-image="Images/background-data_blue_v4.png" .smaller}
+
+::: {.r-fit-text}
+**Do wealthier countries tend to have longer average life expectancies?**
+:::
+
+::::: {.columns}
+:::: {.column width="40%"}
+
+<br>
+  
+```{r, echo=FALSE}
+model2_log <- lm(data = wdi, life_expectancy ~ I(log(gdp_pc_current_usd)))
+
+modelsummary(models = list(model2, model2b, model2c, model2_log), 
+             output = "gt",
+             fmt = 3,
+             stars = c('*' = .05),
+             gof_omit = "IC|F|Log",
+             coef_map = c("gdp_pc_k" = "GDP per capita (k, USD)", 
+                          "I(gdp_pc_k^2)" = "GDP pc^2",
+                          "I(gdp_pc_k^3)" = "GDP pc^3",
+                          "I(gdp_pc_k^4)" = "GDP pc^4",
+                          "I(log(gdp_pc_current_usd))" = "log(GDP pc)",
+                          "(Intercept)" = "Constant")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "medium")
+  ), locations = gt::cells_body())
+```
+
+::::
+  
+:::: {.column width="60%"}
+
+::: {.panel-tabset}
+
+### Predictions
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(ggpredict(model2_log, terms = "gdp_pc_current_usd")) +
+  labs(x = "GDP per capita (USD)",
+       y = "Average Life Expectancy (years)") +
+  scale_x_continuous(labels = scales::dollar_format())
+```
+
+### Residuals 1
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2_log, which = 2)
+```
+
+### Residuals 2
+
+```{r, echo=FALSE, fig.retina=3, fig.asp=.9, fig.align='center', out.width='90%', fig.width=7}
+plot(model2_log, which = 1)
+```
+
+:::
+  
+::::
+:::::
+
+::: notes
+
+**Ok, what have you learned from this new model?**
+
+- **Changes in the substantive story?**
+
+<br>
+
+Our model here suggests increasing the log value of GDP pc by one increases life expectancy by four years
+
+- **Remind me, what does a change of one on the log scale look like in the normal scale?**
+
+- (Multiply the amount by Euler's number, 2.72)
+
+- (Rule of thumb, tripling of the base)
+
+- (SO, triple your GDP pc and add 4 years life expectancy on average)
+
+<br>
+
+The ggpredict function translates this for us back into the normal scale
+
+- At lower ends of the predictions the effect is fast (easy to triple a small GDP number)
+
+- At the high end, tripling is REALLY hard so the effect slows way down!
+
+<br>
+
+**Have we fixed the residuals problem?**
+
+<br>
+
+**Ok, questions on our two methods for addressing nonlinearity in residuals?**
+
+- If you suspect the effect changes direction try adding a squared or cubed term to the predictors
+
+- If the predictor or outcome is right-skewed try taking the log
+
+<br>
+
+**SLIDE**: For next class
+
+:::
+
+
+
+## For Next Class {background-image="Images/background-data_blue_v4.png" .center}
+
+<br>
+
+**Do countries with more basic levels of education tend to be wealthier on average?**
+
+1. Fit and evaluate four versions of this model (baseline, squared term, logged DV and both)
+
+2. Submit your "best" model to Canvas
+
+::: notes
+
+Everybody check out the assignment on Canvas and let me know if you have any questions
+
+- Go!
+
+<br>
+
+Canvas Assignment: Developing Better Models of Global Wealth
+
+- Data: World_Development_Indicators-2023-Life_Expectancy.xlsx
+- RQ: Do countries with more basic levels of education (primary_education_pct) tend to be wealthier on average (gdp_pc_current_usd)?
+
+Fit the following models and select the one you argue "best" answers our research question:
+
+1. Baseline: Regress gdp_pc_current_usd on primary_education_pct
+2. Squared: Regress gdp_pc_current_usd on primary_education_pct and a squared version of the predictor
+3. Logged: Regress a logged version of gdp_pc_current_usd on primary_education_pct
+4. Both: Regress a logged version of gdp_pc_current_usd on primary_education_pct and a squared version of the predictor
+
+Submit: 
+
+1. A polished regression table with all four models
+2. An argument in favor of one of the models above the other three based on their fits to the data (with the evidence you are using to support the argument)
+3. An explanation of your answer to the RQ using your chosen model (with a prediction plot)
+
+<br>
+
+```{r}
+wdi$gdp_pc_k <- wdi$gdp_pc_current_usd/1000
+
+educ1 <- lm(data = wdi, gdp_pc_k ~ primary_education_pct)
+educ2 <- lm(data = wdi, gdp_pc_k ~ primary_education_pct + I(primary_education_pct^2))
+educ3 <- lm(data = wdi, log(gdp_pc_current_usd) ~ primary_education_pct)
+educ4 <- lm(data = wdi, log(gdp_pc_current_usd) ~ primary_education_pct + I(primary_education_pct^2))
+
+modelsummary(models = list("GDP pc (K)" = educ1, educ2, "log(GDP)" = educ3, educ4), 
+             output = "gt",
+             fmt = 2,
+             stars = c('*' = .05),
+             gof_omit = "IC|F|Log")
+
+plot(educ1, which = 1)
+plot(educ1, which = 2)
+
+plot(educ3, which = 1)
+plot(educ3, which = 2)
+
+plot(ggpredict(educ3, terms = "primary_education_pct"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+:::
+

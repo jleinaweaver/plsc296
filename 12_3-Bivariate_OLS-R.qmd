@@ -570,6 +570,8 @@ Just add the plot function around your ggpredict and get a nice visualization
 
 - This will prove VERY helpful when we move to multiple regression in a few weeks
 
+- NOTE: This DOES include the CIs around the line it's just that with 54k diamonds the CI is so tight we can't see it here.
+
 <br>
 
 **Did everybody get this code to run?**
@@ -654,7 +656,11 @@ plot(ggpredict(practice1, terms = "displ")) +
 modelsummary(practice1, 
              output = "gt", fmt = 2, 
              stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_rename = c("displ"= "Engine Size"))
+             coef_rename = c("displ"= "Engine Size")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
 ```
 :::
 ::::
@@ -688,9 +694,15 @@ plot(ggpredict(practice1, terms = "displ")) +
 
 *Make the class step you through interpreting the fit of the model*
 
+1. Any missing data problems?
+
+2. Is this a statistically significant result?
+
+3. Is this a substantively significant result? Why or why not?
+
 <br>
 
-**SLIDE**: Let's do one more with this dataset
+**SLIDE**: Let's do this again with another variable in this same dataset
 
 :::
 
@@ -732,7 +744,11 @@ plot(ggpredict(practice2, terms = "displ")) +
 modelsummary(models = list(practice1, practice2), 
              output = "gt", fmt = 2, 
              stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_rename = c("displ"= "Engine Size"))
+             coef_rename = c("displ"= "Engine Size")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
 ```
 :::
 ::::
@@ -764,7 +780,23 @@ plot(ggpredict(practice2, terms = "displ")) +
 
 <br>
 
+Note: Here I am showing you the code to put TWO models in ONE table using modelsummary
+
+- THIS is an important bit of code you want to save for the future!
+
+- Same argument as before ("models") but now you give it a list of YOUR models
+
+- You can do this with as many regression models as you want
+
+<br>
+
 *Make the class step you through comparing the fit of the two models*
+
+1. Any missing data problems?
+
+2. Is this a statistically significant result?
+
+3. Is this a substantively significant result? Why or why not?
 
 <br>
 
@@ -814,7 +846,11 @@ plot(ggpredict(practice3, terms = "approval_june")) +
 modelsummary(practice3, 
              output = "gt", fmt = 2, 
              stars = c('*' = .05), gof_omit = "IC|Log|F",
-             coef_rename = c("approval_june"= "Approval in June (%)"))
+             coef_rename = c("approval_june"= "Approval in June (%)")) |>
+  gt::tab_style(style = list(
+                  gt::cell_fill(color = 'white'),
+                  gt::cell_text(size = "x-large")
+  ), locations = gt::cells_body())
 ```
 :::
 ::::

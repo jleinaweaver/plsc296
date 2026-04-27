@@ -426,7 +426,7 @@ d |>
   ggplot(aes(x = maternal_mortality_ratio)) +
   geom_histogram(color = "white", bins = 15) +
   theme_bw() +
-  labs(x = "Maternal Mortality Ratio (per 100,000 births", y = "Count") +
+  labs(x = "Maternal Mortality Ratio (per 100,000 births)", y = "Count") +
   scale_x_continuous(breaks = seq(0, 1000, 200))
 ```
 
@@ -563,28 +563,38 @@ d |>
 ## {background-image="Images/background-data_blue_v4.png" .center}
 
 ```{r}
+# SP26: replaced urban_population with education_spending
 model1a <- lm(data = d, maternal_mortality_ratio ~ electricity_pct_pop)
 model1b <- lm(data = d, maternal_mortality_ratio ~ basic_drinking_water)
-model1c <- lm(data = d, maternal_mortality_ratio ~ urban_population)
+model1c <- lm(data = d, maternal_mortality_ratio ~ education_spending)
 model1d <- lm(data = d, maternal_mortality_ratio ~ fertility_rate)
-model1e <- lm(data = d, maternal_mortality_ratio ~ women_in_parliaments)
+#model1e <- lm(data = d, maternal_mortality_ratio ~ women_in_parliaments)
 
-modelsummary(models = list(model1a, model1b, model1c, model1d, model1e), 
+modelsummary(models = list(model1a, model1b, model1c, model1d), 
              stars = c("*" = .05),
              output = "gt", 
              fmt = 2, 
              gof_omit = "IC|Log|F",
              coef_map = c("electricity_pct_pop"= "Electricty (% of pop)",
                           "basic_drinking_water" = "Drinking Water (% of pop)",
+                          "education_spending" = "Education Spending (% GDP)",
                           "urban_population" = "Urban Population (%)",
                           "fertility_rate" = "Fertility Rate",
                           "women_in_parliaments" = "Women in Parliament",
                           "(Intercept)" = "Constant")) |>
   gt::tab_style(style = list(
                   gt::cell_fill(color = 'white'),
-                  gt::cell_text(size = "medium")
+                  gt::cell_text(size = "x-large")
   ), locations = gt::cells_body())
 ```
+
+::: notes
+
+*Match the class selections*
+
+
+
+:::
 
 
 
@@ -608,11 +618,11 @@ plot(ggpredict(model1b, "basic_drinking_water")) +
   scale_y_continuous(limits = c(-100,1200))
 ```
 
-### Urban
+### Education
 
 ```{r, fig.asp=.618, fig.align='center', out.width="80%", fig.width=7}
-plot(ggpredict(model1c, "urban_population")) +
-  labs(x = "Urban Population (%)", y = "Maternal Mortality Ratio") +
+plot(ggpredict(model1c, "education_spending")) +
+  labs(x = "Education Spending (% GDP)", y = "Maternal Mortality Ratio") +
   scale_y_continuous(limits = c(-100,1200))
 ```
 
@@ -626,7 +636,7 @@ plot(ggpredict(model1d, "fertility_rate")) +
 
 ### Women in Parliament
 
-```{r, fig.asp=.618, fig.align='center', out.width="80%", fig.width=7}
+```{r, fig.asp=.618, fig.align='center', out.width="80%", fig.width=7, eval=FALSE}
 plot(ggpredict(model1e, "women_in_parliaments")) +
   labs(x = "Electricty (% of population)", y = "Maternal Mortality Ratio") +
   scale_y_continuous(limits = c(-100,1200))

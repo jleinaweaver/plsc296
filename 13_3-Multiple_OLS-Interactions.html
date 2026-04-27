@@ -27,6 +27,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="13_3-Multiple_OLS-Interactions_files/libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
   <link href="13_3-Multiple_OLS-Interactions_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -132,7 +198,7 @@
 <div class="r-fit-text">
 <p><strong>Ordinary Least Squares (OLS) Regression</strong></p>
 <ul>
-<li>Extending an OLS regression</li>
+<li>Extending an OLS regression with interaction effects</li>
 </ul>
 </div>
 <p><br></p>
@@ -163,622 +229,4159 @@
 <div class="r-fit-text">
 <p><strong>RQ: Do voter ID laws reduce voter turnout?</strong></p>
 </div>
-<div class="cell">
-
-<div class="cell-output-display">
-<!-- preamble start -->
-
-    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
-
-    <script>
-      // Create table-specific functions using external factory
-      const tableFns_vlntcrtq7fgnrt13pu1h = TinyTable.createTableFunctions("tinytable_vlntcrtq7fgnrt13pu1h");
-      // tinytable span after
-      window.addEventListener('load', function () {
-          var cellsToStyle = [
-            // tinytable style arrays after
-          { positions: [ { i: '24', j: 2 }, { i: '24', j: 3 }, { i: '24', j: 4 }, { i: '24', j: 5 }, { i: '24', j: 6 }, { i: '24', j: 7 }, { i: '24', j: 8 } ], css_id: 'tinytable_css_aj8rwcahruo8qudccn1p',}, 
-          { positions: [ { i: '16', j: 2 }, { i: '16', j: 3 }, { i: '16', j: 4 }, { i: '16', j: 5 }, { i: '16', j: 6 }, { i: '16', j: 7 }, { i: '16', j: 8 } ], css_id: 'tinytable_css_cshh4lsttq4143zorh5b',}, 
-          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '12', j: 2 }, { i: '13', j: 2 }, { i: '14', j: 2 }, { i: '15', j: 2 }, { i: '17', j: 2 }, { i: '18', j: 2 }, { i: '19', j: 2 }, { i: '20', j: 2 }, { i: '21', j: 2 }, { i: '22', j: 2 }, { i: '23', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '10', j: 3 }, { i: '11', j: 3 }, { i: '12', j: 3 }, { i: '13', j: 3 }, { i: '14', j: 3 }, { i: '15', j: 3 }, { i: '17', j: 3 }, { i: '18', j: 3 }, { i: '19', j: 3 }, { i: '20', j: 3 }, { i: '21', j: 3 }, { i: '22', j: 3 }, { i: '23', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '6', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '10', j: 4 }, { i: '11', j: 4 }, { i: '12', j: 4 }, { i: '13', j: 4 }, { i: '14', j: 4 }, { i: '15', j: 4 }, { i: '17', j: 4 }, { i: '18', j: 4 }, { i: '19', j: 4 }, { i: '20', j: 4 }, { i: '21', j: 4 }, { i: '22', j: 4 }, { i: '23', j: 4 }, { i: '1', j: 5 }, { i: '2', j: 5 }, { i: '3', j: 5 }, { i: '4', j: 5 }, { i: '5', j: 5 }, { i: '6', j: 5 }, { i: '7', j: 5 }, { i: '8', j: 5 }, { i: '9', j: 5 }, { i: '10', j: 5 }, { i: '11', j: 5 }, { i: '12', j: 5 }, { i: '13', j: 5 }, { i: '14', j: 5 }, { i: '15', j: 5 }, { i: '17', j: 5 }, { i: '18', j: 5 }, { i: '19', j: 5 }, { i: '20', j: 5 }, { i: '21', j: 5 }, { i: '22', j: 5 }, { i: '23', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 }, { i: '3', j: 6 }, { i: '4', j: 6 }, { i: '5', j: 6 }, { i: '6', j: 6 }, { i: '7', j: 6 }, { i: '8', j: 6 }, { i: '9', j: 6 }, { i: '10', j: 6 }, { i: '11', j: 6 }, { i: '12', j: 6 }, { i: '13', j: 6 }, { i: '14', j: 6 }, { i: '15', j: 6 }, { i: '17', j: 6 }, { i: '18', j: 6 }, { i: '19', j: 6 }, { i: '20', j: 6 }, { i: '21', j: 6 }, { i: '22', j: 6 }, { i: '23', j: 6 }, { i: '1', j: 7 }, { i: '2', j: 7 }, { i: '3', j: 7 }, { i: '4', j: 7 }, { i: '5', j: 7 }, { i: '6', j: 7 }, { i: '7', j: 7 }, { i: '8', j: 7 }, { i: '9', j: 7 }, { i: '10', j: 7 }, { i: '11', j: 7 }, { i: '12', j: 7 }, { i: '13', j: 7 }, { i: '14', j: 7 }, { i: '15', j: 7 }, { i: '17', j: 7 }, { i: '18', j: 7 }, { i: '19', j: 7 }, { i: '20', j: 7 }, { i: '21', j: 7 }, { i: '22', j: 7 }, { i: '23', j: 7 }, { i: '1', j: 8 }, { i: '2', j: 8 }, { i: '3', j: 8 }, { i: '4', j: 8 }, { i: '5', j: 8 }, { i: '6', j: 8 }, { i: '7', j: 8 }, { i: '8', j: 8 }, { i: '9', j: 8 }, { i: '10', j: 8 }, { i: '11', j: 8 }, { i: '12', j: 8 }, { i: '13', j: 8 }, { i: '14', j: 8 }, { i: '15', j: 8 }, { i: '17', j: 8 }, { i: '18', j: 8 }, { i: '19', j: 8 }, { i: '20', j: 8 }, { i: '21', j: 8 }, { i: '22', j: 8 }, { i: '23', j: 8 } ], css_id: 'tinytable_css_e1xzspmlkpnxnrotdbxh',}, 
-          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 }, { i: '0', j: 7 }, { i: '0', j: 8 } ], css_id: 'tinytable_css_a64u3p062lymp2fd210o',}, 
-          { positions: [ { i: '24', j: 1 } ], css_id: 'tinytable_css_27sh11nwi94k1zu5ewsv',}, 
-          { positions: [ { i: '16', j: 1 } ], css_id: 'tinytable_css_dbed852v2jutqsw4x5qv',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '14', j: 1 }, { i: '15', j: 1 }, { i: '17', j: 1 }, { i: '18', j: 1 }, { i: '19', j: 1 }, { i: '20', j: 1 }, { i: '21', j: 1 }, { i: '22', j: 1 }, { i: '23', j: 1 } ], css_id: 'tinytable_css_666ksjmjj865hbu8x4hc',}, 
-          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_blpugl9fj6cnvxkg1ztr',}, 
-          ];
-
-          // Loop over the arrays to style the cells
-          cellsToStyle.forEach(function (group) {
-              group.positions.forEach(function (cell) {
-                  tableFns_vlntcrtq7fgnrt13pu1h.styleCell(cell.i, cell.j, group.css_id);
-              });
-          });
-      });
-    </script>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
-    <style>
-    /* tinytable css entries after */
-    #tinytable_vlntcrtq7fgnrt13pu1h td.tinytable_css_aj8rwcahruo8qudccn1p, #tinytable_vlntcrtq7fgnrt13pu1h th.tinytable_css_aj8rwcahruo8qudccn1p {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_vlntcrtq7fgnrt13pu1h td.tinytable_css_cshh4lsttq4143zorh5b, #tinytable_vlntcrtq7fgnrt13pu1h th.tinytable_css_cshh4lsttq4143zorh5b {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_vlntcrtq7fgnrt13pu1h td.tinytable_css_e1xzspmlkpnxnrotdbxh, #tinytable_vlntcrtq7fgnrt13pu1h th.tinytable_css_e1xzspmlkpnxnrotdbxh { text-align: center }
-    #tinytable_vlntcrtq7fgnrt13pu1h td.tinytable_css_a64u3p062lymp2fd210o, #tinytable_vlntcrtq7fgnrt13pu1h th.tinytable_css_a64u3p062lymp2fd210o {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_vlntcrtq7fgnrt13pu1h td.tinytable_css_27sh11nwi94k1zu5ewsv, #tinytable_vlntcrtq7fgnrt13pu1h th.tinytable_css_27sh11nwi94k1zu5ewsv {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
-    #tinytable_vlntcrtq7fgnrt13pu1h td.tinytable_css_dbed852v2jutqsw4x5qv, #tinytable_vlntcrtq7fgnrt13pu1h th.tinytable_css_dbed852v2jutqsw4x5qv {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
-    #tinytable_vlntcrtq7fgnrt13pu1h td.tinytable_css_666ksjmjj865hbu8x4hc, #tinytable_vlntcrtq7fgnrt13pu1h th.tinytable_css_666ksjmjj865hbu8x4hc { text-align: left }
-    #tinytable_vlntcrtq7fgnrt13pu1h td.tinytable_css_blpugl9fj6cnvxkg1ztr, #tinytable_vlntcrtq7fgnrt13pu1h th.tinytable_css_blpugl9fj6cnvxkg1ztr {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
-    </style>
-    <div class="container">
-      <table class="tinytable" id="tinytable_vlntcrtq7fgnrt13pu1h" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
-        
-        <thead>
-              <tr>
-                <th scope="col" data-row="0" data-col="1"> </th>
-                <th scope="col" data-row="0" data-col="2">(1)</th>
-                <th scope="col" data-row="0" data-col="3">(2)</th>
-                <th scope="col" data-row="0" data-col="4">(3)</th>
-                <th scope="col" data-row="0" data-col="5">(4)</th>
-                <th scope="col" data-row="0" data-col="6">(5)</th>
-                <th scope="col" data-row="0" data-col="7">(6)</th>
-                <th scope="col" data-row="0" data-col="8">(7)</th>
-              </tr>
-        </thead>
-        <tfoot><tr><td colspan="8">* p &lt; 0.05</td></tr></tfoot>
-        <tbody>
-                <tr>
-                  <td data-row="1" data-col="1">(Intercept)</td>
-                  <td data-row="1" data-col="2">69.90*</td>
-                  <td data-row="1" data-col="3">68.87*</td>
-                  <td data-row="1" data-col="4">84.10*</td>
-                  <td data-row="1" data-col="5">80.20*</td>
-                  <td data-row="1" data-col="6">45.54*</td>
-                  <td data-row="1" data-col="7">72.29*</td>
-                  <td data-row="1" data-col="8">36.67*</td>
-                </tr>
-                <tr>
-                  <td data-row="2" data-col="1"></td>
-                  <td data-row="2" data-col="2">(1.38)</td>
-                  <td data-row="2" data-col="3">(1.43)</td>
-                  <td data-row="2" data-col="4">(4.36)</td>
-                  <td data-row="2" data-col="5">(3.86)</td>
-                  <td data-row="2" data-col="6">(4.36)</td>
-                  <td data-row="2" data-col="7">(2.03)</td>
-                  <td data-row="2" data-col="8">(9.58)</td>
-                </tr>
-                <tr>
-                  <td data-row="3" data-col="1">voter_id1</td>
-                  <td data-row="3" data-col="2">-3.05</td>
-                  <td data-row="3" data-col="3">-2.95</td>
-                  <td data-row="3" data-col="4">-1.31</td>
-                  <td data-row="3" data-col="5">-1.43</td>
-                  <td data-row="3" data-col="6">-1.11</td>
-                  <td data-row="3" data-col="7">-3.12</td>
-                  <td data-row="3" data-col="8">-1.12</td>
-                </tr>
-                <tr>
-                  <td data-row="4" data-col="1"></td>
-                  <td data-row="4" data-col="2">(1.72)</td>
-                  <td data-row="4" data-col="3">(1.67)</td>
-                  <td data-row="4" data-col="4">(1.64)</td>
-                  <td data-row="4" data-col="5">(1.71)</td>
-                  <td data-row="4" data-col="6">(1.37)</td>
-                  <td data-row="4" data-col="7">(1.76)</td>
-                  <td data-row="4" data-col="8">(1.18)</td>
-                </tr>
-                <tr>
-                  <td data-row="5" data-col="1">battleground2020</td>
-                  <td data-row="5" data-col="2"></td>
-                  <td data-row="5" data-col="3">3.69*</td>
-                  <td data-row="5" data-col="4"></td>
-                  <td data-row="5" data-col="5"></td>
-                  <td data-row="5" data-col="6"></td>
-                  <td data-row="5" data-col="7"></td>
-                  <td data-row="5" data-col="8">5.44*</td>
-                </tr>
-                <tr>
-                  <td data-row="6" data-col="1"></td>
-                  <td data-row="6" data-col="2"></td>
-                  <td data-row="6" data-col="3">(1.83)</td>
-                  <td data-row="6" data-col="4"></td>
-                  <td data-row="6" data-col="5"></td>
-                  <td data-row="6" data-col="6"></td>
-                  <td data-row="6" data-col="7"></td>
-                  <td data-row="6" data-col="8">(1.24)</td>
-                </tr>
-                <tr>
-                  <td data-row="7" data-col="1">public.conservative</td>
-                  <td data-row="7" data-col="2"></td>
-                  <td data-row="7" data-col="3"></td>
-                  <td data-row="7" data-col="4">-0.43*</td>
-                  <td data-row="7" data-col="5"></td>
-                  <td data-row="7" data-col="6"></td>
-                  <td data-row="7" data-col="7"></td>
-                  <td data-row="7" data-col="8">0.49*</td>
-                </tr>
-                <tr>
-                  <td data-row="8" data-col="1"></td>
-                  <td data-row="8" data-col="2"></td>
-                  <td data-row="8" data-col="3"></td>
-                  <td data-row="8" data-col="4">(0.13)</td>
-                  <td data-row="8" data-col="5"></td>
-                  <td data-row="8" data-col="6"></td>
-                  <td data-row="8" data-col="7"></td>
-                  <td data-row="8" data-col="8">(0.24)</td>
-                </tr>
-                <tr>
-                  <td data-row="9" data-col="1">trump2016</td>
-                  <td data-row="9" data-col="2"></td>
-                  <td data-row="9" data-col="3"></td>
-                  <td data-row="9" data-col="4"></td>
-                  <td data-row="9" data-col="5">-21.40*</td>
-                  <td data-row="9" data-col="6"></td>
-                  <td data-row="9" data-col="7"></td>
-                  <td data-row="9" data-col="8">-21.99</td>
-                </tr>
-                <tr>
-                  <td data-row="10" data-col="1"></td>
-                  <td data-row="10" data-col="2"></td>
-                  <td data-row="10" data-col="3"></td>
-                  <td data-row="10" data-col="4"></td>
-                  <td data-row="10" data-col="5">(7.56)</td>
-                  <td data-row="10" data-col="6"></td>
-                  <td data-row="10" data-col="7"></td>
-                  <td data-row="10" data-col="8">(13.31)</td>
-                </tr>
-                <tr>
-                  <td data-row="11" data-col="1">ba.or.more</td>
-                  <td data-row="11" data-col="2"></td>
-                  <td data-row="11" data-col="3"></td>
-                  <td data-row="11" data-col="4"></td>
-                  <td data-row="11" data-col="5"></td>
-                  <td data-row="11" data-col="6">0.72*</td>
-                  <td data-row="11" data-col="7"></td>
-                  <td data-row="11" data-col="8">0.90*</td>
-                </tr>
-                <tr>
-                  <td data-row="12" data-col="1"></td>
-                  <td data-row="12" data-col="2"></td>
-                  <td data-row="12" data-col="3"></td>
-                  <td data-row="12" data-col="4"></td>
-                  <td data-row="12" data-col="5"></td>
-                  <td data-row="12" data-col="6">(0.12)</td>
-                  <td data-row="12" data-col="7"></td>
-                  <td data-row="12" data-col="8">(0.16)</td>
-                </tr>
-                <tr>
-                  <td data-row="13" data-col="1">hispanic.percent</td>
-                  <td data-row="13" data-col="2"></td>
-                  <td data-row="13" data-col="3"></td>
-                  <td data-row="13" data-col="4"></td>
-                  <td data-row="13" data-col="5"></td>
-                  <td data-row="13" data-col="6"></td>
-                  <td data-row="13" data-col="7">-0.10</td>
-                  <td data-row="13" data-col="8">-0.19*</td>
-                </tr>
-                <tr>
-                  <td data-row="14" data-col="1"></td>
-                  <td data-row="14" data-col="2"></td>
-                  <td data-row="14" data-col="3"></td>
-                  <td data-row="14" data-col="4"></td>
-                  <td data-row="14" data-col="5"></td>
-                  <td data-row="14" data-col="6"></td>
-                  <td data-row="14" data-col="7">(0.08)</td>
-                  <td data-row="14" data-col="8">(0.06)</td>
-                </tr>
-                <tr>
-                  <td data-row="15" data-col="1">black.percent</td>
-                  <td data-row="15" data-col="2"></td>
-                  <td data-row="15" data-col="3"></td>
-                  <td data-row="15" data-col="4"></td>
-                  <td data-row="15" data-col="5"></td>
-                  <td data-row="15" data-col="6"></td>
-                  <td data-row="15" data-col="7">-0.11</td>
-                  <td data-row="15" data-col="8">-0.16*</td>
-                </tr>
-                <tr>
-                  <td data-row="16" data-col="1"></td>
-                  <td data-row="16" data-col="2"></td>
-                  <td data-row="16" data-col="3"></td>
-                  <td data-row="16" data-col="4"></td>
-                  <td data-row="16" data-col="5"></td>
-                  <td data-row="16" data-col="6"></td>
-                  <td data-row="16" data-col="7">(0.09)</td>
-                  <td data-row="16" data-col="8">(0.07)</td>
-                </tr>
-                <tr>
-                  <td data-row="17" data-col="1">Num.Obs.</td>
-                  <td data-row="17" data-col="2">50</td>
-                  <td data-row="17" data-col="3">50</td>
-                  <td data-row="17" data-col="4">50</td>
-                  <td data-row="17" data-col="5">50</td>
-                  <td data-row="17" data-col="6">50</td>
-                  <td data-row="17" data-col="7">50</td>
-                  <td data-row="17" data-col="8">50</td>
-                </tr>
-                <tr>
-                  <td data-row="18" data-col="1">R2</td>
-                  <td data-row="18" data-col="2">0.061</td>
-                  <td data-row="18" data-col="3">0.136</td>
-                  <td data-row="18" data-col="4">0.246</td>
-                  <td data-row="18" data-col="5">0.198</td>
-                  <td data-row="18" data-col="6">0.450</td>
-                  <td data-row="18" data-col="7">0.112</td>
-                  <td data-row="18" data-col="8">0.672</td>
-                </tr>
-                <tr>
-                  <td data-row="19" data-col="1">R2 Adj.</td>
-                  <td data-row="19" data-col="2">0.042</td>
-                  <td data-row="19" data-col="3">0.100</td>
-                  <td data-row="19" data-col="4">0.214</td>
-                  <td data-row="19" data-col="5">0.164</td>
-                  <td data-row="19" data-col="6">0.426</td>
-                  <td data-row="19" data-col="7">0.055</td>
-                  <td data-row="19" data-col="8">0.618</td>
-                </tr>
-                <tr>
-                  <td data-row="20" data-col="1">AIC</td>
-                  <td data-row="20" data-col="2">322.4</td>
-                  <td data-row="20" data-col="3">320.3</td>
-                  <td data-row="20" data-col="4">313.4</td>
-                  <td data-row="20" data-col="5">316.6</td>
-                  <td data-row="20" data-col="6">297.7</td>
-                  <td data-row="20" data-col="7">323.6</td>
-                  <td data-row="20" data-col="8">281.8</td>
-                </tr>
-                <tr>
-                  <td data-row="21" data-col="1">BIC</td>
-                  <td data-row="21" data-col="2">328.2</td>
-                  <td data-row="21" data-col="3">327.9</td>
-                  <td data-row="21" data-col="4">321.1</td>
-                  <td data-row="21" data-col="5">324.2</td>
-                  <td data-row="21" data-col="6">305.4</td>
-                  <td data-row="21" data-col="7">333.2</td>
-                  <td data-row="21" data-col="8">299.0</td>
-                </tr>
-                <tr>
-                  <td data-row="22" data-col="1">Log.Lik.</td>
-                  <td data-row="22" data-col="2">-158.213</td>
-                  <td data-row="22" data-col="3">-156.131</td>
-                  <td data-row="22" data-col="4">-152.720</td>
-                  <td data-row="22" data-col="5">-154.280</td>
-                  <td data-row="22" data-col="6">-144.864</td>
-                  <td data-row="22" data-col="7">-156.814</td>
-                  <td data-row="22" data-col="8">-131.898</td>
-                </tr>
-                <tr>
-                  <td data-row="23" data-col="1">F</td>
-                  <td data-row="23" data-col="2">3.136</td>
-                  <td data-row="23" data-col="3">3.710</td>
-                  <td data-row="23" data-col="4">7.687</td>
-                  <td data-row="23" data-col="5">5.801</td>
-                  <td data-row="23" data-col="6">19.203</td>
-                  <td data-row="23" data-col="7">1.942</td>
-                  <td data-row="23" data-col="8">12.314</td>
-                </tr>
-                <tr>
-                  <td data-row="24" data-col="1">RMSE</td>
-                  <td data-row="24" data-col="2">5.73</td>
-                  <td data-row="24" data-col="3">5.49</td>
-                  <td data-row="24" data-col="4">5.13</td>
-                  <td data-row="24" data-col="5">5.29</td>
-                  <td data-row="24" data-col="6">4.39</td>
-                  <td data-row="24" data-col="7">5.57</td>
-                  <td data-row="24" data-col="8">3.38</td>
-                </tr>
-        </tbody>
-      </table>
-    </div>
-<!-- hack to avoid NA insertion in last line -->
-</div>
-<div class="cell-output-display">
-<!-- preamble start -->
-
-    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
-
-    <script>
-      // Create table-specific functions using external factory
-      const tableFns_x9jxxmzvbi6nos11ybp3 = TinyTable.createTableFunctions("tinytable_x9jxxmzvbi6nos11ybp3");
-      // tinytable span after
-      window.addEventListener('load', function () {
-          var cellsToStyle = [
-            // tinytable style arrays after
-          { positions: [ { i: '28', j: 2 }, { i: '28', j: 3 }, { i: '28', j: 4 }, { i: '28', j: 5 }, { i: '28', j: 6 } ], css_id: 'tinytable_css_28t0ojab67wlafhruv36',}, 
-          { positions: [ { i: '20', j: 2 }, { i: '20', j: 3 }, { i: '20', j: 4 }, { i: '20', j: 5 }, { i: '20', j: 6 } ], css_id: 'tinytable_css_fv62zfqhcr6aiapji2vo',}, 
-          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '12', j: 2 }, { i: '13', j: 2 }, { i: '14', j: 2 }, { i: '15', j: 2 }, { i: '16', j: 2 }, { i: '17', j: 2 }, { i: '18', j: 2 }, { i: '19', j: 2 }, { i: '21', j: 2 }, { i: '22', j: 2 }, { i: '23', j: 2 }, { i: '24', j: 2 }, { i: '25', j: 2 }, { i: '26', j: 2 }, { i: '27', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '10', j: 3 }, { i: '11', j: 3 }, { i: '12', j: 3 }, { i: '13', j: 3 }, { i: '14', j: 3 }, { i: '15', j: 3 }, { i: '16', j: 3 }, { i: '17', j: 3 }, { i: '18', j: 3 }, { i: '19', j: 3 }, { i: '21', j: 3 }, { i: '22', j: 3 }, { i: '23', j: 3 }, { i: '24', j: 3 }, { i: '25', j: 3 }, { i: '26', j: 3 }, { i: '27', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '6', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '10', j: 4 }, { i: '11', j: 4 }, { i: '12', j: 4 }, { i: '13', j: 4 }, { i: '14', j: 4 }, { i: '15', j: 4 }, { i: '16', j: 4 }, { i: '17', j: 4 }, { i: '18', j: 4 }, { i: '19', j: 4 }, { i: '21', j: 4 }, { i: '22', j: 4 }, { i: '23', j: 4 }, { i: '24', j: 4 }, { i: '25', j: 4 }, { i: '26', j: 4 }, { i: '27', j: 4 }, { i: '1', j: 5 }, { i: '2', j: 5 }, { i: '3', j: 5 }, { i: '4', j: 5 }, { i: '5', j: 5 }, { i: '6', j: 5 }, { i: '7', j: 5 }, { i: '8', j: 5 }, { i: '9', j: 5 }, { i: '10', j: 5 }, { i: '11', j: 5 }, { i: '12', j: 5 }, { i: '13', j: 5 }, { i: '14', j: 5 }, { i: '15', j: 5 }, { i: '16', j: 5 }, { i: '17', j: 5 }, { i: '18', j: 5 }, { i: '19', j: 5 }, { i: '21', j: 5 }, { i: '22', j: 5 }, { i: '23', j: 5 }, { i: '24', j: 5 }, { i: '25', j: 5 }, { i: '26', j: 5 }, { i: '27', j: 5 }, { i: '1', j: 6 }, { i: '2', j: 6 }, { i: '3', j: 6 }, { i: '4', j: 6 }, { i: '5', j: 6 }, { i: '6', j: 6 }, { i: '7', j: 6 }, { i: '8', j: 6 }, { i: '9', j: 6 }, { i: '10', j: 6 }, { i: '11', j: 6 }, { i: '12', j: 6 }, { i: '13', j: 6 }, { i: '14', j: 6 }, { i: '15', j: 6 }, { i: '16', j: 6 }, { i: '17', j: 6 }, { i: '18', j: 6 }, { i: '19', j: 6 }, { i: '21', j: 6 }, { i: '22', j: 6 }, { i: '23', j: 6 }, { i: '24', j: 6 }, { i: '25', j: 6 }, { i: '26', j: 6 }, { i: '27', j: 6 } ], css_id: 'tinytable_css_6jjixb9hohpjd0v560k9',}, 
-          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 }, { i: '0', j: 6 } ], css_id: 'tinytable_css_9kiv0x0j8mnsbjlm8cqp',}, 
-          { positions: [ { i: '28', j: 1 } ], css_id: 'tinytable_css_l94prdwje5eta9sbysu7',}, 
-          { positions: [ { i: '20', j: 1 } ], css_id: 'tinytable_css_ndejjkqz1e2z5oj6rksl',}, 
-          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '14', j: 1 }, { i: '15', j: 1 }, { i: '16', j: 1 }, { i: '17', j: 1 }, { i: '18', j: 1 }, { i: '19', j: 1 }, { i: '21', j: 1 }, { i: '22', j: 1 }, { i: '23', j: 1 }, { i: '24', j: 1 }, { i: '25', j: 1 }, { i: '26', j: 1 }, { i: '27', j: 1 } ], css_id: 'tinytable_css_bi21hou188n0g7608hme',}, 
-          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_elos5l77phhjwxhsi792',}, 
-          ];
-
-          // Loop over the arrays to style the cells
-          cellsToStyle.forEach(function (group) {
-              group.positions.forEach(function (cell) {
-                  tableFns_x9jxxmzvbi6nos11ybp3.styleCell(cell.i, cell.j, group.css_id);
-              });
-          });
-      });
-    </script>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
-    <style>
-    /* tinytable css entries after */
-    #tinytable_x9jxxmzvbi6nos11ybp3 td.tinytable_css_28t0ojab67wlafhruv36, #tinytable_x9jxxmzvbi6nos11ybp3 th.tinytable_css_28t0ojab67wlafhruv36 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_x9jxxmzvbi6nos11ybp3 td.tinytable_css_fv62zfqhcr6aiapji2vo, #tinytable_x9jxxmzvbi6nos11ybp3 th.tinytable_css_fv62zfqhcr6aiapji2vo {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_x9jxxmzvbi6nos11ybp3 td.tinytable_css_6jjixb9hohpjd0v560k9, #tinytable_x9jxxmzvbi6nos11ybp3 th.tinytable_css_6jjixb9hohpjd0v560k9 { text-align: center }
-    #tinytable_x9jxxmzvbi6nos11ybp3 td.tinytable_css_9kiv0x0j8mnsbjlm8cqp, #tinytable_x9jxxmzvbi6nos11ybp3 th.tinytable_css_9kiv0x0j8mnsbjlm8cqp {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
-    #tinytable_x9jxxmzvbi6nos11ybp3 td.tinytable_css_l94prdwje5eta9sbysu7, #tinytable_x9jxxmzvbi6nos11ybp3 th.tinytable_css_l94prdwje5eta9sbysu7 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
-    #tinytable_x9jxxmzvbi6nos11ybp3 td.tinytable_css_ndejjkqz1e2z5oj6rksl, #tinytable_x9jxxmzvbi6nos11ybp3 th.tinytable_css_ndejjkqz1e2z5oj6rksl {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
-    #tinytable_x9jxxmzvbi6nos11ybp3 td.tinytable_css_bi21hou188n0g7608hme, #tinytable_x9jxxmzvbi6nos11ybp3 th.tinytable_css_bi21hou188n0g7608hme { text-align: left }
-    #tinytable_x9jxxmzvbi6nos11ybp3 td.tinytable_css_elos5l77phhjwxhsi792, #tinytable_x9jxxmzvbi6nos11ybp3 th.tinytable_css_elos5l77phhjwxhsi792 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
-    </style>
-    <div class="container">
-      <table class="tinytable" id="tinytable_x9jxxmzvbi6nos11ybp3" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
-        
-        <thead>
-              <tr>
-                <th scope="col" data-row="0" data-col="1"> </th>
-                <th scope="col" data-row="0" data-col="2">(1)</th>
-                <th scope="col" data-row="0" data-col="3">(2)</th>
-                <th scope="col" data-row="0" data-col="4">(3)</th>
-                <th scope="col" data-row="0" data-col="5">(4)</th>
-                <th scope="col" data-row="0" data-col="6">(5)</th>
-              </tr>
-        </thead>
-        <tfoot><tr><td colspan="6">* p &lt; 0.05</td></tr></tfoot>
-        <tbody>
-                <tr>
-                  <td data-row="1" data-col="1">(Intercept)</td>
-                  <td data-row="1" data-col="2">69.90*</td>
-                  <td data-row="1" data-col="3">69.00*</td>
-                  <td data-row="1" data-col="4">83.74*</td>
-                  <td data-row="1" data-col="5">77.98*</td>
-                  <td data-row="1" data-col="6">50.26*</td>
-                </tr>
-                <tr>
-                  <td data-row="2" data-col="1"></td>
-                  <td data-row="2" data-col="2">(1.38)</td>
-                  <td data-row="2" data-col="3">(1.59)</td>
-                  <td data-row="2" data-col="4">(7.10)</td>
-                  <td data-row="2" data-col="5">(5.41)</td>
-                  <td data-row="2" data-col="6">(6.34)</td>
-                </tr>
-                <tr>
-                  <td data-row="3" data-col="1">voter_id1</td>
-                  <td data-row="3" data-col="2">-3.05</td>
-                  <td data-row="3" data-col="3">-3.14</td>
-                  <td data-row="3" data-col="4">-0.71</td>
-                  <td data-row="3" data-col="5">3.23</td>
-                  <td data-row="3" data-col="6">-9.48</td>
-                </tr>
-                <tr>
-                  <td data-row="4" data-col="1"></td>
-                  <td data-row="4" data-col="2">(1.72)</td>
-                  <td data-row="4" data-col="3">(1.97)</td>
-                  <td data-row="4" data-col="4">(9.31)</td>
-                  <td data-row="4" data-col="5">(8.08)</td>
-                  <td data-row="4" data-col="6">(8.29)</td>
-                </tr>
-                <tr>
-                  <td data-row="5" data-col="1">battleground2020</td>
-                  <td data-row="5" data-col="2"></td>
-                  <td data-row="5" data-col="3">3.24</td>
-                  <td data-row="5" data-col="4"></td>
-                  <td data-row="5" data-col="5"></td>
-                  <td data-row="5" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="6" data-col="1"></td>
-                  <td data-row="6" data-col="2"></td>
-                  <td data-row="6" data-col="3">(3.01)</td>
-                  <td data-row="6" data-col="4"></td>
-                  <td data-row="6" data-col="5"></td>
-                  <td data-row="6" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="7" data-col="1">voter_id1 × battleground2020</td>
-                  <td data-row="7" data-col="2"></td>
-                  <td data-row="7" data-col="3">0.73</td>
-                  <td data-row="7" data-col="4"></td>
-                  <td data-row="7" data-col="5"></td>
-                  <td data-row="7" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="8" data-col="1"></td>
-                  <td data-row="8" data-col="2"></td>
-                  <td data-row="8" data-col="3">(3.81)</td>
-                  <td data-row="8" data-col="4"></td>
-                  <td data-row="8" data-col="5"></td>
-                  <td data-row="8" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="9" data-col="1">public.conservative</td>
-                  <td data-row="9" data-col="2"></td>
-                  <td data-row="9" data-col="3"></td>
-                  <td data-row="9" data-col="4">-0.42</td>
-                  <td data-row="9" data-col="5"></td>
-                  <td data-row="9" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="10" data-col="1"></td>
-                  <td data-row="10" data-col="2"></td>
-                  <td data-row="10" data-col="3"></td>
-                  <td data-row="10" data-col="4">(0.21)</td>
-                  <td data-row="10" data-col="5"></td>
-                  <td data-row="10" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="11" data-col="1">voter_id1 × public.conservative</td>
-                  <td data-row="11" data-col="2"></td>
-                  <td data-row="11" data-col="3"></td>
-                  <td data-row="11" data-col="4">-0.02</td>
-                  <td data-row="11" data-col="5"></td>
-                  <td data-row="11" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="12" data-col="1"></td>
-                  <td data-row="12" data-col="2"></td>
-                  <td data-row="12" data-col="3"></td>
-                  <td data-row="12" data-col="4">(0.26)</td>
-                  <td data-row="12" data-col="5"></td>
-                  <td data-row="12" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="13" data-col="1">trump2016</td>
-                  <td data-row="13" data-col="2"></td>
-                  <td data-row="13" data-col="3"></td>
-                  <td data-row="13" data-col="4"></td>
-                  <td data-row="13" data-col="5">-16.79</td>
-                  <td data-row="13" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="14" data-col="1"></td>
-                  <td data-row="14" data-col="2"></td>
-                  <td data-row="14" data-col="3"></td>
-                  <td data-row="14" data-col="4"></td>
-                  <td data-row="14" data-col="5">(10.91)</td>
-                  <td data-row="14" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="15" data-col="1">voter_id1 × trump2016</td>
-                  <td data-row="15" data-col="2"></td>
-                  <td data-row="15" data-col="3"></td>
-                  <td data-row="15" data-col="4"></td>
-                  <td data-row="15" data-col="5">-8.99</td>
-                  <td data-row="15" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="16" data-col="1"></td>
-                  <td data-row="16" data-col="2"></td>
-                  <td data-row="16" data-col="3"></td>
-                  <td data-row="16" data-col="4"></td>
-                  <td data-row="16" data-col="5">(15.24)</td>
-                  <td data-row="16" data-col="6"></td>
-                </tr>
-                <tr>
-                  <td data-row="17" data-col="1">ba.or.more</td>
-                  <td data-row="17" data-col="2"></td>
-                  <td data-row="17" data-col="3"></td>
-                  <td data-row="17" data-col="4"></td>
-                  <td data-row="17" data-col="5"></td>
-                  <td data-row="17" data-col="6">0.58*</td>
-                </tr>
-                <tr>
-                  <td data-row="18" data-col="1"></td>
-                  <td data-row="18" data-col="2"></td>
-                  <td data-row="18" data-col="3"></td>
-                  <td data-row="18" data-col="4"></td>
-                  <td data-row="18" data-col="5"></td>
-                  <td data-row="18" data-col="6">(0.18)</td>
-                </tr>
-                <tr>
-                  <td data-row="19" data-col="1">voter_id1 × ba.or.more</td>
-                  <td data-row="19" data-col="2"></td>
-                  <td data-row="19" data-col="3"></td>
-                  <td data-row="19" data-col="4"></td>
-                  <td data-row="19" data-col="5"></td>
-                  <td data-row="19" data-col="6">0.26</td>
-                </tr>
-                <tr>
-                  <td data-row="20" data-col="1"></td>
-                  <td data-row="20" data-col="2"></td>
-                  <td data-row="20" data-col="3"></td>
-                  <td data-row="20" data-col="4"></td>
-                  <td data-row="20" data-col="5"></td>
-                  <td data-row="20" data-col="6">(0.25)</td>
-                </tr>
-                <tr>
-                  <td data-row="21" data-col="1">Num.Obs.</td>
-                  <td data-row="21" data-col="2">50</td>
-                  <td data-row="21" data-col="3">50</td>
-                  <td data-row="21" data-col="4">50</td>
-                  <td data-row="21" data-col="5">50</td>
-                  <td data-row="21" data-col="6">50</td>
-                </tr>
-                <tr>
-                  <td data-row="22" data-col="1">R2</td>
-                  <td data-row="22" data-col="2">0.061</td>
-                  <td data-row="22" data-col="3">0.137</td>
-                  <td data-row="22" data-col="4">0.247</td>
-                  <td data-row="22" data-col="5">0.204</td>
-                  <td data-row="22" data-col="6">0.462</td>
-                </tr>
-                <tr>
-                  <td data-row="23" data-col="1">R2 Adj.</td>
-                  <td data-row="23" data-col="2">0.042</td>
-                  <td data-row="23" data-col="3">0.081</td>
-                  <td data-row="23" data-col="4">0.197</td>
-                  <td data-row="23" data-col="5">0.152</td>
-                  <td data-row="23" data-col="6">0.427</td>
-                </tr>
-                <tr>
-                  <td data-row="24" data-col="1">AIC</td>
-                  <td data-row="24" data-col="2">322.4</td>
-                  <td data-row="24" data-col="3">322.2</td>
-                  <td data-row="24" data-col="4">315.4</td>
-                  <td data-row="24" data-col="5">318.2</td>
-                  <td data-row="24" data-col="6">298.6</td>
-                </tr>
-                <tr>
-                  <td data-row="25" data-col="1">BIC</td>
-                  <td data-row="25" data-col="2">328.2</td>
-                  <td data-row="25" data-col="3">331.8</td>
-                  <td data-row="25" data-col="4">325.0</td>
-                  <td data-row="25" data-col="5">327.7</td>
-                  <td data-row="25" data-col="6">308.2</td>
-                </tr>
-                <tr>
-                  <td data-row="26" data-col="1">Log.Lik.</td>
-                  <td data-row="26" data-col="2">-158.213</td>
-                  <td data-row="26" data-col="3">-156.111</td>
-                  <td data-row="26" data-col="4">-152.718</td>
-                  <td data-row="26" data-col="5">-154.092</td>
-                  <td data-row="26" data-col="6">-144.301</td>
-                </tr>
-                <tr>
-                  <td data-row="27" data-col="1">F</td>
-                  <td data-row="27" data-col="2">3.136</td>
-                  <td data-row="27" data-col="3">2.435</td>
-                  <td data-row="27" data-col="4">5.018</td>
-                  <td data-row="27" data-col="5">3.930</td>
-                  <td data-row="27" data-col="6">13.164</td>
-                </tr>
-                <tr>
-                  <td data-row="28" data-col="1">RMSE</td>
-                  <td data-row="28" data-col="2">5.73</td>
-                  <td data-row="28" data-col="3">5.49</td>
-                  <td data-row="28" data-col="4">5.13</td>
-                  <td data-row="28" data-col="5">5.27</td>
-                  <td data-row="28" data-col="6">4.34</td>
-                </tr>
-        </tbody>
-      </table>
-    </div>
-<!-- hack to avoid NA insertion in last line -->
-</div>
-</div>
-<img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Model 5 here is what you fit, but I wanted to show the results for the in-between models as well.</p>
+<div class="columns">
+<div class="column" style="width:35%;">
 <p><br></p>
-<p><strong>Interpret the partial coefficients in Model 5 for me</strong></p>
+<p><br></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:65%;">
+<p><strong>Possible Confounders</strong></p>
+<ul>
+<li>Ethnicity: hispanic.percent, black.percent, white.percent</li>
+<li>Education: hs.or.more, ba.or.more, adv.or.more</li>
+<li>Elite pressure: trump2016</li>
+<li>Ideology: public.conservative</li>
+<li>Wealth: hh.income</li>
+<li>Electoral stakes: battleground2020</li>
+</ul>
+</div></div>
+<aside class="notes">
+<p>For today I asked you to build a causal argument that would allow us to measure the effect of voter ID laws on voter turnout</p>
+<ul>
+<li><strong>How did that go?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>Which confounders did you decide were important in this causal mechanism? Why</strong></p>
+<ul>
+<li><em>Get examples and arguments from various people!</em></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Here’s one possible version</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-1" class="slide level2 center smaller" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: Do voter ID laws reduce voter turnout?</strong></p>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ltzxetvgvd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ltzxetvgvd table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ltzxetvgvd thead, #ltzxetvgvd tbody, #ltzxetvgvd tfoot, #ltzxetvgvd tr, #ltzxetvgvd td, #ltzxetvgvd th {
+  border-style: none;
+}
+
+#ltzxetvgvd p {
+  margin: 0;
+  padding: 0;
+}
+
+#ltzxetvgvd .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ltzxetvgvd .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ltzxetvgvd .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ltzxetvgvd .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ltzxetvgvd .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ltzxetvgvd .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ltzxetvgvd .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ltzxetvgvd .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ltzxetvgvd .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ltzxetvgvd .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ltzxetvgvd .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ltzxetvgvd .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ltzxetvgvd .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ltzxetvgvd .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ltzxetvgvd .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ltzxetvgvd .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ltzxetvgvd .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ltzxetvgvd .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ltzxetvgvd .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ltzxetvgvd .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ltzxetvgvd .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ltzxetvgvd .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ltzxetvgvd .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ltzxetvgvd .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ltzxetvgvd .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ltzxetvgvd .gt_left {
+  text-align: left;
+}
+
+#ltzxetvgvd .gt_center {
+  text-align: center;
+}
+
+#ltzxetvgvd .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ltzxetvgvd .gt_font_normal {
+  font-weight: normal;
+}
+
+#ltzxetvgvd .gt_font_bold {
+  font-weight: bold;
+}
+
+#ltzxetvgvd .gt_font_italic {
+  font-style: italic;
+}
+
+#ltzxetvgvd .gt_super {
+  font-size: 65%;
+}
+
+#ltzxetvgvd .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ltzxetvgvd .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ltzxetvgvd .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ltzxetvgvd .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ltzxetvgvd .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ltzxetvgvd .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ltzxetvgvd .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#ltzxetvgvd .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ltzxetvgvd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
+<th id="a(2)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(2)</th>
+<th id="a(3)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(3)</th>
+<th id="a(4)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(4)</th>
+<th id="a(5)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(5)</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Voter ID</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">-3.05</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">-2.95</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">-1.43</td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">-3.12</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">-1.15</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">(1.72)</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">(1.67)</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">(1.71)</td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">(1.76)</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">(1.53)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Battleground State</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">3.69*</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">4.04*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">(1.83)</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">(1.56)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Trump Vote (%, 2016)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">-0.21*</td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">-0.29*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">(0.08)</td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">(0.07)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Hispanic (%)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">-0.10</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">-0.22*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">(0.08)</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">(0.07)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Black (%)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">-0.11</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">-0.17*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">(0.09)</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">(0.07)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Constant</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">69.90*</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">68.87*</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">80.20*</td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">72.29*</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">87.28*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(1.38)</td>
+<td class="gt_row gt_center" headers="(2)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(1.43)</td>
+<td class="gt_row gt_center" headers="(3)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(3.86)</td>
+<td class="gt_row gt_center" headers="(4)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(2.03)</td>
+<td class="gt_row gt_center" headers="(5)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(4.22)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">50</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">50</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">50</td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">50</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">0.061</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">0.136</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">0.198</td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">0.112</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">0.423</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">0.042</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">0.100</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">0.164</td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">0.055</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">0.357</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">RMSE</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">5.73</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">5.49</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">5.29</td>
+<td class="gt_row gt_center" headers="(4)" style="background-color: #FFFFFF; font-size: large">5.57</td>
+<td class="gt_row gt_center" headers="(5)" style="background-color: #FFFFFF; font-size: large">4.49</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="6" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>In my Model 5 I decided to focus on three types of confounder</p>
+<ol type="1">
+<li><p>Heightened stakes of the election</p>
+<ul>
+<li>Living in a battleground state increases the likelihood your vote will be decisive so increases the probability of turnout</li>
+<li>Anticipating a close fought battle should put pressure on legislatures to consider rules to manipulate the election</li>
+</ul></li>
+<li><p>Elite Signaling</p>
+<ul>
+<li>Trump’s go-to argument has been that electoral fraud is rampant and must be addressed. If your state voted hard for Trump, then per the research, there is likely support for voter ID.</li>
+<li>Different level of enthusiasm for prior voters than others</li>
+</ul></li>
+<li><p>Ethnicity</p>
+<ul>
+<li>I think it would be naive to claim that at least some of the push for voter ID hasn’t been targeted at non-white populations.</li>
+<li>It is also well supported in the lit that different ethnic groups vote at different rates.</li>
+</ul></li>
+</ol>
+<p><br></p>
+<p>IMPORTANT NOTES:</p>
+<ol type="1">
+<li><p>Data Cleaning Problem</p>
+<ul>
+<li><p>In the dataset, both Trump vote and the ethnicity variables are %s</p></li>
+<li><p>BUT, Trump vote is measured from 0-1 and ethnicity from 0-100</p></li>
+<li><p>SO, I converted the Trump vote to the 0-100 scale</p></li>
+</ul></li>
+<li><p>Always show the steps in your model building!</p>
+<ul>
+<li><p>My causal argument is Model 5 so that’s the one I am arguing the reader should interpret and focus on, HOWEVER</p></li>
+<li><p>Be transparent in your choices!</p></li>
+<li><p>Help the reader see how each control might impact the final regression</p></li>
+</ul></li>
+</ol>
+<p><br></p>
+<p><strong>Ok, interpret the partial coefficients in Model 5 for me</strong></p>
 <ul>
 <li><strong>How does each predictor increase or decrease voter turnout?</strong></li>
 </ul>
 <p><br></p>
-<p><strong>Evaluate Model 5 for me</strong></p>
+<p><strong>Now let’s evaluate Model 5 in terms of statistical significance</strong></p>
 <ol type="1">
 <li><p>Missing data?</p></li>
 <li><p>Significance?</p></li>
 <li><p>R2?</p></li>
 </ol>
 <p><br></p>
+<p><strong>Are we confident saying Model 5 fits the data well?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: And now let’s talk substantive significance</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2 center smaller" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: Do voter ID laws reduce voter turnout?</strong></p>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="gmgwlaiwek" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gmgwlaiwek table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#gmgwlaiwek thead, #gmgwlaiwek tbody, #gmgwlaiwek tfoot, #gmgwlaiwek tr, #gmgwlaiwek td, #gmgwlaiwek th {
+  border-style: none;
+}
+
+#gmgwlaiwek p {
+  margin: 0;
+  padding: 0;
+}
+
+#gmgwlaiwek .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#gmgwlaiwek .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#gmgwlaiwek .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#gmgwlaiwek .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#gmgwlaiwek .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#gmgwlaiwek .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#gmgwlaiwek .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#gmgwlaiwek .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#gmgwlaiwek .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#gmgwlaiwek .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#gmgwlaiwek .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#gmgwlaiwek .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#gmgwlaiwek .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#gmgwlaiwek .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#gmgwlaiwek .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gmgwlaiwek .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#gmgwlaiwek .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#gmgwlaiwek .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#gmgwlaiwek .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gmgwlaiwek .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#gmgwlaiwek .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gmgwlaiwek .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#gmgwlaiwek .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gmgwlaiwek .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gmgwlaiwek .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gmgwlaiwek .gt_left {
+  text-align: left;
+}
+
+#gmgwlaiwek .gt_center {
+  text-align: center;
+}
+
+#gmgwlaiwek .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#gmgwlaiwek .gt_font_normal {
+  font-weight: normal;
+}
+
+#gmgwlaiwek .gt_font_bold {
+  font-weight: bold;
+}
+
+#gmgwlaiwek .gt_font_italic {
+  font-style: italic;
+}
+
+#gmgwlaiwek .gt_super {
+  font-size: 65%;
+}
+
+#gmgwlaiwek .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#gmgwlaiwek .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#gmgwlaiwek .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#gmgwlaiwek .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#gmgwlaiwek .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#gmgwlaiwek .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#gmgwlaiwek .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#gmgwlaiwek .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#gmgwlaiwek div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">Voter ID</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">-1.15</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">(1.53)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">Battleground State</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">4.04*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">(1.56)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">Trump Vote (%, 2016)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">-0.29*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">(0.07)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">Hispanic (%)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">-0.22*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">(0.07)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">Black (%)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">-0.17*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">(0.07)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">Constant</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">87.28*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: medium"></td>
+<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: medium">(4.22)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">Num.Obs.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">50</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">R2</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">0.423</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">R2 Adj.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">0.357</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: medium">RMSE</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: medium">4.49</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="co"># Visualize the causal mechanism</span></span>
+<span id="cb1-2"><a href=""></a><span class="co"># (basic code only)</span></span>
+<span id="cb1-3"><a href=""></a><span class="fu">plot</span>(<span class="fu">ggpredict</span>(res5, <span class="at">terms =</span> <span class="st">"voter_id"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p>Here is the predictions plot for the CAUSAL effect of voter ID on voter turnout using my Model 5</p>
+<p><br></p>
+<p><strong>Make it clear for me, how can I claim this is the causal effect?</strong></p>
+<ul>
+<li><p>(This is the estimate from Model 5 which controls for all the relevant confounders)</p></li>
+<li><p>(Multiple regression produces partial regression coefficients!)</p></li>
+</ul>
+<p><br></p>
 <p><strong>Bottom line, what do we learn from these models?</strong></p>
 <ul>
 <li><strong>Do states with voter ID laws see lower turnout in elections or not?</strong></li>
 </ul>
 <p><br></p>
+<p>I do just want to caution you about the inference here</p>
+<ol type="1">
+<li><p>I did not build this dataset and am not clear on the measurements and sources of some of these variables</p>
+<ul>
+<li><p>This is ESPECIALLY true of the voter ID variable</p></li>
+<li><p>This requires a much more careful measure of the main predictor</p></li>
+</ul></li>
+<li><p>The effect of voter ID on the decision to vote strikes me as an individual level mechanism as much as a group level one</p>
+<ul>
+<li>I’d like to see this supplemented with individual level data</li>
+</ul></li>
+</ol>
+<p><br></p>
+<p>SO, I wouldn’t walk away from this analysis thinking we’ve definitively demonstrated anything</p>
+<ul>
+<li>On the other hand, this does seem strongly suggestive that voter ID laws were less burdonsome in 2020 than might be feared</li>
+</ul>
+<p><br></p>
+<p><strong>Questions on this work for today?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Today we add our next extension to our regressions</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-3" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>Adapting a Regression to Different Relationships</strong></p>
+</div>
+<p><br></p>
+
+<img data-src="Images/13_3-Figure_07_13.jpg" style="display: block; margin: 0 auto" class="r-stretch"><aside class="notes">
+<p>Back in our work making controlled comparisons I asked you to practice identifying types of relationships</p>
+<ul>
+<li><p><strong>Which of these three boxes are covered by our current OLS regressions?</strong></p></li>
+<li><p>(Box 1: If your main multiple OLS coefficient is not significant then you’ve found that adding a confounder suggests a spurious relationship)</p></li>
+<li><p>(Box 2: If your main multiple OLS coefficient is significant after controlling for confounders then you’ve found evidence for an additive relationship)</p></li>
+</ul>
+<p><br></p>
+<p>Our current methods have not allowed us to model interactive relationships in OLS (box 3)</p>
+<ul>
+<li><p>But here’s the deal, you should ALWAYS check for interactions in the main effects of your models.</p></li>
+<li><p>Anything that affects people will likely affect different people in different ways</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Ok, let’s introduce interaction effects by answering a research question with data!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-4" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: What explains the variation in how Americans feel about journalists?</strong></p>
+</div>
+<ul>
+<li><p>H1: The more knowledgable individuals are about the world, the more they will value journalists</p></li>
+<li><p>H2: The political parties have VERY different relationships to the media</p></li>
+</ul>
+<p><br></p>
+<div class="fragment">
+<ol type="1">
+<li><p>Load the ANES2020_Data_Extract-WEEK13.RData</p></li>
+<li><p>Perform univariate analyses on the three variables: <code>ft.journalists</code>, <code>political_knowledge</code>, <code>partyid3</code></p></li>
+</ol>
+</div>
+<aside class="notes">
+<p>Let’s explore this RQ and these two hypotheses</p>
+<ul>
+<li><em>Read slide</em></li>
+</ul>
+<p><br></p>
+<p><strong>REVEAL</strong>: First steps!</p>
+<ul>
+<li>(<strong>SLIDE</strong>: Results)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-5" class="slide level2 center smaller" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: What explains the variation in how Americans feel about journalists?</strong></p>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" style="width:45.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-8-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-9-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p><strong>Ok, what do we learn from our univariate analyses?</strong></p>
+<p><br></p>
+<p><strong>Do we have good variation to explain in the outcome?</strong></p>
+<ul>
+<li><strong>Is the average a good summary of the outcome variable? Why or why not?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>Do we have good variation in our predictors?</strong></p>
+<ul>
+<li><strong>Anybody else surprised that the independent bar is as tall as the party bars?</strong></li>
+</ul>
+<p><br></p>
+<p>Apparently the ANES team is folding some leaners into the middle which is not how this is usually done</p>
+<ul>
+<li><p>Compared to most research I think this coding choice over-estimates independents</p></li>
+<li><p>BUT, it does mean the party bars are clear partisans which helps too</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Ok, let’s test each hypothesis using NON-OLS tools</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-6" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: What explains the variation in how Americans feel about journalists?</strong></p>
+</div>
+<ul>
+<li><p>H1: The more knowledgable individuals are about the world (<code>political_knowledge</code>), the more they will value journalists (<code>ft.journalists</code>)</p></li>
+<li><p>H2: The political parties (<code>partyid3</code>) have VERY different relationships to the media (<code>ft.journalists</code>)</p></li>
+</ul>
+<p><br></p>
+<ul>
+<li class="fragment"><p>H1: Interval x Interval -&gt; Correlation and scatter plot</p></li>
+<li class="fragment"><p>H2: Interval x Nominal -&gt; Difference of means and ANOVA</p></li>
+</ul>
+<aside class="notes">
+<p><strong>For H1, how do we analyze the relationship between two interval variables?</strong></p>
+<ul>
+<li>(<strong>REVEAL</strong>: correlation and scatter plot)</li>
+</ul>
+<p><br></p>
+<p><strong>For H2, how do we examine the relationship between an interval variable and a categorical variable?</strong></p>
+<ul>
+<li>(<strong>REVEAL</strong>: Difference of means and ANOVA)</li>
+</ul>
+<p><br></p>
+<p>Ok, do both of those!</p>
+<ul>
+<li>(<strong>SLIDE</strong>)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-7" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="co"># H1: The more individuals are checked into the world, </span></span>
+<span id="cb2-2"><a href=""></a><span class="co">#         the more they value journalists</span></span>
+<span id="cb2-3"><a href=""></a><span class="fu">cor</span>(anes<span class="sc">$</span>ft.journalists, anes<span class="sc">$</span>political_knowledge, <span class="at">use =</span> <span class="st">"pairwise"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.08284504</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">ggplot</span>(anes, <span class="fu">aes</span>(<span class="at">x =</span> political_knowledge, <span class="at">y =</span> ft.journalists)) <span class="sc">+</span></span>
+<span id="cb4-2"><a href=""></a>  <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb4-3"><a href=""></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb4-4"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Political Knowledge (0-9)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:55.0%"><aside class="notes">
+<p>Here I’ve added two extra arguments to help us see through all the overlapping points</p>
+<ul>
+<li><p>geom_jitter argument moves the dots around a tiny amount so they don’t overlap as much</p></li>
+<li><p>The alpha argument makes each point a lighter color so it takes a bunch of overlap to make the dot darker</p></li>
+</ul>
+<p><br></p>
+<p><strong>What do we take from this first pass?</strong></p>
+<ul>
+<li><strong>Do these results suggest a relationship between political knowledge and approval of journalists? Why or why not?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: What about the relationship between party and approval of journalists?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-8" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<h3 id="h2-the-political-parties-have-very-different-relationships-to-the-media">H2: The political parties have VERY different relationships to the media</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">aggregate</span>(<span class="at">data =</span> anes, ft.journalists <span class="sc">~</span> partyid3, mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        partyid3 ft.journalists
+1    1. Democrat       70.35636
+2 2. Independent       51.17118
+3  3. Republican       30.48746</code></pre>
+</div>
+</div>
+<p><br></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">aov</span>(<span class="at">data =</span> anes, ft.journalists <span class="sc">~</span> partyid3) <span class="sc">|&gt;</span> <span class="fu">summary</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Df  Sum Sq Mean Sq F value Pr(&gt;F)    
+partyid3       2 1914802  957401    1644 &lt;2e-16 ***
+Residuals   7344 4278016     583                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+933 observations deleted due to missingness</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p><strong>What do we take from this first pass?</strong></p>
+<ul>
+<li><strong>Do these results suggest a relationship?</strong></li>
+</ul>
+<p><br></p>
+<p>Hot damn that’s a big difference!</p>
+<ul>
+<li>And, of course with difference this big, we can reject the NULL</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: OLS time</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-9" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: What explains the variation in how Americans feel about journalists?</strong></p>
+</div>
+<p><br></p>
+<ol type="1">
+<li><p>Create TWO dummy variables using <code>partyid3</code></p>
+<ul>
+<li>anes$Democrat = 1 if “1. Democrat”, 0 otherwise</li>
+<li>anes$Independent = 1 if “2. Independent”, 0 otherwise</li>
+</ul></li>
+<li><p>Fit and evaluate TWO OLS models</p>
+<ul>
+<li>Model 1: Regress ft.journalists on political_knowledge</li>
+<li>Model 2: Regress ft.journalists on Democrat and Independent</li>
+</ul></li>
+</ol>
+<aside class="notes">
+<p>Ok, let’s build some dummy variables and then fit two regressions</p>
+<p><br></p>
+<p><strong>Remind me, why am I not asking you to create a Republican dummy and to include it in Model 2?</strong></p>
+<ul>
+<li><p>(Per the book, when converting a categorical variable into dummies you MUST leave one out)</p></li>
+<li><p>The omitted level becomes the baseline of comparison and is captured by the intercept term</p></li>
+</ul>
+<p><br></p>
+<p>Go!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-10" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: What explains the variation in how Americans feel about journalists?</strong></p>
+</div>
+<ul>
+<li>H1: The more knowledgable individuals are about the world, the more they will value journalists</li>
+</ul>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="yzgddpypgw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#yzgddpypgw table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#yzgddpypgw thead, #yzgddpypgw tbody, #yzgddpypgw tfoot, #yzgddpypgw tr, #yzgddpypgw td, #yzgddpypgw th {
+  border-style: none;
+}
+
+#yzgddpypgw p {
+  margin: 0;
+  padding: 0;
+}
+
+#yzgddpypgw .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#yzgddpypgw .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#yzgddpypgw .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#yzgddpypgw .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#yzgddpypgw .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#yzgddpypgw .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#yzgddpypgw .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#yzgddpypgw .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#yzgddpypgw .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#yzgddpypgw .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#yzgddpypgw .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#yzgddpypgw .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#yzgddpypgw .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#yzgddpypgw .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#yzgddpypgw .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yzgddpypgw .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#yzgddpypgw .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#yzgddpypgw .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#yzgddpypgw .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yzgddpypgw .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#yzgddpypgw .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yzgddpypgw .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#yzgddpypgw .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yzgddpypgw .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yzgddpypgw .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yzgddpypgw .gt_left {
+  text-align: left;
+}
+
+#yzgddpypgw .gt_center {
+  text-align: center;
+}
+
+#yzgddpypgw .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#yzgddpypgw .gt_font_normal {
+  font-weight: normal;
+}
+
+#yzgddpypgw .gt_font_bold {
+  font-weight: bold;
+}
+
+#yzgddpypgw .gt_font_italic {
+  font-style: italic;
+}
+
+#yzgddpypgw .gt_super {
+  font-size: 65%;
+}
+
+#yzgddpypgw .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#yzgddpypgw .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#yzgddpypgw .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#yzgddpypgw .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#yzgddpypgw .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#yzgddpypgw .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#yzgddpypgw .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#yzgddpypgw .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#yzgddpypgw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Political Knowledge (0-9)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">1.15*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">(0.17)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">44.90*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.99)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">7079</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.007</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.007</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">29.04</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-15-1.png" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p><strong>Did everybody get these results for Model 1?</strong></p>
+<p><br></p>
+<p><strong>So, is Model 1 statistically significant? Why or why not?</strong></p>
+<ul>
+<li>Missing data: 7079 / 8280 = 1 - .85 = 15%</li>
+<li>R2 is cartoonishly small</li>
+</ul>
+<p><br></p>
+<p><strong>And per this prediction plot, is Model 1 substantively significant? Why or why not?</strong></p>
+<ul>
+<li>Effect is remarkably small</li>
+<li>Go all the way from 0 knowledge to total knowledge and gain only 11 points on a 100 point scale</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Model 2</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-11" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: What explains the variation in how Americans feel about journalists?</strong></p>
+</div>
+<ul>
+<li>H2: The political parties have VERY different relationships to the media</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div id="aqopnytihv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#aqopnytihv table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#aqopnytihv thead, #aqopnytihv tbody, #aqopnytihv tfoot, #aqopnytihv tr, #aqopnytihv td, #aqopnytihv th {
+  border-style: none;
+}
+
+#aqopnytihv p {
+  margin: 0;
+  padding: 0;
+}
+
+#aqopnytihv .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#aqopnytihv .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#aqopnytihv .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#aqopnytihv .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#aqopnytihv .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#aqopnytihv .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#aqopnytihv .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#aqopnytihv .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#aqopnytihv .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#aqopnytihv .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#aqopnytihv .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#aqopnytihv .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#aqopnytihv .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#aqopnytihv .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#aqopnytihv .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqopnytihv .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#aqopnytihv .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#aqopnytihv .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#aqopnytihv .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqopnytihv .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#aqopnytihv .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqopnytihv .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#aqopnytihv .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqopnytihv .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aqopnytihv .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqopnytihv .gt_left {
+  text-align: left;
+}
+
+#aqopnytihv .gt_center {
+  text-align: center;
+}
+
+#aqopnytihv .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#aqopnytihv .gt_font_normal {
+  font-weight: normal;
+}
+
+#aqopnytihv .gt_font_bold {
+  font-weight: bold;
+}
+
+#aqopnytihv .gt_font_italic {
+  font-style: italic;
+}
+
+#aqopnytihv .gt_super {
+  font-size: 65%;
+}
+
+#aqopnytihv .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#aqopnytihv .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#aqopnytihv .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#aqopnytihv .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#aqopnytihv .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#aqopnytihv .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#aqopnytihv .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#aqopnytihv .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#aqopnytihv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Democrat</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">39.87*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">(0.70)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Independent</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">20.68*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">(0.70)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Constant</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">30.49*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large"></td>
+<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: x-large">(0.51)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">7347</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.309</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">0.309</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: x-large">RMSE</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: x-large">24.13</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+<aside class="notes">
+<p><strong>Shift to Model 2 and tell me, is it statistically significant? Why or why not?</strong></p>
+<ul>
+<li>Less missing data: 7347 / 8280 = 1 - .89 = 11%</li>
+<li>MUCH higher R2</li>
+</ul>
+<p><br></p>
+<p><strong>Ok, so clarify it for me, since we left the Republican dummy out of the model, how do I interpret the substantive significance of Model 2?</strong></p>
+<ul>
+<li><p><strong>What is the predicted effect of being a Republican on approval of journalists?</strong></p></li>
+<li><p>(The intercept!)</p></li>
+</ul>
+<p><br></p>
+<p><strong>And what is the predicted effect of being a Democrat on approval of journalists?</strong></p>
+<ul>
+<li>(The intercept PLUS the coefficient on Democrats!)</li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s see it!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-12" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: What explains the variation in how Americans feel about journalists?</strong></p>
+</div>
+<ul>
+<li>H2: The political parties have VERY different relationships to the media</li>
+</ul>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<div id="lwpvdwnxps" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#lwpvdwnxps table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#lwpvdwnxps thead, #lwpvdwnxps tbody, #lwpvdwnxps tfoot, #lwpvdwnxps tr, #lwpvdwnxps td, #lwpvdwnxps th {
+  border-style: none;
+}
+
+#lwpvdwnxps p {
+  margin: 0;
+  padding: 0;
+}
+
+#lwpvdwnxps .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#lwpvdwnxps .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#lwpvdwnxps .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#lwpvdwnxps .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#lwpvdwnxps .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#lwpvdwnxps .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#lwpvdwnxps .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#lwpvdwnxps .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#lwpvdwnxps .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#lwpvdwnxps .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#lwpvdwnxps .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#lwpvdwnxps .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#lwpvdwnxps .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#lwpvdwnxps .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#lwpvdwnxps .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lwpvdwnxps .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#lwpvdwnxps .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#lwpvdwnxps .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#lwpvdwnxps .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lwpvdwnxps .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#lwpvdwnxps .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lwpvdwnxps .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#lwpvdwnxps .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lwpvdwnxps .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lwpvdwnxps .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lwpvdwnxps .gt_left {
+  text-align: left;
+}
+
+#lwpvdwnxps .gt_center {
+  text-align: center;
+}
+
+#lwpvdwnxps .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#lwpvdwnxps .gt_font_normal {
+  font-weight: normal;
+}
+
+#lwpvdwnxps .gt_font_bold {
+  font-weight: bold;
+}
+
+#lwpvdwnxps .gt_font_italic {
+  font-style: italic;
+}
+
+#lwpvdwnxps .gt_super {
+  font-size: 65%;
+}
+
+#lwpvdwnxps .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#lwpvdwnxps .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#lwpvdwnxps .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#lwpvdwnxps .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#lwpvdwnxps .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#lwpvdwnxps .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#lwpvdwnxps .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#lwpvdwnxps .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#lwpvdwnxps div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Democrat</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">39.87*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">(0.70)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Independent</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">20.68*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">(0.70)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Constant</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">30.49*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(0.51)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">7347</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">0.309</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">0.309</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">RMSE</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">24.13</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="2" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center" style="width:85.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p>That is a MASSIVE substantive difference!!</p>
+<p><br></p>
+<p>Now we want to examine if these two sets of variables represent an additive or interactive relationship</p>
+<ul>
+<li><p>In other words, I’d like to see the effect of political knowledge on approval of journalists but for each party separately</p></li>
+<li><p>e.g.&nbsp;one time for just the Democrats and one time for just the Republicans</p></li>
+</ul>
+<p><br></p>
+<p><strong>How do I do that using our controlled comparison tools?</strong></p>
+<ul>
+<li>(1. Split the sample into Dems vs Republicans)</li>
+<li>(2. Check the correlation for each subset)</li>
+</ul>
+<p><br></p>
+<p>Ok, everybody do that!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-13" class="slide level2 smaller" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Republicans</a></li><li><a href="#tabset-1-2">Democrats</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="co"># Make the subset</span></span>
+<span id="cb9-2"><a href=""></a>anes_r <span class="ot">&lt;-</span> <span class="fu">subset</span>(anes, Republican <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb9-3"><a href=""></a></span>
+<span id="cb9-4"><a href=""></a><span class="co"># Correlation</span></span>
+<span id="cb9-5"><a href=""></a><span class="fu">cor</span>(anes_r<span class="sc">$</span>political_knowledge, anes_r<span class="sc">$</span>ft.journalists, <span class="at">use =</span> <span class="st">"pairwise"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.1788872</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center" style="width:55.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2">
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="co"># Make the subset</span></span>
+<span id="cb11-2"><a href=""></a>anes_d <span class="ot">&lt;-</span> <span class="fu">subset</span>(anes, Democrat <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb11-3"><a href=""></a></span>
+<span id="cb11-4"><a href=""></a><span class="co"># Correlation</span></span>
+<span id="cb11-5"><a href=""></a><span class="fu">cor</span>(anes_d<span class="sc">$</span>political_knowledge, anes_d<span class="sc">$</span>ft.journalists, <span class="at">use =</span> <span class="st">"pairwise"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2970517</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center" style="width:55.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>There is DEFINITELY something going on here</p>
+<ul>
+<li><p>The correlations are reversed by party, AND</p></li>
+<li><p>The bulk of the data points are in opposite corners!</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: This does not look like an additive relationship, but we have to check!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-14" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: What explains the variation in how Americans feel about journalists?</strong></p>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>model3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> anes, ft.journalists <span class="sc">~</span> </span>
+<span id="cb13-2"><a href=""></a>               political_knowledge <span class="sc">*</span> Democrat <span class="sc">+</span> Independent)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="hmzssjijxp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hmzssjijxp table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#hmzssjijxp thead, #hmzssjijxp tbody, #hmzssjijxp tfoot, #hmzssjijxp tr, #hmzssjijxp td, #hmzssjijxp th {
+  border-style: none;
+}
+
+#hmzssjijxp p {
+  margin: 0;
+  padding: 0;
+}
+
+#hmzssjijxp .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#hmzssjijxp .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#hmzssjijxp .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#hmzssjijxp .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#hmzssjijxp .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#hmzssjijxp .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#hmzssjijxp .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#hmzssjijxp .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#hmzssjijxp .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#hmzssjijxp .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#hmzssjijxp .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#hmzssjijxp .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#hmzssjijxp .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#hmzssjijxp .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#hmzssjijxp .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hmzssjijxp .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#hmzssjijxp .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#hmzssjijxp .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#hmzssjijxp .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hmzssjijxp .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#hmzssjijxp .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hmzssjijxp .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#hmzssjijxp .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hmzssjijxp .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hmzssjijxp .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hmzssjijxp .gt_left {
+  text-align: left;
+}
+
+#hmzssjijxp .gt_center {
+  text-align: center;
+}
+
+#hmzssjijxp .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#hmzssjijxp .gt_font_normal {
+  font-weight: normal;
+}
+
+#hmzssjijxp .gt_font_bold {
+  font-weight: bold;
+}
+
+#hmzssjijxp .gt_font_italic {
+  font-style: italic;
+}
+
+#hmzssjijxp .gt_super {
+  font-size: 65%;
+}
+
+#hmzssjijxp .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#hmzssjijxp .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#hmzssjijxp .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#hmzssjijxp .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#hmzssjijxp .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#hmzssjijxp .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#hmzssjijxp .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#hmzssjijxp .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#hmzssjijxp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="a(1)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(1)</th>
+<th id="a(2)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(2)</th>
+<th id="a(3)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">(3)</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Political Knowledge (0-9)</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">1.15*</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">-0.58*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">(0.17)</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">(0.17)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Democrat</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">39.87*</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">20.48*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">(0.70)</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">(1.76)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Knowledge x Democrat</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">3.45*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">(0.28)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Independent</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">20.68*</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">20.93*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">(0.70)</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">(0.70)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Constant</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">44.90*</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">30.49*</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">33.34*</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large"></td>
+<td class="gt_row gt_center" headers="(1)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(0.99)</td>
+<td class="gt_row gt_center" headers="(2)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(0.51)</td>
+<td class="gt_row gt_center" headers="(3)" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000; background-color: #FFFFFF; font-size: large">(1.06)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">Num.Obs.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">7079</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">7347</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">7071</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">0.007</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">0.309</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">0.331</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">R2 Adj.</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">0.007</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">0.309</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">0.331</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" " style="background-color: #FFFFFF; font-size: large">RMSE</td>
+<td class="gt_row gt_center" headers="(1)" style="background-color: #FFFFFF; font-size: large">29.04</td>
+<td class="gt_row gt_center" headers="(2)" style="background-color: #FFFFFF; font-size: large">24.13</td>
+<td class="gt_row gt_center" headers="(3)" style="background-color: #FFFFFF; font-size: large">23.83</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="4" class="gt_sourcenote">* p &lt; 0.05</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>We use the asterisk to represent an interaction between political knowledge and Democrats</p>
+<ul>
+<li>R will atuomatically include both terms separately AND the interaction between them</li>
+</ul>
+<p><br></p>
+<p>Walk me through evaluating the fit of Model 3</p>
+<ul>
+<li><p>Missing data?</p></li>
+<li><p>Significant coefficients?</p></li>
+<li><p>R2?</p></li>
+</ul>
+<p><br></p>
+<p>Ok, everyone convert Model 3 to the formula for a line so you can use it to make predictions</p>
+<p><br></p>
+<p>First focus just on the Republicans</p>
+<ul>
+<li><p><strong>What is the predicted approval of journalists for a Republican with a zero on the political knowledge index?</strong></p>
+<ul>
+<li>(33.34)</li>
+</ul></li>
+<li><p><strong>And what about a Republican with a 9 on the political knowledge index?</strong></p>
+<ul>
+<li>(33.34 - .58 x 9 = 33.34 - 5.22 = 28.12)</li>
+</ul></li>
+</ul>
+<p><br></p>
+<p>So, per Model 3 Republican approval of journalists moves from a 33 DOWN to a 28 as political knowledge increases.</p>
+<p><br></p>
+<p>Now shift to the Democrats.</p>
+<ul>
+<li><p><strong>What is the prediction for Democrats with a zero political knowledge vs with a nine in political knowledge?</strong></p>
+<ul>
+<li><p><em>If needed do it on the board</em></p></li>
+<li><p>(0 knowledge: 33.34 + 20.48 = 53.82)</p></li>
+<li><p>(9 knowledge: 33.34 + 20.48 + 3.45<em>9 - .58</em>9 = 79.65)</p></li>
+</ul></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s use ggplot to check!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-15" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: What explains the variation in how Americans feel about journalists?</strong></p>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">plot</span>(<span class="fu">ggpredict</span>(model3, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"political_knowledge"</span>, <span class="st">"Democrat"</span>))) <span class="sc">+</span></span>
+<span id="cb14-2"><a href=""></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Political Knowledge (0-9)"</span>) <span class="sc">+</span></span>
+<span id="cb14-3"><a href=""></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="13_3-Multiple_OLS-Interactions_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:75.0%"><aside class="notes">
+<p>We did it!</p>
+<p><br></p>
+<p><strong>So, what did we find in this case? How does political knowledge interact with party to explain approval of journalists?</strong></p>
+<ul>
+<li><p>(Dems approval of journalists explodes with knowledge)</p></li>
+<li><p>(Reps approval of journalists falls slightly with increases in knowledge)</p></li>
+</ul>
+<p><br></p>
+<p><strong>Any guesses why this might be?</strong></p>
+<p><br></p>
+<p><strong>Ok, how are we doing with implementing and interpreting an interaction in an OLS regression?</strong></p>
+<p><br></p>
+<p><strong>SLIDE</strong>: Let’s take a look at an example from the literature</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-16" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+
+<img data-src="Images/13_3-MSF2016-Table2-5-8.png" style="display: block; margin: 0 auto" class="r-stretch"><aside class="notes">
+<p>The second set of models in the Miller, Saunders and Farhart (2016) article examine conspiracy theory belief using an interaction!</p>
+<p><br></p>
+<p><strong>What do we see in this interaction?</strong></p>
+<ul>
+<li><strong>How does ideology interact with political knowledge for explaining belief in conspiracy theories?</strong></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: Here’s the effect visualized by the researchers</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-17" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+
+<img data-src="Images/13_3-MSF2016-Fig1a.png" style="display: block; margin: 0 auto" class="r-stretch"><aside class="notes">
+<p>Here we see the visualizations of the effects from Models 5 and 6 which focus on the conservative conspiracy theories only</p>
+<p><br></p>
+<p><strong>Describe the interaction effect for me</strong></p>
+<ul>
+<li><p>(As political knowledge increases, fewer liberals believe in conservative CTs)</p></li>
+<li><p>(The effect is the opposite for conservatives but much weaker)</p></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: The liberal CTs</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-18" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+
+<img data-src="Images/13_3-MSF2016-Fig1b.png" style="display: block; margin: 0 auto" class="r-stretch"><aside class="notes">
+<p><strong>Describe the interaction effect for me</strong></p>
+<ul>
+<li><p>(Opposite from previous: As political knowledge increases, fewer conservatives believe in liberal CTs)</p></li>
+<li><p>(Liberal respondents seem to reduce their belief with knowledge increases but the effects are inconsistent across the surveys)</p></li>
+</ul>
+<p><br></p>
+<p><strong>Questions on the interactions?</strong></p>
+<p><br></p>
 <p><strong>SLIDE</strong>: For next class</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="for-next-class" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2>For Next Class</h2>
+<p><br></p>
+<ol type="1">
+<li><p>Read Chapter 13 on residuals</p></li>
+<li><p>Complete Exercises 3 and 4</p></li>
+<li><p>Practice fitting OLS regressions with OLS to answer this question</p>
+<ul>
+<li>Does a free press reduce global economic inequality?</li>
+</ul></li>
+</ol>
+<aside class="notes">
+<p>Three jobs for Monday</p>
+<ul>
+<li><em>Read slide</em></li>
+</ul>
+<p><br></p>
+<p><strong>SLIDE</strong>: The practice exercise</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-19" class="slide level2 center" data-background-image="Images/background-data_blue_v4.png">
+<h2></h2>
+<div class="r-fit-text">
+<p><strong>RQ: Does a free press reduce global economic inequality?</strong></p>
+</div>
+<ul>
+<li><p>Model 1: Regress economic inequality (gini.index) on the press freedom score (press.freedom.fh)</p></li>
+<li><p>Model 2: Regress economic inequality on whether the judiciary is independent (indep.judiciary)*</p></li>
+<li><p>Model 3: Regress economic inequality on the interaction between press freedom and a free judiciary</p></li>
+</ul>
+<aside class="notes">
+<p>A couple crucial notes here</p>
+<ol type="1">
+<li><p>The Gini index runs from 0 to 1</p>
+<ul>
+<li>The higher the score the worse (e.g.&nbsp;the more unequal the society)</li>
+</ul></li>
+<li><p>The Press Freedom Index runs from 0 to 10</p>
+<ul>
+<li>The higher the better</li>
+</ul></li>
+<li><p>You’ll have to convert the judiciary variable into a numerical dummy</p></li>
+</ol>
+<p><br></p>
+<p><strong>Questions?</strong></p>
+<ul>
+<li>Details on Canvas</li>
+</ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
